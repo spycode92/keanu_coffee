@@ -29,7 +29,7 @@
 				</ul>
 			</li>
 			<li>
-				<a href="/inbound"><span>입고 관리</span></a>
+				<a href="/inbound/main"><span>입고 관리</span></a>
 			</li>
 			<li>
 				<a href="/outbound"><span>출고 관리</span></a>
