@@ -58,7 +58,7 @@
 <body>
     <div class="login-form-container">
         <form action="/login" method="post">
-            <h3>로그인1</h3>
+            <h3>로그인</h3>
             <input type="text" placeholder="사번을입력하세요" name="empId" autocomplete="off"><br>
             <input type="password" placeholder="초기비밀번호:1234" name="empPassword" autocomplete="off">
             <input type="submit" value="로그인">
