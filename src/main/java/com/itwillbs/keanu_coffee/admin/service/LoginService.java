@@ -21,9 +21,11 @@ public class LoginService {
 		// 입력받은 id, 비밀번호
 		String empId = employee.getEmpId();
 		String inputPw = employee.getEmpPassword();
-		
+		System.out.println(inputPw);
 		// 입력받은 id로 조회한 정보
 		employee = employeeManagementMapper.selectEmployeeInfo(empId);
+		
+		System.out.println(employee.getEmpPassword());
 		//조회된 정보가 없을때
 		if(employee == null) {
 			return false;

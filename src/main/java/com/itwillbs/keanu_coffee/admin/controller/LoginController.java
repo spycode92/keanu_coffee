@@ -21,8 +21,10 @@ public class LoginController {
 		
 	@PostMapping("/login")
 	public String login(EmployeeDTO employee, Model model, HttpSession session) {
+		System.out.println("컨트롤러");
+		System.out.println(employee.getEmpPassword());
+		
 		boolean checkPassword = loginService.checkPassword(employee);
-
 		// 로그인 실패시
 		if(checkPassword == false) {
 			model.addAttribute("msg", "로그인 실패");
