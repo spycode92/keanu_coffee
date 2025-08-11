@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.itwillbs</groupId>
+	<artifactId>second_example</artifactId>
+	<name>second_example</name>
+	
+	<!--  여기부터 복사  -->
+	
+	<packaging>war</packaging>
+	<version>1.0.0-BUILD-SNAPSHOT</version>
+
+	<properties>
+	    <java-version>11</java-version>
+	    <org.springframework-version>5.3.39</org.springframework-version>
+	    <org.aspectj-version>1.6.10</org.aspectj-version>
+	    <log4j2-version>2.25.0</log4j2-version>
+	</properties>
+	
+	<repositories>
+	    <repository>
+	        <id>jitpack.io</id>
+	        <url>https://jitpack.io</url>
+	    </repository>
+	</repositories>
+	
+	<dependencies>
+	    <!-- 메일 한글이름 인코딩 -->
+	    <dependency>
+	        <groupId>com.sun.mail</groupId>
+	        <artifactId>javax.mail</artifactId>
+	        <version>1.6.2</version>
+	    </dependency>
+	
+	    <!-- EasyCaptcha -->
+	    <dependency>
+	        <groupId>com.github.whvcse</groupId>
+	        <artifactId>easy-captcha</artifactId>
+	        <version>1.6.2</version>
+	    </dependency>
+	
+	    <!-- 카카오결제 필요 라이브러리 / Spring-core/libs는 별도 필요없음 -->
+	   
+		<!-- Spring MVC 웹 컨트롤러, 요청/응답 처리 및 뷰 관리에 필요 -->
+	    <dependency>
+	        <groupId>org.springframework</groupId>
+	        <artifactId>spring-webmvc</artifactId>
+	        <version>${org.springframework-version}</version>
+	    </dependency>
+	    
+	    <!-- 스프링 애플리케이션 컨텍스트와 빈 생성 및 관리, 의존성 주입(DI) 기능 제공 -->
+	    <dependency>
+	        <groupId>org.springframework</groupId>
+	        <artifactId>spring-context</artifactId>
+	        <version>${org.springframework-version}</version>
+	        <exclusions>
+	            <!-- Exclude Commons Logging in favor of SLF4j -->
+	            <exclusion>
+	                <groupId>commons-logging</groupId>
+	                <artifactId>commons-logging</artifactId>
+	            </exclusion>
+	        </exclusions>
+	    </dependency>
+	    
+	    <!-- 스프링 빈 팩토리 역할, 빈 객체 생성과 의존성 주입 상세 관리 -->
+	    <dependency>
+	        <groupId>org.springframework</groupId>
+	        <artifactId>spring-beans</artifactId>
+	        <version>${org.springframework-version}</version>
+	    </dependency>
+	    
+	    <!-- HTTP, REST 클라이언트 기능 제공, 외부 결제 API 호출 및 데이터 전송에 사용 -->
+	    <dependency>
+	        <groupId>org.springframework</groupId>
+	        <artifactId>spring-web</artifactId>
+	        <version>${org.springframework-version}</version>
+	    </dependency>
+	    
+	    <!-- JDBC 데이터베이스 접근 지원, 결제 정보 DB 저장 및 처리에 필요 -->
+	    <dependency>
+	        <groupId>org.springframework</groupId>
+	        <artifactId>spring-jdbc</artifactId>
+	        <version>${org.springframework-version}</version>
+	    </dependency>
+	
+	    <!-- jackson 의존성 (버전 통일) -->
+	    <dependency>
+	        <groupId>com.fasterxml.jackson.core</groupId>
+	        <artifactId>jackson-databind</artifactId>
+	        <version>2.13.2</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>com.fasterxml.jackson.core</groupId>
+	        <artifactId>jackson-core</artifactId>
+	        <version>2.13.2</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>com.fasterxml.jackson.core</groupId>
+	        <artifactId>jackson-annotations</artifactId>
+	        <version>2.13.2</version>
+	    </dependency>
+	
+	    <!-- 아임포트 SDK -->
+	    <dependency>
+	        <groupId>com.github.iamport</groupId>
+	        <artifactId>iamport-rest-client-java</artifactId>
+	        <version>0.2.23</version>
+	    </dependency>
+	
+	    <!-- 롬복(Lombok) 라이브러리 -->
+	    <dependency>
+	        <groupId>org.projectlombok</groupId>
+	        <artifactId>lombok</artifactId>
+	        <version>1.18.38</version>
+	    </dependency>
+	
+	    <!-- =================== [ 데이터베이스 관련 라이브러리 ] ================== -->
+	    <!-- MySQL - JDBC 연동에 필요한 라이브러리 -->
+	    <dependency>
+	        <groupId>com.mysql</groupId>
+	        <artifactId>mysql-connector-j</artifactId>
+	        <version>8.4.0</version>
+	    </dependency>
+	
+	    <!-- 공식 깃허브 채널 : https://github.com/brettwooldridge/HikariCP -->
+	    <dependency>
+	        <groupId>com.zaxxer</groupId>
+	        <artifactId>HikariCP</artifactId>
+	        <version>6.3.0</version>
+	    </dependency>
+	
+	    <!-- MyBatis 기본 라이브러리 -->
+	    <dependency>
+	        <groupId>org.mybatis</groupId>
+	        <artifactId>mybatis</artifactId>
+	        <version>3.5.19</version>
+	    </dependency>
+	
+	    <!-- Spring - MyBatis 연동 라이브러리 -->
+	    <dependency>
+	        <groupId>org.mybatis</groupId>
+	        <artifactId>mybatis-spring</artifactId>
+	        <version>3.0.0</version>
+	    </dependency>
+	
+	    <!-- spring-security-web 라이브러리 -->
+	    <dependency>
+	        <groupId>org.springframework.security</groupId>
+	        <artifactId>spring-security-web</artifactId>
+	        <version>5.8.16</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.springframework.security</groupId>
+	        <artifactId>spring-security-crypto</artifactId>
+	        <version>5.8.16</version>
+	    </dependency>
+	
+	    <!-- [ 스프링 로그 메세지 처리 ] -->
+	    <dependency>
+	        <groupId>org.bgee.log4jdbc-log4j2</groupId>
+	        <artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>
+	        <version>1.16</version>
+	    </dependency>
+	
+	    <!-- Apache Log4j Core 라이브러리(log4j-core) -->
+	    <dependency>
+	        <groupId>org.apache.logging.log4j</groupId>
+	        <artifactId>log4j-core</artifactId>
+	        <version>${log4j2-version}</version>
+	    </dependency>
+	
+	    <!--  자바 메일관련 라이브러리 -->
+	    <dependency>
+	        <groupId>javax.mail</groupId>
+	        <artifactId>mail</artifactId>
+	        <version>1.4.7</version>
+	    </dependency>
+	
+	    <dependency>
+	        <groupId>javax.activation</groupId>
+	        <artifactId>activation</artifactId>
+	        <version>1.1.1</version>
+	    </dependency>
+	
+	    <!--  난수 생성 등의 다양한 유틸리티 제공하는 라이브러리 -->
+	    <dependency>
+	        <groupId>org.apache.commons</groupId>
+	        <artifactId>commons-lang3</artifactId>
+	        <version>3.17.0</version>
+	    </dependency>
+	
+	    <!--  파일 업로드 관련 라이브러리 -->
+	    <dependency>
+	        <groupId>commons-io</groupId>
+	        <artifactId>commons-io</artifactId>
+	        <version>2.19.0</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>commons-fileupload</groupId>
+	        <artifactId>commons-fileupload</artifactId>
+	        <version>1.6.0</version>
+	    </dependency>
+	
+	    <!-- Apache Log4j API 라이브러리 -->
+	    <dependency>
+	        <groupId>org.apache.logging.log4j</groupId>
+	        <artifactId>log4j-api</artifactId>
+	        <version>${log4j2-version}</version>
+	    </dependency>
+	
+	    <!-- Apache Log4j SLF4J Binding -->
+	    <dependency>
+	        <groupId>org.apache.logging.log4j</groupId>
+	        <artifactId>log4j-slf4j-impl</artifactId>
+	        <version>${log4j2-version}</version>
+	    </dependency>
+	
+	    <!-- AspectJ -->
+	    <dependency>
+	        <groupId>org.aspectj</groupId>
+	        <artifactId>aspectjrt</artifactId>
+	        <version>${org.aspectj-version}</version>
+	    </dependency>
+	
+	    <!-- @Inject -->
+	    <dependency>
+	        <groupId>javax.inject</groupId>
+	        <artifactId>javax.inject</artifactId>
+	        <version>1</version>
+	    </dependency>
+	
+	    <dependency>
+	        <groupId>javax.servlet</groupId>
+	        <artifactId>javax.servlet-api</artifactId>
+	        <version>4.0.1</version>
+	        <scope>provided</scope>
+	    </dependency>
+	    <dependency>
+	        <groupId>javax.servlet.jsp</groupId>
+	        <artifactId>javax.servlet.jsp-api</artifactId>
+	        <version>2.3.3</version>
+	        <scope>provided</scope>
+	    </dependency>
+	    <dependency>
+	        <groupId>javax.servlet</groupId>
+	        <artifactId>jstl</artifactId>
+	        <version>1.2</version>
+	    </dependency>
+	
+	    <!-- Test -->
+	    <dependency>
+	        <groupId>junit</groupId>
+	        <artifactId>junit</artifactId>
+	        <version>4.7</version>
+	        <scope>test</scope>
+	    </dependency>
+	</dependencies>
+	
+	<build>
+	    <plugins>
+	        <plugin>
+	            <artifactId>maven-eclipse-plugin</artifactId>
+	            <version>2.9</version>
+	            <configuration>
+	                <additionalProjectnatures>
+	                    <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
+	                </additionalProjectnatures>
+	                <additionalBuildcommands>
+	                    <buildcommand>org.springframework.ide.eclipse.core.springbuilder</buildcommand>
+	                </additionalBuildcommands>
+	                <downloadSources>true</downloadSources>
+	                <downloadJavadocs>true</downloadJavadocs>
+	            </configuration>
+	        </plugin>
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-compiler-plugin</artifactId>
+	            <version>2.5.1</version>
+	            <configuration>
+	                <source>${java-version}</source>
+	                <target>${java-version}</target>
+	                <compilerArgument>-Xlint:all</compilerArgument>
+	                <showWarnings>true</showWarnings>
+	                <showDeprecation>true</showDeprecation>
+	            </configuration>
+	        </plugin>
+	        <plugin>
+	            <groupId>org.codehaus.mojo</groupId>
+	            <artifactId>exec-maven-plugin</artifactId>
+	            <version>1.2.1</version>
+	            <configuration>
+	                <mainClass>org.test.int1.Main</mainClass>
+	            </configuration>
+	        </plugin>
+	    </plugins>
+	    <finalName>/</finalName>
+	</build>
+</project>
+	
