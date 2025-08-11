@@ -8,13 +8,13 @@
 	<!-- 단일 회원 정보 검색 -->
 	<select id="selectEmployeeInfo" resultType="EmployeeDTO" >
 		SELECT *
-		FROM EMPLOYEE
+		FROM EMPLOYEE_INFO
 		WHERE emp_id = #{empId}
 	</select>
 
 	<!-- 회원추가 -->
 	<insert id="insertEmployeeInfo">
-		INSERT INTO EMPLOYEE
+		INSERT INTO EMPLOYEE_INFO
 		VALUES(
 			#{empId}
 			, #{empName}
