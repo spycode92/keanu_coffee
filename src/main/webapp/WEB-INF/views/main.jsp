@@ -33,6 +33,6 @@ $("#adminPage").click(function(){
   location.href="/admin/main";
 });
 </script>
-
+</div>
 </body>
 </html>

@@ -35,8 +35,9 @@ public class LoginController {
 		employee = employeeManagementService.getEmployeeInfo(employee);
 		
 		//로그인 성공시 아이디, 포지션 저장
-		session.setAttribute("Sid", employee.getEmpId());
-		session.setAttribute("EmployeePosition", employee.getEmpPosition());
+		session.setAttribute("sId", employee.getEmpId());
+		session.setAttribute("sName", employee.getEmpName());
+		session.setAttribute("sPosition", employee.getEmpPosition());
 		
 		return "redirect:/main";
 	}
