@@ -14,7 +14,7 @@
 
 	<!-- 회원추가 -->
 	<insert id="insertEmployeeInfo">
-		INSERT INTO EMPLOYEE
+		INSERT INTO EMPLOYEE_INFO
 		VALUES(
 			#{empId}
 			, #{empName}
