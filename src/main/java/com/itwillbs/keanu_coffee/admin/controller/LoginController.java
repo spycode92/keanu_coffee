@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.itwillbs.keanu_coffee.admin.dto.EmployeeDTO;
+import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
 import com.itwillbs.keanu_coffee.admin.service.LoginService;
 
@@ -20,9 +20,7 @@ public class LoginController {
 	private final EmployeeManagementService employeeManagementService;
 		
 	@PostMapping("/login")
-	public String login(EmployeeDTO employee, Model model, HttpSession session) {
-		System.out.println("컨트롤러");
-		System.out.println(employee.getEmpPassword());
+	public String login(EmployeeInfoDTO employee, Model model, HttpSession session) {
 		
 		boolean checkPassword = loginService.checkPassword(employee);
 		// 로그인 실패시
@@ -34,7 +32,7 @@ public class LoginController {
 		
 		employee = employeeManagementService.getEmployeeInfo(employee);
 		
-		//로그인 성공시 아이디, 포지션 저장
+		//로그인 성공시 아이디, 이름, 포지션 저장
 		session.setAttribute("sId", employee.getEmpId());
 		session.setAttribute("sName", employee.getEmpName());
 		session.setAttribute("sPosition", employee.getEmpPosition());
