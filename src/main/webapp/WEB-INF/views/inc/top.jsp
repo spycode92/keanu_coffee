@@ -38,9 +38,10 @@
 				<a href="/inventory"><span>재고 현황</span></a>
 			</li>
 			<li>
-				<a href="/transport/dashboard"><span>운송관리</span></a>
+				<a href="/transport"><span>운송관리</span></a>
 				<ul>
 					<li><a href="/transport/drivers">기사관리</a></li>
+					<li><a href="/transport/car">차량관리</a></li>
 					<li><a href="/dashsub1/dispatches">배차관리</a></li>
 				</ul>
 			</li>

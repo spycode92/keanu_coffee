@@ -7,8 +7,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("transport")
 public class TransportController {
-	@GetMapping("/dashboard")
+	// 운송 대시보드
+	@GetMapping("")
 	public String dashboard() {
 		return "/transport/dashboard";
+	}
+	
+	// 기사 목록 페이지
+	@GetMapping("/drivers")
+	public String driverList() {
+		return "/transport/drivers";
+	}
+	
+	// 차량 목록 페이지
+	@GetMapping("/car")
+	public String carList() {
+		return "/transport/car";
 	}
 }
