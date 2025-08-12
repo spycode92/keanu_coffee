@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.itwillbs.keanu_coffee.admin.dto.EmployeeDTO;
-
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -18,10 +16,10 @@ import lombok.RequiredArgsConstructor;
 public class AdminController {
 	
 	//관리자페이지 메인
-	@GetMapping("/main")
+	@GetMapping("")
 	public String adminMain(HttpSession session, Model model) {
 		
-		if(!session.getAttribute("EmployeePosition").equals("admin")) {
+		if(!session.getAttribute("sId").equals("admin")) {
 			model.addAttribute("msg", "권한이 없습니다.");
 			model.addAttribute("targetURL", "/"); 
 			return "/commons/result_process";
@@ -32,7 +30,20 @@ public class AdminController {
 	
 	@GetMapping("/employeeManagement")
 	public String EmployeeManagement() {
-		return "/admin/employee_management/employeeManagement";
+		
+		return "/admin/employee_management";
+	}
+	
+	@GetMapping("/accessManagement")
+	public String AccessManagementcontroller() {
+		
+		return "/admin/access_management";
+	}
+	
+	@GetMapping("/statistic")
+	public String Statistic() {
+		
+		return "/admin/statistic";
 	}
 	
 	

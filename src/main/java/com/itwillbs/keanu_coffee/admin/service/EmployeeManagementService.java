@@ -7,7 +7,7 @@ import java.util.Random;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.itwillbs.keanu_coffee.admin.dto.EmployeeDTO;
+import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class EmployeeManagementService {
 	private final BCryptPasswordEncoder passwordEncoder;
 
 	//직원정보 DB입력로직
-	public int inputEmployeeInfo(EmployeeDTO employee) {
+	public int inputEmployeeInfo(EmployeeInfoDTO employee) {
 		// 첫 비밀번호 1234 
 		String empPassword = passwordEncoder.encode("1234");
 		// empId생성
@@ -34,7 +34,7 @@ public class EmployeeManagementService {
 	}
 	
 	//직원아이디 사용해서 직원정보 선택
-	public EmployeeDTO getEmployeeInfo(EmployeeDTO employee) {
+	public EmployeeInfoDTO getEmployeeInfo(EmployeeInfoDTO employee) {
 		String empId = employee.getEmpId();
 		return employeeManagementMapper.selectEmployeeInfo(empId);
 	}
@@ -43,69 +43,10 @@ public class EmployeeManagementService {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	// empId 생성 메서드
-	public String empIdBuilder(EmployeeDTO employee) {
+	public String empIdBuilder(EmployeeInfoDTO employee) {
 		//입력된휴대폰번호
-		String phone = employee.getEmpPhone();
+		String phone = employee.getPhone();
 		//휴대폰번호 뒷 4자리
 		String last4Digits = phone.substring(phone.length() - 4);
 		//오늘 날짜 MMdd 형식

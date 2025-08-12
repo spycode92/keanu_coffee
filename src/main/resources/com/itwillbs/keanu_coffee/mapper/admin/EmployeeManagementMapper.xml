@@ -6,7 +6,7 @@
 	
 	
 	<!-- 단일 회원 정보 검색 -->
-	<select id="selectEmployeeInfo" resultType="EmployeeDTO" >
+	<select id="selectEmployeeInfo" resultType="EmployeeInfoDTO" >
 		SELECT *
 		FROM EMPLOYEE_INFO
 		WHERE emp_id = #{empId}
