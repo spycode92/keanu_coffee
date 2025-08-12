@@ -40,10 +40,14 @@ public class AdminController {
 		return "/admin/access_management";
 	}
 	
-	@GetMapping("/statistic")
-	public String Statistic() {
-		
-		return "/admin/statistic";
+	@GetMapping("/log")
+	public String workingTree() {
+		return "redirect:/admin/workingLog";
+	}
+
+	@GetMapping("/dash")
+	public String Dashboard() {
+		return "redirect:/admin/dashboard";
 	}
 	
 	

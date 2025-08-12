@@ -21,7 +21,8 @@
 					<ul class="submenu">
 						<li><a href="/admin/employeeManagement">사원관리</a></li>
 						<li><a href="/admin/accessManagement">권한관리</a></li>
-						<li><a href="/admin/statistic">통계</a></li>
+						<li><a href="/admin/workingLog">작업관리</a></li>
+						<li><a href="/admin/dash">통계</a></li>
 					</ul>
 				</li>
 			</c:if>
