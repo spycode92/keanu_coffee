@@ -42,7 +42,7 @@
 				<ul>
 					<li><a href="/transport/drivers">기사관리</a></li>
 					<li><a href="/transport/car">차량관리</a></li>
-					<li><a href="/dashsub1/dispatches">배차관리</a></li>
+					<li><a href="/transport/dispatches">배차관리</a></li>
 				</ul>
 			</li>
 			<li>
