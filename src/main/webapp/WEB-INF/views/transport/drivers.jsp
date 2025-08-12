@@ -90,41 +90,35 @@
 	color: #991b1b
 }
 
-/* 모달 기본: 숨김 */
-.modal {
-    position: fixed;
-    inset: 0;
-    display: none;              /* ← 이게 핵심 */
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,.45);
-    z-index: 1000;
-}
-
-/* 모달 열림 상태 */
-.modal.open {
-    display: flex;
-}
-
-/* 모달 카드 기본 스타일 (필요 시) */
-.modal-card, .sub-card {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    width: min(900px, 96vw);    /* sub-card는 760px 등으로 조절 가능 */
-    overflow: hidden;
-}
-
-.modal-head, .modal-foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 12px 16px;
-    border-bottom: 1px solid #e5e7eb;
-}
-.modal-foot { border-bottom: 0; border-top: 1px solid #e5e7eb; }
+/* 모달 공통 */
+.modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,.45); z-index: 100; }
+.modal.open { display: flex; }
+.modal-card { width: min(900px, 96vw); background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.modal-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border); }
 .modal-body { padding: 14px 16px; }
+.modal-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--border); }
+.btn { display: inline-flex; align-items: center; gap: .5rem; padding: .55rem .85rem; border-radius: 10px; border: 1px solid var(--border); background: var(--primary); color: #fff; cursor: pointer; }
+.btn.secondary { background: #eef2ff; color: #3949ab; border-color: #c7d2fe; }
+.btn.outline { background: #fff; color: #111; }
+.btn.danger { background: #ef4444; border-color: #ef4444; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field input { height: 38px; border: 1px solid var(--border); border-radius: 10px; padding: 0 10px; background: #f9fafb; }
+.field input[disabled] { color: #4b5563; }
+.section-title { font-weight: 700; margin: 10px 0 6px; }
+
+ /* 차량 카드 / 비어있을 때 */
+ .vehicle-box { border: 1px dashed #cdd3ff; border-radius: 12px; padding: 12px; background: #fafbff; display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+ .vehicle-meta { display: grid; gap: 4px; }
+ .vehicle-meta small { color: var(--muted); }
+
+ /* 차량 선택 모달(서브) */
+ .sub-card { width: min(760px, 96vw); background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+ .toolbar { display: flex; gap: 8px; margin-bottom: 10px; }
+ .toolbar input, .toolbar select { height: 36px; border: 1px solid var(--border); border-radius: 10px; padding: 0 10px; }
+ .radio { width: 18px; height: 18px; }
+
 </style>
 </head>
 <body>
@@ -407,9 +401,6 @@
         const d = drivers.find(function(x){ return x.id === currentDriverId; });
         const v = vehicles.find(function(x){ return x.no === selectedVehicleNo; });
         if (!d || !v) return;
-
-        // (선택) 여기에서 필요 시 적재량 규칙 검증 로직을 넣으세요.
-        // 예: 주문 총량 <= v.cap 여부 검사
 
         d.car = { no: v.no, cap: v.cap, type: v.type };
         vehicleModal.classList.remove('open');
