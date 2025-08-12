@@ -22,14 +22,15 @@ public class EmployeeManagementController {
 	//관리자페이지 회원추가폼으로 이동
 	@GetMapping("/addEmployeeForm")
 	public String addEmployeeForm() {
-		return "/admin/popup/addEmployeeForm";
+		return "/admin/popup/add_employee_form";
 	}
+	
+	
 	
 	//관리자페이지 회원추가 로직
 	@PostMapping("/addEmployee")
 	public String addEmployeeForm(EmployeeInfoDTO employee, Model model) {
 		
-		System.out.println(employee);
 		int inputCount = employeeManagementService.inputEmployeeInfo(employee);
 		if (inputCount == 0) {
 			model.addAttribute("msg", "추가실패");

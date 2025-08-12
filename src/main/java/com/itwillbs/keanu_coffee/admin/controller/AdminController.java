@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class AdminController {
 	
 	//관리자페이지 메인
-	@GetMapping("/main")
+	@GetMapping("")
 	public String adminMain(HttpSession session, Model model) {
 		
 		if(!session.getAttribute("sId").equals("admin")) {
@@ -30,7 +30,20 @@ public class AdminController {
 	
 	@GetMapping("/employeeManagement")
 	public String EmployeeManagement() {
-		return "/admin/employee_management/employeeManagement";
+		
+		return "/admin/employee_management";
+	}
+	
+	@GetMapping("/accessManagement")
+	public String AccessManagementcontroller() {
+		
+		return "/admin/access_management";
+	}
+	
+	@GetMapping("/statistic")
+	public String Statistic() {
+		
+		return "/admin/statistic";
 	}
 	
 	

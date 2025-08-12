@@ -16,12 +16,12 @@
 		<ul>
 			<c:if test="${sessionScope.sId eq 'admin'}">
 				<li>
-					<a href="/admin/main"><span>관리자페이지</span></a>
+					<a href="/admin"><span>관리자페이지</span></a>
 	<!-- 				<a href=""><span>물류부서관리</span></a> -->
 					<ul class="submenu">
 						<li><a href="/admin/employeeManagement">사원관리</a></li>
-						<li><a href="/admin/permission">권한관리</a></li>
-						<li><a href="/admin/confirm">결제서류</a></li>
+						<li><a href="/admin/accessManagement">권한관리</a></li>
+						<li><a href="/admin/statistic">통계</a></li>
 					</ul>
 				</li>
 			</c:if>

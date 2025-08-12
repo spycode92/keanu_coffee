@@ -9,6 +9,9 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
@@ -23,7 +26,7 @@
 		<input type="button" value="검색" class="btn btn-sm btn-primary">
 	</div>
 	
-	<table class="table">
+	<table class="table" style="color:green;">
 		<tr>
 			<th>이름↕</th>
 			<th>사번↕</th>
@@ -107,6 +110,35 @@
 		
 				
 	</table>
+	<!-- 모달 -->
+<div class="modal fade" id="employeeModal" tabindex="-1" role="dialog" aria-labelledby="employeeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="employeeModalLabel">직원 정보</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="background-color: gray;">
+          <p><b>이름:</b> <span id="empName"></span></p>
+          <p><b>사번:</b> <span id="empNo"></span></p>
+          <p><b>아이디:</b> <span id="empId"></span></p>
+          <p><b>부서:</b> <span id="empDept"></span></p>
+          <p><b>직급:</b> <span id="empRank"></span></p>
+          <p><b>번호:</b> <span id="empPhone"></span></p>
+          <p><b>이메일:</b> <span id="empEmail"></span></p>
+          <p><b>입사일:</b> <span id="empHireDate"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="text-align: left;">비밀번호초기화</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">수정</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">삭제</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
 	
 </section>
 	<script type="text/javascript">
@@ -117,6 +149,27 @@
 	        "width=500,height=500,top=100,left=100"  // 크기와 위치
 	        );
 		});
+
+
+	$(document).ready(function(){
+	    // 헤더 제외, 데이터 있는 tr에 클릭 이벤트
+	    $(".table tr").not(":first").click(function(){
+	        let tds = $(this).find("td");
+	
+	        // td 순서대로 값 가져와서 모달에 넣기
+	        $("#empName").text(tds.eq(0).text());
+	        $("#empNo").text(tds.eq(1).text());
+	        $("#empId").text(tds.eq(2).text());
+	        $("#empDept").text(tds.eq(3).text());
+	        $("#empRank").text(tds.eq(4).text());
+	        $("#empPhone").text(tds.eq(5).text());
+	        $("#empEmail").text(tds.eq(6).text());
+	        $("#empHireDate").text(tds.eq(7).text());
+	
+	        // 모달 띄우기
+	        $("#employeeModal").modal("show");
+	    });
+	});
 	</script>
 	</div>
 
