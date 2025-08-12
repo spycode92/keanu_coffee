@@ -24,4 +24,10 @@ public class TransportController {
 	public String carList() {
 		return "/transport/car";
 	}
+	
+	// 배차 관리 페이지
+	@GetMapping("/dispatches")
+	public String dispatcheList() {
+		return "/transport/dispatche";
+	}
 }
