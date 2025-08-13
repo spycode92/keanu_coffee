@@ -29,15 +29,15 @@ public class AdminController {
 	}
 	
 	@GetMapping("/employeeManagement")
-	public String EmployeeManagement() {
+	public String employeeManagement() {
 		
 		return "/admin/employee_management";
 	}
 	
-	@GetMapping("/accessManagement")
-	public String AccessManagementcontroller() {
+	@GetMapping("/preference")
+	public String systemP() {
 		
-		return "/admin/access_management";
+		return "redirect:/admin/systemPreference";
 	}
 	
 	@GetMapping("/log")
@@ -46,7 +46,7 @@ public class AdminController {
 	}
 
 	@GetMapping("/dash")
-	public String Dashboard() {
+	public String dashboard() {
 		return "redirect:/admin/dashboard";
 	}
 	

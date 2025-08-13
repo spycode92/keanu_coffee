@@ -10,12 +10,13 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin/accessManagementController")
-public class AccessManagementController {
-	@GetMapping("/")
-	public String AccessManagementcontroller() {
+@RequestMapping("/admin/systemPreference")
+public class SystemPreferencesController {
+	
+	@GetMapping("")
+	public String systemPreference() {
 		
-		return "/admin/access_management";
+		return "/admin/system_preferences";
 	}
 	
 }
