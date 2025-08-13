@@ -97,7 +97,8 @@
 			    </tr>
 			  </table>
 			</form>
-		
+			<div class="d-flex justify-content-between align-items-center p-3">
+      
 	</section>
 </body>
 </html>

@@ -21,32 +21,32 @@ public class InventoryController {
 	@GetMapping("/productHistory")
 	public String productHistory() {
 		
-		return "warehouse&inventory_management/inventory_location_history";
+		return "inventory/inventory_location_history";
 	}
 	@GetMapping("/updateInventory")
 	public String updateInventory() {
 		
-		return "warehouse&inventory_management/update_inventory";
+		return "inventory/update_inventory";
 	}
 	@GetMapping("/updateWarehouse")
 	public String updateWarehouse() {
 		
-		return "warehouse&inventory_management/update_warehouse";
+		return "inventory/update_warehouse";
 	}
 	@GetMapping("/moveInventory")
 	public String moveInventory() {
 		
-		return "warehouse&inventory_management/move_inventory";
+		return "inventory/move_inventory";
 	}
 	@GetMapping("/updatedInventory")
 	public String updatedInventory() {
 		
-		return "warehouse&inventory_management/updated_inventory_table";
+		return "inventory/updated_inventory_table";
 	}
 	@GetMapping("/inventoryToMove")
 	public String inventoryToMove() {
 		
-		return "warehouse&inventory_management/inventory_to_move";
+		return "inventory/inventory_to_move";
 	}
 
 
