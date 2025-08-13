@@ -19,6 +19,9 @@
 		width: 400px;
 		margin: 50px auto;
 	}
+	#searchInput {
+		width: 40%;
+	}
 </style>
 </head>
 <body>
