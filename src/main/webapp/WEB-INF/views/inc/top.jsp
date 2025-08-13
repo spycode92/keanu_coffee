@@ -33,10 +33,16 @@
 			</li>
 			<li>
 				<a href="/inventory"><span>재고 현황</span></a>
-			    <ul class="submenu">
-			        <li><a href="/inventory/locationType">로케이션 지정</a></li>
-			        <li><a href="/inventory/stockCheck">재고 조회/검수</a></li>
-			    </ul>
+				<ul class="submenu">
+					<li><a href="/inventory/productHistory">제품 위치 기록</a></li>
+					<li><a href="/inventory/updateInventory">재고 업데이트</a></li>
+					<li><a href="/inventory/updateWarehouse">창고 업데이트</a></li>
+					<li><a href="/inventory/moveInventory">재고를 옮기다</a></li>
+					<li><a href="/inventory/updatedInventory">업데이트된 재고 테이블</a></li>
+					<li><a href="/inventory/inventoryToMove">이동할 재고</a></li>
+			    <li><a href="/inventory/locationType">로케이션 지정</a></li>
+			    <li><a href="/inventory/stockCheck">재고 조회/검수</a></li>
+			  </ul>
 			</li>
 			<li>
 				<a href="/transport"><span>운송관리</span></a>
@@ -53,6 +59,8 @@
 				<a href="/guide"><span>가이드페이지</span></a>
 				
 			</li>
+		
+			
       
 		</ul>
 	</aside>
