@@ -24,49 +24,23 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 
 /* 검색/필터 바 */
 .filters {
-	background: var(- -card);
-	border: 1px solid var(- -border);
-	border-radius: 12px;
-	padding: 12px;
-	display: grid;
-	grid-template-columns: repeat(3, minmax(200px, 1fr));
-	gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
+    gap: 10px;
 }
-
-.filters .field {
-	display: flex;
-	flex-direction: column;
-	gap: 6px
-}
-
-.filters .search {
-	display: flex;
-	flex-direction: column;
-	gap: 6px
-}
-
-.search {
-	width: 500px;
-}
-
-.filters label {
-	font-size: .85rem;
-	color: var(- -muted)
-}
-
+.filters .field { display: flex; flex-direction: column; gap: 6px; }
+.filters .search { display: flex; flex-direction: column; gap: 6px; }
+.search { width: 500px; }
+.filters label { font-size: .85rem; color: var(--muted-foreground); }
 .filters input, .filters select {
-	height: 38px;
-	padding: 0 10px;
-	border: 1px solid var(- -border);
-	border-radius: 10px;
-	background: #fff
+    height: 38px; padding: 0 10px; border: 1px solid var(--border); border-radius: 10px; background: #fff;
 }
-
 .filters .actions {
-	display: flex;
-	align-items: end;
-	justify-content: center;
-	gap: 8px
+    display: flex; align-items: end; justify-content: center; gap: 8px;
 }
 
 .badge {
@@ -182,23 +156,24 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 	        </div>
         </header>
 		<div>
-			<section class="filters" aria-label="검색 및 필터">
-				<div class="field">
-					<select id="filterStatus">
-						<option value="">전체</option>
-						<option value="대기">대기</option>
-						<option value="운행중">운행중</option>
-						<option value="사용불가">사용불가</option>
-					</select>
-				</div>
-				<div class="search">
-					<input id="filterName" type="text" placeholder="차량번호/적재량 검색 가능" />
-				</div>
-				<div class="actions">
-					<button class="btn secondary" id="btnReset">초기화</button>
-					<button class="btn" id="btnSearch">검색</button>
-				</div>
-			</section>
+			<!-- 검색/필터 -->
+	        <section class="filters" aria-label="검색 및 필터">
+	            <div class="field">
+	                <select id="filterStatus">
+	                    <option value="">전체</option>
+	                    <option value="대기">대기</option>
+	                    <option value="운행중">운행중</option>
+	                    <option value="사용불가">사용불가</option>
+	                </select>
+	            </div>
+	            <div class="search">
+	                <input id="filterText" type="text" placeholder="차량번호/적재량 검색 가능" />
+	            </div>
+	            <div class="actions">
+	                <button class="btn secondary" id="btnReset">초기화</button>
+	                <button class="btn" id="btnSearch">검색</button>
+	            </div>
+	        </section>
 			<div>
 				<h3>차량목록</h3>
 				<table class="table" id="vehicleTable">
