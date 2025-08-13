@@ -17,7 +17,6 @@
 	<h1>
 		관리자메인
 	</h1>
-	<a href="/admin/employeeManagement">직원관리</a>
 	
 </section>
 

@@ -4,13 +4,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
 import com.itwillbs.keanu_coffee.inventory.service.InventoryService;
 
 @Controller
 @RequestMapping("/inventory")
 public class InventoryController {
 //	private final InventoryService inventoryService;
-	
+	// 재고현황 페이지 - 대시보드
+	@GetMapping("")
+	public String inventoryDashboard() {
+		return "inventory/inventoryDashboard";
+	}
+  
+  
 	@GetMapping("/productHistory")
 	public String productHistory() {
 		
@@ -41,10 +48,6 @@ public class InventoryController {
 		
 		return "warehouse&inventory_management/inventory_to_move";
 	}
-	
-	
-	
-	
-	
-	
+
+
 }
