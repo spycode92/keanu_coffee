@@ -62,24 +62,24 @@
 			<form action="/inventory/updateInventory" method="post">
 			  <table>
 			    <tr>
-			      <td>직원 ID:</td>
+			      <td class="form-label">직원 ID:</td>
 			      <td>
 			        <p>John</p>
 			        <input type="text" name="employee_id" value="John" hidden>
 			      </td>
 			    </tr>
 			    <tr>
-			      <td><label for="inventoryId">재고 ID</label></td>
-			      <td><input id="inventoryID" type="text" name="inventoryId" required></td>
+			      <td><label class="form-label" for="inventoryId">재고 ID</label></td>
+			      <td><input class="form-control" id="inventoryID" type="text" name="inventoryId" required></td>
 			    </tr>
 			    <tr>
-			      <td><label for="qtyMoving">이동할 양</label></td>
-			      <td><input id="qtyMoving" type="number" name="qtyMoving" min="0" required></td>
+			      <td><label class="form-label"  for="qtyMoving">이동할 양</label></td>
+			      <td><input class="form-control" id="qtyMoving" type="number" name="qtyMoving" min="0" required></td>
 			    </tr>
 			    <tr>
-			      <td><label for="destination">목적지</label></td>
+			      <td><label class="form-label"  for="destination">목적지</label></td>
 			      <td>
-			        <select id="destination" name="destination" required>
+			        <select class="form-control" id="destination" name="destination" required>
 			          <option value="">목적지를 선택하세요</option>
 			          <option value="팔레트 보관">팔레트 보관</option>
 			          <option value="저장 선택">저장 선택</option>

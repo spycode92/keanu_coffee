@@ -37,32 +37,32 @@
 			<form action="/update-structure" method="post">
   <table>
     <tr>
-      <td><label for="warehouse">창고 이름 또는 ID</label></td>
-      <td><input type="text" id="warehouse" name="warehouse" required></td>
+      <td><label  class="form-label" for="warehouse">창고 이름 또는 ID</label></td>
+      <td><input  class="form-control" type="text" id="warehouse" name="warehouse" required></td>
     </tr>
     <tr>
-      <td><label for="rack">랙 수</label></td>
-      <td><input type="number" id="rack" name="rack" min="0" required></td>
+      <td><label  class="form-label" for="rack">랙 수</label></td>
+      <td><input class="form-control" type="number" id="rack" name="rack" min="0" required></td>
     </tr>
     <tr>
-      <td><label for="bay">랙당 베이 수</label></td>
-      <td><input type="number" id="bay" name="bay" min="0" required></td>
+      <td><label  class="form-label" for="bay">랙당 베이 수</label></td>
+      <td><input class="form-control" type="number" id="bay" name="bay" min="0" required></td>
     </tr>
     <tr>
-      <td><label for="level">베이당 레벨 수</label></td>
-      <td><input type="number" id="level" name="level" min="0" required></td>
+      <td><label class="form-label" for="level">베이당 레벨 수</label></td>
+      <td><input class="form-control" type="number" id="level" name="level" min="0" required></td>
     </tr>
     <tr>
-      <td><label for="boxes">레벨 위치당 소형 박스 수</label></td>
-      <td><input type="number" id="boxes" name="boxes" min="0" required></td>
+      <td><label  class="form-label" for="boxes">레벨 위치당 소형 박스 수</label></td>
+      <td><input class="form-control" type="number" id="boxes" name="boxes" min="0" required></td>
     </tr>
     <tr>
-      <td><label for="zone">피킹 존 수</label></td>
-      <td><input type="number" id="zone" name="zone" min="0" required></td>
+      <td><label  class="form-label" for="zone">피킹 존 수</label></td>
+      <td><input class="form-control" type="number" id="zone" name="zone" min="0" required></td>
     </tr>
     <tr>
-      <td><label for="reason">업데이트 사유</label></td>
-      <td><textarea id="reason" name="reason" rows="4" cols="40" required></textarea></td>
+      <td><label  class="form-label" for="reason">업데이트 사유</label></td>
+      <td><textarea class="form-control" id="reason" name="reason" rows="4" cols="40" required></textarea></td>
     </tr>
     <tr>
       <td colspan="2" style="text-align: center;"><br>
@@ -171,18 +171,18 @@
 		  <h3>랙 크기 업데이트</h3>
 		  <table>
 		    <tr>
-		      <td><label for="rack2">랙 번호</label></td>
-		      <td><input id="rack2" type="text" maxlength="2" required></td>
+		      <td><label  class="form-label" for="rack2">랙 번호</label></td>
+		      <td><input class="form-control" id="rack2" type="text" maxlength="2" required></td>
 		    </tr>
 		    <tr>
-		      <td><label for="bay2">업데이트된 베이 수</label></td>
-		      <td><input type="number" id="bay2" name="bay2" min="0" required></td>
+		      <td><label  class="form-label" for="bay2">업데이트된 베이 수</label></td>
+		      <td><input class="form-control" type="number" id="bay2" name="bay2" min="0" required></td>
 		    </tr>
 		    <tr>
 		      <td>저장 유형</td>
 		      <td>
-		        <label><input id="palletStorage" type="radio" name="storageType"> 팔레트 저장</label><br>
-		        <label><input id="pickingStorage" type="radio" name="storageType"> 피킹 저장</label>
+		        <label  class="form-label"><input  id="palletStorage" type="radio" name="storageType"> 팔레트 저장</label><br>
+		        <label  class="form-label"><input id="pickingStorage" type="radio" name="storageType"> 피킹 저장</label>
 		      </td>
 		    </tr>
 		    <tr>
@@ -196,22 +196,22 @@
 		  <h3>베이 크기 업데이트</h3>
 		  <table>
 		    <tr>
-		      <td><label for="rack3">랙 번호</label></td>
-		      <td><input id="rack3" type="text" maxlength="2" required></td>
+		      <td><label  class="form-label" for="rack3">랙 번호</label></td>
+		      <td><input class="form-control" id="rack3" type="text" maxlength="2" required></td>
 		    </tr>
 		    <tr>
-		      <td><label for="bay3">베이 번호</label></td>
-		      <td><input id="bay3" type="number" min="0" required></td>
+		      <td><label class="form-label" for="bay3">베이 번호</label></td>
+		      <td><input class="form-control" id="bay3" type="number" min="0" required></td>
 		    </tr>
 		    <tr>
-		      <td><label for="level2">업데이트된 레벨 수</label></td>
-		      <td><input type="number" id="level2" name="level2" min="0" required></td>
+		      <td><label  class="form-label" for="level2">업데이트된 레벨 수</label></td>
+		      <td><input class="form-control" type="number" id="level2" name="level2" min="0" required></td>
 		    </tr>
 		    <tr>
 		      <td>저장 유형</td>
 		      <td>
-		        <label><input id="palletStorage2" type="radio" name="storageType"> 팔레트 저장</label><br>
-		        <label><input id="pickingStorage2" type="radio" name="storageType"> 피킹 저장</label>
+		        <label  class="form-label"><input id="palletStorage2" type="radio" name="storageType"> 팔레트 저장</label><br>
+		        <label  class="form-label"><input id="pickingStorage2" type="radio" name="storageType"> 피킹 저장</label>
 		      </td>
 		    </tr>
 		    <tr>
@@ -225,20 +225,20 @@
 		  <h3>레벨 크기 업데이트</h3>
 		  <table>
 		    <tr>
-		      <td><label for="rack4">랙 번호</label></td>
-		      <td><input id="rack4" type="text" maxlength="2" required></td>
+		      <td><label  class="form-label" for="rack4">랙 번호</label></td>
+		      <td><input class="form-control" id="rack4" type="text" maxlength="2" required></td>
 		    </tr>
 		    <tr>
-		      <td><label for="bay4">베이 번호</label></td>
-		      <td><input id="bay4" type="number" min="0" required></td>
+		      <td><label  class="form-label" for="bay4">베이 번호</label></td>
+		      <td><input class="form-control" id="bay4" type="number" min="0" required></td>
 		    </tr>
 		    <tr>
-		      <td><label for="level3">레벨 번호</label></td>
-		      <td><input id="level3" type="text" required></td>
+		      <td><label  class="form-label" for="level3">레벨 번호</label></td>
+		      <td><input class="form-control" id="level3" type="text" required></td>
 		    </tr>
 		    <tr>
-		      <td><label for="boxes">업데이트된 소형 박스 수</label></td>
-		      <td><input type="number" id="boxes" name="boxes" min="0" required></td>
+		      <td><label  class="form-label" for="boxes">업데이트된 소형 박스 수</label></td>
+		      <td><input class="form-control" type="number" id="boxes" name="boxes" min="0" required></td>
 		    </tr>
 		    <tr>
 		      <td colspan="2" style="text-align: center;"><br>

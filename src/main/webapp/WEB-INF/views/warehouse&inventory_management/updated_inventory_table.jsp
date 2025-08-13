@@ -22,8 +22,8 @@
 		<h1>업데이트된 재고 테이블</h1>
 		
   <form id="searchForm" action="inventory/productHistorySearch" method="get">
-    <label for="searchInput">재고 ID:</label>
-    <input type="text" id="searchInput" placeholder="제품 이름이나 아이디를 입력하세요..." >
+    <label class="form-label" for="searchInput">재고 ID:</label>
+    <input class="form-control" type="text" id="searchInput" placeholder="제품 이름이나 아이디를 입력하세요..." >
     <input class="btn btn-sm btn-primary"  type="submit"><br>
   </form><br>
 		

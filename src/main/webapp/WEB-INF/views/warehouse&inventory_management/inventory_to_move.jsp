@@ -21,7 +21,7 @@
 	<section>
 		<h1>이동할 재고</h1><br>
 		
-<!-- 		<div class="table-responsive"> -->
+		<div class="table-responsive">
 		<table class="table">
 	    <thead>
 	      <tr>

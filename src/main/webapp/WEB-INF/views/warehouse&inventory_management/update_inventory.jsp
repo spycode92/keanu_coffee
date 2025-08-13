@@ -60,28 +60,28 @@
 			<form action="/inventory/updateInventory" method="post">
 			  <table>
 			  	   <tr>
-			      <td>직원 ID:</td>
+			      <td class="form-label">직원 ID:</td>
 			      <td>
 			        <p>John</p>
-			        <input type="text" name="employee_id" value="John" hidden>
+			        <input class="form-control" type="text" name="employee_id" value="John" hidden>
 			      </td>
 			    </tr>
 			    <tr>
-			      <td><label for="inventoryId">재고 ID</label></td>
-			      <td><input id="inventoryID" type="text" name="inventoryId" required></td>
+			      <td><label  class="form-label" for="inventoryId">재고 ID</label></td>
+			      <td><input class="form-control" id="inventoryID" type="text" name="inventoryId" required></td>
 			    </tr>
 			    <tr>
-			      <td><label for="increaseQty">수량을 늘리다</label></td>
-			      <td><input id="increaseQty" type="number" name="increaseQty" min="0"></td>
+			      <td><label  class="form-label" for="increaseQty">수량을 늘리다</label></td>
+			      <td><input class="form-control" id="increaseQty" type="number" name="increaseQty" min="0"></td>
 			    </tr>
 			    <tr>
-			      <td><label for="decreaseQty">감소 수량 금액</label></td>
-			      <td><input id="decreaseQty" type="number" name="decreaseQty" min="0"></td>
+			      <td><label  class="form-label" for="decreaseQty">감소 수량 금액</label></td>
+			      <td><input class="form-control" id="decreaseQty" type="number" name="decreaseQty" min="0"></td>
 			    </tr>
 			    <tr>
-			      <td><label for="adjustReason">수량 수정 사유</label></td>
+			      <td><label  class="form-label" for="adjustReason">수량 수정 사유</label></td>
 			      <td>
-			        <select id="adjustReason" name="adjustReason" required>
+			        <select class="form-control" id="adjustReason" name="adjustReason" required>
 			          <option value="">사유를 선택하세요</option>
 			          <option value="재고 수량">재고 수량</option>
 			          <option value="손상됨 / 파손됨">손상됨 / 파손됨</option>
