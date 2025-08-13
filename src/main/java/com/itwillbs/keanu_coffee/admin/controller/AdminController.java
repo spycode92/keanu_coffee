@@ -29,21 +29,25 @@ public class AdminController {
 	}
 	
 	@GetMapping("/employeeManagement")
-	public String EmployeeManagement() {
+	public String employeeManagement() {
 		
 		return "/admin/employee_management";
 	}
 	
-	@GetMapping("/accessManagement")
-	public String AccessManagementcontroller() {
+	@GetMapping("/preference")
+	public String systemP() {
 		
-		return "/admin/access_management";
+		return "redirect:/admin/systemPreference";
 	}
 	
-	@GetMapping("/statistic")
-	public String Statistic() {
-		
-		return "/admin/statistic";
+	@GetMapping("/log")
+	public String workingTree() {
+		return "redirect:/admin/workingLog";
+	}
+
+	@GetMapping("/dash")
+	public String dashboard() {
+		return "redirect:/admin/dashboard";
 	}
 	@GetMapping("/moveInventory")
 	public String moveInventory() {
