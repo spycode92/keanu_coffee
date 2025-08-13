@@ -12,7 +12,12 @@ import lombok.RequiredArgsConstructor;
 public class InboundController {
 	
 	@GetMapping("/main")
-	public String showJoinTypePage() {
+	public String showInboundDashboard() {
+	    return "/inbound/inboundDashboard";
+	}
+	
+	@GetMapping("/management")
+	public String showInboundManagement() {
 	    return "/inbound/inboundManagement";
 	}
 	

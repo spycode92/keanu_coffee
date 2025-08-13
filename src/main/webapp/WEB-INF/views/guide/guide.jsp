@@ -12,7 +12,7 @@ section { margin-bottom: 2rem; }
 </style>
 </head>
 <body>
-
+<section class="content">
 <h1>📌 공통 CSS/JS 컴포넌트 가이드</h1>
 <div>
 	darkmode toggle
@@ -71,7 +71,7 @@ section { margin-bottom: 2rem; }
   <button class="btn btn-secondary" onclick="showError('에러 메시지! ⚠️')">에러 알림</button>
   <button class="btn btn-secondary" onclick="showWarning('경고 메시지! ⚠️')">경고 알림</button>
   <button class="btn btn-primary" onclick="showNotification('일반 정보 메시지! ℹ️')">정보 알림</button>
-
+</section>
   <script>
     // 토글 스위치 클릭 시 active 상태 토글 예시
 	document.addEventListener('DOMContentLoaded', function() {

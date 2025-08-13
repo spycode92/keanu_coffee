@@ -5,11 +5,7 @@
   <button id="sidebar-toggle" class="sidebar-toggle">&#9776;</button>
   <span class="site-title">물류관리 ERP</span>
   <div class="top-nav-actions" style="margin-left:auto; display:flex; align-items:center; gap:16px;">
-
-	<c:if test="${EmployeePosition eq 'admin'}">
-    	<input type="button" value="관리자페이지" id="adminPage">
-	</c:if>
-    <span class="top-user">홍길동 사원</span>
+    <span class="top-user">${sessionScope.sName }</span>
 	<button id="dark-mode-toggle" class="toggle-switch"></button>	
   </div>
 </nav>
@@ -18,16 +14,18 @@
   <!-- 사이드바 -->
 	<aside id="sidebar" class="sidebar">
 		<ul>
-			<li>
-<!-- 				<a href="/dashboard"><span>대시보드</span></a> -->
-				<a href=""><span>대시보드</span></a>
-				<ul class="submenu">
-					<li><a href="/dashsub1">대시보드하위메뉴1</a></li>
-					<li><a href="/dashsub2">대시보드하위메뉴2</a></li>
-					<li><a href="/dashsub3">대시보드하위메뉴3</a></li>
-					<li><a href="/dashsub4">대시보드하위메뉴4</a></li>
-				</ul>
-			</li>
+			<c:if test="${sessionScope.sId eq 'admin'}">
+				<li>
+					<a href="/admin"><span>관리자페이지</span></a>
+	<!-- 				<a href=""><span>물류부서관리</span></a> -->
+					<ul class="submenu">
+						<li><a href="/admin/employeeManagement">사원관리</a></li>
+						<li><a href="/admin/dash">통계</a></li>
+						<li><a href="/admin/workingLog">작업관리</a></li>
+						<li><a href="/admin/preference">시스템설정</a></li>
+					</ul>
+				</li>
+			</c:if>
 			<li>
 				<a href="/inbound/main"><span>입고 관리</span></a>
 			</li>
@@ -38,7 +36,21 @@
 				<a href="/inventory"><span>재고 현황</span></a>
 			    <ul class="submenu">
 			        <li><a href="/inventory/stockCheck">재고 조회/검수</a></li>
+			        <li><a href="/inventory/productHistory">제품 위치 기록</a></li>
+					<li><a href="/inventory/updateInventory">재고 업데이트</a></li>
+					<li><a href="/inventory/updateWarehouse">창고 업데이트</a></li>
+					<li><a href="/inventory/moveInventory">재고를 옮기다</a></li>
+					<li><a href="/inventory/updatedInventory">업데이트된 재고 테이블</a></li>
+					<li><a href="/inventory/inventoryToMove">이동할 재고</a></li>
 			    </ul>
+			</li>
+			<li>
+				<a href="/transport"><span>운송관리</span></a>
+				<ul>
+					<li><a href="/transport/drivers">기사관리</a></li>
+					<li><a href="/transport/car">차량관리</a></li>
+					<li><a href="/transport/dispatches">배차관리</a></li>
+				</ul>
 			</li>
 			<li>
 				<a href="/settings"><span>시스템 설정</span></a>
@@ -48,6 +60,7 @@
 				
 			</li>
       
-    </ul>
-  </aside>
+		</ul>
+	</aside>
+
   <!-- 여기서부터 개별 페이지 내용 들어감 -->
