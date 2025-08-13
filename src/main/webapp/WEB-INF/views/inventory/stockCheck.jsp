@@ -40,92 +40,42 @@
 	    color: #155724;            /* 진한 초록 글씨 */
 	}
 	
-	/* [추가] 작은 배지(DDAY 숫자 강조) */
+	/* [추가] D-Day 배지 (숫자/텍스트 강조) */
 	.dday-badge {
-	    display:inline-block; margin-left:6px; padding:1px 6px; border-radius:999px;
-	    border:1px solid rgba(0,0,0,.1); font-size:.8em; font-weight:700; opacity:.9;
+	    display:inline-block; margin-left:6px; padding:1px 6px;
+	    border-radius:999px; border:1px solid rgba(0,0,0,.1);
+	    font-size:.8em; font-weight:700; opacity:.9;
 	}
 	.dday-warn   { background:rgba(255,193,7,.18);  border-color:rgba(255,193,7,.65); }
 	.dday-danger { background:rgba(220,53,69,.20);  border-color:rgba(220,53,69,.70); }
+
 	
 	/* 모달 */
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,.45);
-            z-index: 1000;
-        }
-        .modal-backdrop.on { display: flex; }
-        .modal-dialog {
-            width: 720px;
-            background: #0b1220;
-            color: #e2e8f0;
-            border: 1px solid #334155;
-            border-radius: 14px;
-            overflow: hidden;
-        }
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 16px;
-            background: #0b1220;
-            border-bottom: 1px solid #334155;
-        }
-        .modal-body {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            padding: 16px;
-        }
-        .modal-footer {
-            padding: 12px 16px;
-            text-align: right;
-            border-top: 1px solid #334155;
-        }
-        .kv {
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 10px;
-            padding: 12px;
-        }
-        .kv h4 {
-            margin: 0 0 8px 0;
-            font-size: 13px;
-            color: #94a3b8;
-        }
-        .kv .row {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px dashed #23304a;
-        }
-        .kv .row:last-child { border-bottom: 0; }
-        .btn-ghost {
-            padding: 8px 14px;
-            border: 1px solid #334155;
-            background: #0b1220;
-            color: #e2e8f0;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-        .btn-ghost:hover { background: #11182a; }
-        .small-muted { color: #94a3b8; font-size: 12px; }
-        
-        /* [추가] 로그 뱃지 */
-	    .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid rgba(255,255,255,.15); }
-	    .badge-out { background:rgba(220,53,69,.15); }     /* 출고 */
-	    .badge-move { background:rgba(13,110,253,.15); }   /* 이동 */
-	    .badge-dispose { background:rgba(108,117,125,.15);}/* 폐기 */
-	    
-	    /* [추가] 로그 행을 두 줄 레이아웃으로 */
-	    .logline { display:flex; justify-content:space-between; gap:10px; padding:6px 0; border-bottom:1px dashed #23304a; }
-	    .logline:last-child { border-bottom:0; }
-	    .logleft { display:flex; gap:8px; align-items:center; }
-	    .logright { text-align:right; white-space:nowrap; }
+    .modal-backdrop { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.45); z-index: 1000; }
+    .modal-backdrop.on { display: flex; }
+    .modal-dialog { width: 720px; background: #0b1220; color: #e2e8f0; border: 1px solid #334155; border-radius: 14px; overflow: hidden; }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #0b1220; border-bottom: 1px solid #334155; }
+    .modal-body { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px; }
+    .modal-footer { padding: 12px 16px; text-align: right; border-top: 1px solid #334155; }
+    .kv { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 12px; }
+    .kv h4 { margin: 0 0 8px 0; font-size: 13px; color: #94a3b8; }
+    .kv .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #23304a; }
+    .kv .row:last-child { border-bottom: 0; }
+    .btn-ghost { padding: 8px 14px; border: 1px solid #334155; background: #0b1220; color: #e2e8f0; border-radius: 10px; cursor: pointer; }
+    .btn-ghost:hover { background: #11182a; }
+    .small-muted { color: #94a3b8; font-size: 12px; }
+
+    /* [추가] 로그 뱃지 */
+	.badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid rgba(255,255,255,.15); }
+	.badge-out { background:rgba(220,53,69,.15); }     /* 출고 */
+	.badge-move { background:rgba(13,110,253,.15); }   /* 이동 */
+	.badge-dispose { background:rgba(108,117,125,.15);}/* 폐기 */
+
+	/* [추가] 로그 행 2줄 레이아웃 */
+	.logline { display:flex; justify-content:space-between; gap:10px; padding:6px 0; border-bottom:1px dashed #23304a; }
+	.logline:last-child { border-bottom:0; }
+	.logleft { display:flex; gap:8px; align-items:center; }
+	.logright { text-align:right; white-space:nowrap; }
 </style>
 </head>
 <body>
@@ -164,7 +114,7 @@
                 </div>
             </div>
 			
-			<!-- [추가] 제조/유통기한 전용 툴바 -->
+			<!-- [추가] 제조/유통기한 툴바 -->
             <div style="display:flex; gap:16px; align-items:center; padding:12px;">
                 <label class="form-label" style="display:flex; align-items:center; gap:6px; margin:0;">
                     임박 기준(D-)
@@ -180,7 +130,7 @@
                     </select>
                 </label>
                 <button class="btn btn-outline" id="btnSortExpAsc">유통기한 오름차순(FIFO)</button>
-                <span style="font-size:12px; opacity:.75;">※ 임박(D ≤ 기준), 만료(D &lt; 0). 출고 시 FIFO 참고.</span>
+                <span style="font-size:12px; opacity:.75;">※ 임박(D ≤ 기준), 당일(D‑day), 만료(D &lt; 0 → D+), 출고 시 FIFO 참고.</span>
             </div>
 			
 			<!-- 지표 -->
@@ -265,206 +215,252 @@
 
 	
 	<script>
-        /* ===== Mock 데이터 (뷰 전용) ===== */
-        const realtimeData = [
-            { loc:'A-01', name:'바닐라 시럽',       code:'SYR-001', qty:42,  unit:'BOX', locType:'Picking', manDate:'2025-02-20', expDate:'2025-08-20', lotNo:'LOT-SYR-001-20250220-01' },
-            { loc:'A-02', name:'카라멜 시럽',       code:'SYR-002', qty:6,   unit:'BOX', locType:'Picking', manDate:'2025-01-15', expDate:'2025-08-05', lotNo:'LOT-SYR-002-20250115-01' },
-            { loc:'B-01', name:'원두(하우스블렌드)', code:'BEAN-001', qty:0,  unit:'BOX', locType:'Pallet',  manDate:'2024-12-01', expDate:'2025-08-01', lotNo:'LOT-BEAN-001-20241201-01' },
-            { loc:'C-03', name:'아이스컵 16oz',     code:'CUP-016',  qty:180, unit:'BOX', locType:'Picking', manDate:'2026-01-10', expDate:'2026-06-01', lotNo:'LOT-CUP-016-20260110-01' }
-        ];
-        const inboundByLot = {
-            "LOT-SYR-001-20250220-01": { itemCode:"SYR-001", lotNo:"LOT-SYR-001-20250220-01", mfgDate:"2025-02-20", expDate:"2025-08-20", unit:"BOX", qtyInbound:60,  supplier:"케아누식품" },
-            "LOT-SYR-002-20250115-01": { itemCode:"SYR-002", lotNo:"LOT-SYR-002-20250115-01", mfgDate:"2025-01-15", expDate:"2025-08-05", unit:"BOX", qtyInbound:12,  supplier:"케아누식품" },
-            "LOT-BEAN-001-20241201-01": { itemCode:"BEAN-001", lotNo:"LOT-BEAN-001-20241201-01", mfgDate:"2024-12-01", expDate:"2025-08-01", unit:"BOX", qtyInbound:10, supplier:"부산로스터리" },
-            "LOT-CUP-016-20260110-01": { itemCode:"CUP-016", lotNo:"LOT-CUP-016-20260110-01", mfgDate:"2026-01-10", expDate:"2026-06-01", unit:"BOX", qtyInbound:200, supplier:"패키지코리아" }
-        };
-        const locationsByLot = {
-            "LOT-SYR-001-20250220-01": [ {loc:"A-01", qty:42},  {loc:"A-02", qty:6} ],
-            "LOT-SYR-002-20250115-01": [ {loc:"A-02", qty:6} ],
-            "LOT-BEAN-001-20241201-01":[ {loc:"B-01", qty:0} ],
-            "LOT-CUP-016-20260110-01": [ {loc:"C-01", qty:20}, {loc:"C-03", qty:180} ]
-        };
-
-        /* [추가] 출고/이동/폐기 로그(Mock) — 실제에선 WMS 로그 테이블에서 조회 */
-        const movementLogs = {
-            // type: 'OUT'(출고) | 'MOVE'(이동) | 'DISPOSE'(폐기)
-            "LOT-SYR-001-20250220-01": [
-                { type:'MOVE',   qty:6,  when:'2025-03-03 09:10', user:'김담당',  from:'A-01', to:'A-02', memo:'피킹영역 보강' }
-            ],
-            "LOT-SYR-002-20250115-01": [
-                { type:'OUT',    qty:6,  when:'2025-04-01 10:21', user:'이피커',  from:'A-02', to:'출고', memo:'SO-240401-001' }
-            ],
-            "LOT-BEAN-001-20241201-01": [
-                { type:'OUT',    qty:10, when:'2025-02-15 15:32', user:'박피커',  from:'B-01', to:'출고', memo:'SO-250215-077' }
-            ],
-            "LOT-CUP-016-20260110-01": [
-                { type:'MOVE',   qty:20, when:'2026-02-01 14:05', user:'최담당',  from:'C-01', to:'C-03', memo:'집중배치' }
-            ]
-        };
-
-        /* ===== 유틸 ===== */
-        function diffDaysFromToday(dateStr) {
-            const today = new Date();
-            const base  = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-            const d     = new Date(dateStr + 'T00:00:00');
-            return Math.ceil((d.getTime() - base.getTime()) / (1000 * 60 * 60 * 24));
-        }
-        function makeStatusAndDday(expDate, threshold) {
-            const d = diffDaysFromToday(expDate);
-            let status    = 'OK';
-            let labelHtml = '<span class="status-label normal">정상</span>';
-            let ddayHtml  = '<span class="dday-badge">D-' + d + '</span>';
-            if (d < 0) { status='EXPIRED'; labelHtml='<span class="status-label expired">만료</span>'; ddayHtml='<span class="dday-badge dday-danger">D-'+Math.abs(d)+'</span>'; }
-            else if (d <= threshold) { status='WARN'; labelHtml='<span class="status-label imminent">임박</span>'; ddayHtml='<span class="dday-badge dday-warn">D-'+d+'</span>'; }
-            return { status, labelHtml, ddayHtml, d };
-        }
-
-        /* ===== 테이블 렌더 ===== */
-        function renderTable(opts = {}) {
-            const tbody = document.getElementById('tbodyRealtime');
-            tbody.innerHTML = '';
-            const showAll      = !!opts.showAll;
-            const kwLoc        = showAll ? '' : document.getElementById('locSearch').value.trim().toLowerCase();
-            const kwProd       = showAll ? '' : document.getElementById('prodSearch').value.trim().toLowerCase();
-            const type         = showAll ? '' : document.getElementById('locType').value;
-            const threshold    = Number(document.getElementById('threshold').value || 7);
-            const statusFilter = document.getElementById('statusFilter').value || 'ALL';
-
-            let data = realtimeData.filter(r => {
-                const ok1 = !kwLoc || r.loc.toLowerCase().includes(kwLoc);
-                const ok2 = !kwProd || r.name.toLowerCase().includes(kwProd) || r.code.toLowerCase().includes(kwProd);
-                const ok3 = !type  || r.locType === type;
-                return ok1 && ok2 && ok3;
-            });
-            if (opts.sortExpAsc) data = data.slice().sort((a,b)=> new Date(a.expDate) - new Date(b.expDate));
-
-            let totalQty = 0;
-            const skuSet = new Set();
-
-            data.forEach(r => {
-                const { status, labelHtml, ddayHtml } = makeStatusAndDday(r.expDate, threshold);
-                if (statusFilter !== 'ALL' && status !== statusFilter) return;
-
-                totalQty += r.qty;
-                skuSet.add(r.code);
-
-                const tr = document.createElement('tr');
-                tr.setAttribute('data-lot', r.lotNo);
-                tr.innerHTML =
-                    '<td>' + r.loc + '</td>' +
-                    '<td>' + r.name + '</td>' +
-                    '<td>' + r.code + '</td>' +
-                    '<td>' + r.qty + '</td>' +
-                    '<td>' + r.unit + '</td>' +
-                    '<td>' + r.locType + '</td>' +
-                    '<td>' + r.manDate + '</td>' +
-                    '<td>' + r.expDate + '</td>' +
-                    '<td>' + ddayHtml + '</td>' +
-                    '<td>' + labelHtml + '</td>';
-                tbody.appendChild(tr);
-            });
-
-            document.getElementById('kpiSku').textContent = skuSet.size;
-            document.getElementById('kpiQty').textContent = totalQty.toLocaleString('ko-KR');
-        }
-
-        /* ===== 모달 ===== */
-        $('#tbodyRealtime').on('click', 'tr', function () {
-            const lotNo = $(this).data('lot');
-            if (!lotNo) return;
-            openLotModal(lotNo);
-        });
-
-        function openLotModal(lotNo) {
-            console.log('[VIEW LOG] action=SEARCH, lot=', lotNo, 'at', new Date().toLocaleString('ko-KR'));
-
-            const mi   = inboundByLot[lotNo] || {};
-            const locs = locationsByLot[lotNo] || [];
-            const unit = mi.unit || 'BOX';
-
-            /* 좌측: 기본 + 비교 값 */
-            $('#miItem').text(mi.itemCode || '-');
-            $('#miLot').text(mi.lotNo || lotNo || '-');
-            $('#miMfg').text(mi.mfgDate || '-');
-            $('#miExp').text(mi.expDate || '-');
-            $('#miUnit').text(unit);
-            $('#miSupplier').text(mi.supplier || '-');
-
-            /* 우측: 로케이션 분포 */
-            const $box = $('#locList').empty();
-            let sum = 0;
-            if (locs.length === 0) {
-                $box.append('<div class="row"><span>데이터 없음</span><b>-</b></div>');
-            } else {
-                locs.forEach(x => {
-                    sum += Number(x.qty) || 0;
-                    $box.append('<div class="row"><span>' + x.loc + '</span><b>' + x.qty + ' ' + unit + '</b></div>');
-                });
-                $box.append('<div class="row"><span><b>합계</b></span><b>' + sum + ' ' + unit + '</b></div>');
-            }
-
-            /* 좌측: 입고/현재/차이 세팅 */
-            const inbound = Number(mi.qtyInbound) || 0;
-            const diff = sum - inbound;
-            $('#miInbound').text(inbound + ' ' + unit);
-            $('#miCurrent').text(sum + ' ' + unit);
-            if (diff === 0) $('#miDelta').html('<span class="status-label normal">일치</span>');
-            else if (diff < 0) $('#miDelta').html('<span class="status-label expired">부족 ' + Math.abs(diff) + ' ' + unit + '</span>');
-            else $('#miDelta').html('<span class="status-label imminent">초과 +' + diff + ' ' + unit + '</span>');
-
-            /* [추가] 출고/이동 로그 렌더 */
-            const logs = movementLogs[lotNo] || [];
-            const $log = $('#moveLog').empty();
-
-            if (logs.length === 0) {
-                $log.append('<div class="logline"><div class="logleft">로그 없음</div><div class="logright">-</div></div>');
-            } else {
-                logs.forEach(ev => {
-                    const kind = ev.type === 'OUT' ? '출고'
-                               : ev.type === 'MOVE' ? '이동'
-                               : ev.type === 'DISPOSE' ? '폐기' : ev.type;
-                    const badgeClass = ev.type === 'OUT' ? 'badge-out'
-                                      : ev.type === 'MOVE' ? 'badge-move' : 'badge-dispose';
-                    const route = ev.type === 'MOVE'
-                        ? (ev.from || '-') + ' → ' + (ev.to || '-')
-                        : (ev.from || '-') + ' → ' + kind;
-
-                    $log.append(
-                        '<div class="logline">' +
-                            '<div class="logleft">' +
-                                '<span class="badge ' + badgeClass + '">' + kind + '</span>' +
-                                '<span style="opacity:.85;">' + (ev.when || '-') + '</span>' +
-                                '<span style="opacity:.7;">' + (ev.user || '-') + '</span>' +
-                            '</div>' +
-                            '<div class="logright">' +
-                                '<div><b>' + (ev.qty || 0) + ' ' + unit + '</b></div>' +
-                                '<div style="opacity:.8;">' + route + '</div>' +
-                                (ev.memo ? '<div style="opacity:.6;">' + ev.memo + '</div>' : '') +
-                            '</div>' +
-                        '</div>'
-                    );
-                });
-            }
-
-            $('#lotModal').addClass('on');
-        }
-
-        function closeLotModal() { $('#lotModal').removeClass('on'); }
-
-        /* ===== 초기 렌더 ===== */
-        document.addEventListener('DOMContentLoaded', function () {
-            $('#btnSearch').on('click', () => renderTable());
-            $('#btnClear').on('click', () => {
-                $('#locSearch').val(''); $('#prodSearch').val(''); $('#locType').val('');
-                $('#threshold').val(7); $('#statusFilter').val('ALL');
-                renderTable(true);
-            });
-            $('#threshold').on('change', () => renderTable());
-            $('#statusFilter').on('change', () => renderTable());
-            $('#btnSortExpAsc').on('click', () => renderTable({ sortExpAsc: true }));
-            renderTable(true);
-        });
-    </script>
+		/* ===== Mock 데이터 (뷰 전용) ===== */
+		const realtimeData = [
+		  { loc: 'A-01', name: '바닐라 시럽',       code: 'SYR-001', qty: 42,  unit: 'BOX', locType: 'Picking', manDate: '2025-02-20', expDate: '2025-08-20', lotNo: 'LOT-SYR-001-20250220-01' },
+		  { loc: 'A-02', name: '카라멜 시럽',       code: 'SYR-002', qty: 6,   unit: 'BOX', locType: 'Picking', manDate: '2025-01-15', expDate: '2025-08-05', lotNo: 'LOT-SYR-002-20250115-01' },
+		  { loc: 'B-01', name: '원두(하우스블렌드)', code: 'BEAN-001', qty: 0,  unit: 'BOX', locType: 'Pallet',  manDate: '2024-12-01', expDate: '2025-08-01', lotNo: 'LOT-BEAN-001-20241201-01' },
+		  { loc: 'C-03', name: '아이스컵 16oz',     code: 'CUP-016',  qty: 180, unit: 'BOX', locType: 'Picking', manDate: '2026-01-10', expDate: '2026-06-01', lotNo: 'LOT-CUP-016-20260110-01' }
+		];
+		
+		const inboundByLot = {
+		  'LOT-SYR-001-20250220-01': { itemCode: 'SYR-001', lotNo: 'LOT-SYR-001-20250220-01', mfgDate: '2025-02-20', expDate: '2025-08-20', unit: 'BOX', qtyInbound: 60,  supplier: '케아누식품' },
+		  'LOT-SYR-002-20250115-01': { itemCode: 'SYR-002', lotNo: 'LOT-SYR-002-20250115-01', mfgDate: '2025-01-15', expDate: '2025-08-05', unit: 'BOX', qtyInbound: 12,  supplier: '케아누식품' },
+		  'LOT-BEAN-001-20241201-01': { itemCode: 'BEAN-001', lotNo: 'LOT-BEAN-001-20241201-01', mfgDate: '2024-12-01', expDate: '2025-08-01', unit: 'BOX', qtyInbound: 10, supplier: '부산로스터리' },
+		  'LOT-CUP-016-20260110-01': { itemCode: 'CUP-016', lotNo: 'LOT-CUP-016-20260110-01', mfgDate: '2026-01-10', expDate: '2026-06-01', unit: 'BOX', qtyInbound: 200, supplier: '패키지코리아' }
+		};
+		
+		const locationsByLot = {
+		  'LOT-SYR-001-20250220-01': [{ loc: 'A-01', qty: 42 }, { loc: 'A-02', qty: 6 }],
+		  'LOT-SYR-002-20250115-01': [{ loc: 'A-02', qty: 6 }],
+		  'LOT-BEAN-001-20241201-01': [{ loc: 'B-01', qty: 0 }],
+		  'LOT-CUP-016-20260110-01': [{ loc: 'C-01', qty: 20 }, { loc: 'C-03', qty: 180 }]
+		};
+		
+		/* [추가] 출고/이동/폐기 로그(Mock) — 실제에선 WMS 로그 테이블에서 조회 */
+		const movementLogs = {
+		  'LOT-SYR-001-20250220-01': [
+		    { type: 'MOVE', qty: 6, when: '2025-03-03 09:10', user: '김담당', from: 'A-01', to: 'A-02', memo: '피킹영역 보강' }
+		  ],
+		  'LOT-SYR-002-20250115-01': [
+		    { type: 'OUT', qty: 6, when: '2025-04-01 10:21', user: '이피커', from: 'A-02', to: '출고', memo: 'SO-240401-001' }
+		  ],
+		  'LOT-BEAN-001-20241201-01': [
+		    { type: 'OUT', qty: 10, when: '2025-02-15 15:32', user: '박피커', from: 'B-01', to: '출고', memo: 'SO-250215-077' }
+		  ],
+		  'LOT-CUP-016-20260110-01': [
+		    { type: 'MOVE', qty: 20, when: '2026-02-01 14:05', user: '최담당', from: 'C-01', to: 'C-03', memo: '집중배치' }
+		  ]
+		};
+		
+		/* ===== 유틸 ===== */
+		function diffDaysFromToday(dateStr) {
+		  const today = new Date();
+		  const base = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+		  const d = new Date(dateStr + 'T00:00:00');
+		  return Math.ceil((d.getTime() - base.getTime()) / (1000 * 60 * 60 * 24));
+		}
+		
+		/* [추가] D-Day 표기 규칙: 남음=D-7, 당일=D-day, 경과=D+3 */
+		function formatDday(d) {
+		  if (d < 0) return 'D+' + Math.abs(d);
+		  if (d === 0) return 'D-day';
+		  return 'D-' + d;
+		}
+		
+		/* [변경] 상태/라벨 + D-day 뱃지 생성 로직 */
+		function makeStatusAndDday(expDate, threshold) {
+		  const d = diffDaysFromToday(expDate);
+		
+		  let status = 'OK';
+		  let labelHtml = '<span class="status-label normal">정상</span>';
+		
+		  // D-day 텍스트(D-/D-day/D+)
+		  const ddText = formatDday(d);
+		
+		  // 색상/상태 결정
+		  let ddayClass = '';
+		  if (d < 0) {
+		    status = 'EXPIRED';
+		    labelHtml = '<span class="status-label expired">만료</span>';
+		    ddayClass = 'dday-danger';
+		  } else if (d === 0 || d <= threshold) {
+		    status = 'WARN';
+		    labelHtml = '<span class="status-label imminent">임박</span>';
+		    ddayClass = 'dday-warn';
+		  }
+		
+		  const ddayHtml = '<span class="dday-badge ' + ddayClass + '">' + ddText + '</span>';
+		  return { status, labelHtml, ddayHtml, d };
+		}
+		
+		/* ===== 테이블 렌더 ===== */
+		function renderTable(opts = {}) {
+		  const tbody = document.getElementById('tbodyRealtime');
+		  tbody.innerHTML = '';
+		
+		  const showAll = !!opts.showAll;
+		  const kwLoc = showAll ? '' : document.getElementById('locSearch').value.trim().toLowerCase();
+		  const kwProd = showAll ? '' : document.getElementById('prodSearch').value.trim().toLowerCase();
+		  const type = showAll ? '' : document.getElementById('locType').value;
+		  const threshold = Number(document.getElementById('threshold').value || 7);
+		  const statusFilter = document.getElementById('statusFilter').value || 'ALL';
+		
+		  let data = realtimeData.filter(r => {
+		    const ok1 = !kwLoc || r.loc.toLowerCase().includes(kwLoc);
+		    const ok2 = !kwProd || r.name.toLowerCase().includes(kwProd) || r.code.toLowerCase().includes(kwProd);
+		    const ok3 = !type || r.locType === type;
+		    return ok1 && ok2 && ok3;
+		  });
+		
+		  if (opts.sortExpAsc) {
+		    data = data.slice().sort((a, b) => new Date(a.expDate) - new Date(b.expDate));
+		  }
+		
+		  let totalQty = 0;
+		  const skuSet = new Set();
+		
+		  data.forEach(r => {
+		    const { status, labelHtml, ddayHtml } = makeStatusAndDday(r.expDate, threshold);
+		    if (statusFilter !== 'ALL' && status !== statusFilter) return;
+		
+		    totalQty += r.qty;
+		    skuSet.add(r.code);
+		
+		    const tr = document.createElement('tr');
+		    tr.setAttribute('data-lot', r.lotNo);
+		    tr.innerHTML =
+		      '<td>' + r.loc + '</td>' +
+		      '<td>' + r.name + '</td>' +
+		      '<td>' + r.code + '</td>' +
+		      '<td>' + r.qty + '</td>' +
+		      '<td>' + r.unit + '</td>' +
+		      '<td>' + r.locType + '</td>' +
+		      '<td>' + r.manDate + '</td>' +
+		      '<td>' + r.expDate + '</td>' +
+		      '<td>' + ddayHtml + '</td>' +
+		      '<td>' + labelHtml + '</td>';
+		
+		    tbody.appendChild(tr);
+		  });
+		
+		  document.getElementById('kpiSku').textContent = skuSet.size;
+		  document.getElementById('kpiQty').textContent = totalQty.toLocaleString('ko-KR');
+		}
+		
+		/* ===== 모달 ===== */
+		$('#tbodyRealtime').on('click', 'tr', function () {
+		  const lotNo = $(this).data('lot');
+		  if (!lotNo) return;
+		  openLotModal(lotNo);
+		});
+		
+		function openLotModal(lotNo) {
+		  console.log('[VIEW LOG] action=SEARCH, lot=', lotNo, 'at', new Date().toLocaleString('ko-KR'));
+		
+		  const mi = inboundByLot[lotNo] || {};
+		  const locs = locationsByLot[lotNo] || [];
+		  const unit = mi.unit || 'BOX';
+		
+		  // 좌측: 기본 + 비교 값
+		  $('#miItem').text(mi.itemCode || '-');
+		  $('#miLot').text(mi.lotNo || lotNo || '-');
+		  $('#miMfg').text(mi.mfgDate || '-');
+		  $('#miExp').text(mi.expDate || '-');
+		  $('#miUnit').text(unit);
+		  $('#miSupplier').text(mi.supplier || '-');
+		
+		  // 우측: 로케이션 분포
+		  const $box = $('#locList').empty();
+		  let sum = 0;
+		
+		  if (locs.length === 0) {
+		    $box.append('<div class="row"><span>데이터 없음</span><b>-</b></div>');
+		  } else {
+		    locs.forEach(x => {
+		      sum += Number(x.qty) || 0;
+		      $box.append('<div class="row"><span>' + x.loc + '</span><b>' + x.qty + ' ' + unit + '</b></div>');
+		    });
+		    $box.append('<div class="row"><span><b>합계</b></span><b>' + sum + ' ' + unit + '</b></div>');
+		  }
+		
+		  // 좌측: 입고/현재/차이
+		  const inbound = Number(mi.qtyInbound) || 0;
+		  const diff = sum - inbound;
+		
+		  $('#miInbound').text(inbound + ' ' + unit);
+		  $('#miCurrent').text(sum + ' ' + unit);
+		
+		  if (diff === 0) {
+		    $('#miDelta').html('<span class="status-label normal">일치</span>');
+		  } else if (diff < 0) {
+		    $('#miDelta').html('<span class="status-label expired">부족 ' + Math.abs(diff) + ' ' + unit + '</span>');
+		  } else {
+		    $('#miDelta').html('<span class="status-label imminent">초과 +' + diff + ' ' + unit + '</span>');
+		  }
+		
+		  // 출고/이동 로그
+		  const logs = movementLogs[lotNo] || [];
+		  const $log = $('#moveLog').empty();
+		
+		  if (logs.length === 0) {
+		    $log.append('<div class="logline"><div class="logleft">로그 없음</div><div class="logright">-</div></div>');
+		  } else {
+		    logs.forEach(ev => {
+		      const kind =
+		        ev.type === 'OUT' ? '출고' :
+		        ev.type === 'MOVE' ? '이동' :
+		        ev.type === 'DISPOSE' ? '폐기' : ev.type;
+		
+		      const badgeClass =
+		        ev.type === 'OUT' ? 'badge-out' :
+		        ev.type === 'MOVE' ? 'badge-move' : 'badge-dispose';
+		
+		      const route = ev.type === 'MOVE'
+		        ? (ev.from || '-') + ' → ' + (ev.to || '-')
+		        : (ev.from || '-') + ' → ' + kind;
+		
+		      $log.append(
+		        '<div class="logline">' +
+		          '<div class="logleft">' +
+		            '<span class="badge ' + badgeClass + '">' + kind + '</span>' +
+		            '<span style="opacity:.85;">' + (ev.when || '-') + '</span>' +
+		            '<span style="opacity:.7;">' + (ev.user || '-') + '</span>' +
+		          '</div>' +
+		          '<div class="logright">' +
+		            '<div><b>' + (ev.qty || 0) + ' ' + unit + '</b></div>' +
+		            '<div style="opacity:.8;">' + route + '</div>' +
+		            (ev.memo ? '<div style="opacity:.6;">' + ev.memo + '</div>' : '') +
+		          '</div>' +
+		        '</div>'
+		      );
+		    });
+		  }
+		
+		  $('#lotModal').addClass('on');
+		}
+		
+		function closeLotModal() {
+		  $('#lotModal').removeClass('on');
+		}
+		
+		/* ===== 초기 렌더 ===== */
+		document.addEventListener('DOMContentLoaded', function () {
+		  $('#btnSearch').on('click', () => renderTable());
+		  $('#btnClear').on('click', () => {
+		    $('#locSearch').val('');
+		    $('#prodSearch').val('');
+		    $('#locType').val('');
+		    $('#threshold').val(7);
+		    $('#statusFilter').val('ALL');
+		    renderTable(true);
+		  });
+		  $('#threshold').on('change', () => renderTable());
+		  $('#statusFilter').on('change', () => renderTable());
+		  $('#btnSortExpAsc').on('click', () => renderTable({ sortExpAsc: true }));
+		  renderTable(true);
+		});
+	</script>
 	
 </body>
 </html>
