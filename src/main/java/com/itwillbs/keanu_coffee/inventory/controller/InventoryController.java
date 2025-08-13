@@ -16,8 +16,13 @@ public class InventoryController {
 	public String inventoryDashboard() {
 		return "inventory/inventoryDashboard";
 	}
-  
-  
+	
+	// 재고 조회 / 검수 
+	@GetMapping("/stockCheck")
+	public String stockCheckForm() {
+		return "inventory/stockCheck";
+	}
+   
 	@GetMapping("/productHistory")
 	public String productHistory() {
 		
@@ -48,6 +53,7 @@ public class InventoryController {
 		
 		return "inventory/inventory_to_move";
 	}
+
 
 
 }
