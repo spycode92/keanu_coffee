@@ -43,7 +43,7 @@
     --secondary: oklch(0.269 0 0);
     --secondary-foreground: oklch(0.985 0 0);
     --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.36 0.01 0);
+    --muted-foreground: rgb(192, 192, 192);
     --accent: oklch(0.269 0 0);
     --accent-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.396 0.141 25.723);
@@ -527,7 +527,7 @@ body {
 }
 
 .sidebar-collapsed {
-  width: 56px;
+  width: 20px;
 }
 
 .sidebar-collapsed ul li span,
@@ -623,6 +623,12 @@ body {
   font-size: 0.85em; /* 상위보다 작은 글씨 */
   color: var(--muted-foreground, #555);
   transition: background 0.15s;
+}
+
+.submenu a.active {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: var(--font-weight-medium);
 }
 
 
