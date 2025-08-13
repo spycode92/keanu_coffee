@@ -30,4 +30,10 @@ public class TransportController {
 	public String dispatcheList() {
 		return "/transport/dispatche";
 	}
+	
+	// 기사 마이페이지
+	@GetMapping("/mypage")
+	public String mypage() {
+		return "/transport/mypage";
+	}
 }
