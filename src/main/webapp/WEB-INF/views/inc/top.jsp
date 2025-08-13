@@ -37,7 +37,6 @@
 			<li>
 				<a href="/inventory"><span>재고 현황</span></a>
 			    <ul class="submenu">
-			        <li><a href="/inventory/locationType">로케이션 지정</a></li>
 			        <li><a href="/inventory/stockCheck">재고 조회/검수</a></li>
 			    </ul>
 			</li>

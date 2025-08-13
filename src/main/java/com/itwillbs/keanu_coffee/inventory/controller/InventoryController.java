@@ -16,4 +16,10 @@ public class InventoryController {
 	public String inventoryDashboard() {
 		return "inventory/inventoryDashboard";
 	}
+	
+	// 재고 조회 / 검수 
+	@GetMapping("/stockCheck")
+	public String stockCheckForm() {
+		return "inventory/stockCheck";
+	}
 }
