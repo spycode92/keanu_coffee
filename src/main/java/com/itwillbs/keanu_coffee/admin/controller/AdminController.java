@@ -34,6 +34,10 @@ public class AdminController {
 	public String EmployeeManagement() {
 		return "/admin/employee_management/employeeManagement";
 	}
+	@GetMapping("/moveInventory")
+	public String moveInventory() {
+		return "/admin/employee_management/move_inventory";
+	}
 	
 	
 }
