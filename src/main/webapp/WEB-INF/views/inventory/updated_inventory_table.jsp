@@ -14,6 +14,11 @@
 		width: 1200px;
 		margin: 0 auto;
 	}
+	#paging {
+	
+		width: 400px;
+		margin: 50px auto;
+	}
 </style>
 </head>
 <body>
@@ -27,7 +32,7 @@
     <input class="btn btn-sm btn-primary"  type="submit"><br>
   </form><br>
 		
-<!-- 		<div class="table-responsive"> -->
+		<div class="table-responsive">
 		<table class="table">
   <thead>
     <tr>
@@ -112,6 +117,17 @@
   </tbody>
 </table>
 	  </div>
+	  <div id="paging" >
+        <div class="d-flex gap-2">
+          <a href="#" class="btn btn-secondary btn-sm">« 처음</a>
+          <a href="#" class="btn btn-secondary btn-sm">‹ 이전</a>
+          <a href="#" class="btn btn-primary btn-sm">1</a>
+          <a href="#" class="btn btn-secondary btn-sm">2</a>
+          <a href="#" class="btn btn-secondary btn-sm">3</a>
+          <a href="#" class="btn btn-secondary btn-sm">다음 ›</a>
+          <a href="#" class="btn btn-secondary btn-sm">끝 »</a>
+        </div>
+      </div>
 	</section>
 </body>
 </html>

@@ -14,18 +14,17 @@
 		width: 1200px;
 		margin: 0 auto;
 	}
+	#paging {
+	
+		width: 400px;
+		margin: 50px auto;
+	}
 </style>
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 	<section>
-		<h1>제품 위치 기록</h1>
-		
-  <form id="searchForm" action="inventory/productHistorySearch" method="get">
-    <label class="form-label" for="searchInput">Product Name:</label>
-    <input class="form-control" type="text" id="searchInput" placeholder="제품 이름이나 아이디를 입력하세요..." >
-    <input class="btn btn-sm btn-primary" type="submit"><br>
-  </form><br>
+		<h1>이동할 재고</h1><br>
 		
 		<div class="table-responsive">
 		<table class="table">
@@ -33,9 +32,10 @@
 	      <tr>
 	      	<th>재고 ID</th>
 	        <th>재고 이름</th>
-	        <th>위치 ID</th>
-	        <th>타임스탬프</th>
-	        <th>직원 ID</th>
+	        <th>현재 위치</th>
+	        <th>목표 위치</th>
+	        <th>재고 수량</th>
+	       
 	      </tr>
 	    </thead>
 	    <tbody>
@@ -43,40 +43,52 @@
 	        <td>202</td>
 	        <td>Ethiopian Coffee</td>
 	        <td>LOC101</td>
-	        <td>2025-08-01 08:15</td>
-	        <td>emp1111</td>
+	        <td>LOC201</td>
+	     	<td>5</td>
 	      </tr>
 	      <tr>
-	        <td>202</td>
-	        <td>Ethiopian Coffee</td>
+	        <td>203</td>
+	        <td>cups</td>
 	        <td>LOC102</td>
-	        <td>2025-08-03 14:30</td>
-	        <td>emp1111</td>
+	        <td>LOC202</td>
+			<td>7</td>
 	      </tr>
 	      <tr>
-	        <td>202</td>
-	        <td>Ethiopian Coffee</td>
+	        <td>204</td>
+	        <td>caramel</td>
 	        <td>LOC103</td>
-	        <td>2025-08-05 09:45</td>
-	        <td>emp1111</td>
+	        <td>LOC203</td>
+	   		<td>3</td>
 	      </tr>
 	      <tr>
-	        <td>202</td>
-	        <td>Ethiopian Coffee</td>
+	        <td>205</td>
+	        <td>straws</td>
 	        <td>LOC104</td>
-	        <td>2025-08-07 16:20</td>
-	        <td>emp1111</td>
+	        <td>LOC204</td>
+	   		<td>6</td>
 	      </tr>
 	      <tr>
-	        <td>202</td>
-	        <td>Ethiopian Coffee</td>
+	        <td>206</td>
+	        <td>napkins</td>
 	        <td>LOC105</td>
-	        <td>2025-08-10 11:00</td>
-	        <td>emp1111</td>
+	        <td>LOC205</td>
+	        <td>4</td>
 	      </tr>
 	    </tbody>
 	  </table>
 	  </div>
+	  <div id="paging" class="d-flex justify-content-between align-items-center p-3">
+        <div class="d-flex gap-2">
+          <a href="#" class="btn btn-secondary btn-sm">« 처음</a>
+          <a href="#" class="btn btn-secondary btn-sm">‹ 이전</a>
+          <a href="#" class="btn btn-primary btn-sm">1</a>
+          <a href="#" class="btn btn-secondary btn-sm">2</a>
+          <a href="#" class="btn btn-secondary btn-sm">3</a>
+          <a href="#" class="btn btn-secondary btn-sm">다음 ›</a>
+          <a href="#" class="btn btn-secondary btn-sm">끝 »</a>
+        </div>
+      </div>
+	  
 	</section>
 </body>
 </html>
