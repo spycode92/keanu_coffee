@@ -95,6 +95,18 @@
 			    </tr>
 			</table>
 		</form>
+		<div class="d-flex justify-content-between align-items-center p-3">
+        <div class="text-muted">페이지 1 / 13</div>
+        <div class="d-flex gap-2">
+          <a href="#" class="btn btn-secondary btn-sm">« 처음</a>
+          <a href="#" class="btn btn-secondary btn-sm">‹ 이전</a>
+          <a href="#" class="btn btn-primary btn-sm">1</a>
+          <a href="#" class="btn btn-secondary btn-sm">2</a>
+          <a href="#" class="btn btn-secondary btn-sm">3</a>
+          <a href="#" class="btn btn-secondary btn-sm">다음 ›</a>
+          <a href="#" class="btn btn-secondary btn-sm">끝 »</a>
+        </div>
+      </div>
 	</section>
 </body>
 </html>
