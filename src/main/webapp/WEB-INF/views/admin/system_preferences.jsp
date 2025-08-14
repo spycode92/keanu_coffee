@@ -95,10 +95,10 @@
             <div>⊕ ⊖</div>
           </div>
           <div class="card-body">
-            <p>개발팀</p>
-            <p>영업팀</p>
-            <p>물류팀</p>
-            <p>인사팀</p>
+            <p>입고팀</p>
+            <p>출고팀</p>
+            <p>운송팀</p>
+            <p>재고팀</p>
           </div>
         </div>
       </div>
@@ -118,23 +118,53 @@
       </div>
     </div>
 
-    <!-- 거래처 관리 -->
-    <h4 class="mt-4 mb-3"><i class="fas fa-building"></i> 거래처 관리</h4>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header d-flex justify-content-between">
-            <span>거래처등록</span>
-            <div>⊕ ⊖</div>
-          </div>
-          <div class="card-body">
-            <p>거래처 A</p>
-            <p>거래처 B</p>
-            <p>거래처 C</p>
-          </div>
+<h4 class="mt-4 mb-3"><i class="fas fa-building"></i> 거래처 관리</h4>
+<div class="row">
+    <!-- 왼쪽: 거래처 목록 -->
+    <div class="col-md-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span><b>거래처 목록</b></span>
+            <button id="addClientBtn" class="btn btn-sm btn-primary">+ 추가</button>
         </div>
-      </div>
+        <div class="list-group" id="clientList">
+            <button class="list-group-item list-group-item-action active" data-client="client1">
+                거래처 A <span class="text-danger float-right del-client">✖</span>
+            </button>
+            <button class="list-group-item list-group-item-action" data-client="client2">
+                거래처 B <span class="text-danger float-right del-client">✖</span>
+            </button>
+            <button class="list-group-item list-group-item-action" data-client="client3">
+                거래처 C <span class="text-danger float-right del-client">✖</span>
+            </button>
+        </div>
     </div>
+
+    <!-- 오른쪽: 선택한 거래처 상세 -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header" id="clientTitle">거래처 A 정보</div>
+            <div class="card-body">
+                <form id="clientForm">
+                    <div class="form-group">
+                        <label>담당자</label>
+                        <input type="text" class="form-control" id="managerName">
+                    </div>
+                    <div class="form-group">
+                        <label>주소</label>
+                        <input type="text" class="form-control" id="clientAddress">
+                    </div>
+                    <div class="form-group">
+                        <label>전화번호</label>
+                        <input type="text" class="form-control" id="clientPhone">
+                    </div>
+                    <div class="text-right">
+                        <button type="button" id="saveClient" class="btn btn-success">저장</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <h4 class="mt-5 mb-3"><i class="fas fa-cog"></i> 배송 경로 설정</h4>
 <div class="row">
