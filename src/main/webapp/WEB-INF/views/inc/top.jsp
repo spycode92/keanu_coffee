@@ -198,9 +198,17 @@
 			</c:if>
 			<li>
 				<a href="/inbound/main"><span>입고 관리</span></a>
+				<ul class="submenu">
+			        <li><a href="/inbound/main">대시보드</a></li>
+			        <li><a href="/inbound/management">입고조회</a></li>
+			    </ul>
 			</li>
 			<li>
 				<a href="/outbound"><span>출고 관리</span></a>
+				<ul class="submenu">
+			        <li><a href="/outbound/main">대시보드</a></li>
+			        <li><a href="/outbound/outboundManagement">출고조회</a></li>
+			    </ul>
 			</li>
 			<li>
 				<a href="/inventory"><span>재고 현황</span></a>
