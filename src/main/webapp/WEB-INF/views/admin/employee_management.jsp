@@ -168,11 +168,18 @@
 		
 		$("#addEmployee").click(function(e){
 		    e.stopPropagation(); // tr 클릭 이벤트로 전파 방지
-		    window.open(
+		    windowPopup = window.open(
 		        "/admin/employeeManagement/addEmployeeForm",
 		        "addEmployeePopup",
-		        "width=500,height=500,top=100,left=100"
+		        //"width=500px,height=1000px,resizable=yes,scrollbars=yes"
+		        "width=500,height=1000,resizable=yes"
+		        
 		    );
+		    if (windowPopup) {
+		    	  // 일부 브라우저에서 초기 크기 보정 시도 (정책상 무시될 수 있음)
+		    	  try { windowPopup.resizeTo(500, 700); } catch (e) {}
+		    	  windowPopup.focus();
+	    	}
 		});
 		
 	});

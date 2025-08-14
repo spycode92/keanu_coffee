@@ -80,7 +80,9 @@ public class FileUtils {
 		String destinationPath = realPath + "/" + subDir;
 
 		List<FileDTO> fileList = new ArrayList<FileDTO>(); // 파일 정보들을 저장할 List 객체 생성
-		
+		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println(help.getIdx());
+		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
 		for(MultipartFile mFile : help.getFiles()) {
 			// 파일이 존재할 경우 실제 업로드 처리 및 BoardFileDTO 객체에 정보 저장
 			if(!mFile.isEmpty()) {

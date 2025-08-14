@@ -14,19 +14,23 @@ import lombok.Data;
 @Data
 public class EmployeeInfoDTO implements FileUploadHelpper{
 	private String empNo;          // 사번 (PK)
-    private String empId;          // 로그인 ID
+	private String empName;        // 이름
+	private String empGender;      // 성별
+	private String deptName;       // 부서명
+	private String teamName;
+	private String empPosition;    // 직급
+	private String empPhone;          // 전화번호
+	private String empEmail;          // 이메일
+	private String empId;          // 로그인 ID
     private String empPassword;    // 비밀번호
-    private String empName;        // 이름
-    private String deptName;       // 부서명
-    private String empPosition;    // 직급
     private Date hireDate;         // 입사일
-    private String phone;          // 전화번호
-    private String email;          // 이메일
-    private String address;        // 주소
-    private int salary;     // 급여
-    private String status;         // 재직 상태 ('재직','퇴사','휴직')
+    private String empStatus;         // 재직 상태 ('재직','퇴사','휴직')
     private Timestamp createdAt;   // 생성일
     private Timestamp updatedAt;   // 수정일
+    
+    //프로필사진 등록 확인 파라미터
+    private String profileImageAction;
+    private String deleteProfileImgFlag;
     
 	// 파일업로드
 	private MultipartFile[] files;

@@ -16,15 +16,20 @@
 	<insert id="insertEmployeeInfo">
 		INSERT INTO EMPLOYEE_INFO
 		VALUES(
-			#{empId}
+			#{empNo}
 			, #{empName}
-			, #{empEmail}
-			, #{empPhone}
+			, #{empGender}
+			, #{deptName}
+			, #{teamName}
 			, #{empPosition}
-			, #{empTeam}
-			, default
+			, #{empPhone}
+			, #{empEmail}
+			, #{empId}
 			, #{empPassword}
-			, now()
+			, #{hireDate}
+			, default
+			, default
+			, default
 		)
 	</insert>
 
