@@ -8,7 +8,7 @@
 	<!-- 단일 회원 정보 검색 -->
 	<select id="selectEmployeeInfo" resultType="EmployeeInfoDTO" >
 		SELECT *
-		FROM EMPLOYEE_INFO
+		FROM vw_employee_full_info
 		WHERE emp_id = #{empId}
 	</select>
 
