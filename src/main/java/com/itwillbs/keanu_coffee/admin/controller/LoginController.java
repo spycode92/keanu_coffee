@@ -34,7 +34,7 @@ public class LoginController {
 		}
 		
 		employee = employeeManagementService.getEmployeeInfo(employee);
-		FileDTO file = fileService.getFile(employee.getEmpNo(), "");
+		FileDTO file = fileService.getFile("employee_info", employee.getIdx());
 		
 		// 아이디 비밀번호 일치, 상태 = 재직
 		//로그인 성공시 아이디, 이름, 포지션 저장
@@ -42,12 +42,11 @@ public class LoginController {
 			
 			session.setAttribute("sId", employee.getEmpId());
 			session.setAttribute("sName", employee.getEmpName());
-			session.setAttribute("sPosition", employee.getEmpPosition());
+			session.setAttribute("sPosition", employee.getRoleIdx());
 		
 		// 프로필사진
 		if (file != null) {
-			
-		    session.setAttribute("sFid", file.getFileId());
+		    session.setAttribute("sFid", file.getIdx());
 		}
 		
 		//임시 세션만료시간 1일

@@ -80,18 +80,93 @@ const MobileMenuManager = {
     }
 };
 
+// 상단 프로필이미지 클릭(정보변경, 로그아웃, 다크모드 토글)팝오버
+const ProfileManager = {
+    init: function() {
+        this.profileBtn = document.getElementById('profile');
+        this.popover = document.getElementById('employeeInfo');
+        if (!this.profileBtn || !this.popover) {
+	        console.warn('Profile elements not found in DOM at init');
+	        return;
+    	}
+		 console.log('ProfileManager: 요소 모두 찾음, 이벤트 바인딩 시도');
+        this.bindEvents();
+    },
+    bindEvents: function() {
+        this.profileBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+			e.stopPropagation(); // 전파차단
+            this.togglePopover(); // 여기서 this는 ProfileManager 객체
+        });
+
+        // 바깥 클릭 시 팝오버 닫기
+        document.addEventListener('click', (e) => {
+            if (this.popover.classList.contains('show') &&
+                !this.popover.contains(e.target) &&
+                e.target !== this.profileBtn) {
+                this.closePopover();
+            }
+        });
+    },
+    togglePopover: function() {
+        const isShown = this.popover.classList.toggle('show');
+        this.popover.setAttribute('aria-hidden', !isShown);
+		console.log('Popover show 상태:', isShown); // show가 토글되는지도 찍어보자
+    },
+    closePopover: function() {
+        this.popover.classList.remove('show');
+        this.popover.setAttribute('aria-hidden', 'true');
+    }
+};
+
+//정보변경 모달창
+const InfoModalManager = {
+    init: function() {
+        this.modal = document.getElementById('change-info-modal');
+        this.openBtn = document.getElementById('open-info-modal');
+        this.closeBtn = document.getElementById('close-info-modal');
+        this.cancelBtn = document.getElementById('cancel-info-modal');
+        this.bindEvents();
+    },
+    bindEvents: function() {
+        if (!this.modal) return;
+		//?.chain구문버그 작동이상x
+        // 열기
+        this.openBtn?.addEventListener('click', () => this.open());
+        // 닫기 (X, 취소)
+        this.closeBtn?.addEventListener('click', () => this.close());
+        this.cancelBtn?.addEventListener('click', () => this.close());
+        // 배경 클릭 시 닫기
+        this.modal.addEventListener('click', (e) => {
+            if (e.target === this.modal) this.close();
+        });
+    },
+    open: function() {
+        this.modal.classList.add('open');
+    },
+    close: function() {
+        this.modal.classList.remove('open');
+    }
+};
 
 
-// 페이지 초기화
+
+
+
+
+// 페이지 초기화(DOMContentLoaded)
 document.addEventListener('DOMContentLoaded', function() {
     DarkModeManager.init();
     MobileMenuManager.init();
+	ProfileManager.init();
+	InfoModalManager.init();
     //사이드바토글
 	const toggleBtn = document.getElementById('sidebar-toggle');
 	const sidebar = document.getElementById('sidebar');
 	
 	//사이드바 토글
 	if (toggleBtn && sidebar) {
+		
 		toggleBtn.addEventListener('click', function() {
 			if (window.innerWidth <= 800) {
 				sidebar.classList.toggle('open'); // 모바일용
@@ -100,6 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		});
 		
+		// 모바일 화면 사이드바 바깥 클릭시 사이드바닫힘
 		document.addEventListener('click', function(e) {
 	        if (
 	            sidebar.classList.contains('open') &&

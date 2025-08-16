@@ -11,5 +11,12 @@ public interface EmployeeManagementMapper {
 
 	// 회원정보 검색
 	EmployeeInfoDTO selectEmployeeInfo(String empId);
+	
+	// 회원직책 NULL로 변경
+	void updateRoleToNull(Long roleIdx);
+	// 팀 NULL로 바꾸기
+	void updateTeamToNull(Long teamIdx);
+
+	void updateDeptTeamRoleToNull(Long departmentIdx);
 
 }

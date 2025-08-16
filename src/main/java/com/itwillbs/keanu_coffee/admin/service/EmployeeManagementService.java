@@ -35,8 +35,6 @@ public class EmployeeManagementService {
 	//직원정보 DB입력로직
 	@Transactional
 	public int inputEmployeeInfo(EmployeeInfoDTO employee) throws IOException {
-		System.out.println(employee.getEmpNo());
-		
 		// 첫 비밀번호 1234 
 		String empPassword = passwordEncoder.encode("1234");
 		// empId생성
@@ -48,6 +46,7 @@ public class EmployeeManagementService {
 		employee.setEmpPassword(empPassword);
 		
 		List<FileDTO> fileList = FileUtils.uploadFile(employee, session);
+		
 		if(!fileList.isEmpty()) {
 			fileMapper.insertFiles(fileList); // 새이미지저장
 		}

@@ -27,19 +27,15 @@ import lombok.AllArgsConstructor;
 public class FileController {
 	private final FileService fileService;
 	
-	@GetMapping("{fileId}")
-	public ResponseEntity<Resource> downloadFile(@PathVariable("fileId")int fileId,
+	@GetMapping("{fileIdx}")
+	public ResponseEntity<Resource> downloadFile(@PathVariable("fileIdx")int fileIdx,
 			@RequestParam("type") int type, HttpSession session) {
 //		System.out.println("fileId : " + fileId);
 		
 		// BoardService - getBoardFile() 메서드 호출하여 파일 정보 조회
 		// => 파라미터 : 파일 아이디  리턴타입 : BoardFileDTO(boardFileDTO)
-		FileDTO fileDTO = fileService.getFile(fileId);
+		FileDTO fileDTO = fileService.getFile(fileIdx);
 		
-		// 썸네일 이미지의 경우 param을 2로 받아서 파일 조회
-		if (type == 2) {
-			fileDTO = fileService.getThumbnail(fileId);
-		}
 		// ---------------------------------------------------------------------------
 		// FileUtils - getFile() 메서드 호출하여 실제 파일 가져오기
 		// => 파라미터 : BoardFileDTO   리턴타입 : 
@@ -47,7 +43,6 @@ public class FileController {
 		
 		Resource resource = (Resource)map.get("resource");
 		ContentDisposition contentDisposition = (ContentDisposition)map.get("contentDisposition");
-		System.out.println("resource : " + resource.toString());
 		
 		return ResponseEntity.ok()
 		.contentType(MediaType.APPLICATION_OCTET_STREAM)

@@ -15,33 +15,34 @@
 	}
 	
 	.profile-popover {
-		position: absolute;
-		top: 48px; /* 아바타 아래 */
-		right: 0;
-		min-width: 180px;
-		padding: 12px;
-		background-color: var(--card);
-		border: 1px solid var(--border);
-		border-radius: var(--radius);
-		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-		display: none;
-		z-index: 999; /* 상단 UI보다 위 */
-		
-		/* 가운데 정렬 + 세로 배치 추가 */
-		display: flex;
-		flex-direction: column; 
-		align-items: center;
-		gap: 12px; /* 이름과 버튼 간격 */
-		
-		opacity: 0;                 /* 처음에는 보이지 않음 */
-		visibility: hidden;
-		transition: opacity 0.2s ease, visibility 0.2s ease;
-		z-index: 999;
+	    position: absolute;
+	    top: 48px;
+	    right: 0;
+	    min-width: 180px;
+	    padding: 12px;
+	    background-color: var(--card);
+	    border: 1px solid var(--border);
+	    border-radius: var(--radius);
+	    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+	
+	    /* 숨김 처리 */
+	    display: none;
+	    flex-direction: column;
+	    align-items: center;
+	    gap: 12px;
+	
+	    /* transition에서 opacity/visibility를 사용하려면 display:none 대신 아래 스타일 사용 */
+	    /* opacity: 0;
+	    visibility: hidden;
+	    transition: opacity 0.2s ease, visibility 0.2s ease; */
+	
+	    z-index: 999;
 	}
 	
 	.profile-popover.show {
-		opacity: 1;
-		visibility: visible;
+	    display: flex; /* flex로 보임 처리 */
+	    /* opacity: 1;
+	    visibility: visible; */
 	}
 	
 	.profile-popover .top-user {
@@ -75,6 +76,9 @@
 	    white-space: nowrap; /* 버튼 글자가 줄바꿈 되지 않게 */
 	    height: 38px; /* input 높이와 맞춰주기 */
 	}
+	
+	
+
 </style>
 <nav class="top-nav">
 	
@@ -83,7 +87,7 @@
   
 	<div class="top-nav-actions" style="margin-left:auto; display:flex; align-items:center; gap:16px;">
 		<div class="profile-wrapper">
-			<a id="profile" href="javascript:void(0)" onclick="profile()">
+			<a id="profile" href="javascript:void(0)" >
 				<c:choose>
 				<c:when test="${!empty sessionScope.sFid}">
 					<img class="avatar" alt="profile" src="/file/${sessionScope.sFid }?type=0"
@@ -116,6 +120,23 @@
 		</div>
 		
 		<form action="/user/updateInfo" method="post">
+			<label>프로필 사진</label>
+		    <div style="position: relative; display: inline-block;">
+		        <img id="profilePreview"
+		            src=""
+		            alt="프로필 사진"
+		            style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 1px solid #d9d9d9;">
+		        <button type="button"
+		            id="deleteProfileImgBtn"
+		            style="position: absolute; top: 2px; right: 2px; background: #FF8C00; border: none; color: white; border-radius: 50%; width: 22px; height: 22px; font-weight: bold; cursor: pointer;">
+		            ×
+		        </button>
+		    </div>
+		    <br>
+		    <input type="file" name="files"  class="form-control" id="profileImage" accept="image/*" style="margin:10px 0px; padding:6px 12px; border:1px solid #ccc; border-radius:4px; font-size:14px; ">
+		    <input type="hidden" id="profileImageAction" name="profileImageAction" value="none">
+		    <input type="hidden" id="deleteProfileImgFlag" name="deleteProfileImgFlag" value="false">
+		
 			<!-- ID -->
 			<div class="id-check-wrapper">
 			    <input class="form-control" type="text" id="empId" name="empId" value="${sessionScope.sId}">
@@ -144,41 +165,7 @@
 		</form>
 	</div>
 </div>
-	<script>
-		//정보변경 모달창 띄우기
-		document.addEventListener("DOMContentLoaded", () => {
-		    const openBtn = document.getElementById('open-info-modal');     // 정보변경 버튼
-		    const closeBtn = document.getElementById('close-info-modal');   // X 닫기 버튼
-		    const cancelBtn = document.getElementById('cancel-info-modal'); // 취소 버튼
-		    const modal = document.getElementById('change-info-modal');     // 모달 자체
 	
-		    function openModal() {
-		        modal.classList.add('open');    // 공통 CSS에서 .open 시 표시
-		    }
-	
-		    function closeModal() {
-		        modal.classList.remove('open'); // 닫기
-		    }
-	
-		    // 열기 이벤트
-		    openBtn?.addEventListener('click', openModal);
-	
-		    // 닫기 이벤트 (X 버튼, 취소 버튼)
-		    closeBtn?.addEventListener('click', closeModal);
-		    cancelBtn?.addEventListener('click', closeModal);
-	
-		    // 배경 클릭 시 닫기
-		    modal?.addEventListener('click', (e) => {
-		        if (e.target === modal) {
-		            closeModal();
-		        }
-		    });
-		});
-		function profile() {
-			const popover = document.getElementById('employeeInfo');
-			popover.classList.toggle('show');
-		}
-	</script>
 
 <div class="dashboard-layout">
   <!-- 사이드바 -->
@@ -241,6 +228,66 @@
 		</ul>
 	</aside>
 	
+	
+	<script type="text/javascript">
+		document.addEventListener("DOMContentLoaded", function(){
+			var fileId = "${userProfileImg.fileId}";
+			
+			const existProfileImg = fileId && fileId !== '' && fileId !== 'null'; // true||false
+			
+			const profileImageAction = document.getElementById('profileImageAction'); // isnert, delete, update, none
+			const deleteProfileImgFlag = document.getElementById('deleteProfileImgFlag'); //
+			const profileImageInput = document.getElementById('profileImage'); //선택된 파일
+			
+			var profileUrl = existProfileImg ? '/file/' + fileId + '?type=0' : '/resources/images/default_profile_photo.png';
+			
+			document.getElementById('profilePreview').src = profileUrl;
+			
+			//파일 선택 시preview에 보여줌
+			document.getElementById('profileImage').addEventListener('change', function(e) {
+				const file = e.target.files[0];
+				
+				if (file) {
+			        const reader = new FileReader();
+			        reader.onload = function(evt) {
+			            // 읽은 이미지 데이터를 profilePreview 이미지의 src에 설정
+			            document.getElementById('profilePreview').src = evt.target.result;
+			        }
+			        reader.readAsDataURL(file);  // 파일을 DataURL 형식으로 읽기 (이미지 미리보기용)
+			        profileImageAction.value = 'insert';
+			        deleteProfileImgFlag.value = 'false';
+			    } else {
+			        // 파일선택 취소 시 "none" 처리
+			        profileImageAction.value = 'none';
+			    }
+			});
+			
+			//이미지 삭제 버튼
+			$('#deleteProfileImgBtn').on('click', function() {
+			    // 프리뷰 이미지를 디폴트 이미지로 교체
+			    $('#profilePreview').attr('src', '/resources/images/default_profile_photo.png');
+			    // 삭제 의도를 서버에 전달할 수 있게 hidden input 값을 true로 설정
+			    profileImageAction.value = 'delete';
+			    deleteProfileImgFlag.value = 'true';
+	
+			    // 파일 선택된 것도 비워줌
+			    profileImageInput.value = '';
+			});
+			
+			document.querySelector('.custom-file-input').addEventListener('change', function(event) {
+				const files = event.target.files;
+				for (let i = 0; i < files.length; i++) {
+					if (!files[i].type.startsWith('image/')) {
+						alert('이미지 파일만 업로드 가능합니다.');
+						document.getElementById('profilePreview').src = profileUrl;
+						profileImageInput.value = '';  // 파일 입력값 비움
+						return;
+					}
+				}					
+	    	});
+			
+		});
+	</script>
 
 
   <!-- 여기서부터 개별 페이지 내용 들어감 -->
