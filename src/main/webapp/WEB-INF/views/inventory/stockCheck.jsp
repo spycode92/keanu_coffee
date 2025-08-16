@@ -40,7 +40,7 @@
 	    color: #155724;            /* 진한 초록 글씨 */
 	}
 	
-	/* [추가] D-Day 배지 (숫자/텍스트 강조) */
+	/* *** 추가: D-Day 배지 (숫자/텍스트 강조) */
 	.dday-badge {
 	    display:inline-block; margin-left:6px; padding:1px 6px;
 	    border-radius:999px; border:1px solid rgba(0,0,0,.1);
@@ -53,25 +53,25 @@
 	/* 모달 */
     .modal-backdrop { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.45); z-index: 1000; }
     .modal-backdrop.on { display: flex; }
-    .modal-dialog { width: 720px; background: #0b1220; color: #e2e8f0; border: 1px solid #334155; border-radius: 14px; overflow: hidden; }
+    .modal-dialog { width: 720px; background: #ffffff; color: #e2e8f0; border: 1px solid #334155; border-radius: 14px; overflow: hidden; }
     .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #0b1220; border-bottom: 1px solid #334155; }
     .modal-body { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px; }
-    .modal-footer { padding: 12px 16px; text-align: right; border-top: 1px solid #334155; }
     .kv { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 12px; }
     .kv h4 { margin: 0 0 8px 0; font-size: 13px; color: #94a3b8; }
     .kv .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #23304a; }
     .kv .row:last-child { border-bottom: 0; }
-    .btn-ghost { padding: 8px 14px; border: 1px solid #334155; background: #0b1220; color: #e2e8f0; border-radius: 10px; cursor: pointer; }
-    .btn-ghost:hover { background: #11182a; }
+    .btn-ghost { padding: 8px 14px; border: 1px solid #334155; background: #ffffff; color: #0b1220; border-radius: 10px; cursor: pointer; }
+    .btn-ghost:hover { background: #8C8C8C; }
     .small-muted { color: #94a3b8; font-size: 12px; }
 
-    /* [추가] 로그 뱃지 */
+    /* *** 추가: 로그 뱃지 */
 	.badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid rgba(255,255,255,.15); }
 	.badge-out { background:rgba(220,53,69,.15); }     /* 출고 */
 	.badge-move { background:rgba(13,110,253,.15); }   /* 이동 */
 	.badge-dispose { background:rgba(108,117,125,.15);}/* 폐기 */
+	.badge-adjust { background:rgba(255,193,7,.15);}   /* 조정 */
 
-	/* [추가] 로그 행 2줄 레이아웃 */
+	/* *** 추가: 로그 행 2줄 레이아웃 */
 	.logline { display:flex; justify-content:space-between; gap:10px; padding:6px 0; border-bottom:1px dashed #23304a; }
 	.logline:last-child { border-bottom:0; }
 	.logleft { display:flex; gap:8px; align-items:center; }
@@ -100,7 +100,7 @@
 					<input class="form-control" id="prodSearch" placeholder="예: 바닐라시럽 / SYR-001">
 				</div>
 				<div>
-                    <!-- [변경] 로케이션 유형: Picking / Pallet(영문) -->
+                    <!-- *** 변경: 로케이션 유형 영문 표기 -->
                     <label class="form-label">로케이션 유형</label>
                     <select class="form-control" id="locType">
                         <option value="">전체</option>
@@ -114,7 +114,7 @@
                 </div>
             </div>
 			
-			<!-- [추가] 제조/유통기한 툴바 -->
+			<!-- *** 추가: 제조/유통기한 툴바 -->
             <div style="display:flex; gap:16px; align-items:center; padding:12px;">
                 <label class="form-label" style="display:flex; align-items:center; gap:6px; margin:0;">
                     임박 기준(D-)
@@ -130,7 +130,7 @@
                     </select>
                 </label>
                 <button class="btn btn-outline" id="btnSortExpAsc">유통기한 오름차순(FIFO)</button>
-                <span style="font-size:12px; opacity:.75;">※ 임박(D ≤ 기준), 당일(D‑day), 만료(D &lt; 0 → D+), 출고 시 FIFO 참고.</span>
+                <span style="font-size:12px; opacity:.75;">※ 임박(D ≤ 기준), 당일(D-day), 만료(D &lt; 0 → D+), 출고 시 FIFO 참고.</span>
             </div>
 			
 			<!-- 지표 -->
@@ -174,7 +174,7 @@
         <div class="modal-dialog" role="dialog" aria-modal="true">
             <div class="modal-header">
                 <h4 style="margin:0;">LOT 상세</h4>
-                <button class="btn-ghost" onclick="closeLotModal()">닫기</button>
+                <button class="btn-ghost" onclick="closeLotModal()"><b>닫기</b></button>
             </div>
             <div class="modal-body">
                 <!-- 좌: 입고/현재고 비교 -->
@@ -185,7 +185,7 @@
                     <div class="row"><span>제조일자</span><b id="miMfg">-</b></div>
                     <div class="row"><span>유통기한</span><b id="miExp">-</b></div>
                     <div class="row"><span>단위</span><b id="miUnit">-</b></div>
-                    <!-- [추가] 비교 값 -->
+                    <!-- *** 추가: 비교 값 -->
                     <div class="row"><span>입고수량</span><b id="miInbound">-</b></div>
                     <div class="row"><span>현재고(합계)</span><b id="miCurrent">-</b></div>
                     <div class="row"><span>차이</span><b id="miDelta">-</b></div>
@@ -198,7 +198,7 @@
                         <h4>로케이션 분포(동일 LOT)</h4>
                         <div id="locList"><div class="row"><span>데이터 없음</span><b>-</b></div></div>
                     </div>
-                    <!-- [추가] 출고/이동 로그 -->
+                    <!-- *** 추가: 출고/이동 로그 -->
                     <div class="kv" style="margin-top:12px;">
                         <h4>출고/이동 내역</h4>
                         <div id="moveLog">
@@ -206,9 +206,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <span class="small-muted">* 데모: 조회 로그는 콘솔에만 남깁니다.</span>
             </div>
         </div>
     </div>
@@ -237,10 +234,12 @@
 		  'LOT-CUP-016-20260110-01': [{ loc: 'C-01', qty: 20 }, { loc: 'C-03', qty: 180 }]
 		};
 		
-		/* [추가] 출고/이동/폐기 로그(Mock) — 실제에선 WMS 로그 테이블에서 조회 */
+		/* *** 추가: 출고/이동/폐기/조정 로그(Mock) — 실제에선 WMS 로그 테이블 조회 */
 		const movementLogs = {
 		  'LOT-SYR-001-20250220-01': [
 		    { type: 'MOVE', qty: 6, when: '2025-03-03 09:10', user: '김담당', from: 'A-01', to: 'A-02', memo: '피킹영역 보강' }
+// 		    { type: 'OUT', qty: 12, when: '2025-03-03 09:11', user: '김담당', from: 'A-02', to: '출고', memo: 'SO-240401-021' }
+		    // 예: { type:'ADJUST', sign:'-', qty:12, when:'2025-03-05 11:10', user:'관리자', memo:'실사 차감' }
 		  ],
 		  'LOT-SYR-002-20250115-01': [
 		    { type: 'OUT', qty: 6, when: '2025-04-01 10:21', user: '이피커', from: 'A-02', to: '출고', memo: 'SO-240401-001' }
@@ -252,7 +251,7 @@
 		    { type: 'MOVE', qty: 20, when: '2026-02-01 14:05', user: '최담당', from: 'C-01', to: 'C-03', memo: '집중배치' }
 		  ]
 		};
-		
+
 		/* ===== 유틸 ===== */
 		function diffDaysFromToday(dateStr) {
 		  const today = new Date();
@@ -261,24 +260,46 @@
 		  return Math.ceil((d.getTime() - base.getTime()) / (1000 * 60 * 60 * 24));
 		}
 		
-		/* [추가] D-Day 표기 규칙: 남음=D-7, 당일=D-day, 경과=D+3 */
+		/* *** 추가: D-Day 표기 규칙: 남음=D-7, 당일=D-day, 경과=D+3 */
 		function formatDday(d) {
 		  if (d < 0) return 'D+' + Math.abs(d);
 		  if (d === 0) return 'D-day';
 		  return 'D-' + d;
 		}
+
+		/* *** 추가: LOT별 로그 합계 계산 유틸(단일 타입) */
+		function sumLogQty(lotNo, type) {
+		  const logs = movementLogs[lotNo] || [];
+		  return logs
+		    .filter(ev => ev.type === type)
+		    .reduce((acc, ev) => acc + (Number(ev.qty) || 0), 0);
+		}
+
+		/* *** 추가: 지정 타입들의 합계 */
+		function sumLogQtyTypes(lotNo, types) {
+		  const logs = movementLogs[lotNo] || [];
+		  return logs
+		    .filter(ev => types.includes(ev.type))
+		    .reduce((acc, ev) => acc + (Number(ev.qty) || 0), 0);
+		}
+
+		/* *** 추가: 조정(ADJUST) 합계 – sign: '+' | '-' */
+		function sumAdjust(lotNo, sign) {
+		  const logs = movementLogs[lotNo] || [];
+		  return logs
+		    .filter(ev => ev.type === 'ADJUST' && ev.sign === sign)
+		    .reduce((acc, ev) => acc + (Number(ev.qty) || 0), 0);
+		}
 		
-		/* [변경] 상태/라벨 + D-day 뱃지 생성 로직 */
+		/* *** 변경: 상태/라벨 + D-day 뱃지 생성 로직 */
 		function makeStatusAndDday(expDate, threshold) {
 		  const d = diffDaysFromToday(expDate);
 		
 		  let status = 'OK';
 		  let labelHtml = '<span class="status-label normal">정상</span>';
 		
-		  // D-day 텍스트(D-/D-day/D+)
 		  const ddText = formatDday(d);
 		
-		  // 색상/상태 결정
 		  let ddayClass = '';
 		  if (d < 0) {
 		    status = 'EXPIRED';
@@ -386,20 +407,33 @@
 		
 		  // 좌측: 입고/현재/차이
 		  const inbound = Number(mi.qtyInbound) || 0;
-		  const diff = sum - inbound;
-		
+		  const diff = sum - inbound; // (참고용, 화면 표시는 아래 로직)
+
+		  /* *** 추가: 출고/폐기/조정(±) 누계 반영하여 '정상/불일치/초과/출고완료' 판정 */
+		  const outSum       = sumLogQtyTypes(lotNo, ['OUT']);       // 출고 누계
+		  const disposeSum   = sumLogQtyTypes(lotNo, ['DISPOSE']);   // 폐기 누계
+		  const adjustMinus  = sumAdjust(lotNo, '-');                 // 조정(-)
+		  const adjustPlus   = sumAdjust(lotNo, '+');                 // 조정(+)
+		  // MOVE(이동)는 내부 재배치 → 총량 변동 0, 제외
+		  const expectedCurrent = inbound - (outSum + disposeSum + adjustMinus) + adjustPlus;
+
 		  $('#miInbound').text(inbound + ' ' + unit);
 		  $('#miCurrent').text(sum + ' ' + unit);
-		
-		  if (diff === 0) {
-		    $('#miDelta').html('<span class="status-label normal">일치</span>');
-		  } else if (diff < 0) {
-		    $('#miDelta').html('<span class="status-label expired">부족 ' + Math.abs(diff) + ' ' + unit + '</span>');
+
+		  /* *** 변경: 상황별 라벨링 + 힌트 */
+		  if (inbound === outSum && disposeSum === 0 && adjustMinus === 0 && adjustPlus === 0 && sum === 0) {
+		    $('#miDelta').html('<span class="status-label normal">출고 완료 (잔여 0 ' + unit + ')</span>');
+		  } else if (expectedCurrent === sum) {
+		    $('#miDelta').html('<span class="status-label normal">일치 (출고/폐기/조정 반영)</span>');
+		  } else if (expectedCurrent > sum) {
+		    const lack = expectedCurrent - sum;
+		    $('#miDelta').html('<span class="status-label expired">불일치 ' + lack + ' ' + unit + '</span><span class="small-muted" style="margin-left:6px;">로그 누락(출고/폐기/조정-) 의심</span>');
 		  } else {
-		    $('#miDelta').html('<span class="status-label imminent">초과 +' + diff + ' ' + unit + '</span>');
+		    const excess = sum - expectedCurrent;
+		    $('#miDelta').html('<span class="status-label imminent">초과 +' + excess + ' ' + unit + '</span><span class="small-muted" style="margin-left:6px;">과입고/조정+ 또는 집계 오류 의심</span>');
 		  }
 		
-		  // 출고/이동 로그
+		  // 출고/이동/조정/폐기 로그
 		  const logs = movementLogs[lotNo] || [];
 		  const $log = $('#moveLog').empty();
 		
@@ -410,15 +444,19 @@
 		      const kind =
 		        ev.type === 'OUT' ? '출고' :
 		        ev.type === 'MOVE' ? '이동' :
-		        ev.type === 'DISPOSE' ? '폐기' : ev.type;
-		
+		        ev.type === 'DISPOSE' ? '폐기' :
+		        ev.type === 'ADJUST' ? ('조정' + (ev.sign === '-' ? '(-)' : '(+)')) :
+		        ev.type;
+
 		      const badgeClass =
 		        ev.type === 'OUT' ? 'badge-out' :
-		        ev.type === 'MOVE' ? 'badge-move' : 'badge-dispose';
+		        ev.type === 'MOVE' ? 'badge-move' :
+		        ev.type === 'DISPOSE' ? 'badge-dispose' : 'badge-adjust';
 		
-		      const route = ev.type === 'MOVE'
-		        ? (ev.from || '-') + ' → ' + (ev.to || '-')
-		        : (ev.from || '-') + ' → ' + kind;
+		      const route =
+		        ev.type === 'MOVE'
+		          ? (ev.from || '-') + ' → ' + (ev.to || '-')
+		          : (ev.from ? (ev.from + ' → ' + kind) : kind);
 		
 		      $log.append(
 		        '<div class="logline">' +
@@ -429,7 +467,7 @@
 		          '</div>' +
 		          '<div class="logright">' +
 		            '<div><b>' + (ev.qty || 0) + ' ' + unit + '</b></div>' +
-		            '<div style="opacity:.8;">' + route + '</div>' +
+		            (route ? '<div style="opacity:.8;">' + route + '</div>' : '') +
 		            (ev.memo ? '<div style="opacity:.6;">' + ev.memo + '</div>' : '') +
 		          '</div>' +
 		        '</div>'
