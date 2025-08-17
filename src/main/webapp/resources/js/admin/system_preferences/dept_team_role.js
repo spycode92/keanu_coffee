@@ -20,244 +20,517 @@ $(function () {
     });
 
     // 부서 추가
-    $('#btnAddDepartment').click(function () {
-        let deptName = prompt("새 부서 이름을 입력하세요:");
-        if (deptName) {
-	        $.ajax({
-	            url: '/admin/systemPreference/addDepartment',
-	            method: 'POST',
-	            contentType: 'application/json',
-	            data: JSON.stringify({ departmentName: deptName.trim() }),
-	            dataType: 'json',
-	            success: function(dept) {
-	                // 서버에서 반환한 새 부서 정보로 리스트에 추가
-	                $('#departmentList').append(
-	                    `<li class="list-group-item d-flex justify-content-between align-items-center department-item" style="color: black;" data-departmentidx="${dept.idx}">
-	                        <span class="department-name">${dept.departmentName}</span>
-	                        <button type="button" class="btn btn-sm btn-danger btn-delete-department">−</button>
-	                    </li>`
-	                );
-	            },
-	            error: function() {
-	                alert('부서 추가에 실패했습니다.');
+	$('#btnAddDepartment').click(function () {
+	    Swal.fire({
+	        title: '새 부서 이름을 입력하세요',
+	        input: 'text',
+	        inputPlaceholder: '부서명',
+	        showCancelButton: true,
+	        confirmButtonText: '확인',
+	        cancelButtonText: '취소',
+	        inputValidator: (value) => {
+	            if (!value.trim()) {
+	                return '부서명을 입력해주세요.';
 	            }
-	        });
-	    }
-    });
+	            // 허용하는 문자: 한글, 영어, 숫자, _ , -
+	            const validPattern = /^[\uAC00-\uD7A3a-zA-Z0-9_\- ]+$/;
+	            if (!validPattern.test(value.trim())) {
+	                return '가-힣 A-Z a-z 0-9, 특수문자는 _ 와 - 만 허용됩니다.';
+	            }
+	            return null; // 유효성 통과
+	        }
+	    }).then((result) => {
+	        if (result.isConfirmed) {
+	            const deptName = result.value.trim();
+	
+	            $.ajax({
+	                url: '/admin/systemPreference/addDepartment',
+	                method: 'POST',
+	                contentType: 'application/json',
+	                data: JSON.stringify({ departmentName: deptName }),
+	                dataType: 'json',
+	                success: function(dept) {
+	                    $('#departmentList').append(
+	                        `<li class="list-group-item d-flex justify-content-between align-items-center department-item" style="color: black;" data-departmentidx="${dept.idx}">
+	                            <span class="department-name">${dept.departmentName}</span>
+								<div>
+									<button type="button" class="btn btn-sm btn-secondary btn-edit-department">✎</button>
+		                            <button type="button" class="btn btn-sm btn-danger btn-delete-department">−</button>
+	                        	</div>
+							</li>`
+	                    );
+	                    Swal.fire({
+	                        icon: 'success',
+	                        title: '성공!',
+	                        text: '부서 추가가 완료되었습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                },
+	                error: function() {
+	                    Swal.fire({
+	                        icon: 'error',
+	                        title: '실패',
+	                        text: '부서 추가에 실패했습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                }
+	            });
+	        }
+	    });
+	});
 
     // 팀 추가
-    $('#btnAddTeam').click(function () {
+	$('#btnAddTeam').click(function () {
 	    if (!selectedDeptIdx) {
-	        alert("부서를 먼저 선택하세요.");
+	        Swal.fire({
+	            icon: 'error',
+	            title: '선택 불가',
+	            text: '부서를 먼저 선택해주세요.',
+	            confirmButtonText: '확인'
+	        });
 	        return;
 	    }
-	    let teamName = prompt("새 팀 이름을 입력하세요:");
-	    if (teamName) {
-	        $.ajax({
-	            url: '/admin/systemPreference/addTeam',
-	            method: 'POST',
-	            contentType: 'application/json',
-	            data: JSON.stringify({ teamName: teamName.trim(), departmentIdx: selectedDeptIdx }),
-	            dataType: 'json',
-	            success: function(team) {
-					$('#teamList').find('li.text-muted').remove();
-					
-	                $('#teamList').append(
-	                    `<li class="list-group-item d-flex justify-content-between align-items-center team-item" style="color: black;" data-teamidx="${team.idx}">
-	                        <span>${team.teamName}</span>
-	                        <button type="button" class="btn btn-sm btn-danger btn-delete-team">−</button>
-	                    </li>`
-	                );
-	            },
-	            error: function() {
-	                alert('팀 추가에 실패했습니다.');
+	
+	    Swal.fire({
+	        title: '새 팀 이름을 입력하세요',
+	        input: 'text',
+	        inputPlaceholder: '팀명',
+	        showCancelButton: true,
+	        confirmButtonText: '확인',
+	        cancelButtonText: '취소',
+	        inputValidator: (value) => {
+	            if (!value.trim()) {
+	                return '팀명을 입력해주세요.';
 	            }
-	        });
-	    }
+	            // 허용하는 문자: 가-힣, A-Z, a-z, 0-9, _ , -
+	            const validPattern = /^[\uAC00-\uD7A3a-zA-Z0-9_\- ]+$/;
+	            if (!validPattern.test(value.trim())) {
+	                return '가-힣, A-Z, a-z, 0-9, 특수문자는 _ 와 - 만 허용됩니다.';
+	            }
+	            return null;
+	        }
+	    }).then((result) => {
+	        if (result.isConfirmed) {
+	            const teamName = result.value.trim();
+	
+	            $.ajax({
+	                url: '/admin/systemPreference/addTeam',
+	                method: 'POST',
+	                contentType: 'application/json',
+	                data: JSON.stringify({ teamName: teamName, departmentIdx: selectedDeptIdx }),
+	                dataType: 'json',
+	                success: function(team) {
+	                    $('#teamList').find('li.text-muted').remove();
+	
+	                    $('#teamList').append(
+	                        `<li class="list-group-item d-flex justify-content-between align-items-center team-item" style="color: black;" data-teamidx="${team.idx}">
+	                            <span>${team.teamName}</span>
+								<div>
+									<button type="button" class="btn btn-sm btn-secondary btn-edit-team">✎</button>
+		                            <button type="button" class="btn btn-sm btn-danger btn-delete-team">−</button>
+	                        	</div>
+	                        </li>`
+	                    );
+	
+	                    Swal.fire({
+	                        icon: 'success',
+	                        title: '성공!',
+	                        text: '팀 추가가 완료되었습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                },
+	                error: function() {
+	                    Swal.fire({
+	                        icon: 'error',
+	                        title: '실패',
+	                        text: '팀 추가에 실패했습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                }
+	            });
+	        }
+	    });
 	});
 
     // 직책 추가
-    $('#btnAddRole').click(function () {
+	$('#btnAddRole').click(function () {
 	    if (!selectedDeptIdx) {
-	        alert("부서를 먼저 선택하세요.");
+	        Swal.fire({
+	            icon: 'error',
+	            title: '선택 불가',
+	            text: '부서를 먼저 선택해주세요.',
+	            confirmButtonText: '확인'
+	        });
 	        return;
 	    }
-	    let roleName = prompt("새 직책 이름을 입력하세요:");
-	    if (roleName && roleName.trim() !== '') {
-	        $.ajax({
-	            url: '/admin/systemPreference/addRole',
-	            method: 'POST',
-	            contentType: 'application/json',
-	            data: JSON.stringify({ roleName: roleName.trim(), departmentIdx: selectedDeptIdx }),
-	            dataType: 'json',
-	            success: function(role) {
-	                // 존재하지 않습니다 문구 삭제
-	                $('#roleList').find('li.text-muted').remove();
 	
-	                $('#roleList').append(
-	                    `<li class="list-group-item d-flex justify-content-between align-items-center role-item" style="color: black;" data-roleidx="${role.idx}">
-	                        <span>${role.roleName}</span>
-	                        <button type="button" class="btn btn-sm btn-danger btn-delete-role">−</button>
-	                    </li>`
-	                );
-	            },
-	            error: function() {
-	                alert('직책 추가에 실패했습니다.');
+	    Swal.fire({
+	        title: '새 직책 이름을 입력하세요',
+	        input: 'text',
+	        inputPlaceholder: '직책명',
+	        showCancelButton: true,
+	        confirmButtonText: '확인',
+	        cancelButtonText: '취소',
+	        inputValidator: (value) => {
+	            if (!value.trim()) {
+	                return '직책명을 입력해주세요.';
 	            }
-	        });
-	    } else {
-	        alert('유효한 직책 이름을 입력하세요.');
-	    }
+	            // 허용하는 문자: 가-힣, A-Z, a-z, 0-9, _ , -
+	            const validPattern = /^[\uAC00-\uD7A3a-zA-Z0-9_\- ]+$/;
+	            if (!validPattern.test(value.trim())) {
+	                return '가-힣, A-Z, a-z, 0-9, 특수문자는 _ 와 - 만 허용됩니다.';
+	            }
+	            return null;
+	        }
+	    }).then((result) => {
+	        if (result.isConfirmed) {
+	            const roleName = result.value.trim();
+	
+	            $.ajax({
+	                url: '/admin/systemPreference/addRole',
+	                method: 'POST',
+	                contentType: 'application/json',
+	                data: JSON.stringify({ roleName: roleName, departmentIdx: selectedDeptIdx }),
+	                dataType: 'json',
+	                success: function(role) {
+	                    $('#roleList').find('li.text-muted').remove();
+	                    $('#roleList').append(
+	                        `<li class="list-group-item d-flex justify-content-between align-items-center role-item" style="color: black;" data-roleidx="${role.idx}">
+	                            <span>${role.roleName}</span>
+								<div>
+									<button type="button" class="btn btn-sm btn-secondary btn-edit-role">✎</button>
+		                            <button type="button" class="btn btn-sm btn-danger btn-delete-role">−</button>
+	                        	</div>
+	                        </li>`
+	                    );
+	                    Swal.fire({
+	                        icon: 'success',
+	                        title: '성공!',
+	                        text: '직책 추가가 완료되었습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                },
+	                error: function() {
+	                    Swal.fire({
+	                        icon: 'error',
+	                        title: '실패',
+	                        text: '직책 추가에 실패했습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                }
+	            });
+	        }
+	    });
 	});
 
 	// 부서 삭제
     $(document).on('click', '.btn-delete-department', function (e) {
 	    e.stopPropagation();
-	    if (confirm("정말 이 부서를 삭제하시겠습니까? 관련 팀, 직책, 직원 정보가 변경됩니다.")) {
-	        let deptIdx = $(this).closest('li').data('departmentidx');
-	        let $targetLi = $(this).closest('li');
-	        $.ajax({
-	            url: '/admin/systemPreference/removeDepartment',
-	            method: 'DELETE',
-	            contentType: 'application/json',
-	            data: JSON.stringify({ idx: deptIdx }),
-	            success: function() {
-	                $targetLi.remove();
-	                alert("부서가 삭제되었습니다.");
-	                // 관련 UI 초기화 추가
-	                $('#teamList').empty();
-	                $('#roleList').empty();
-	                $('#btnAddTeam').prop('disabled', true);
-	                $('#btnAddRole').prop('disabled', true);
-	            },
-	            error: function() {
-	                alert("부서 삭제에 실패했습니다.");
-	            }
-	        });
-	    }
+		Swal.fire({
+	        title: "정말 이 부서를 삭제하시겠습니까?",
+	        text: "관련 팀, 직책, 직원 정보가 변경됩니다.",
+	        icon: "warning",
+	        showCancelButton: true,
+	        confirmButtonText: "확인",
+	        cancelButtonText: "취소"
+	    }).then((result) => {
+		    if (result.isConfirmed) {
+		        
+				let deptIdx = $(this).closest('li').data('departmentidx');
+		        let $targetLi = $(this).closest('li');
+		        $.ajax({
+		            url: '/admin/systemPreference/removeDepartment',
+		            method: 'DELETE',
+		            contentType: 'application/json',
+		            data: JSON.stringify({ idx: deptIdx }),
+		            success: function() {
+		                $targetLi.remove();
+	
+		                Swal.fire({
+						    icon: 'success',  // 아이콘 종류: success, error, warning, info, question
+						    title: '성공!',
+						    text: '부서 삭제가 완료되었습니다.',
+						    confirmButtonText: '확인'
+						});
+		                // 관련 UI 초기화 추가
+		                $('#teamList').empty();
+		                $('#roleList').empty();
+		                $('#btnAddTeam').prop('disabled', true);
+		                $('#btnAddRole').prop('disabled', true);
+		            },
+		            error: function() {
+		                Swal.fire({
+						    icon: 'error',
+						    title: '실패',
+						    text: '부서 삭제에 실패했습니다.',
+						    confirmButtonText: '확인'
+						});
+		            }
+		        });
+		    }
+		});
 	});
 
-    // 팀 삭제
-    $(document).on('click', '.btn-delete-team', function (e) {
+	// 팀 삭제
+	$(document).on('click', '.btn-delete-team', function (e) {
 	    e.stopPropagation();
-	    if (confirm("정말 이 팀을 삭제하시겠습니까?")) {
-	        let teamIdx = $(this).closest('li').data('teamidx');
-	        let $targetLi = $(this).closest('li');
-	        $.ajax({
-	            url: '/admin/systemPreference/removeTeam',
-	            method: 'DELETE',
-	            contentType: 'application/json',
-	            data: JSON.stringify({ idx: teamIdx }),
-	            success: function() {
-	                $targetLi.remove(); // UI에서 제거
-	                alert('팀이 삭제되었습니다.');
-	                // 필요하다면 직책 리스트도 비우기 및 버튼 비활성화 처리
-	                $('#positionList').empty();
-	                $('#btnAddPosition').prop('disabled', true);
-	            },
-	            error: function() {
-	                alert('팀 삭제에 실패했습니다.');
-	            }
-	        });
-	    }
+	
+	    Swal.fire({
+	        title: '정말 이 팀을 삭제하시겠습니까?',
+	        icon: 'warning',
+	        showCancelButton: true,
+	        confirmButtonText: '확인',
+	        cancelButtonText: '취소'
+	    }).then((result) => {
+	        if (result.isConfirmed) {
+	            let teamIdx = $(this).closest('li').data('teamidx');
+	            let $targetLi = $(this).closest('li');
+	            $.ajax({
+	                url: '/admin/systemPreference/removeTeam',
+	                method: 'DELETE',
+	                contentType: 'application/json',
+	                data: JSON.stringify({ idx: teamIdx }),
+	                success: function() {
+	                    $targetLi.remove(); // UI에서 제거
+	                    Swal.fire({
+	                        icon: 'success',
+	                        title: '성공!',
+	                        text: '팀 삭제가 완료되었습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                    // 필요하다면 직책 리스트도 비우기 및 버튼 비활성화 처리
+	                    $('#positionList').empty();
+	                    $('#btnAddPosition').prop('disabled', true);
+	                },
+	                error: function() {
+	                    Swal.fire({
+	                        icon: 'error',
+	                        title: '실패',
+	                        text: '팀 삭제에 실패했습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                }
+	            });
+	        }
+	    });
 	});
 	
-	//직책 삭제
+	// 직책 삭제
 	$(document).on('click', '.btn-delete-role', function (e) {
 	    e.stopPropagation();
-	    if (confirm("정말 이 직책을 삭제하시겠습니까?")) {
-	        let roleIdx = $(this).closest('li').data('roleidx');
 	
-	        $.ajax({
-	            url: '/admin/systemPreference/removeRole',  // 서버 삭제 API 주소
-	            method: 'DELETE',
-	            data: JSON.stringify({ idx: roleIdx }),
-	            contentType: 'application/json',
-	            success: () => {
-	                // 삭제 성공 시 UI에서 해당 li 제거
-	                $(this).closest('li').remove();
-	                alert('직책이 삭제되었습니다.');
-	            },
-	            error: () => {
-	                alert('직책 삭제에 실패했습니다.');
-	            }
-	        });
-	    }
+	    let $btn = $(this);  // 클릭한 버튼 요소 저장
+	
+	    Swal.fire({
+	        title: '정말 이 직책을 삭제하시겠습니까?',
+	        icon: 'warning',
+	        showCancelButton: true,
+	        confirmButtonText: '확인',
+	        cancelButtonText: '취소'
+	    }).then((result) => {
+	        if (result.isConfirmed) {
+	            let roleIdx = $btn.closest('li').data('roleidx');
+	
+	            $.ajax({
+	                url: '/admin/systemPreference/removeRole',
+	                method: 'DELETE',
+	                data: JSON.stringify({ idx: roleIdx }),
+	                contentType: 'application/json',
+	                success: () => {
+	                    $btn.closest('li').remove();  // 삭제 성공 시 UI에서 해당 li 제거
+	                    Swal.fire({
+	                        icon: 'success',
+	                        title: '성공!',
+	                        text: '직책 삭제가 완료되었습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                },
+	                error: () => {
+	                    Swal.fire({
+	                        icon: 'error',
+	                        title: '실패',
+	                        text: '직책 삭제에 실패했습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                }
+	            });
+	        }
+	        // 취소 시 별도 처리 없음
+	    });
 	});
 	
-	//부서 수정
+	// 부서 수정
 	$(document).on('click', '.btn-edit-department', function(e) {
 	    e.stopPropagation();
 	    let $li = $(this).closest('li');
 	    let currentName = $li.find('.department-name').text();
 	    let deptIdx = $li.data('departmentidx');
 	
-	    let newName = prompt("부서명을 수정하세요:", currentName);
-
-	    if (newName && newName.trim() !== '' && newName !== currentName) {
-	        $.ajax({
-	            url: '/admin/systemPreference/modifyDepartment',
-	            method: 'PUT',
-	            contentType: 'application/json',
-	            data: JSON.stringify({ idx: deptIdx, departmentName: newName.trim() }),
-	            success: function() {
-	                $li.find('.department-name').text(newName.trim());
-	                alert('부서명이 수정되었습니다.');
-	            },
-	            error: function() {
-	                alert('부서명 수정에 실패했습니다.');
+	    Swal.fire({
+	        title: '부서명을 수정하세요',
+	        input: 'text',
+	        inputValue: currentName,
+	        showCancelButton: true,
+	        confirmButtonText: '저장',
+	        cancelButtonText: '취소',
+	        inputValidator: (value) => {
+	            if (!value.trim()) {
+	                return '부서명을 입력해주세요.';
 	            }
-	        });
-	    }
+	            if (value.trim() === currentName) {
+	                return '변경된 이름을 입력해주세요.';
+	            }
+	            const validPattern = /^[\uAC00-\uD7A3a-zA-Z0-9_\- ]+$/;
+	            if (!validPattern.test(value.trim())) {
+	                return '가-힣, A-Z, a-z, 0-9, 특수문자는 _ 와 - 만 허용됩니다.';
+	            }
+	            return null;
+	        }
+	    }).then((result) => {
+	        if (result.isConfirmed) {
+	            let newName = result.value.trim();
+	
+	            $.ajax({
+	                url: '/admin/systemPreference/modifyDepartment',
+	                method: 'PUT',
+	                contentType: 'application/json',
+	                data: JSON.stringify({ idx: deptIdx, departmentName: newName }),
+	                success: function() {
+	                    $li.find('.department-name').text(newName);
+	                    Swal.fire({
+	                        icon: 'success',
+	                        title: '성공!',
+	                        text: '부서 수정이 완료되었습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                },
+	                error: function() {
+	                    Swal.fire({
+	                        icon: 'error',
+	                        title: '실패',
+	                        text: '부서 수정에 실패했습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                }
+	            });
+	        }
+	    });
 	});
 	
-	//팀수정
+	// 팀 수정
 	$(document).on('click', '.btn-edit-team', function(e) {
 	    e.stopPropagation();
 	    let $li = $(this).closest('li');
 	    let currentName = $li.find('span').text();
 	    let teamIdx = $li.data('teamidx');
 	
-	    let newName = prompt("팀명을 수정하세요:", currentName);
-	    if (newName && newName.trim() !== '' && newName !== currentName) {
-	        $.ajax({
-	            url: '/admin/systemPreference/modifyTeam',
-	            method: 'PUT',
-	            contentType: 'application/json',
-	            data: JSON.stringify({ idx: teamIdx, teamName: newName.trim() }),
-	            success: function() {
-	                $li.find('span').text(newName.trim());
-	                alert('팀명이 수정되었습니다.');
-	            },
-	            error: function() {
-	                alert('팀명 수정에 실패했습니다.');
+	    Swal.fire({
+	        title: '팀명을 수정하세요',
+	        input: 'text',
+	        inputValue: currentName,
+	        showCancelButton: true,
+	        confirmButtonText: '저장',
+	        cancelButtonText: '취소',
+	        inputValidator: (value) => {
+	            if (!value.trim()) {
+	                return '팀명을 입력해주세요.';
 	            }
-	        });
-	    }
+	            if (value.trim() === currentName) {
+	                return '변경된 이름을 입력해주세요.';
+	            }
+	            const validPattern = /^[\uAC00-\uD7A3a-zA-Z0-9_\- ]+$/;
+	            if (!validPattern.test(value.trim())) {
+	                return '가-힣, A-Z, a-z, 0-9, 특수문자는 _ 와 - 만 허용됩니다.';
+	            }
+	            return null;
+	        }
+	    }).then((result) => {
+	        if (result.isConfirmed) {
+	            let newName = result.value.trim();
+	
+	            $.ajax({
+	                url: '/admin/systemPreference/modifyTeam',
+	                method: 'PUT',
+	                contentType: 'application/json',
+	                data: JSON.stringify({ idx: teamIdx, teamName: newName }),
+	                success: function() {
+	                    $li.find('span').text(newName);
+	                    Swal.fire({
+	                        icon: 'success',
+	                        title: '성공!',
+	                        text: '팀 수정이 완료되었습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                },
+	                error: function() {
+	                    Swal.fire({
+	                        icon: 'error',
+	                        title: '실패',
+	                        text: '팀 수정에 실패했습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                }
+	            });
+	        }
+	    });
 	});
-	//직책수정
+	
+	// 직책 수정
 	$(document).on('click', '.btn-edit-role', function(e) {
 	    e.stopPropagation();
 	    let $li = $(this).closest('li');
 	    let currentName = $li.find('span').text();
 	    let roleIdx = $li.data('roleidx');
 	
-	    let newName = prompt("직책명을 수정하세요:", currentName);
-	    if (newName && newName.trim() !== '' && newName !== currentName) {
-	        $.ajax({
-	            url: '/admin/systemPreference/modifyRole',
-	            method: 'PUT',
-	            contentType: 'application/json',
-	            data: JSON.stringify({ idx: roleIdx, roleName: newName.trim() }),
-	            success: function() {
-	                $li.find('span').text(newName.trim());
-	                alert('직책명이 수정되었습니다.');
-	            },
-	            error: function() {
-	                alert('직책명 수정에 실패했습니다.');
+	    Swal.fire({
+	        title: '직책명을 수정하세요',
+	        input: 'text',
+	        inputValue: currentName,
+	        showCancelButton: true,
+	        confirmButtonText: '저장',
+	        cancelButtonText: '취소',
+	        inputValidator: (value) => {
+	            if (!value.trim()) {
+	                return '직책명을 입력해주세요.';
 	            }
-	        });
-	    }
+	            if (value.trim() === currentName) {
+	                return '변경된 이름을 입력해주세요.';
+	            }
+	            const validPattern = /^[\uAC00-\uD7A3a-zA-Z0-9_\- ]+$/;
+	            if (!validPattern.test(value.trim())) {
+	                return '가-힣, A-Z, a-z, 0-9, 특수문자는 _ 와 - 만 허용됩니다.';
+	            }
+	            return null;
+	        }
+	    }).then((result) => {
+	        if (result.isConfirmed) {
+	            let newName = result.value.trim();
+	
+	            $.ajax({
+	                url: '/admin/systemPreference/modifyRole',
+	                method: 'PUT',
+	                contentType: 'application/json',
+	                data: JSON.stringify({ idx: roleIdx, roleName: newName }),
+	                success: function() {
+	                    $li.find('span').text(newName);
+	                    Swal.fire({
+	                        icon: 'success',
+	                        title: '성공!',
+	                        text: '직책 수정이 완료되었습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                },
+	                error: function() {
+	                    Swal.fire({
+	                        icon: 'error',
+	                        title: '실패',
+	                        text: '직책 수정에 실패했습니다.',
+	                        confirmButtonText: '확인'
+	                    });
+	                }
+	            });
+	        }
+	    });
 	});
 	
 
