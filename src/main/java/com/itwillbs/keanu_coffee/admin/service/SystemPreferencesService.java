@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SystemPreferencesMapper;
 
@@ -118,12 +119,55 @@ public class SystemPreferencesService {
 		
 		return  affectedRows == 1;
 	}
-
+	// 직책이름 수정
 	public boolean modifyRoleName(int idx, String roleName) {
 		int affectedRows = systemPreferencesMapper.updateRole(idx, roleName);
 		
 		return  affectedRows == 1;
 	}
+	//등록된공급업체리스트
+	public List<SupplierProductContractDTO> getSuppliersInfo() {
+		return systemPreferencesMapper.selectSuppliersInfo();
+	}
+	
+	//등록된상품리스트
+	public List<SupplierProductContractDTO> getProductsInfo() {
+		return systemPreferencesMapper.selectProductsInfo();
+	}
+	//공급계약리스트
+	public List<SupplierProductContractDTO> getsupplyContractInfo() {
+		return systemPreferencesMapper.selectSupplyContractsInfo();
+	}
+	//공급업체등록
+	public SupplierProductContractDTO addSupplier(SupplierProductContractDTO supplierDTO) {
+		systemPreferencesMapper.insertSupplier(supplierDTO);
+		
+		return supplierDTO;
+	}
+	
+	//상태별 공급업체 필터링
+	public List<SupplierProductContractDTO> getSuppliersByStatus(String status) {
+		 String dbStatus = null;
+        if ("ACTIVE".equals(status)) {
+            dbStatus = "계약중";
+        } else if ("EXPIRED".equals(status)) {
+            dbStatus = "계약만료";
+        }
+        
+		return systemPreferencesMapper.selectSupplierByStatus(dbStatus);
+	}
+	
+	//공급업체삭제
+	public boolean removeSupplierByIdx(Long supplierIdx) {
+//		int contractCount = systemPreferencesMapper.countContractsBySupplierIdx(supplierIdx);
+//	    if (contractCount > 0) {
+	        // 계약이 있어서 삭제 불가
+	        return false;
+//	    }
+//	    int deletedRows = systemPreferencesMapper.deleteSupplierByIdx(supplierIdx);
+//	    return deletedRows > 0;
+	}
+
 	
 	
 	

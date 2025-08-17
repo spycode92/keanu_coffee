@@ -5,14 +5,22 @@
 <head>
     <meta charset="UTF-8" />
     <title>관리자페이지 - 조직 관리</title>
+    <!-- jquery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!--  bootstrap사용 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- sweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- 기본포맷css, js -->
     <link href="/resources/css/common/common.css" rel="stylesheet" />
     <script src="/resources/js/common/common.js"></script>
+    <!-- 기능별커스텀js -->
     <script src="/resources/js/admin/system_preferences/dept_team_role.js"></script>
     <script src="/resources/js/admin/system_preferences/supplier_manage.js"></script>
+    <!-- 다음주소찾기api -->
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    
     <style>
         .department-item.active,
         .team-item.active,
@@ -67,7 +75,39 @@
 		    background-color: rgba(234, 110, 110, 0.8); /* 더 진한 배경색 */
 		    color: #fff;
 		}
-	
+		
+		.dark .table th,
+		.dark .table td {
+		    color: var(--foreground) !important;  /* 다크모드 전역 글씨색에 맞춤 */
+		    background-color: transparent;        /* 필요시 배경도 지정 가능 */
+		}
+		
+		/* 혹은 라이트/다크 모두 대응하려면 일반 스타일 보완 */
+		.table th,
+		.table td {
+		    color: var(--foreground);             /* 바탕색과 동일하게 */
+		    background-color: transparent;
+		}
+		.dark .form-control {
+		    background-color: oklch(0.68 0.01 131.24);
+		}
+		
+		.supplier-name-area {
+		    display: flex;
+		    align-items: center;
+		    min-width: 0; /* flex에서 ellipsis 잘 적용됨 */
+		}
+		.supplier-name-text {
+		    max-width: 90px;
+		    white-space: nowrap;
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+		    display: inline-block;
+		}
+		
+		.list-group-item {
+			padding-right: 0;
+		}
 		
     </style>
 </head>
@@ -122,139 +162,127 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- ---------------------------------------------------------------------------------------------- -->
-            <!-- 거래처관리 -->
-            <div class="container mt-4">
-	            <h4 class="mt-4 mb-3"><i class="fas fa-users"></i>공급계약 관리</h4>
+            <!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
+			<div class="container mt-4">
+			    <!-- 제목 -->
+			    <h4 class="mb-4">공급계약 관리</h4>
+			
 			    <div class="row">
-			        <!-- 공급업체 리스트 -->
+			        <!-- 좌측: 공급업체, 상품 관리 (조직관리 좌측 두 칸 크기 동일) -->
 			        <div class="col-md-4">
-			            <div class="card h-100">
+			            <!-- 공급업체 카드 -->
+			            <div class="card mb-4">
 			                <div class="card-header d-flex justify-content-between align-items-center">
 			                    <span>공급업체</span>
-			                    <button type="button" id="btnAddSupplier" class="btn btn-sm btn-primary">추가</button>
+			                    <button type="button" id="btnAddSupplier" class="btn btn-sm btn-primary">+</button>
 			                </div>
-			                <ul id="supplierList" class="list-group list-group-flush" style="overflow-y: auto; max-height: 500px;">
-			                    <!-- 공급업체 리스트 동적 생성 -->
+			                <div class="mb-2">
+							    <label class="mr-2"><input type="radio" name="supplierStatus" value="ALL" checked>전체</label>
+							    <label class="mr-2"><input type="radio" name="supplierStatus" value="HAS_CONTRACT">계약중</label>
+							    <label class="mr-2"><input type="radio" name="supplierStatus" value="NO_CONTRACT">미계약</label>
+							</div>
+			                <ul id="supplierList" class="list-group list-group-flush" style="max-height: 150px; overflow-y: auto;">
+								<!-- 공급업체리스트표시 -->
+			                </ul>
+			            </div>
+			
+			            <!-- 상품 카드 -->
+			            <div class="card">
+			                <div class="card-header d-flex justify-content-between align-items-center">
+			                    <span>상품</span>
+			                    <button type="button" id="btnAddProduct" class="btn btn-sm btn-primary">+</button>
+			                </div>
+			                <ul id="productList" class="list-group list-group-flush" style="max-height: 150px; overflow-y: auto;">
+   			                    <c:forEach var="product" items="${productList }">
+			                    	<li>${product.productName }</li>
+			                    </c:forEach>
 			                </ul>
 			            </div>
 			        </div>
-			        <!-- 공급계약 리스트 -->
-			        <div class="col-md-4">
+			
+			        <!-- 우측: 계약 리스트 (조직관리 우측 한 칸 크기 동일) -->
+			        <div class="col-md-8">
 			            <div class="card h-100">
 			                <div class="card-header d-flex justify-content-between align-items-center">
-			                    <span>공급계약 리스트</span>
-			                    <button type="button" id="btnAddContract" class="btn btn-sm btn-primary" disabled>추가</button>
+			                    <span>공급계약</span>
+			                    <button type="button" id="btnAddContract" class="btn btn-sm btn-primary">+</button>
 			                </div>
-			                <ul id="contractList" class="list-group list-group-flush" style="overflow-y: auto; max-height: 500px;">
-			                    <!-- 계약 리스트 동적 생성 -->
-			                </ul>
+			                <div class="table-responsive mt-3" style="max-height: 300px; overflow-y: auto;">
+			                    <table class="table" id="contractTable">
+			                        <thead>
+			                            <tr>
+			                                <th>공급업체</th>
+			                                <th>상품명</th>
+			                                <th>계약단가</th>
+			                                <th>계약기간</th>
+			                                <th>상태</th>
+			                            </tr>
+			                        </thead>
+			                        <tbody>
+			                            <c:forEach var="contract" items="${supplyContractList}">
+			                            
+			            	            	<tr>
+												<td>${contract.supplierName }</td>
+												<td>${contract.productName }</td>
+												<td>${contract.contractPrice }</td>
+												<td>${contract.contractStart } ~ ${contract.contractEnd }</td>
+												<td>${contract.status }</td>
+											</tr>		                            	
+			                            </c:forEach>
+			                        </tbody>
+			                    </table>
+			                </div>
 			            </div>
-			        </div>
-			        <!-- 계약 상세보기 모달은 별도 위치에 존재하며, 모달로 화면과 겹치므로 따로 칸에 포함하지 않습니다 -->
-			    </div>
-			    
-			    <!-- 공급업체 추가/수정용 모달 -->
-				<div class="modal fade" id="supplierModal" tabindex="-1" aria-labelledby="supplierModalLabel" aria-hidden="true">
-				    <div class="modal-dialog">
-				        <form id="supplierForm">
-				            <div class="modal-content">
-				                <div class="modal-header">
-				                    <h5 class="modal-title" id="supplierModalLabel">공급업체 등록</h5>
-				                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="닫기"></button>
-				                </div>
-				                <div class="modal-body">
-				                    <div class="mb-3">
-				                        <label for="companyName" class="form-label">업체명</label>
-				                        <input type="text" class="form-control" id="companyName" name="companyName" required />
-				                    </div>
-				                    <div class="mb-3">
-				                        <label for="contactPerson" class="form-label">담당자명</label>
-				                        <input type="text" class="form-control" id="contactPerson" name="contactPerson" />
-				                    </div>
-				                    <div class="mb-3">
-				                        <label for="phoneNumber" class="form-label">연락처</label>
-				                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" />
-				                    </div>
-				                    <div class="mb-3">
-				                        <label for="address" class="form-label">주소</label>
-				                        <input type="text" class="form-control" id="address" name="address" />
-				                    </div>
-				                    <div class="mb-3">
-				                        <label for="note" class="form-label">비고</label>
-				                        <textarea class="form-control" id="note" name="note" rows="3"></textarea>
-				                    </div>
-				                </div>
-				                <div class="modal-footer">
-				                    <button type="button" class="btn btn-secondary btn-custom-cancel"  data-dismiss="modal" >취소</button>
-				                    <button type="submit" class="btn btn-primary">저장</button>
-				                </div>
-				            </div>
-				        </form>
-				    </div>
-				</div>
-			    
-			
-			    <!-- 계약 상세보기 모달 -->
-			    <div class="modal fade" id="contractDetailModal" tabindex="-1" aria-labelledby="contractDetailModalLabel" aria-hidden="true">
-			        <div class="modal-dialog">
-			            <form id="contractDetailForm">
-			                <div class="modal-content">
-			                    <div class="modal-header">
-			                        <h5 class="modal-title" id="contractDetailModalLabel">계약 상세정보</h5>
-			                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="닫기"></button>
-			                    </div>
-			                    <div class="modal-body">
-			                        <input type="hidden" id="modalContractIdx" name="contractIdx" />
-			                        <input type="hidden" id="modalSupplierIdx" name="supplierIdx" />
-			                        <div class="mb-3">
-			                            <label for="modalProductName" class="form-label">상품명</label>
-			                            <input type="text" class="form-control" id="modalProductName" name="productName" readonly />
-			                        </div>
-			                        <div class="mb-3">
-			                            <label for="modalContractPrice" class="form-label">계약 단가</label>
-			                            <input type="number" class="form-control" id="modalContractPrice" name="contractPrice" required />
-			                        </div>
-			                        <div class="mb-3">
-			                            <label for="modalContractStart" class="form-label">계약 시작일</label>
-			                            <input type="date" class="form-control" id="modalContractStart" name="contractStart" required />
-			                        </div>
-			                        <div class="mb-3">
-			                            <label for="modalContractEnd" class="form-label">계약 종료일</label>
-			                            <input type="date" class="form-control" id="modalContractEnd" name="contractEnd" required />
-			                        </div>
-			                        <div class="mb-3">
-			                            <label for="modalMinOrderQuantity" class="form-label">최소 발주 수량</label>
-			                            <input type="number" class="form-control" id="modalMinOrderQuantity" name="minOrderQuantity" min="0" />
-			                        </div>
-			                        <div class="mb-3">
-			                            <label for="modalMaxOrderQuantity" class="form-label">최대 발주 수량</label>
-			                            <input type="number" class="form-control" id="modalMaxOrderQuantity" name="maxOrderQuantity" min="0" />
-			                        </div>
-			                        <div class="mb-3">
-			                            <label for="modalStatusSelect" class="form-label">계약 상태</label>
-			                            <select class="form-select" id="modalStatusSelect" name="status" required>
-			                                <option value="활성">활성</option>
-			                                <option value="비활성">비활성</option>
-			                                <option value="대기">대기</option>
-			                            </select>
-			                        </div>
-			                        <div class="mb-3">
-			                            <label for="modalNotes" class="form-label">비고</label>
-			                            <textarea class="form-control" id="modalNotes" name="notes" rows="3"></textarea>
-			                        </div>
-			                    </div>
-			                    <div class="modal-footer">
-			                        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-			                        <button type="submit" class="btn btn-primary">저장</button>
-			                    </div>
-			                </div>
-			            </form>
 			        </div>
 			    </div>
 			</div>
-            
+			
+			<!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
+            <!-- 공급업체 등록 모달 -->
+            <div class="modal fade" id="supplierModal" tabindex="-1" aria-labelledby="supplierModalLabel" aria-hidden="true">
+			    <div class="modal-dialog">
+			        <form id="supplierForm">
+			            <div class="modal-content">
+			                <div class="modal-header">
+			                    <h5 class="modal-title" id="supplierModalLabel">공급업체 등록</h5>
+			                    <button type="button" class="close" data-dismiss="modal" aria-label="닫기">
+			                        <span aria-hidden="true">&times;</span>
+			                    </button>
+			                </div>
+			                <div class="modal-body">
+			                    <div class="form-group">
+			                        <label for="supplierName">업체명</label>
+			                        <input type="text" class="form-control" id="supplierName" name="supplierName" required>
+			                    </div>
+			                    <div class="form-group">
+			                        <label for="supplierManager">담당자</label>
+			                        <input type="text" class="form-control" id="supplierManager" name="supplierManager" required>
+			                    </div>
+			                    <div class="form-group">
+			                        <label for="supplierManagerPhone">연락처</label>
+			                        <input type="text" class="form-control" id="supplierManagerPhone" name="supplierManagerPhone" required>
+			                    </div>
+			                   <div class="form-group">
+								    <label for="supplierZipcode" class="mb-1"><b>우편번호</b></label>
+								    <div class="d-flex">
+								        <input type="text" class="form-control mr-2" id="supplierZipcode" name="supplierZipcode" placeholder="Zipcode" readonly style="max-width:150px;">
+								        <button type="button" class="btn btn-primary" id="btnSearchAddress">우편번호 확인</button>
+								    </div>
+								</div>
+								<div class="form-group mb-1">
+								    <label for="supplierAddress" class="mb-1"><b>주소</b></label>
+								    <input type="text" class="form-control mb-2" id="supplierAddress1" name="supplierAddress1" placeholder="Address1" readonly >
+								    <input type="text" class="form-control" id="supplierAddress2" name="supplierAddress2" placeholder="Address2" required>
+								</div>
+			                </div>
+			                <div class="modal-footer">
+			                    <button type="button" class="btn btn-secondary btn-custom-cancel" data-dismiss="modal">취소</button>
+			                    <button type="submit" class="btn btn-primary">등록</button>
+			                </div>
+			            </div>
+			        </form>
+			    </div>
+			</div>
             
             
             

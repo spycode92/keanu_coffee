@@ -101,6 +101,66 @@
 		SET role_name = #{roleName}
 		where idx = #{idx}
 	</update>
+	
+	<!-- 공급업체리스트 -->
+	<select id="selectSuppliersInfo" resultType="SupplierProductContractDTO">
+		SELECT 
+		    s.idx,
+		    s.supplier_name,
+		    s.supplier_manager,
+		    s.supplier_manager_phone,
+		    s.supplier_zipcode,
+		    s.supplier_address1,
+		    s.supplier_address2,
+		    -- 계약이 존재하면 1, 아니면 0
+		    CASE WHEN COUNT(spc.idx) > 0 THEN 1 ELSE 0 END AS hasContract
+		FROM 
+		    supplier s
+		LEFT JOIN 
+		    supplier_product_contract spc
+		    ON s.idx = spc.supplier_idx
+		    AND spc.status = '활성'
+		GROUP BY 
+		    s.idx
+		ORDER BY 
+		    s.idx;
+	</select>
+	
+	<!-- 등록된상품리스트 -->
+	<select id="selectProductsInfo" resultType="SupplierProductContractDTO">
+		SELECT *
+		FROM product
+	</select>
+	
+	<!-- 등록된상품리스트 -->
+	<select id="selectSupplyContractsInfo" resultType="SupplierProductContractDTO">
+		SELECT *
+		FROM v_supplier_product_contract_details
+	</select>
+	
+	<!-- 공급업체등록 -->
+	<insert id="insertSupplier" parameterType="SupplierProductContractDTO" useGeneratedKeys="true" keyProperty="idx">
+		INSERT INTO supplier
+			(supplier_name
+			, supplier_manager
+			, supplier_manager_phone
+			, supplier_zipcode
+			, supplier_address1
+			, supplier_address2)
+		VALUES
+			(#{supplierName}
+			, #{supplierManager}
+			, #{supplierManagerPhone}
+			, #{supplierZipcode}
+			, #{supplierAddress1}
+			, #{supplierAddress2})
+	</insert>
+	
+	<!-- 공급업체필터링 -->
+	<select id="selectSupplierByStatus" resultType="SupplierProductContractDTO">
+		SELECT * FROM supplier
+    	WHERE status = #{dbStatus}
+	</select>
 
 	
 

@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
 
 @Mapper
 public interface SystemPreferencesMapper {
@@ -45,12 +46,23 @@ public interface SystemPreferencesMapper {
 	
 	//부서삭제
 	int deleteDepartment(Long departmentIdx);
-
+	//부서이름 변경
 	int updateDepartment(@Param("idx") int idx, @Param("departmentName") String departmentName);
-
+	//팀이름 변경
 	int updateTeam(@Param("idx")int idx, @Param("teamName")String teamName);
-
+	//직책이름 변경
 	int updateRole(@Param("idx")int idx, @Param("roleName")String roleName);
+	
+	//공급업체 리스트
+	List<SupplierProductContractDTO> selectSuppliersInfo();
+	//등록된상품리스트
+	List<SupplierProductContractDTO> selectProductsInfo();
+	//공급업체계약리스트
+	List<SupplierProductContractDTO> selectSupplyContractsInfo();
+	// 공급업체등록
+	void insertSupplier(SupplierProductContractDTO supplierDTO);
+	//공급업체 필터링
+	List<SupplierProductContractDTO> selectSupplierByStatus(String dbStatus);
 
 	
 }

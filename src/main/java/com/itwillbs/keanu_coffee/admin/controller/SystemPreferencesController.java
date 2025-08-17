@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
 import com.itwillbs.keanu_coffee.admin.service.SystemPreferencesService;
 
@@ -29,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class SystemPreferencesController {
 	private final SystemPreferencesService systemPreferencesService;
 	
-
+	// 조직관리
 	// 부서 선택시 팀, 직책 목록 보여주기
 	@GetMapping("/getTeamsAndRoles")
 	@ResponseBody
@@ -145,7 +146,6 @@ public class SystemPreferencesController {
 		}
 	}
 	
-	
 	//팀이름수정
 	@PutMapping("/modifyRole")
 	@ResponseBody
@@ -158,6 +158,38 @@ public class SystemPreferencesController {
 		}
 	}
 	
+	// ----------------------------------------------------------------------------------------------
+	// 공급계약관리
+	// 공급업체등록
+	@PostMapping("/addSupplier")
+	@ResponseBody
+	public SupplierProductContractDTO addSupplier(@RequestBody SupplierProductContractDTO supplierDto) {
+	    // service로 저장, id/idx 반영된 저장 결과 반환
+		SupplierProductContractDTO savedSupplier = systemPreferencesService.addSupplier(supplierDto);
+		
+	    // 바로 프론트로 등록된 객체 전달 (or 새로 조회하여 보낼수도 있음)
+	    return savedSupplier;
+	}
+	
+	//상태별공급업체필터링
+	@GetMapping("/suppliers")
+	@ResponseBody
+	public List<SupplierProductContractDTO> getSuppliers(@RequestParam String status) {
+        return systemPreferencesService.getSuppliersInfo();
+	}
+	
+	// 공급업체삭제
+	@DeleteMapping("/removeSupplier")
+	@ResponseBody
+	public ResponseEntity<Void> removeSupplier(@RequestBody Map<String, Long> data) {
+	    Long supplierIdx = data.get("idx");
+	    boolean deleted = systemPreferencesService.removeSupplierByIdx(supplierIdx);
+	    if (deleted) {
+	        return ResponseEntity.ok().build();
+	    } else {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
+	}
 	
 	
 	
@@ -177,9 +209,25 @@ public class SystemPreferencesController {
 	
 	@GetMapping("")
 	public String systemPreference(Model model) {
+		// 부서리스트 가져오기
 		List<DepartTeamRoleDTO> departmentList = systemPreferencesService.getDepartInfo();
-		
 		model.addAttribute("departmentList", departmentList);
+		
+		//공급처, 상품, 계약
+		//공급처 리스트 가져오기
+		List<SupplierProductContractDTO> supplierList = systemPreferencesService.getSuppliersInfo();
+		model.addAttribute("supplierList",supplierList);
+		
+		//상품 리스트 가져오기
+		List<SupplierProductContractDTO> productList = systemPreferencesService.getProductsInfo();
+		model.addAttribute("productList",productList);
+		
+		//공급계약 리스트 가져오기
+		List<SupplierProductContractDTO> supplyContractList = systemPreferencesService.getsupplyContractInfo();
+		model.addAttribute("supplyContractList",supplyContractList);
+		
+		
+		
 		return "/admin/system_preferences";
 	}
 }
