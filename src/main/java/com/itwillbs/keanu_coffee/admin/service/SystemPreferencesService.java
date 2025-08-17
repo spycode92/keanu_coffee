@@ -159,13 +159,24 @@ public class SystemPreferencesService {
 	
 	//공급업체삭제
 	public boolean removeSupplierByIdx(Long supplierIdx) {
-//		int contractCount = systemPreferencesMapper.countContractsBySupplierIdx(supplierIdx);
-//	    if (contractCount > 0) {
-	        // 계약이 있어서 삭제 불가
-	        return false;
-//	    }
-//	    int deletedRows = systemPreferencesMapper.deleteSupplierByIdx(supplierIdx);
-//	    return deletedRows > 0;
+		int activeContractCount = systemPreferencesMapper.countActiveContractsBySupplier(supplierIdx);
+		if (activeContractCount > 0) {
+            // 계약이 남아있어서 삭제 불가
+            return false;
+        }
+		// 실제 삭제 수행 (0이면 실패/예외처리)
+        int deletedCnt = systemPreferencesMapper.deleteSupplierByIdx(supplierIdx);
+        return deletedCnt > 0;
+	}
+	
+	//공급업체 상세보기
+	public SupplierProductContractDTO selectSupplierByIdx(Long idx) {
+
+		return systemPreferencesMapper.selectSupplierInfo(idx);
+	}
+	//공급업체 정보변경
+	public int modifySupplier(SupplierProductContractDTO supplier) {
+		return systemPreferencesMapper.updateSupplier(supplier);
 	}
 
 	

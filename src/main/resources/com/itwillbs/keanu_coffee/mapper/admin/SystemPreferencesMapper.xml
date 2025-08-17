@@ -161,6 +161,40 @@
 		SELECT * FROM supplier
     	WHERE status = #{dbStatus}
 	</select>
+	
+	<!-- 공급업체의 활성화된 계약 갯수 -->
+	<select id="countActiveContractsBySupplier" resultType="int" parameterType="long">
+		SELECT COUNT(*)
+		FROM supplier_product_contract
+		WHERE supplier_idx = #{supplierIdx}
+		AND status = '활성'
+	</select>
+	
+	<!-- 공급업체 삭제 -->
+	<delete id="deleteSupplierByIdx" parameterType="long">
+		DELETE FROM supplier
+		WHERE idx = #{supplierIdx}
+	</delete>
+	
+	<!-- 공급업체상세정보 -->
+	<select id="selectSupplierInfo" resultType="SupplierProductContractDTO">
+		SELECT *
+		FROM supplier
+		WHERE idx = #{idx}
+	</select>
+	
+	<!-- 공급업체정보수정 -->
+	<update id="updateSupplier">
+		UPDATE supplier
+		SET
+			supplier_name = #{supplierName}
+			, supplier_manager = #{supplierManager}
+			, supplier_manager_phone = #{supplierManagerPhone}
+			, supplier_zipcode = #{supplierZipcode}
+			, supplier_address1 = #{supplierAddress1}
+		    , supplier_address2 = #{supplierAddress2}
+		WHERE idx = #{idx}
+	</update>
 
 	
 

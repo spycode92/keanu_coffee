@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -181,16 +182,34 @@ public class SystemPreferencesController {
 	// 공급업체삭제
 	@DeleteMapping("/removeSupplier")
 	@ResponseBody
-	public ResponseEntity<Void> removeSupplier(@RequestBody Map<String, Long> data) {
-	    Long supplierIdx = data.get("idx");
-	    boolean deleted = systemPreferencesService.removeSupplierByIdx(supplierIdx);
-	    if (deleted) {
-	        return ResponseEntity.ok().build();
+	public ResponseEntity<?> removeSupplier(@RequestBody Map<String, Long> param) {
+	    Long idx = param.get("idx");
+	    boolean removed = systemPreferencesService.removeSupplierByIdx(idx);
+	    if(removed) {
+	        return ResponseEntity.ok().body("삭제되었습니다");
 	    } else {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	        return ResponseEntity.status(HttpStatus.CONFLICT).body("삭제 불가능합니다. 계약이 남아있는지 확인하십시오.");
 	    }
 	}
 	
+	//공급업체상세보기
+	@GetMapping("/supplier/{idx}")
+	@ResponseBody
+	public SupplierProductContractDTO getSupplierDetail(@PathVariable Long idx) {
+	    return systemPreferencesService.selectSupplierByIdx(idx);
+	}
+	
+	//공급업체정보수정
+	@PutMapping("/modifySupplier")
+	@ResponseBody
+	public String modifySupplier(@RequestBody SupplierProductContractDTO supplier) {
+	    int updateCount = systemPreferencesService.modifySupplier(supplier);
+	    if (updateCount > 0) {
+	        return "success";
+	    } else {
+	        return "fail";
+	    }
+	}
 	
 	
 	
