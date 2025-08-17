@@ -1,12 +1,26 @@
 package com.itwillbs.keanu_coffee.transport.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
+import com.itwillbs.keanu_coffee.common.utils.PageUtil;
+import com.itwillbs.keanu_coffee.transport.dto.VehicleDTO;
+import com.itwillbs.keanu_coffee.transport.service.VehicleService;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("transport")
+@RequiredArgsConstructor
 public class TransportController {
+	private final VehicleService vehicleService;
+	
 	// 운송 대시보드
 	@GetMapping("")
 	public String dashboard() {
@@ -20,9 +34,33 @@ public class TransportController {
 	}
 	
 	// 차량 목록 페이지
-	@GetMapping("/car")
-	public String carList() {
-		return "/transport/car";
+	@GetMapping("/vehicle")
+	public String carList(
+			@RequestParam(defaultValue = "1") int pageNum, 
+			@RequestParam(defaultValue = "all") String filter,
+			Model model) {
+		
+		int listLimit = 10;
+		int listCount = vehicleService.getVehicleCount(filter);
+		
+		if (listCount > 0) {
+			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, listCount, pageNum, 10);
+			
+			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
+				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+				model.addAttribute("targetURL", "/transport/vehicle");
+				return "commons/result_process";
+			}
+			
+			model.addAttribute("pageInfo", pageInfoDTO);
+			
+			List<VehicleDTO> vehicleList = vehicleService.getVehicleList(pageInfoDTO.getStartRow(), listLimit, filter);
+			
+			System.out.println(vehicleList);
+			
+			model.addAttribute("vehicleList", vehicleList );
+		}
+		return "/transport/vehicle";
 	}
 	
 	// 배차 관리 페이지

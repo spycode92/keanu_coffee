@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.transport.mapper.VehicleMapper">
+	<!-- 차량관리 페이징 -->
+	<select id="selectVehicleCount" resultType="int">
+		SELECT
+			COUNT(idx)
+		FROM 
+			vehicle
+		WHERE
+		<choose>
+			<when test="filter != null and filter == '미배정'">
+				status = '미배정'
+			</when>
+			<when test="filter != null and filter == '대기'">
+				status = '대기'
+			</when>
+			<when test="filter != null and filter == '운행중'">
+				status = '운행중'
+			</when>
+			<when test="filter != null and filter == '사용불가'">
+				status = '사용불가'
+			</when>
+			<otherwise>
+				1 = 1
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 차량 리스트 -->
+	<select id="selectVehicleList" resultType="com.itwillbs.keanu_coffee.transport.dto.VehicleDTO">
+		SELECT
+			v.idx AS vehicleIdx
+			, v.vehicle_number
+			, v.vehicle_type
+			, v.capacity
+			, v.status
+			, v.manufacture_year
+			, v.manufacturer_model
+			, e.emp_name AS driverName
+		FROM
+			vehicle v
+		LEFT OUTER JOIN
+			employee_info e
+		ON 
+			v.driver_idx = e.idx
+		WHERE
+		<choose>
+			<when test="filter != null and filter == '미배정'">
+				v.status = '미배정'
+			</when>
+			<when test="filter != null and filter == '대기'">
+				v.status = '대기'
+			</when>
+			<when test="filter != null and filter == '운행중'">
+				v.status = '운행중'
+			</when>
+			<when test="filter != null and filter == '사용불가'">
+				v.status = '사용불가'
+			</when>
+			<otherwise>
+				1 = 1
+			</otherwise>
+		</choose>
+		LIMIT
+			#{startRow}     
+			, #{listLimit} 
+	</select>
+	
+	<!-- 차량 추가 -->
+	<insert id="insertVehicle">
+		INSERT INTO vehicle
+		VALUES(
+			null
+			, #{vehicleNumber}
+			, #{vehicleType}
+			, #{capacity}
+			, '미배정'
+			, #{manufactureYear}
+			, #{manufacturerModel}
+			, null
+			, current_timestamp
+			, null
+		)
+	</insert>
+	
+	<!-- 차량번호 중복검사 -->
+	<select id="countByVehicleNumber" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM
+			vehicle
+		WHERE
+			vehicle_number = #{vehicleNumber}
+	</select>
+	
+</mapper>

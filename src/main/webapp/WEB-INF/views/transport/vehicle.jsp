@@ -11,8 +11,10 @@
 <link
 	href="${pageContext.request.contextPath}/resources/css/common/common.css"
 	rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script
 	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/transport/vehicle.js" defer></script>
 <style type="text/css">
 .container {
 	max-width: 1264px;
@@ -51,6 +53,11 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 	font-weight: 700
 }
 
+.badge.unassigned {
+  background: #fef3c7; /* amber-100 */
+  color: #92400e;      /* amber-900 */
+}
+
 .badge.wait { /* 대기 */
 	background: #e5e7eb;
 	color: #111827
@@ -85,7 +92,7 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 .modal-card {
 	width: min(860px, 96vw);
 	background: #fff;
-	border: 1px solid var(- -border);
+	border: 1px solid var(--border);
 	border-radius: 12px;
 	overflow: hidden;
 }
@@ -95,7 +102,7 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 	justify-content: space-between;
 	align-items: center;
 	padding: 14px 16px;
-	border-bottom: 1px solid var(- -border);
+	border-bottom: 1px solid var(--border);
 }
 
 .modal-body {
@@ -107,7 +114,7 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 	justify-content: flex-end;
 	gap: 8px;
 	padding: 12px 16px;
-	border-top: 1px solid var(- -border);
+	border-top: 1px solid var(--border);
 }
 
 .form .row {
@@ -123,10 +130,67 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 	margin-bottom: 10px;
 }
 
+.seg-radio{
+  display:inline-grid;
+  grid-auto-flow:column;
+  align-items:center;
+  border:1px solid var(--border);
+  border-radius:10px;
+  height:38px;              /* 다른 input과 동일 높이 */
+  overflow:hidden;
+  background:#fff;
+}
+
+/* 실제 라디오는 숨기고 라벨을 버튼처럼 */
+.seg-radio input{
+  position:absolute;
+  opacity:0;
+  width:1px; height:1px;
+  overflow:hidden;
+  clip:rect(0 0 0 0);
+}
+.seg-radio label{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:70px;           /* 버튼 넓이 */
+  padding:0 14px;
+  cursor:pointer;
+  user-select:none;
+  white-space:nowrap;
+  border-right:1px solid var(--border);
+  font-size:0.95rem;
+}
+.seg-radio label:last-of-type{ border-right:none; }
+
+/* 선택 상태 */
+.seg-radio input:checked + label{
+  background: #9db2fb;          /* 버튼 선택 색상 */
+  color: #fff;
+  border-radius: 3rem;
+}
+
+/* hover */
+.seg-radio label:hover{
+  background: #f7f7f7;
+  border-radius: 3rem;
+}
+
+/* 키보드 포커스 표시 */
+.seg-radio input:focus-visible + label{
+  outline:2px solid var(--ring, #2563eb);
+  outline-offset:-2px;
+}
+
+/* 비활성화가 필요할 때 */
+.seg-radio input:disabled + label{
+  opacity:.5; cursor:not-allowed;
+}
+
 .form input, .form select {
 	height: 38px;
 	padding: 0 10px;
-	border: 1px solid var(- -border);
+	border: 1px solid var(--border);
 	border-radius: 10px;
 }
 
@@ -160,7 +224,8 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 	        <section class="filters" aria-label="검색 및 필터">
 	            <div class="field">
 	                <select id="filterStatus">
-	                    <option value="">전체</option>
+	                    <option value="전체">전체</option>
+	                    <option value="미배정">미배정</option>
 	                    <option value="대기">대기</option>
 	                    <option value="운행중">운행중</option>
 	                    <option value="사용불가">사용불가</option>
@@ -190,7 +255,45 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 						</tr>
 					</thead>
 					<tbody>
-					
+						<c:forEach var="vehicle" items="${vehicleList}">
+							<tr id="row-${vehicle.vehicleIdx}">
+								<td><input type="checkbox"/></td>
+								<td>${vehicle.vehicleNumber}</td>
+								<td>${vehicle.vehicleType}</td>
+								<td>
+									<c:choose>
+										<c:when test="${vehicle.capacity == 1000 }">
+											1.0t
+										</c:when>
+										<c:otherwise>
+											1.5t
+										</c:otherwise>
+									</c:choose>
+								</td>
+								<td>${vehicle.manufacturerModel}</td>
+								<td>${vehicle.manufactureYear}</td>
+								<td>
+									<c:if test="${vehicle.driverName != null}">${vehicle.driverName}</c:if>
+								</td>
+								<td>
+									<c:choose>
+										<c:when test="${vehicle.status eq '미배정'}">
+											<span class="badge unassigned">${vehicle.status}</span>
+										</c:when>
+										<c:when test="${vehicle.status eq '대기'}">
+											<span class="badge wait">${vehicle.status}</span>
+										</c:when>
+										<c:when test="${vehicle.status eq '운행중'}">
+											<span class="badge run">${vehicle.status}</span>
+										</c:when>
+										<c:otherwise>
+											<span class="badge left">${vehicle.status}</span>
+										</c:otherwise>
+									</c:choose>
+								
+								</td>
+							</tr>
+						</c:forEach>
 					</tbody>
 				</table>
 			</div>
@@ -203,31 +306,40 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 					<strong id="createTitle">신규 차량 등록</strong>
 				</div>
 				<div class="modal-body">
-					<form class="form" id="createForm" onsubmit="return false;">
+					<form class="form" id="createForm" action="/transport/addVehicle" method="post">
 						<div class="row">
 							<div class="field">
-								<label>차량번호*</label> <input id="c_no" required />
+								<label>차량번호*</label> 
+								<input id="c_no" name="vehicleNumber" type="text" placeholder="123가4567 / 12가3456" required />
 							</div>
 							<div class="field">
-								<label>차종유형*</label> <input id="c_type"
+								<label>차종유형*</label> <input id="c_type" name="vehicleType" type="text"
 									placeholder="카고/윙바디/냉동탑 등" required />
 							</div>
 						</div>
 						<div class="row">
 							<div class="field">
-								<label>적재량*</label> <input id="c_cap"
-									placeholder="1.0t / 1.5t / 5t" required />
+								<label>적재량*</label>
+							  	<div class="seg-radio" role="radiogroup" aria-label="적재량">
+							    	<input id="cap-1"  type="radio" name="capacity" value="1000" required>
+							    	<label for="cap-1">1t</label>
+							
+							    	<input id="cap-15" type="radio" name="capacity" value="1500">
+							    	<label for="cap-15">1.5t</label>
+							    </div>
 							</div>
 							<div class="field">
-								<label>연식</label> <input id="c_year" placeholder="YYYY" />
+								<label>연식</label> 
+								<input id="c_year" name="manufactureYear" type="number" placeholder="YYYY"/>
 							</div>
 						</div>
 						<div class="row">
 							<div class="field">
-								<label>제조사/모델명</label> <input id="c_model" placeholder="현대 포터 등" />
+								<label>제조사/모델명</label> 
+								<input id="c_model" name="manufacturerModel" placeholder="현대 포터 등" />
 							</div>
 							<div class="field">
-								<label>고정기사명</label> <input id="c_driver" placeholder="예: 이정민" />
+								<label>고정기사명</label> <input id="c_driver" disabled/>
 							</div>
 						</div>
 						<div class="help">* 차량번호는 중복 등록 불가</div>
@@ -318,59 +430,6 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 			status : '대기'
 		} ];
 
-		// ---- 렌더링 ----
-		var vBody = document.querySelector('#vehicleTable tbody');
-
-		function badge(status) {
-			if (status === '운행중')
-				return '<span class="badge run">운행중</span>';
-			if (status === '사용불가')
-				return '<span class="badge block">사용불가</span>';
-			return '<span class="badge wait">대기</span>';
-		}
-
-		function renderTable(list) {
-			vBody.innerHTML = '';
-			list
-					.forEach(function(v) {
-						var tr = document.createElement('tr');
-						tr.innerHTML = '<td><input type="checkbox" class="rowCheck" data-no="' + v.no + '"></td>'
-								+ '<td class="rowLink" data-no="' + v.no + '">'
-								+ v.no
-								+ '</td>'
-								+ '<td>'
-								+ v.type
-								+ '</td>'
-								+ '<td>'
-								+ v.cap
-								+ '</td>'
-								+ '<td>'
-								+ (v.model || '')
-								+ '</td>'
-								+ '<td>'
-								+ (v.year || '')
-								+ '</td>'
-								+ '<td>'
-								+ (v.driver || '<span class="muted">미지정</span>')
-								+ '</td>' + '<td>' + badge(v.status) + '</td>';
-						vBody.appendChild(tr);
-					});
-
-			// 행 클릭 → 수정 모달
-			Array.prototype.forEach.call(document.querySelectorAll('.rowLink'),
-					function(el) {
-						el.addEventListener('click', function(e) {
-							var no = e.currentTarget.getAttribute('data-no');
-							openEdit(no);
-						});
-					});
-
-			// 전체 체크 초기화
-			document.getElementById('checkAll').checked = false;
-		}
-
-		// 초기 렌더
-		renderTable(vehicles);
 
 		// ---- 전체 체크 ----
 		document.getElementById('checkAll').addEventListener(
@@ -383,65 +442,6 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 					});
 				});
 
-		// ---- 등록 모달 ----
-		var createModal = document.getElementById('createModal');
-		document.getElementById('openCreate').addEventListener('click',
-				function() {
-					document.getElementById('c_no').value = '';
-					document.getElementById('c_type').value = '';
-					document.getElementById('c_cap').value = '';
-					document.getElementById('c_year').value = '';
-					document.getElementById('c_model').value = '';
-					document.getElementById('c_driver').value = '';
-					createModal.classList.add('open');
-				});
-		document.getElementById('cancelCreate').addEventListener('click',
-				function() {
-					createModal.classList.remove('open');
-				});
-
-		document
-				.getElementById('saveCreate')
-				.addEventListener(
-						'click',
-						function() {
-							var no = document.getElementById('c_no').value
-									.trim();
-							var type = document.getElementById('c_type').value
-									.trim();
-							var cap = document.getElementById('c_cap').value
-									.trim();
-							var year = document.getElementById('c_year').value
-									.trim();
-							var model = document.getElementById('c_model').value
-									.trim();
-							var driver = document.getElementById('c_driver').value
-									.trim();
-
-							if (!no || !type || !cap) {
-								alert('차량번호/차종유형/적재량은 필수입니다.');
-								return;
-							}
-							var dup = vehicles.some(function(v) {
-								return v.no === no;
-							});
-							if (dup) {
-								alert('이미 등록된 차량번호입니다.');
-								return;
-							}
-
-							vehicles.push({
-								no : no,
-								type : type,
-								cap : cap,
-								model : model,
-								year : year,
-								driver : driver,
-								status : '대기'
-							});
-							createModal.classList.remove('open');
-							applyFilter();
-						});
 
 		// ---- 수정 모달 ----
 		var editModal = document.getElementById('editModal');
