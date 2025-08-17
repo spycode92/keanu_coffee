@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -210,6 +211,62 @@ public class SystemPreferencesController {
 	        return "fail";
 	    }
 	}
+	
+	//카테고리목록조회
+    @GetMapping("/categories")
+    @ResponseBody
+    public List<SupplierProductContractDTO> getCategories() {
+        // DB에서 카테고리 정보를 Map 리스트로 반환
+    	List<SupplierProductContractDTO> categoryList = systemPreferencesService.getAllCategoriesAsMap();
+        return categoryList; 
+    }
+    
+    //카테고리추가
+    @PostMapping("/addCategory")
+    @ResponseBody
+    public void addCategory(@RequestBody SupplierProductContractDTO category) {
+    	systemPreferencesService.addCategoryFromMap(category);
+    }
+    
+    //카테고리 수정
+    @PutMapping("/modifyCategory/{categoryIdx}")
+    @ResponseBody
+    public void modifyCategory(@RequestBody SupplierProductContractDTO category) {
+    	systemPreferencesService.modifyCategory(category);
+    }
+    
+    //카테고리 삭제
+    @DeleteMapping("/removeCategory")
+    @ResponseBody
+    public ResponseEntity<?> removeCategory(@RequestBody SupplierProductContractDTO category) {
+        Integer idx = category.getIdx();
+        // 서비스에서: 이 카테고리를 참조하는 상품이 있는지 체크
+        boolean removed = systemPreferencesService.removeCategoryIfUnused(idx);
+        if(removed) {
+            return ResponseEntity.ok().contentType(MediaType.valueOf("text/plain; charset=UTF-8"))
+            		.body("카테고리가 삭제되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+            		.contentType(MediaType.valueOf("text/plain; charset=UTF-8"))
+                    	.body("상품이 연결된 카테고리는 삭제할 수 없습니다. 확인후 다시시도 하십시오.");
+        }
+    }
+	
+	
+	
+	//카테고리추가
+//	@PutMapping("/addCategory")
+//	@ResponseBody
+//	public String addCategory(@RequestBody Map<String, Object> newCategory) {
+//		String categoryName = newCategory.get("category_name");
+//		String parentCategoryName = newCategory.get("parent_category_idx");
+//		int updateCount = systemPreferencesService.addCategory(newCategory);
+//		if (updateCount > 0) {
+//			return "success";
+//		} else {
+//			return "fail";
+//		}
+//	}
 	
 	
 	

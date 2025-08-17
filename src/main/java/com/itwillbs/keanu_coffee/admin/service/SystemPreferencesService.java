@@ -1,6 +1,7 @@
 package com.itwillbs.keanu_coffee.admin.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -177,6 +178,35 @@ public class SystemPreferencesService {
 	//공급업체 정보변경
 	public int modifySupplier(SupplierProductContractDTO supplier) {
 		return systemPreferencesMapper.updateSupplier(supplier);
+	}
+	
+	// 카테고리 전체목록
+	public List<SupplierProductContractDTO> getAllCategoriesAsMap() {
+		return systemPreferencesMapper.selectAllCategoriesAsMap();
+	}
+	
+	// 카테고리 추가
+	public void addCategoryFromMap(SupplierProductContractDTO category) {
+		systemPreferencesMapper.insertCategory(category);
+
+	}
+
+	public void modifyCategory(SupplierProductContractDTO category) {
+		systemPreferencesMapper.updateCategory(category);		
+	}
+
+	public boolean removeCategoryIfUnused(Integer idx) {
+		//상품 테이블에 해당 카테고리 idx를 참조하는 상품이 있는지 검사
+		int productCount = systemPreferencesMapper.countProductByCategoryIdx(idx);
+		//자식카테고리가존재할때 
+		int categoryCount = systemPreferencesMapper.countCategoryByCategoryIdx(idx);
+
+		if(productCount == 0 && categoryCount == 0) {
+			systemPreferencesMapper.deleteCategory(idx);
+			return true;
+		}
+		
+		return false;
 	}
 
 	

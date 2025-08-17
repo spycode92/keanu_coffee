@@ -4,12 +4,12 @@ import lombok.Data;
 
 @Data
 public class DepartTeamRoleDTO {
-	private int idx;
+	private Integer idx;
 	private String departmentName;
-	private int departmentIdx;
+	private Integer departmentIdx;
 	private String teamName;
-	private int teamIdx;
+	private Integer teamIdx;
 	private String roleName;
-	private int roleIdx;
+	private Integer roleIdx;
 	
 }

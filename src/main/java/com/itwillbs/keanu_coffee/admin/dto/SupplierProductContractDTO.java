@@ -19,7 +19,7 @@ public class SupplierProductContractDTO implements FileUploadHelpper {
 	private int idx;
 
 	// 공급업체정보
-	private int supplierIdx;
+	private Integer supplierIdx;
 	private String supplierName;
 	private String supplierManager;
 	private String supplierManagerPhone;
@@ -27,17 +27,18 @@ public class SupplierProductContractDTO implements FileUploadHelpper {
 	private String supplierAddress1;
 	private String supplierAddress2;
 	
-	private int hasContract; //공급업체가 계약이있는지 없는지 확인
+	private Integer hasContract; //공급업체가 계약이있는지 없는지 확인
 	
 	
 	//카테고리
     private String categoryName;
-    private int parentCategoryIdx;
+    private Integer parentCategoryIdx;
+    private String parentCategoryName;
 
 	//상품정보
-	private int productIdx;
+	private Integer productIdx;
 	private String productName;
-	private int categoryIdx;
+	private Integer categoryIdx;
 	private BigDecimal productWeight;
     private BigDecimal productWidth;
     private BigDecimal productLength;
@@ -46,12 +47,12 @@ public class SupplierProductContractDTO implements FileUploadHelpper {
     private String productFrom;
     
     //공급계약정보
-    private int supplyContractIdx;
-    private int contractPrice;
+    private Integer supplyContractIdx;
+    private Integer contractPrice;
     private Date contractStart;
     private Date contractEnd;
-    private int minOrderQuantitiy;
-    private int maxOrderQuantity;
+    private Integer minOrderQuantitiy;
+    private Integer maxOrderQuantity;
     private String status;
 
 	// 공통
@@ -84,7 +85,7 @@ public class SupplierProductContractDTO implements FileUploadHelpper {
 		return "product";
 	}
 	@Override
-	public int getTargetTableIdx() {
+	public Integer getTargetTableIdx() {
 		return idx;
 	}
 }

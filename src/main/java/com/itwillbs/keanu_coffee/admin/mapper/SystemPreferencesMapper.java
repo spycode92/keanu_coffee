@@ -1,6 +1,7 @@
 package com.itwillbs.keanu_coffee.admin.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -71,6 +72,18 @@ public interface SystemPreferencesMapper {
 	SupplierProductContractDTO selectSupplierInfo(Long idx);
 	// 공급업체 정보 수정
 	int updateSupplier(SupplierProductContractDTO supplier);
+	//카테고리목록
+	List<SupplierProductContractDTO> selectAllCategoriesAsMap();
+	//카테고리추가
+	void insertCategory(SupplierProductContractDTO category);
+	// 카테고리수정
+	void updateCategory(SupplierProductContractDTO category);
+	//카테고리에 제품이있나 확인
+	int countProductByCategoryIdx(Integer idx);
+	//카테고리에 자식카테고리가있나확인
+	int countCategoryByCategoryIdx(Integer idx);
+	// 카테고리삭제
+	void deleteCategory(Integer idx);
 
 	
 }

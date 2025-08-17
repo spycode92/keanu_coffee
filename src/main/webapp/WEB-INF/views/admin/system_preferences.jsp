@@ -18,6 +18,7 @@
     <!-- 기능별커스텀js -->
     <script src="/resources/js/admin/system_preferences/dept_team_role.js"></script>
     <script src="/resources/js/admin/system_preferences/supplier_manage.js"></script>
+    <script src="/resources/js/admin/system_preferences/product_manage.js"></script>
     <!-- 다음주소찾기api -->
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     
@@ -32,6 +33,11 @@
         .supplier-modal .modal-content {
 		    background-color: #f5f1e9 !important; /* 부드러운 베이지색 */
 		    color: #000 !important;               /* 글자색 검정 */
+		}
+		
+		.product-modal .modal-content {
+		    background-color: #f5f1e9;  /* 부드러운 베이지색 배경 예시 */
+		    color: #000;                /* 검정 글자색 */
 		}
 		
 		.supplier-modal label,
@@ -87,16 +93,42 @@
 		    display: inline-block;
 		}
 		
+		#categoryListInModal {
+		    list-style: none;  /* 불릿 제거 */
+		    padding-left: 0;   /* 기본 들여쓰기 제거 */
+		    margin-left: 0;    /* 필요 시 마진도 제거 */
+		}
 		.list-group-item {
 			padding-right: 0;
 		}
+		.parent-category-bg {
+		    background-color: #d5d3b8; 
+		}
 		
+		.child-category-bg {
+		    background-color: #b3b5ac;
+		}
+		#btnCategoryManage {
+		    background-color: #e8bfbf;
+		    border-color: #e8bfbf;
+		    color: #000;
+		    transition: background-color 0.3s ease, border-color 0.3s ease;
+		}
+		
+		#btnCategoryManage:hover,
+		#btnCategoryManage:focus {
+		    background-color: #efa9a9;  /* 호버 시 더 진한 색 */
+		    border-color: #d59e9e;
+		    color: #000;
+		    text-decoration: none;
+		}
     </style>
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
     <jsp:include page="/WEB-INF/views/admin/preference_modal/add_supplier.jsp"></jsp:include>
     <jsp:include page="/WEB-INF/views/admin/preference_modal/detail_supplier.jsp"></jsp:include>
+    <jsp:include page="/WEB-INF/views/admin/preference_modal/add_product.jsp"></jsp:include>
     <section class="content">
         <div class="container">
             <h4 class="mt-4 mb-3"><i class="fas fa-users"></i> 조직 관리</h4>
@@ -146,6 +178,8 @@
                     </div>
                 </div>
             </div>
+            
+            
             <!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
 			<div class="container mt-4">
 			    <!-- 제목 -->

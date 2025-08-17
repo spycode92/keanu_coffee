@@ -64,7 +64,7 @@ public class FileUtils {
 	public interface FileUploadHelpper{
 		MultipartFile[] getFiles();
 		String getTargetTable();
-		int getTargetTableIdx();
+		Integer getTargetTableIdx();
 	}
 	
 	// 파일 업로드
