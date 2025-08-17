@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -114,6 +115,43 @@ public class SystemPreferencesController {
 		Long idx = data.get("idx");
 		boolean deleted = systemPreferencesService.deleteRoleByIdx(idx);
 		if (deleted) {
+			return ResponseEntity.ok().build();
+		} else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+	
+	//부서이름수정
+	@PutMapping("/modifyDepartment")
+	@ResponseBody
+	public ResponseEntity<Void> modifyDepartment(@RequestBody DepartTeamRoleDTO dto) {
+	    boolean success = systemPreferencesService.modifyDepartmentName(dto.getIdx(), dto.getDepartmentName());
+	    if (success) {
+	        return ResponseEntity.ok().build();
+	    } else {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
+	}
+	
+	//팀이름수정
+	@PutMapping("/modifyTeam")
+	@ResponseBody
+	public ResponseEntity<Void> modifyTeam(@RequestBody DepartTeamRoleDTO dto) {
+		boolean success = systemPreferencesService.modifyTeamName(dto.getIdx(), dto.getTeamName());
+		if (success) {
+			return ResponseEntity.ok().build();
+		} else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+	
+	
+	//팀이름수정
+	@PutMapping("/modifyRole")
+	@ResponseBody
+	public ResponseEntity<Void> modifyRole(@RequestBody DepartTeamRoleDTO dto) {
+		boolean success = systemPreferencesService.modifyRoleName(dto.getIdx(), dto.getRoleName());
+		if (success) {
 			return ResponseEntity.ok().build();
 		} else {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

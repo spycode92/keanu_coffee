@@ -80,6 +80,27 @@
 		DELETE FROM department
 		where idx = #{departmentIdx}
 	</delete>
+	
+	<!-- 부서이름 수정 -->
+	<update id="updateDepartment">
+		UPDATE department 
+		SET department_name = #{departmentName}
+		where idx = #{idx}
+	</update>
+	
+	<!-- 팀이름변경 -->
+	<update id="updateTeam">
+		UPDATE team
+		SET team_name = #{teamName}
+		where idx = #{idx}
+	</update>
+	
+	<!-- 직책이름변경 -->
+	<update id="updateRole">
+		UPDATE role
+		SET role_name = #{roleName}
+		where idx = #{idx}
+	</update>
 
 	
 

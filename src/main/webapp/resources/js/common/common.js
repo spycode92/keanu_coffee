@@ -130,12 +130,18 @@ const InfoModalManager = {
     },
     bindEvents: function() {
         if (!this.modal) return;
-		//?.chain구문버그 작동이상x
+		//?. 옵셔널 체인 구문버그 작동이상x
         // 열기
-        this.openBtn?.addEventListener('click', () => this.open());
+		if(this.openBtn){
+	        this.openBtn.addEventListener('click', () => this.open());
+		}
         // 닫기 (X, 취소)
-        this.closeBtn?.addEventListener('click', () => this.close());
-        this.cancelBtn?.addEventListener('click', () => this.close());
+		if(this.closeBtn){
+	        this.closeBtn.addEventListener('click', () => this.close());
+		}
+		if(this.cancelBtn){
+	        this.cancelBtn.addEventListener('click', () => this.close());
+		}
         // 배경 클릭 시 닫기
         this.modal.addEventListener('click', (e) => {
             if (e.target === this.modal) this.close();

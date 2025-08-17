@@ -185,6 +185,83 @@ $(function () {
 	    }
 	});
 	
+	//부서 수정
+	$(document).on('click', '.btn-edit-department', function(e) {
+	    e.stopPropagation();
+	    let $li = $(this).closest('li');
+	    let currentName = $li.find('.department-name').text();
+	    let deptIdx = $li.data('departmentidx');
+	
+	    let newName = prompt("부서명을 수정하세요:", currentName);
+
+	    if (newName && newName.trim() !== '' && newName !== currentName) {
+	        $.ajax({
+	            url: '/admin/systemPreference/modifyDepartment',
+	            method: 'PUT',
+	            contentType: 'application/json',
+	            data: JSON.stringify({ idx: deptIdx, departmentName: newName.trim() }),
+	            success: function() {
+	                $li.find('.department-name').text(newName.trim());
+	                alert('부서명이 수정되었습니다.');
+	            },
+	            error: function() {
+	                alert('부서명 수정에 실패했습니다.');
+	            }
+	        });
+	    }
+	});
+	
+	//팀수정
+	$(document).on('click', '.btn-edit-team', function(e) {
+	    e.stopPropagation();
+	    let $li = $(this).closest('li');
+	    let currentName = $li.find('span').text();
+	    let teamIdx = $li.data('teamidx');
+	
+	    let newName = prompt("팀명을 수정하세요:", currentName);
+	    if (newName && newName.trim() !== '' && newName !== currentName) {
+	        $.ajax({
+	            url: '/admin/systemPreference/modifyTeam',
+	            method: 'PUT',
+	            contentType: 'application/json',
+	            data: JSON.stringify({ idx: teamIdx, teamName: newName.trim() }),
+	            success: function() {
+	                $li.find('span').text(newName.trim());
+	                alert('팀명이 수정되었습니다.');
+	            },
+	            error: function() {
+	                alert('팀명 수정에 실패했습니다.');
+	            }
+	        });
+	    }
+	});
+	//직책수정
+	$(document).on('click', '.btn-edit-role', function(e) {
+	    e.stopPropagation();
+	    let $li = $(this).closest('li');
+	    let currentName = $li.find('span').text();
+	    let roleIdx = $li.data('roleidx');
+	
+	    let newName = prompt("직책명을 수정하세요:", currentName);
+	    if (newName && newName.trim() !== '' && newName !== currentName) {
+	        $.ajax({
+	            url: '/admin/systemPreference/modifyRole',
+	            method: 'PUT',
+	            contentType: 'application/json',
+	            data: JSON.stringify({ idx: roleIdx, roleName: newName.trim() }),
+	            success: function() {
+	                $li.find('span').text(newName.trim());
+	                alert('직책명이 수정되었습니다.');
+	            },
+	            error: function() {
+	                alert('직책명 수정에 실패했습니다.');
+	            }
+	        });
+	    }
+	});
+	
+
+	
 	//부서 선택시 팀,역할 목록 불러오기
     function loadTeamsAndRoles(departmentIdx) {
 	    $('#teamList').empty();
@@ -202,7 +279,10 @@ $(function () {
 	                    $('#teamList').append(
 	                        `<li class="list-group-item d-flex justify-content-between align-items-center team-item" style="color: black;" data-teamidx="${team.idx}">
 	                            <span>${team.teamName}</span>
-	                            <button type="button" class="btn btn-sm btn-danger btn-delete-team">−</button>
+								<div>
+                                    <button type="button" class="btn btn-sm btn-secondary btn-edit-team">✎</button> 
+	                            	<button type="button" class="btn btn-sm btn-danger btn-delete-team">−</button>
+								</div>
 	                        </li>`
 	                    );
 	                });
@@ -215,7 +295,10 @@ $(function () {
 	                    $('#roleList').append(
 	                        `<li class="list-group-item d-flex justify-content-between align-items-center role-item" style="color: black;" data-roleidx="${role.idx}">
 	                            <span>${role.roleName}</span>
-	                            <button type="button" class="btn btn-sm btn-danger btn-delete-role">−</button>
+								<div>
+									<button type="button" class="btn btn-sm btn-secondary btn-edit-role">✎</button> 
+	                            	<button type="button" class="btn btn-sm btn-danger btn-delete-role">−</button>
+								</div>
 	                        </li>`
 	                    );
 	                });

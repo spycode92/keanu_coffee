@@ -56,6 +56,8 @@
 			department_idx = NULL
 		WHERE department_idx = #{departmentIdx}
 	</update>
+	
+
 
 
 

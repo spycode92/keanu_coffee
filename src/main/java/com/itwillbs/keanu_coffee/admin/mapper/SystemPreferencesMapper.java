@@ -3,6 +3,8 @@ package com.itwillbs.keanu_coffee.admin.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
 
@@ -43,6 +45,12 @@ public interface SystemPreferencesMapper {
 	
 	//부서삭제
 	int deleteDepartment(Long departmentIdx);
+
+	int updateDepartment(@Param("idx") int idx, @Param("departmentName") String departmentName);
+
+	int updateTeam(@Param("idx")int idx, @Param("teamName")String teamName);
+
+	int updateRole(@Param("idx")int idx, @Param("roleName")String roleName);
 
 	
 }

@@ -105,6 +105,26 @@ public class SystemPreferencesService {
 		return affectedRows == 1;
 	}
 	
+	//부서 이름수정
+	public boolean modifyDepartmentName(int idx, String departmentName) {
+		int affectedRows = systemPreferencesMapper.updateDepartment(idx, departmentName);
+		
+		return  affectedRows == 1;
+	}
+
+	//팀이름수정
+	public boolean modifyTeamName(int idx, String teamName) {
+		int affectedRows = systemPreferencesMapper.updateTeam(idx, teamName);
+		
+		return  affectedRows == 1;
+	}
+
+	public boolean modifyRoleName(int idx, String roleName) {
+		int affectedRows = systemPreferencesMapper.updateRole(idx, roleName);
+		
+		return  affectedRows == 1;
+	}
+	
 	
 	
 
