@@ -90,7 +90,7 @@
 			<a id="profile" href="javascript:void(0)" >
 				<c:choose>
 				<c:when test="${!empty sessionScope.sFid}">
-					<img class="avatar" alt="profile" src="/file/${sessionScope.sFid }?type=0"
+					<img class="avatar" alt="profile" src="/file/thumnail/${sessionScope.sFid }?width=40&height=40"
 						style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%; border: 1px solid #d9d9d9;">
 				</c:when>
 				<c:otherwise>
