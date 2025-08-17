@@ -1,5 +1,6 @@
 package com.itwillbs.keanu_coffee.admin.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
@@ -253,20 +256,24 @@ public class SystemPreferencesController {
     }
 	
 	
-	
-	//카테고리추가
-//	@PutMapping("/addCategory")
-//	@ResponseBody
-//	public String addCategory(@RequestBody Map<String, Object> newCategory) {
-//		String categoryName = newCategory.get("category_name");
-//		String parentCategoryName = newCategory.get("parent_category_idx");
-//		int updateCount = systemPreferencesService.addCategory(newCategory);
-//		if (updateCount > 0) {
-//			return "success";
-//		} else {
-//			return "fail";
-//		}
-//	}
+    @PostMapping("/addProduct")
+    @ResponseBody
+    public ResponseEntity<String> addProduct(@ModelAttribute SupplierProductContractDTO product) throws IOException {
+    	Boolean result = systemPreferencesService.addProduct(product);
+    	if(result) {
+    		return ResponseEntity.ok("상품이 등록되었습니다.");
+    	}
+    	
+    	return ResponseEntity.ok("상품등록에 실패하였습니다.");
+    }
+    
+    @GetMapping("/getProductList")
+    @ResponseBody
+    public List<SupplierProductContractDTO> getProdcutList(){
+    	List<SupplierProductContractDTO> productList = systemPreferencesService.getProductList();
+    	
+    	return productList;
+    }
 	
 	
 	

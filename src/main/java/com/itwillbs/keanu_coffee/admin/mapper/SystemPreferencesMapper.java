@@ -84,6 +84,10 @@ public interface SystemPreferencesMapper {
 	int countCategoryByCategoryIdx(Integer idx);
 	// 카테고리삭제
 	void deleteCategory(Integer idx);
+	//상품등록
+	int insertProduct(SupplierProductContractDTO product);
+
+	List<SupplierProductContractDTO> selectAllProductList();
 
 	
 }

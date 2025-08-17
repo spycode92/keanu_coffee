@@ -16,60 +16,61 @@
                     <!-- 상품명 -->
                     <div class="form-group">
                         <label for="productName">상품명</label>
-                        <input type="text" class="form-control" id="productName" name="product_name" required>
+                        <input type="text" class="form-control" id="productName" name="productName" required>
                     </div>
 
                     <!-- 상위 카테고리 선택 -->
                     <div class="form-group">
                         <label for="upperCategorySelect">상위 카테고리</label>
         		        <button id="btnAddCategory" class="btn btn-sm btn-primary ml-auto" style="text-align:right;">추가</button>
-						<button type="button" class="btn btn-sm btn-primary editBtn ml-2" id="btnCategoryManage" >수정/삭제</button>                        <select id="upperCategorySelect" class="form-control" required>
+						<button type="button" class="btn btn-sm btn-primary editBtn ml-2" id="btnCategoryManage" >수정/삭제</button>                        
+						<select id="upperCategorySelect" class="form-control" name="parentCategoryIdx" required>
                             <option value="">상위 카테고리 선택</option>
-                            <!-- JS에서 옵션 동적 생성 -->
+                            <!--옵션목록 -->
                         </select>
                     </div>
 
                     <!-- 하위 카테고리 선택 -->
                     <div class="form-group">
                         <label for="lowerCategorySelect">하위 카테고리</label>
-                        <select id="lowerCategorySelect" name="category_idx" class="form-control" required>
+                        <select id="lowerCategorySelect" name="categoryIdx" class="form-control" required>
                             <option value="">먼저 상위 카테고리를 선택하세요</option>
-                            <!-- JS에서 옵션 동적 생성 -->
+                            <!-- 옵션목록 -->
                         </select>
                     </div>
 
                     <!-- 상품 무게 -->
                     <div class="form-group">
                         <label for="productWeight">무게 (kg)</label>
-                        <input type="number" class="form-control" id="productWeight" name="product_weight" step="0.01" min="0">
+                        <input type="number" class="form-control" id="productWeight" name="productWeight" step="0.01" min="0">
                     </div>
 
                     <!-- 가로, 세로, 높이 -->
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="productWidth">가로 (cm)</label>
-                            <input type="number" class="form-control" id="productWidth" name="product_width" step="0.01" min="0">
+                            <input type="number" class="form-control" id="productWidth" name="productWidth" step="0.01" min="0">
                         </div>
                         <div class="form-group col-md-4">
                             <label for="productLength">세로 (cm)</label>
-                            <input type="number" class="form-control" id="productLength" name="product_length" step="0.01" min="0">
+                            <input type="number" class="form-control" id="productLength" name="productLength" step="0.01" min="0">
                         </div>
                         <div class="form-group col-md-4">
                             <label for="productHeight">높이 (cm)</label>
-                            <input type="number" class="form-control" id="productHeight" name="product_height" step="0.01" min="0">
+                            <input type="number" class="form-control" id="productHeight" name="productHeight" step="0.01" min="0">
                         </div>
                     </div>
 
                     <!-- 부피 -->
                     <div class="form-group">
                         <label for="productVolume">부피</label>
-                        <input type="number" class="form-control" id="productVolume" name="product_volume" step="0.01" min="0">
+                        <input type="number" class="form-control" id="productVolume" name="productVolume" step="0.01" min="0" readonly>
                     </div>
 
                     <!-- 원산지 -->
                     <div class="form-group">
                         <label for="productFrom">원산지</label>
-                        <input type="text" class="form-control" id="productFrom" name="product_from">
+                        <input type="text" class="form-control" id="productFrom" name="productFrom">
                     </div>
 
                     <!-- 상품 설명 -->
@@ -81,9 +82,9 @@
                     <!-- 상품 이미지 첨부 -->
                     <div class="form-group">
                         <label for="productImage">상품 이미지</label>
-                        <input type="file" class="form-control-file" id="productImage" name="productImage" accept="image/*" />
+                        <input type="file" class="form-control-file" id="productImage" name="files" accept="image/*" />
                         <small class="form-text text-muted">이미지를 첨부하세요. 썸네일로 생성됩니다.</small>
-                        <img id="productImagePreview" src="#" alt="이미지 미리보기" style="display:none; margin-top:10px; max-width: 100%; height: auto;" />
+                        <img id="productImagePreview" src="#" alt="이미지 미리보기" style="display:none; margin-top:10px; max-width: 200px; height: 200px;" />
                     </div>
 
                 </div>

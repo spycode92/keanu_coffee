@@ -267,60 +267,185 @@ $(function () {
 	    });
 	}
 	
+	//이미지미리보기
+	$('#productImage').on('change', function (e) {
+	    const file = e.target.files[0];
+	    const $preview = $('#productImagePreview');
+	    if (file) {
+	        // 파일 확장자 및 사이즈 검사 필요시 추가!
+	        const reader = new FileReader();
+	        reader.onload = function (evt) {
+	            $preview.attr('src', evt.target.result);
+	            $preview.show();
+	        };
+	        reader.readAsDataURL(file);
+	    } else {
+	        $preview.hide().attr('src', '#');
+	    }
+	});
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	//부피자동계산
+	function updateVolume() {
+	    const width = parseFloat($('#productWidth').val());
+	    const length = parseFloat($('#productLength').val());
+	    const height = parseFloat($('#productHeight').val());
+	    if (!isNaN(width) && !isNaN(length) && !isNaN(height)) {
+	        const volume = width * length * height;
+	        $('#productVolume').val(volume.toFixed(2));
+	    } else {
+	        $('#productVolume').val('');
+	    }
+	}
 
+	
+	// 가로, 세로, 높이 입력값 소수점 둘째 자리까지 올림하여 표시 (blur 이벤트)
+	// 올림 기능 추가
+	function roundUpTo2(num) {
+	    return (Math.ceil(num * 100) / 100);
+	}
+	
+	$('#productWidth, #productLength, #productHeight, #productWeight').off('blur').on('blur', function () {
+	    const val = parseFloat($(this).val());
+	    if (!isNaN(val)) {
+	        $(this).val(roundUpTo2(val).toFixed(2));
+	    } else {
+	        $(this).val('');
+	    }
+	});
+	
+	// 부피 계산 (소수점 셋째 자리에서 올림 → 소수점 둘째 자리로 표기)
+	function ceilTo2(num) {
+	    return (Math.ceil(num * 100) / 100).toFixed(2);
+	}
+	// 부피 자동 계산 (input 이벤트)
+	function updateVolume() {
+	    const width = parseFloat($('#productWidth').val());
+	    const length = parseFloat($('#productLength').val());
+	    const height = parseFloat($('#productHeight').val());
+	    if (!isNaN(width) && !isNaN(length) && !isNaN(height)) {
+	        const volumeRaw = width * length * height;
+	        const volume = ceilTo2(volumeRaw);
+	        $('#productVolume').val(volume);
+	    } else {
+	        $('#productVolume').val('');
+	    }
+	}
+	
+	// 값들어갈때마다실행
+	$('#productWidth, #productLength, #productHeight').off('input').on('input', updateVolume);	
+	
+	
+	
+	
+	//상품추가
+	$('#productAddForm').off('submit').on('submit', function (e) {
+	    e.preventDefault();
+	
+	    // FormData 객체 생성 (this는 form)
+	    const formData = new FormData(this);
+	
+	    // (필수 검증 추가 가능)
+	    if (!$('#productName').val().trim()) {
+	        Swal.fire('상품명을 입력하세요.', '', 'warning');
+	        return;
+	    }
+	    if (!$('#upperCategorySelect').val() || !$('#lowerCategorySelect').val()) {
+	        Swal.fire('카테고리를 선택하세요.', '', 'warning');
+	        return;
+	    }
+	
+	    $.ajax({
+	        url: '/admin/systemPreference/addProduct',
+	        method: 'POST',
+	        data: formData,
+	        processData: false,            // 반드시 false (formData 전송 시)
+	        contentType: false,            // 반드시 false (formData 전송 시)
+	        success: function (res) {
+	            Swal.fire('등록 완료', res, 'success');
+	            $('#productAddModal').modal('hide');
+	            loadProductList(); // 상품 목록 새로고침
+	        },
+	        error: function (res) {
+	            Swal.fire('등록 실패', res, 'error');
+	        }
+	    });
+	});
+	
+	//상품목록불러오기함수
+	function loadProductList() {
+	    $.ajax({
+	        url: '/admin/systemPreference/getProductList',
+	        type: 'GET',
+ 			dataType: 'json',
+	        success: function(productList) {
+	            let html = '';
+	            productList.forEach(function(product) {
+	                html += `
+	                <li class="list-group-item d-flex justify-content-between align-items-center" data-productidx="${product.idx}" style="color: black;" >
+	                    <span>${product.productName}</span>
+	                    <button type="button" class="btn btn-sm btn-info btn-detail-product">상세보기</button>
+	                </li>`;
+            });
+            $('#productList').html(html);
+        },
+	        error: function() {
+	            Swal.fire('오류', '상품 목록을 불러오는 데 실패했습니다.', 'error');
+	        }
+	    });
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//페이지로딩시 불러오기
+	loadProductList();
     
 });

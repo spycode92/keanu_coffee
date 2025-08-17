@@ -211,9 +211,7 @@
 			                    <button type="button" id="btnAddProduct" class="btn btn-sm btn-primary">+</button>
 			                </div>
 			                <ul id="productList" class="list-group list-group-flush" style="max-height: 150px; overflow-y: auto;">
-   			                    <c:forEach var="product" items="${productList }">
-			                    	<li>${product.productName }</li>
-			                    </c:forEach>
+   			   					<!-- 상품목록들어옴 -->
 			                </ul>
 			            </div>
 			        </div>

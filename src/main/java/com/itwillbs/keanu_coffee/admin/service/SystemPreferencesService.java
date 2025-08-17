@@ -1,7 +1,10 @@
 package com.itwillbs.keanu_coffee.admin.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +13,9 @@ import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SystemPreferencesMapper;
+import com.itwillbs.keanu_coffee.common.dto.FileDTO;
+import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
+import com.itwillbs.keanu_coffee.common.utils.FileUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +25,8 @@ public class SystemPreferencesService {
 	
 	private final SystemPreferencesMapper systemPreferencesMapper;
 	private final EmployeeManagementMapper employeeManagementMapper;
+	private final HttpSession session;
+	private final FileMapper fileMapper;
 	
 	
 	//부서 전체 목록 받아오기
@@ -190,11 +198,13 @@ public class SystemPreferencesService {
 		systemPreferencesMapper.insertCategory(category);
 
 	}
-
+	
+	//카테고리수정
 	public void modifyCategory(SupplierProductContractDTO category) {
 		systemPreferencesMapper.updateCategory(category);		
 	}
-
+	
+	//카테고리삭제
 	public boolean removeCategoryIfUnused(Integer idx) {
 		//상품 테이블에 해당 카테고리 idx를 참조하는 상품이 있는지 검사
 		int productCount = systemPreferencesMapper.countProductByCategoryIdx(idx);
@@ -207,6 +217,27 @@ public class SystemPreferencesService {
 		}
 		
 		return false;
+	}
+	
+	//상품등록
+	@Transactional
+	public Boolean addProduct(SupplierProductContractDTO product) throws IOException {
+		//상품DB등록
+		int insertCount = systemPreferencesMapper.insertProduct(product);
+		//상품파일업로드
+		List<FileDTO> fileList = FileUtils.uploadFile(product, session);
+		//상품파일DB등록
+		if (!fileList.isEmpty()) {
+	        fileMapper.insertFiles(fileList);
+	    }
+		
+		return insertCount > 0;
+		
+	}
+
+	public List<SupplierProductContractDTO> getProductList() {
+
+		return systemPreferencesMapper.selectAllProductList();
 	}
 
 	

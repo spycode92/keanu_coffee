@@ -31,6 +31,7 @@ public class SupplierProductContractDTO implements FileUploadHelpper {
 	
 	
 	//카테고리
+	private Integer categoryIdx;
     private String categoryName;
     private Integer parentCategoryIdx;
     private String parentCategoryName;
@@ -38,7 +39,6 @@ public class SupplierProductContractDTO implements FileUploadHelpper {
 	//상품정보
 	private Integer productIdx;
 	private String productName;
-	private Integer categoryIdx;
 	private BigDecimal productWeight;
     private BigDecimal productWidth;
     private BigDecimal productLength;
@@ -84,6 +84,7 @@ public class SupplierProductContractDTO implements FileUploadHelpper {
 	public String getTargetTable(){
 		return "product";
 	}
+    
 	@Override
 	public Integer getTargetTableIdx() {
 		return idx;

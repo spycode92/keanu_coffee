@@ -248,6 +248,41 @@
 		where idx = #{idx}
 	</delete>
 	
+	<!-- 상품등록 -->
+	<insert id="insertProduct" parameterType="SupplierProductContractDTO" 
+		useGeneratedKeys="true" keyProperty="idx"> 
+		INSERT INTO product
+    (
+        product_name,
+        category_idx,
+        product_weight,
+        product_width,
+        product_length,
+        product_height,
+        product_volume,
+        product_from,
+        note
+    )
+    VALUES
+    (
+        #{productName},
+        #{categoryIdx},
+        #{productWeight},
+        #{productWidth},
+        #{productLength},
+        #{productHeight},
+        #{productVolume},
+        #{productFrom},
+        #{note}
+    )
+	</insert>
+	
+	<!-- 상품목록전체불러오기 -->
+	<select id="selectAllProductList" resultType="SupplierProductContractDTO">
+		SELECT *
+		FROM product
+	</select>
+	
 
 
 
