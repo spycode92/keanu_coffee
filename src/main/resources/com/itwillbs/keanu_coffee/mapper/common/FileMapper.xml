@@ -4,130 +4,54 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.common.mapper.FileMapper">
 	
-	
-	<select id="selectFile" resultType="FileDTO">
-		SELECT *
-		FROM FILE
-		WHERE file_id = #{fileId}
-	</select>
-	
-	<delete id="deleteFile">
-		DELETE
-		FROM FILE
-		WHERE file_id = #{fileId}
-	</delete>
-	
-	<!-- 썸네일 파일 삭제 -->
-	<delete id="deleteThumbnailFile">
-		DELETE
-		FROM THUMBNAILFILE
-		WHERE file_id = #{fileId}
-	</delete>
-	
+	<!-- 파일등록 -->
 	<insert id="insertFiles">
 		INSERT
 		INTO FILE(
-			idx,
+			target_table,
+			target_table_idx,
 			original_file_name,
 			real_file_name, 
 			sub_dir, 
 			file_size, 
-			content_type, 
-			upload_date	)
+			content_type)
 		VALUES
 		<foreach collection="list" item="file" separator=",">
 			(
-				#{file.idx}
+				#{file.targetTable}
+				, #{file.targetTableIdx}
 				, #{file.originalFileName}
 				, #{file.realFileName}
 				, #{file.subDir}
 				, #{file.fileSize}
 				, #{file.contentType}
-				, now()
 			)
 		</foreach>
 	</insert>
 	
-	<!-- 파일 하나만 저장 시 사용 -->
-	<insert id="insertOneFile">
-		INSERT
-		INTO FILE(
-				idx,
-				original_file_name,
-				real_file_name, 
-				sub_dir, 
-				file_size, 
-				content_type, 
-				upload_date	)
-			VALUES(
-				#{idx}
-				, #{originalFileName}
-				, #{realFileName}
-				, #{subDir}
-				, #{fileSize}
-				, #{contentType}
-				, now()
-			)
-	</insert>
+	<update id="updateFiles">
+		UPDATE file
+		SET 		
+			real_file_name = #{file.realFileName}
+			, original_file_name = #{file.originalFileName}
+			, sub_dir = #{file.subDir}
+			, file_size = #{file.fileSize}
+			, content_type = #{file.contentType}
+		where idx = #{idx}
+			
+	</update>
 	
-	<!-- 썸네일 저장 -->
-	<insert id="insertThumbnail">
-		INSERT
-		INTO THUMBNAILFILE(
-				idx,
-				original_file_name,
-				real_file_name, 
-				sub_dir, 
-				file_size, 
-				content_type, 
-				upload_date	)
-			VALUES(
-				#{idx}
-				, #{originalFileName}
-				, #{realFileName}
-				, #{subDir}
-				, #{fileSize}
-				, #{contentType}
-				, now()
-			)
-	</insert>
-	
-	<select id="selectAllFile" resultType="FileDTO">
+	<select id="getFileWithFileIdx" resultType="FileDTO">
 		SELECT *
-		FROM FILE
-		WHERE idx = #{idx}
+		FROM file
+		where idx = #{fileIdx}
 	</select>
 	
-	<!-- 썸네일 파일 조회 -->
-	<select id="selectThumbnailFile" resultType="FileDTO">
+	<select id="getFileWithTargetTable" resultType="FileDTO">
 		SELECT *
-		FROM THUMBNAILFILE
-		WHERE idx = #{idx}
-	</select>
-	
-	<!-- 컨텐츠 파일 조회 -->
-	<select id="selectContentFile" resultType="FileDTO">
-		SELECT *
-		FROM FILE
-		WHERE idx = #{idx}
-	</select>
-	
-	<delete id="deleteAllFile">
-		DELETE
-		FROM FILE
-		WHERE idx = #{idx}
-	</delete>
-	
-	<select id="selectFileInfo" resultType="FileDTO">
-		SELECT *
-		FROM FILE
-		WHERE file_id = #{fileId}
-	</select>
-	
-	<select id="selectThumbnailInfo" resultType="FileDTO">
-		SELECT *
-		FROM THUMBNAILFILE
-		WHERE file_id = #{fileId}
+		FROM file
+		where target_table = #{targetTable}
+			AND target_table_idx = #{targetTableIdx}
 	</select>
 
 

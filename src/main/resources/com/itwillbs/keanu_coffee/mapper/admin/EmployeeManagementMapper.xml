@@ -14,14 +14,15 @@
 
 	<!-- 회원추가 -->
 	<insert id="insertEmployeeInfo">
-		INSERT INTO EMPLOYEE_INFO
+		INSERT INTO employee_info
 		VALUES(
-			#{empNo}
+			null
+			, #{empNo}
 			, #{empName}
 			, #{empGender}
-			, #{deptName}
-			, #{teamName}
-			, #{empPosition}
+			, COALESCE(#{departmentIdx}, 1)
+			, COALESCE(#{teamIdx}, 1)
+			, COALESCE(#{roleIdx}, 1)
 			, #{empPhone}
 			, #{empEmail}
 			, #{empId}
@@ -32,6 +33,32 @@
 			, default
 		)
 	</insert>
+	
+	<!-- 직책 비우기 -->
+	<update id="updateRoleToNull">
+		UPDATE employee_info
+		SET role_idx = NULL
+		WHERE role_idx = #{roleIdx}
+	</update>
+	
+	<!-- 팀비우기 -->
+	<update id="updateTeamToNull">
+		UPDATE employee_info
+		SET team_idx = NULL
+		WHERE team_idx = #{teamIdx}
+	</update>
+	
+	<!-- 부서, 팀, 직책 비우기 -->
+	<update id="updateDeptTeamRoleToNull">
+		UPDATE employee_info
+		SET team_idx = NULL,
+			role_idx = NULL,
+			department_idx = NULL
+		WHERE department_idx = #{departmentIdx}
+	</update>
+	
+	
+	
 
 
 

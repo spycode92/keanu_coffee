@@ -90,23 +90,34 @@
 	        <artifactId>jackson-databind</artifactId>
 	        <version>2.13.2</version>
 	    </dependency>
+	    
 	    <dependency>
 	        <groupId>com.fasterxml.jackson.core</groupId>
 	        <artifactId>jackson-core</artifactId>
 	        <version>2.13.2</version>
 	    </dependency>
+	    
 	    <dependency>
 	        <groupId>com.fasterxml.jackson.core</groupId>
 	        <artifactId>jackson-annotations</artifactId>
 	        <version>2.13.2</version>
 	    </dependency>
 	
-	    <!-- 아임포트 SDK -->
+		<!-- 썸네일레이터 라이브러리 -->
 	    <dependency>
-	        <groupId>com.github.iamport</groupId>
-	        <artifactId>iamport-rest-client-java</artifactId>
-	        <version>0.2.23</version>
+	       <groupId>net.coobird</groupId>
+	       <artifactId>thumbnailator</artifactId>
+	       <version>0.4.8</version>
 	    </dependency>
+	    
+	    <!-- webp 지원 ImageIO플러그인 -->
+		<!-- https://mvnrepository.com/artifact/com.github.gotson/webp-imageio -->
+		<dependency>
+		    <groupId>com.github.gotson</groupId>
+		    <artifactId>webp-imageio</artifactId>
+		    <version>0.2.2</version>
+		</dependency>
+	
 	
 	    <!-- 롬복(Lombok) 라이브러리 -->
 	    <dependency>
@@ -196,6 +207,7 @@
 	        <artifactId>commons-io</artifactId>
 	        <version>2.19.0</version>
 	    </dependency>
+	    
 	    <dependency>
 	        <groupId>commons-fileupload</groupId>
 	        <artifactId>commons-fileupload</artifactId>
@@ -236,12 +248,14 @@
 	        <version>4.0.1</version>
 	        <scope>provided</scope>
 	    </dependency>
+	    
 	    <dependency>
 	        <groupId>javax.servlet.jsp</groupId>
 	        <artifactId>javax.servlet.jsp-api</artifactId>
 	        <version>2.3.3</version>
 	        <scope>provided</scope>
 	    </dependency>
+	    
 	    <dependency>
 	        <groupId>javax.servlet</groupId>
 	        <artifactId>jstl</artifactId>

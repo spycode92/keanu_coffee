@@ -63,7 +63,8 @@ public class FileUtils {
 	// 파일업로드 인터페이스
 	public interface FileUploadHelpper{
 		MultipartFile[] getFiles();
-		String getIdx();
+		String getTargetTable();
+		Integer getTargetTableIdx();
 	}
 	
 	// 파일 업로드
@@ -80,9 +81,6 @@ public class FileUtils {
 		String destinationPath = realPath + "/" + subDir;
 
 		List<FileDTO> fileList = new ArrayList<FileDTO>(); // 파일 정보들을 저장할 List 객체 생성
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println(help.getIdx());
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
 		for(MultipartFile mFile : help.getFiles()) {
 			// 파일이 존재할 경우 실제 업로드 처리 및 BoardFileDTO 객체에 정보 저장
 			if(!mFile.isEmpty()) {
@@ -96,7 +94,8 @@ public class FileUtils {
 				mFile.transferTo(destinationFile);
 
 				FileDTO fileDTO = new FileDTO();
-				fileDTO.setIdx(help.getIdx());
+				fileDTO.setTargetTable(help.getTargetTable());
+				fileDTO.setTargetTableIdx(help.getTargetTableIdx());
 				fileDTO.setOriginalFileName(originalFileName);
 				fileDTO.setRealFileName(realFileName);
 				fileDTO.setSubDir(subDir);
@@ -104,7 +103,6 @@ public class FileUtils {
 				fileDTO.setContentType(mFile.getContentType());
 				
 				fileList.add(fileDTO);
-				System.out.println("데스티네이션 path=" + destinationFile.getAbsolutePath());
 			}
 		} 
 		return fileList;
@@ -134,7 +132,7 @@ public class FileUtils {
 	}
 	
 	//파일 정보 호출
-	public static Map<String, Object> getFileResource(FileDTO fileDTO, int type, HttpSession session) {
+	public static Map<String, Object> getFileResource(FileDTO fileDTO, HttpSession session) {
 		try {
 //			String realPath = uploadPath; // 서버 업로드용
 			String realPath = session.getServletContext().getRealPath(uploadPath); // 로컬작업용
@@ -161,11 +159,6 @@ public class FileUtils {
 			
 			Builder builder = ContentDisposition.builder("attachment"); //다운로드해야 할때
 			
-			if( type == 0) { // 이미지태그일때 
-				builder = ContentDisposition.builder("inline");  
-				
-			}
-				
 			// 한글이나 공백 등이 포함된 파일명은 별도의 추가 작업 필요(파일명 인코딩 작업 필요)
 			ContentDisposition contentDisposition = builder // 다운로드 형식 지정을 위한 ContentDisposition 객체 선언
 				.filename(fileDTO.getOriginalFileName(), StandardCharsets.UTF_8) // 파일명 인코딩 방식 지정
@@ -185,6 +178,13 @@ public class FileUtils {
 			e.printStackTrace();
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 정보 조회 실패!");
 		}
+	}
+	
+	//파일경로
+	public static String getFilePath(FileDTO fileDTO, HttpSession session) {
+	    String realPath = session.getServletContext().getRealPath(uploadPath);
+	    Path path = Paths.get(realPath, fileDTO.getSubDir(), fileDTO.getRealFileName());
+	    return path.toString();
 	}
 	
 	
