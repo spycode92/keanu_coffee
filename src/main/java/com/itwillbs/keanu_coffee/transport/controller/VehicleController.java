@@ -1,15 +1,19 @@
 package com.itwillbs.keanu_coffee.transport.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -52,6 +56,33 @@ public class VehicleController {
 		}
 		
 		return "commons/result_process";
+	}
+	
+	// 차량 상세정보
+	@GetMapping("/vehicle/detail")
+	@ResponseBody
+	public ResponseEntity<VehicleDTO> modifyVehicle(@RequestParam int idx) {
+		VehicleDTO vehicleDTO = vehicleService.findByIdx(idx);
+		
+		// 데이터가 없을 경우 404 반환
+		if (vehicleDTO == null) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		return ResponseEntity.ok(vehicleDTO);
+	}
+	
+	// 차량 삭제
+	@DeleteMapping("/vehicle/delete")
+	@ResponseBody
+	public ResponseEntity<?> deleteVehicles(@RequestBody List<Integer> idx) {
+		if (idx == null || idx.isEmpty()) {
+			return ResponseEntity.badRequest().build();
+		}
+		
+		int deleted = vehicleService.deleteByIdx(idx);
+		
+		return ResponseEntity.ok(Map.of("deleted", deleted));
 	}
 	
 	// 차량번호 중복 체크

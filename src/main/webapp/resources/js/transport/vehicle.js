@@ -1,16 +1,6 @@
 const DUPLICATE_CHECK_URL = "/transport/vehicle/dupCheck";
-
-const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-	    toast.onmouseenter = Swal.stopTimer;
-	    toast.onmouseleave = Swal.resumeTimer;
-    }
-});
+const MODIFY_VEHICLE_URL = "/transport/vehicle/detail";
+const DELETE_VEHICLE_URL = "/transport/vehicle/delete"
 
 // 모달 열기
 function openCreateModal() {
@@ -18,14 +8,31 @@ function openCreateModal() {
 	$("#createModal").attr("aria-hidden", "false").addClass("open");
 }
 
+$(document).on('click', 'tr.rowLink', function (e) {
+  // 체크박스/버튼/링크 클릭 시 행 오픈 막기 (선택)
+  if ($(e.target).closest('input,button,a,label').length) return;
+
+  const id = $(this).data('vehicle-id');
+  openEditModal(id); 
+});
+
 // 모달 닫기
 function closeCreateModal() {
 	 $("#createModal").attr("aria-hidden", "true").removeClass("open");
 }
 
+function closeEditModal() {
+	 $("#editModal").attr("aria-hidden", "true").removeClass("open");
+}
+
 // esc로 모달 닫기
 $(document).on("keydown", function(e) {
 	if (e.key === "Escape" && $("#createModal").hasClass("open")) closeCreateModal();
+});
+
+// esc로 모달 닫기
+$(document).on("keydown", function(e) {
+	if (e.key === "Escape" && $("#editModal").hasClass("open")) closeEditModal();
 });
 
 // 번호판 패턴: (선택)지역2~3자 + 숫자2~3 + 한글1 + 숫자4
@@ -120,11 +127,120 @@ function submitCreateForm(e) {
 		})
 }
 
+// 차량 상세 모달
+function openEditModal(vehicleIdx) {
+  $('#editModal').attr('aria-hidden','false').addClass('open');
+
+  // 로딩 표시(선택)
+  $('#e_no, #e_driver').val('');
+  $('#e_status').val('대기');
+
+  $.getJSON(MODIFY_VEHICLE_URL, { idx: vehicleIdx })
+    .done(function(v) {
+	  $("#idx").val(v.vehicleIdx);
+	  
+      // 상세 정보 입력
+      $('#vehicleNumber').val(v.vehicleNumber);
+      $('#vehicleType').val(v.vehicleType);
+      $('#capacity').val(String(v.capacity)); 
+      $('#year').val(v.manufactureYear || '');
+      $('#model').val(v.manufacturerModel || '');
+      $('#driverName').val(v.driverName || '');
+      $('#manufacturerModel').val(v.manufacturerModel);
+      $('#manufactureYear').val(v.manufactureYear);
+
+	  v.capacity === 1000 ? $('#capacity').val("1.0t") : $('#capacity').val("1.5t");
+
+	  const status = v.status;
+	  $('status').val(status);
+
+	  // 운행중 또는 사용불가인 경우 기사등록 버튼 비활성화
+      const isModify = (v.status === '운행중' || v.status === '사용불가');
+      $('#btnAssignDriver').prop('disabled', isModify);
+	  $('#vehicleType').prop('disabled', isModify);
+    })
+    .fail(function(status) {
+      $modal.removeClass('open').attr('aria-hidden','true');
+      Swal.fire({icon:'error', text:'차량 정보를 불러오지 못했습니다.'});
+    });
+}
+
+// 체크박스 전체 선택
+$("#checkAll").on("change", function() {
+	const checked = this.checked;
+	$('#vehicleTable .rowCheck:not(:disabled)').prop('checked', checked);
+});
+
+// 체크된 행의 vehicle-id 수집
+function collectSelectedVehicleIdx() {
+	return $('#vehicleTable tbody input[type="checkbox"]:checked')
+    	.map(function () {
+      	return $(this).closest('tr').data('vehicle-id'); // <tr data-vehicle-id="...">
+    	})
+    	.get()
+    	.filter(function (id) { return id != null; });
+}
+
+// 서버 삭제 요청
+function requestBulkDelete(idxArray) {
+	return $.ajax({
+     url: DELETE_VEHICLE_URL,
+     method: 'DELETE',
+     contentType: 'application/json',
+     data: JSON.stringify(idxArray)
+   });	
+}
+
+// 목록 다시 가져오기
+function reloadVehicleContent() {
+	const params = new URLSearchParams(window.location.search);
+  	const url = '/transport/vehicle?' + params.toString();
+  	$('.content').load(url + ' .content > *');
+}
+
+// 클릭 핸들러
+function onClickBulkDelete() {
+	const idx = collectSelectedVehicleIdx();
+
+  	if (idx.length === 0) {
+    	Swal.fire({ icon: 'info', text: '삭제할 차량을 선택하세요.' });
+    	return;
+  	}
+
+  	Swal.fire({
+    	icon: 'warning',
+    	title: '선택 삭제',
+    	text: '선택한 ' + idx.length + '대의 차량을 삭제하시겠습니까?',
+    	showCancelButton: true,
+    	confirmButtonText: '삭제',
+    	cancelButtonText: '취소'
+  	}).then(function (result) {
+    	if (!result.isConfirmed) return;
+
+    	$('#bulkDelete').prop('disabled', true);
+
+    	requestBulkDelete(idx)
+      	.done(function () {
+        	reloadVehicleContent();
+        	Swal.fire({ icon: 'success', text: '삭제되었습니다.' });
+      	})
+      	.fail(function (xhr) {
+        	const message = (xhr.responseJSON && xhr.responseJSON.message) || '삭제에 실패했습니다. 잠시 후 다시 시도해주세요.';
+        	Swal.fire({ icon: 'error', text: message });
+      	})
+      	.always(function () {
+        	$('#bulkDelete').prop('disabled', false);
+      	});
+  	});
+}
+
 // 이벤트 바인딩
 $(document).ready(function () {
-    $("#openCreate").on("click", openCreateModal);
+	$("#openCreate").on("click", openCreateModal);
     $("#cancelCreate").on("click", closeCreateModal);
+    $("#cancelEdit").on("click", closeEditModal);
     $("#saveCreate").on("click", submitCreateForm);
+	$('#bulkDelete').on('click', onClickBulkDelete);
 });
 
 

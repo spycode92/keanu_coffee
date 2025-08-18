@@ -9,7 +9,7 @@
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link
-	href="${pageContext.request.contextPath}/resources/css/common/common.css"
+	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
 	rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script
@@ -24,25 +24,77 @@
 
 header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 
+.content {
+	height: 630px;
+}
+
+/* 4) 버튼 */
+.btn{
+	height: 36px;
+  	padding: 0 14px;
+  	border: 1px solid var(--border);
+  	border-radius: var(--radius);
+  	background: var(--background);
+  	color: var(--foreground);
+  	font-weight: 600;
+  	transition: background .12s, border-color .12s, box-shadow .12s, color .12s;
+}
+.btn:hover{ background: #f8fafc; border-color: #cbd5e1; }
+.btn:focus-visible{ outline: 2px solid var(--ring); outline-offset: 2px; }
+
+.btn-primary{
+  	background: var(--primary);
+  	color: var(--primary-foreground);
+  	border-color: transparent;
+}
+.btn-primary:hover{ filter: brightness(0.95); }
+
+.btn-secondary{
+  	background: var(--secondary);
+  	color: var(--secondary-foreground);
+}
+
 /* 검색/필터 바 */
 .filters {
-    background: var(--card);
+	width: 70em;
+    background: #f8fafc;     
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 12px;
     display: grid;
-    grid-template-columns: repeat(3, minmax(200px, 1fr));
+    grid-template-columns: 180px 1fr max-content;
     gap: 10px;
+    align-items: center; /* 세로 중앙 */
 }
-.filters .field { display: flex; flex-direction: column; gap: 6px; }
-.filters .search { display: flex; flex-direction: column; gap: 6px; }
-.search { width: 500px; }
-.filters label { font-size: .85rem; color: var(--muted-foreground); }
-.filters input, .filters select {
-    height: 38px; padding: 0 10px; border: 1px solid var(--border); border-radius: 10px; background: #fff;
+/* 고정폭 제거 → 그리드가 폭을 관리하도록 */
+.filters .field{ display:flex; gap:6px; margin-right: 1.5em;}
+.filters select{ width:100%; height:38px; }
+.filters .search{ display:flex; }
+.filters input{ width:100%; height:38px; }
+
+.filters input, .filters select{
+  padding:0 10px; border:1px solid var(--border); border-radius:10px; background:#fff;
 }
-.filters .actions {
-    display: flex; align-items: end; justify-content: center; gap: 8px;
+
+/* 버튼은 오른쪽 끝 */
+.filters .actions{
+	display:flex; 
+	width: 100%;
+	justify-content:center; 
+	align-items:center;
+}
+.filters .actions .btn{ 
+	height:38px; 
+	width: 10em;
+	display: flex;
+	justify-content: center;
+}
+
+/* 반응형: 좁아지면 세로 스택 */
+@media (max-width: 900px){
+  .filters{ grid-template-columns: 1fr; }
+  .filters .actions{ justify-content: stretch; }
+  .filters .actions .btn{ width:100%; }
 }
 
 .badge {
@@ -120,6 +172,12 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 .form .row {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+}
+
+.form .modifyRow {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
 	gap: 10px;
 }
 
@@ -207,6 +265,118 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 		grid-template-columns: 1fr;
 	}
 }
+
+/* 빈 결과 박스 */
+.empty-result{
+	margin:16px 0;
+  	padding:20px 16px;
+  	display:flex; align-items:center; justify-content:center; gap:10px;
+  	background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px;
+  	color:#64748b; font-size:.95rem;
+}
+
+/* 페이징(.pager: 앞서 만든 공용 클래스가 있다면 그대로 사용) */
+.pager{
+  	display:flex;
+  	align-items:center;
+  	justify-content:center;
+  	margin-top:24px; /* 기존 30px에서 약간 컴팩트 */
+}
+.pager > div{
+  	display:flex;
+  	align-items:center;
+  	flex-wrap:wrap;
+  	gap:8px;
+}
+.pager > div a,
+.pager > div input[type="button"],
+.pager > div strong{
+	display:inline-flex;
+  	align-items:center;
+  	justify-content:center;
+  	min-width:36px;
+  	height:36px;
+  	padding:0 12px;
+  	border:1px solid #cbd5e1;
+  	border-radius:8px;
+  	background:#fff;
+  	color:#0f172a;
+  	text-decoration:none;
+  	font-size:.95rem;
+  	line-height:1;
+  	transition:background .12s ease, border-color .12s ease, color .12s ease, box-shadow .12s ease;
+}
+.pager > div a:hover,
+.pager > div input[type="button"]:not([disabled]):hover{ background:#f8fafc; border-color:#94a3b8; }
+.pager > div input[disabled]{ opacity:.45; pointer-events:none; cursor:not-allowed; }
+.pager > div strong{
+  background:#2563eb; border-color:#2563eb; color:#fff; cursor:default;
+}
+
+/* 반응형 */
+@media (max-width: 900px){
+  .filters{ grid-template-columns: 1fr; }
+  .filters .actions .btn{ width:100%; }
+}
+@media (max-width: 640px){
+  .pager > div a,
+  .pager > div input[type="button"],
+  .pager > div strong{
+    min-width:32px; height:32px; padding:0 10px; font-size:.9rem;
+  }
+}
+
+/* 고정기사 필드: 입력 + 버튼 가로 정렬 */
+.form .field:has(#btnAssignDriver){
+  display: grid;
+  grid-template-columns: 1fr max-content; /* 입력 확장, 버튼은 내용폭 */
+  grid-template-rows: auto 38px;          /* 라벨 / 컨트롤 행 */
+  gap: 6px 8px;
+}
+
+/* 라벨은 상단 전체 폭 */
+.form .field:has(#btnAssignDriver) > label{
+  grid-column: 1 / -1;
+}
+
+/* 입력창 */
+#driverName{
+  grid-column: 1 / 2;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--input-background);
+  color: var(--foreground);
+}
+#driverName[readonly]{
+  background: #f8fafc; /* 읽기 전용 톤 */
+}
+
+/* 기사배정 버튼 (기존 .btn 느낌으로) */
+#btnAssignDriver{
+  grid-column: 2 / 3;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background .12s, border-color .12s, box-shadow .12s, color .12s;
+}
+#btnAssignDriver:hover{
+  background: var(--accent);
+}
+#btnAssignDriver:focus-visible{
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+#btnAssignDriver:disabled{
+  opacity: .5;
+  cursor: not-allowed;
+}
 </style>
 </head>
 <body>
@@ -219,11 +389,11 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 	            <button class="btn danger" id="bulkDelete">선택 삭제</button>
 	        </div>
         </header>
-		<div>
+		<div class="content">
 			<!-- 검색/필터 -->
-	        <section class="filters" aria-label="검색 및 필터">
+	        <form class="filters" aria-label="검색 및 필터">
 	            <div class="field">
-	                <select id="filterStatus">
+	                <select id="filterStatus" name="filter">
 	                    <option value="전체">전체</option>
 	                    <option value="미배정">미배정</option>
 	                    <option value="대기">대기</option>
@@ -232,70 +402,98 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 	                </select>
 	            </div>
 	            <div class="search">
-	                <input id="filterText" type="text" placeholder="차량번호/적재량 검색 가능" />
+	                <input id="filterText" type="text" name="searchKeyword" placeholder="차량번호 검색" />
 	            </div>
 	            <div class="actions">
-	                <button class="btn secondary" id="btnReset">초기화</button>
 	                <button class="btn" id="btnSearch">검색</button>
 	            </div>
-	        </section>
+	        </form>
 			<div>
 				<h3>차량목록</h3>
-				<table class="table" id="vehicleTable">
-					<thead>
-						<tr>
-							<th><input type="checkbox" id="checkAll" /></th>
-							<th>차량번호</th>
-							<th>차종유형</th>
-							<th>적재량</th>
-							<th>제조사/모델명</th>
-							<th>연식</th>
-							<th>고정기사명</th>
-							<th>상태</th>
-						</tr>
-					</thead>
-					<tbody>
-						<c:forEach var="vehicle" items="${vehicleList}">
-							<tr id="row-${vehicle.vehicleIdx}">
-								<td><input type="checkbox"/></td>
-								<td>${vehicle.vehicleNumber}</td>
-								<td>${vehicle.vehicleType}</td>
-								<td>
-									<c:choose>
-										<c:when test="${vehicle.capacity == 1000 }">
-											1.0t
-										</c:when>
-										<c:otherwise>
-											1.5t
-										</c:otherwise>
-									</c:choose>
-								</td>
-								<td>${vehicle.manufacturerModel}</td>
-								<td>${vehicle.manufactureYear}</td>
-								<td>
-									<c:if test="${vehicle.driverName != null}">${vehicle.driverName}</c:if>
-								</td>
-								<td>
-									<c:choose>
-										<c:when test="${vehicle.status eq '미배정'}">
-											<span class="badge unassigned">${vehicle.status}</span>
-										</c:when>
-										<c:when test="${vehicle.status eq '대기'}">
-											<span class="badge wait">${vehicle.status}</span>
-										</c:when>
-										<c:when test="${vehicle.status eq '운행중'}">
-											<span class="badge run">${vehicle.status}</span>
-										</c:when>
-										<c:otherwise>
-											<span class="badge left">${vehicle.status}</span>
-										</c:otherwise>
-									</c:choose>
-								
-								</td>
-							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
+				<c:choose>
+					<c:when test="${empty vehicleList}">
+						<div class="empty-result">검색된 차량이 없습니다.</div>
+					</c:when>
+					<c:otherwise>
+						<table class="table" id="vehicleTable">
+							<thead>
+								<tr>
+									<th><input type="checkbox" id="checkAll" /></th>
+									<th>차량번호</th>
+									<th>차종유형</th>
+									<th>적재량</th>
+									<th>제조사/모델명</th>
+									<th>연식</th>
+									<th>고정기사명</th>
+									<th>상태</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach var="vehicle" items="${vehicleList}">
+									<tr class="rowLink" data-vehicle-id="${vehicle.vehicleIdx}">
+										<td><input type="checkbox" class="rowCheck"/></td>
+										<td>${vehicle.vehicleNumber}</td>
+										<td>${vehicle.vehicleType}</td>
+										<td>
+											<c:choose>
+												<c:when test="${vehicle.capacity == 1000 }">
+													1.0t
+												</c:when>
+												<c:otherwise>
+													1.5t
+												</c:otherwise>
+											</c:choose>
+										</td>
+										<td>${vehicle.manufacturerModel}</td>
+										<td>${vehicle.manufactureYear}</td>
+										<td>
+											<c:if test="${vehicle.driverName != null}">${vehicle.driverName}</c:if>
+										</td>
+										<td>
+											<c:choose>
+												<c:when test="${vehicle.status eq '미배정'}">
+													<span class="badge unassigned">${vehicle.status}</span>
+												</c:when>
+												<c:when test="${vehicle.status eq '대기'}">
+													<span class="badge wait">${vehicle.status}</span>
+												</c:when>
+												<c:when test="${vehicle.status eq '운행중'}">
+													<span class="badge run">${vehicle.status}</span>
+												</c:when>
+												<c:otherwise>
+													<span class="badge left">${vehicle.status}</span>
+												</c:otherwise>
+											</c:choose>
+										
+										</td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</div>
+		<div class="pager">
+			<div>
+				<c:if test="${not empty pageInfo.maxPage or pageInfo.maxPage > 0}">
+					<input type="button" value="이전" 
+						onclick="location.href='/transport/vehicle?pageNum=${pageInfo.pageNum - 1}&filter=${param.filter}&searchKeyword=${param.searchKeyword}'" 
+						<c:if test="${pageInfo.pageNum eq 1}">disabled</c:if>>
+					<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
+						<c:choose>
+							<c:when test="${i eq pageInfo.pageNum}">
+								<strong>${i}</strong>
+							</c:when>
+							<c:otherwise>
+								<a href="/transport/vehicle?pageNum=${i}&filter=${param.filter}&searchKeyword=${param.searchKeyword}">${i}</a>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+					<input type="button" value="다음" 
+						onclick="location.href='/transport/vehicle?pageNum=${pageInfo.pageNum + 1}&filter=${param.filter}&searchKeyword=${param.searchKeyword}'" 
+					<c:if test="${pageInfo.pageNum eq pageInfo.maxPage}">disabled</c:if>>
+				</c:if>
 			</div>
 		</div>
 		<!-- 등록 모달 -->
@@ -357,26 +555,53 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 			<div class="modal-card" role="dialog" aria-modal="true"
 				aria-labelledby="editTitle">
 				<div class="modal-head">
-					<strong id="editTitle">차량 수정</strong>
-					<button class="btn secondary" id="closeEdit">닫기</button>
+					<strong id="editTitle">차량 상세정보</strong>
 				</div>
 				<div class="modal-body">
 					<form class="form" id="editForm" onsubmit="return false;">
-						<input type="hidden" id="e_no" />
+						<input type="hidden" id="idx" />
 						<!-- 고정기사/상태만 수정 -->
 						<div class="row">
 							<div class="field">
-								<label>고정기사명</label> <input id="e_driver" />
+								<label>고정기사명</label> 
+								<input id="driverName" readonly/>
+								<button type="button" id="btnAssignDriver">기사배정</button>
 							</div>
 							<div class="field">
-								<label>상태</label> <select id="e_status">
-									<option>대기</option>
-									<option>운행중</option>
-									<option>사용불가</option>
+								<label>상태</label> 
+								<select id="status">
+									<option value="미배정">미배정</option>
+									<option value="대기">대기</option>
+									<option value="운행중">운행중</option>
+									<option value="사용불가">사용불가</option>
 								</select>
 							</div>
 						</div>
-						<div class="help">운행중인 차량은 고정기사명 수정 불가</div>
+						<div class="row">
+							<div class="field">
+								<label>차량번호*</label> 
+								<input id="vehicleNumber" name="vehicleNumber" type="text" readonly />
+							</div>
+							<div class="field">
+								<label>차종유형*</label> 
+								<input id="vehicleType" name="vehicleType" type="text" readonly />
+							</div>
+						</div>
+						<div class="modifyRow">
+							<div class="field">
+								<label>적재량*</label>
+								<input id="capacity" name="capacity" readonly/>
+							</div>
+							<div class="field">
+								<label>연식</label> 
+								<input id="manufactureYear" name="manufactureYear" readonly/>
+							</div>
+							<div class="field">
+								<label>제조사/모델명</label> 
+								<input id="manufacturerModel" name="manufacturerModel" readonly/>
+							</div>
+						</div>
+						<div class="help">운행중인 차량은 고정기사 수정 불가</div>
 					</form>
 				</div>
 				<div class="modal-foot">
@@ -386,143 +611,5 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 			</div>
 		</div>
 	</section>
-	<script>
-		// ---- 더미 데이터 ----
-		var vehicles = [ {
-			no : '89바 1234',
-			type : '카고',
-			cap : '1.5t',
-			model : '현대 포터',
-			year : '2023',
-			driver : '이정민',
-			status : '대기'
-		}, {
-			no : '77나 4567',
-			type : '윙바디',
-			cap : '5t',
-			model : '타타 대우',
-			year : '2021',
-			driver : '김도운',
-			status : '운행중'
-		}, {
-			no : '55다 1111',
-			type : '탑차',
-			cap : '1.0t',
-			model : '기아 봉고',
-			year : '2022',
-			driver : '',
-			status : '대기'
-		}, {
-			no : '12라 2222',
-			type : '카고',
-			cap : '2.5t',
-			model : '이스즈 엘프',
-			year : '2020',
-			driver : '',
-			status : '사용불가'
-		}, {
-			no : '34마 3333',
-			type : '냉동탑',
-			cap : '1.5t',
-			model : '현대 포터',
-			year : '2024',
-			driver : '박민수',
-			status : '대기'
-		} ];
-
-
-		// ---- 전체 체크 ----
-		document.getElementById('checkAll').addEventListener(
-				'change',
-				function(e) {
-					var checked = e.target.checked;
-					Array.prototype.forEach.call(document
-							.querySelectorAll('.rowCheck'), function(c) {
-						c.checked = checked;
-					});
-				});
-
-
-		// ---- 수정 모달 ----
-		var editModal = document.getElementById('editModal');
-		function openEdit(no) {
-			var v = vehicles.find(function(x) {
-				return x.no === no;
-			});
-			if (!v)
-				return;
-			document.getElementById('e_no').value = v.no;
-			document.getElementById('e_driver').value = v.driver || '';
-			document.getElementById('e_status').value = v.status;
-
-			// 운행중이면 고정기사명 입력 비활성화
-			var driverInput = document.getElementById('e_driver');
-			driverInput.disabled = (v.status === '운행중');
-
-			editModal.classList.add('open');
-		}
-		document.getElementById('closeEdit').addEventListener('click',
-				function() {
-					editModal.classList.remove('open');
-				});
-		document.getElementById('cancelEdit').addEventListener('click',
-				function() {
-					editModal.classList.remove('open');
-				});
-
-		document.getElementById('saveEdit').addEventListener('click',
-				function() {
-					if (!confirm('저장하시겠습니까?'))
-						return;
-					var no = document.getElementById('e_no').value;
-					var v = vehicles.find(function(x) {
-						return x.no === no;
-					});
-					if (!v)
-						return;
-
-					var status = document.getElementById('e_status').value;
-					var drv = document.getElementById('e_driver').value.trim();
-
-					// 운행중이면 고정기사 수정 불가 (폼에서 disabled 처리하지만 안전망)
-					if (v.status === '운행중' && drv !== (v.driver || '')) {
-						alert('운행중인 차량은 고정기사명을 수정할 수 없습니다.');
-						return;
-					}
-
-					v.status = status;
-					if (v.status !== '운행중') {
-						v.driver = drv; // 운행중이 아닐 때만 반영
-					}
-
-					editModal.classList.remove('open');
-					applyFilter();
-				});
-
-		// ---- 삭제 ----
-		document.getElementById('bulkDelete').addEventListener(
-				'click',
-				function() {
-					var checked = Array.prototype.map.call(document
-							.querySelectorAll('.rowCheck:checked'),
-							function(c) {
-								return c.getAttribute('data-no');
-							});
-					if (!checked.length) {
-						alert('삭제할 차량을 선택하세요.');
-						return;
-					}
-					if (!confirm('삭제하시겠습니까?'))
-						return;
-
-					// 삭제 = 상태를 '사용불가'로 변경
-					vehicles.forEach(function(v) {
-						if (checked.indexOf(v.no) !== -1) {
-							v.status = '사용불가';
-						}
-					});
-					applyFilter();
-				});
-	</script>
 </body>
 </html>
