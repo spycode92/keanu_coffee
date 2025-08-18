@@ -38,10 +38,11 @@ public class TransportController {
 	public String carList(
 			@RequestParam(defaultValue = "1") int pageNum, 
 			@RequestParam(defaultValue = "all") String filter,
+			@RequestParam(defaultValue = "") String searchKeyword,
 			Model model) {
 		
 		int listLimit = 10;
-		int listCount = vehicleService.getVehicleCount(filter);
+		int listCount = vehicleService.getVehicleCount(filter, searchKeyword);
 		
 		if (listCount > 0) {
 			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, listCount, pageNum, 10);
@@ -54,7 +55,7 @@ public class TransportController {
 			
 			model.addAttribute("pageInfo", pageInfoDTO);
 			
-			List<VehicleDTO> vehicleList = vehicleService.getVehicleList(pageInfoDTO.getStartRow(), listLimit, filter);
+			List<VehicleDTO> vehicleList = vehicleService.getVehicleList(pageInfoDTO.getStartRow(), listLimit, filter, searchKeyword);
 			
 			System.out.println(vehicleList);
 			
