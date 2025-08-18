@@ -47,11 +47,11 @@ public class SupplierProductContractDTO implements FileUploadHelpper {
     private String productFrom;
     
     //공급계약정보
-    private Integer supplyContractIdx;
+    private Integer contractIdx;
     private Integer contractPrice;
     private Date contractStart;
     private Date contractEnd;
-    private Integer minOrderQuantitiy;
+    private Integer minOrderQuantity;
     private Integer maxOrderQuantity;
     private String status;
 

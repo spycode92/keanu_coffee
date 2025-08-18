@@ -19,6 +19,7 @@
     <script src="/resources/js/admin/system_preferences/dept_team_role.js"></script>
     <script src="/resources/js/admin/system_preferences/supplier_manage.js"></script>
     <script src="/resources/js/admin/system_preferences/product_manage.js"></script>
+    <script src="/resources/js/admin/system_preferences/supply_contract.js"></script>
     <!-- 다음주소찾기api -->
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     
@@ -130,6 +131,8 @@
     <jsp:include page="/WEB-INF/views/admin/preference_modal/detail_supplier.jsp"></jsp:include>
     <jsp:include page="/WEB-INF/views/admin/preference_modal/add_product.jsp"></jsp:include>
     <jsp:include page="/WEB-INF/views/admin/preference_modal/detail_product.jsp"></jsp:include>
+    <jsp:include page="/WEB-INF/views/admin/preference_modal/add_contract.jsp"></jsp:include>
+    <jsp:include page="/WEB-INF/views/admin/preference_modal/detail_contract.jsp"></jsp:include>
     <section class="content">
         <div class="container">
             <h4 class="mt-4 mb-3"><i class="fas fa-users"></i> 조직 관리</h4>
@@ -247,19 +250,10 @@
 			                                <th>계약단가</th>
 			                                <th>계약기간</th>
 			                                <th>상태</th>
+			                                <th>상세보기</th>
 			                            </tr>
 			                        </thead>
 			                        <tbody>
-			                            <c:forEach var="contract" items="${supplyContractList}">
-			                            
-			            	            	<tr>
-												<td>${contract.supplierName }</td>
-												<td>${contract.productName }</td>
-												<td>${contract.contractPrice }</td>
-												<td>${contract.contractStart } ~ ${contract.contractEnd }</td>
-												<td>${contract.status }</td>
-											</tr>		                            	
-			                            </c:forEach>
 			                        </tbody>
 			                    </table>
 			                </div>

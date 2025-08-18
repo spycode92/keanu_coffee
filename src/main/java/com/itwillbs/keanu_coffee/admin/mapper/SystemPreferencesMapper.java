@@ -99,5 +99,13 @@ public interface SystemPreferencesMapper {
 
 	int updateProductStatus(@Param("productIdx") Integer productIdx, @Param("status")String status);
 
+	int insertContract(SupplierProductContractDTO supplyContract);
+
+	SupplierProductContractDTO selectContractDetail(SupplierProductContractDTO supplyContract);
+
+	int updateContractDetail(SupplierProductContractDTO contract);
+
+	int deleteContractDetail(SupplierProductContractDTO contract);
+
 	
 }

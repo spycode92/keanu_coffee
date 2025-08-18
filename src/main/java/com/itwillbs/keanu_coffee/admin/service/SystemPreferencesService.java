@@ -264,6 +264,7 @@ public class SystemPreferencesService {
 		return product;
 	}
 	
+	//상품정보수정
 	@Transactional
 	public Boolean modifyProduct(SupplierProductContractDTO product) throws IOException {
 		// 현재 product에 들어있는  파일 저장
@@ -289,9 +290,32 @@ public class SystemPreferencesService {
 		
 		return updateCount > 0;
 	}
-
+	
+	//상품상태 삭제변경
 	public boolean changeProductStatus(Integer productIdx, String status) {
 		int updateCount = systemPreferencesMapper.updateProductStatus(productIdx, status);
+		return updateCount > 0;
+	}
+	
+	//계약등록
+	public boolean addContract(SupplierProductContractDTO supplyContract) {
+		int insertCount = systemPreferencesMapper.insertContract(supplyContract);
+		return insertCount > 0;
+	}
+
+	public SupplierProductContractDTO getContractDetail(SupplierProductContractDTO supplyContract) {
+		
+		return systemPreferencesMapper.selectContractDetail(supplyContract);
+	}
+
+	public SupplierProductContractDTO updateContractDetail(SupplierProductContractDTO contract) {
+		int updateCount = systemPreferencesMapper.updateContractDetail(contract);
+		
+		return contract;
+	}
+
+	public boolean deleteContractDetail(SupplierProductContractDTO contract) {
+		int updateCount = systemPreferencesMapper.deleteContractDetail(contract);
 		return updateCount > 0;
 	}
 
