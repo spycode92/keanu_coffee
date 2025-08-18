@@ -188,6 +188,10 @@
 				<ul class="submenu">
 			        <li><a href="/inbound/main">대시보드</a></li>
 			        <li><a href="/inbound/management">입고조회</a></li>
+			        <li><a href="/inbound/inboundDetail">입고조회 > 상세</a></li>
+			        <li><a href="/inbound/inboundInspection">입고조회 > 검수</a></li>
+			        <li><a href="/inbound/inboundConfirm">입고조회 > 확정</a></li>
+			        <li><a href="/inbound/inboundRegister">입고요청</a></li>
 			    </ul>
 			</li>
 			<li>
@@ -195,6 +199,11 @@
 				<ul class="submenu">
 			        <li><a href="/outbound/main">대시보드</a></li>
 			        <li><a href="/outbound/outboundManagement">출고조회</a></li>
+			        <li><a href="/outbound/outboundDetail">출고조회 > 상세</a></li>
+			        <li><a href="/outbound/outboundInspection">출고조회 > 검수</a></li>
+			        <li><a href="/outbound/outboundConfirm">출고조회 > 확정</a></li>
+			        <li><a href="/outbound/outboundRegister">출고요청</a></li>
+			        <li><a href="/outbound/outboundPicking">출고피킹</a></li>
 			    </ul>
 			</li>
 			<li>
