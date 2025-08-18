@@ -5,50 +5,96 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>재고현황</title>
+<title>재고현황 대시보드</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <style>
+	/* !!! 추가: 대시보드 폭 고정용 래퍼 */
+	.dash-wrap {
+		padding: 20px;
+	}
+	
+	.dash-inner {
+		max-width: 1200px;   /* 필요시 1280~1360px로 조정 */
+		margin: 0 auto;
+		width: 100%;
+	}
+	
 	.dashboard-container {
 	    display: grid;
-	    grid-template-columns: repeat(3, 1fr); /* [변경] 3열 */
+	    grid-template-columns: repeat(3, minmax(0, 1fr)); /* !!! 변경: minmax로 폭 안정화 */
 	    gap: 20px;
-	    margin: 20px;
+	    /* margin: 20px; → !!! 변경: 바깥 여백은 dash-wrap에 위임 */
 	}
-	/* [추가] 제목 바: 그리드 전체 가로폭 차지 */
+	
+	/* !!! 추가: 제목 바 전체 폭 차지 */
 	.page-bar {
 	    grid-column: 1 / -1;
 	    display: flex;
 	    align-items: center;
 	    justify-content: space-between;
-	    margin-top: 0;
-	    margin-bottom: 6px;
+	    margin: 0 0 6px 0;
 	}
+	
 	.page-bar h2 {
 	    margin: 0;
 	}
-
+	
 	.card {
 	    border: 1px solid #ccc;
 	    border-radius: 10px;
 	    padding: 20px;
 	    box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+	    background: rgba(255,255,255,0.18); /* !!! 추가: 가이드 톤 반투명 */
+	    backdrop-filter: blur(2px);          /* !!! 추가: 유리 느낌 */
 	}
-	.card h3 { margin-bottom: 10px; }
-
-	table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-	th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-	th { background-color: #f8f8f8; }
-	canvas { max-width: 100%; }
+	
+	.card h3 {
+		margin-bottom: 10px;
+	}
+	
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		margin-top: 10px;
+	}
+	
+	th, td {
+		border: 1px solid #ddd;
+		padding: 8px;
+		text-align: center;
+	}
+	
+	th {
+		background-color: #f8f8f8;
+	}
+	
+	canvas {
+		max-width: 100%;
+	}
 
 	.refresh-btn {
 	    border: none; background: none; cursor: pointer;
 	    font-size: 20px; color: #4e73df; padding: 4px;
 	    transition: transform 0.2s ease;
 	}
-	.refresh-btn:hover { transform: rotate(90deg); }
+	.refresh-btn:hover { 
+		transform: rotate(90deg);
+	}
+	
+	/* !!! 추가: KPI 카드 높이 통일 */
+	.kpi { min-height: 220px; }
+	
+	/* !!! 추가: 반응형 그리드 */
+	@media (max-width: 1024px) {
+		.dashboard-container { grid-template-columns: repeat(2, minmax(0,1fr)); }
+	}
+	
+	@media (max-width: 640px) {
+		.dashboard-container { grid-template-columns: 1fr; }
+	}
 </style>
 </head>
 <body>
@@ -56,40 +102,46 @@
 	<!-- 상단/사이드 레이아웃 -->
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	
-	<!-- 제목: 그래프/대시보드 바로 위 -->
-	<div class="dashboard-container">
-		<!-- [추가] 대시보드 상단 제목 바 (그래프/카드 '위') -->
-		<div class="page-bar">
-			<h2>재고관리 대시보드</h2>
-			<button id="refreshBtn" class="refresh-btn" title="새로고침">&#x21bb;</button>
+	<!-- !!! 추가: 폭 고정 래퍼 -->
+	<main class="dash-wrap">
+	<div class="dash-inner">
+	
+		<!-- 제목: 그래프/대시보드 바로 위 -->
+		<div class="dashboard-container">
+			<!-- [추가] 대시보드 상단 제목 바 (그래프/카드 '위') -->
+			<div class="page-bar">
+				<h2>재고현황 대시보드</h2>
+				<button id="refreshBtn" class="refresh-btn" title="새로고침">&#x21bb;</button>
+			</div>
+	
+		    <!-- 총 재고 수량 -->
+		    <div class="card">
+		        <h3>총 재고 수량</h3>
+		        <p style="font-size: 28px; font-weight: bold;">3,150개</p>
+		    </div>
+	
+		    <!-- 입고/출고 현황 -->
+		    <div class="card">
+		        <h3>입고/출고 현황</h3>
+		        <p>오늘 입고: <strong>15건</strong></p>
+		        <p>오늘 출고: <strong>10건</strong></p>
+		    </div>
+	
+		    <!-- 로케이션 용적률 (같은 줄) -->
+		    <div class="card" style="height: 200px;">
+		        <h3>로케이션 용적률</h3>
+		        <canvas id="locationChart" style="width:100%; height:120px;"></canvas>
+		    </div>
+	
+		    <!-- 상품별 재고 현황 (아래 가로 전체) -->
+		    <div class="card" style="grid-column: 1 / -1;">
+		        <h3>상품별 재고 현황</h3>
+		        <canvas id="stockChart" style="width: 100%; height: 260px;"></canvas> <!-- [변경] 조금 더 키움 -->
+		    </div>
 		</div>
-
-	    <!-- 총 재고 수량 -->
-	    <div class="card">
-	        <h3>총 재고 수량</h3>
-	        <p style="font-size: 28px; font-weight: bold;">3,150개</p>
-	    </div>
-
-	    <!-- 입고/출고 현황 -->
-	    <div class="card">
-	        <h3>입고/출고 현황</h3>
-	        <p>오늘 입고: <strong>15건</strong></p>
-	        <p>오늘 출고: <strong>10건</strong></p>
-	    </div>
-
-	    <!-- 로케이션 용적률 (같은 줄) -->
-	    <div class="card" style="height: 200px;">
-	        <h3>로케이션 용적률</h3>
-	        <canvas id="locationChart" style="width:100%; height:120px;"></canvas>
-	    </div>
-
-	    <!-- 상품별 재고 현황 (아래 가로 전체) -->
-	    <div class="card" style="grid-column: 1 / -1;">
-	        <h3>상품별 재고 현황</h3>
-	        <canvas id="stockChart" style="width: 100%; height: 260px;"></canvas> <!-- [변경] 조금 더 키움 -->
-	    </div>
 	</div>
-
+	</main>
+	
 	<script>
 	    // 상품별 재고 차트
 	    const stockCtx = document.getElementById('stockChart').getContext('2d');
