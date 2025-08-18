@@ -63,7 +63,7 @@
 
                     <!-- 부피 -->
                     <div class="form-group">
-                        <label for="productVolume">부피</label>
+                        <label for="productVolume">부피 (cm³)</label>
                         <input type="number" class="form-control" id="productVolume" name="productVolume" step="0.01" min="0" readonly>
                     </div>
 

@@ -86,8 +86,18 @@ public interface SystemPreferencesMapper {
 	void deleteCategory(Integer idx);
 	//상품등록
 	int insertProduct(SupplierProductContractDTO product);
-
+	//상품목록
 	List<SupplierProductContractDTO> selectAllProductList();
+	//상품목록 - 필터대분류
+	List<SupplierProductContractDTO> selectProductByCategoryIdxList(List<Long> categoryIdxList);
+	// 상품목록 - 필터소분류
+	List<SupplierProductContractDTO> selectProductsByCategoryIdx(Long categoryIdx);
+	//상품상세정보
+	SupplierProductContractDTO selectProductByProductIdx(Integer productIdx);
+
+	int updateProduct(SupplierProductContractDTO product);
+
+	int updateProductStatus(@Param("productIdx") Integer productIdx, @Param("status")String status);
 
 	
 }

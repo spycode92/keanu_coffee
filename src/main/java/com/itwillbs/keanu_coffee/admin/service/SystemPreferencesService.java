@@ -234,10 +234,65 @@ public class SystemPreferencesService {
 		return insertCount > 0;
 		
 	}
-
+	//상품전체
 	public List<SupplierProductContractDTO> getProductList() {
 
 		return systemPreferencesMapper.selectAllProductList();
+	}
+	
+	//대분류 필터링
+	public List<SupplierProductContractDTO> getProductsByCategoryIdxList(List<Long> categoryIdxList) {
+		return systemPreferencesMapper.selectProductByCategoryIdxList(categoryIdxList);
+	}
+	
+	//소분류필터링
+	public List<SupplierProductContractDTO> getProductsByCategoryIdx(Long categoryIdx) {
+		return systemPreferencesMapper.selectProductsByCategoryIdx(categoryIdx);
+	}
+	
+	//상품상세정보
+	public SupplierProductContractDTO getProductDetail(SupplierProductContractDTO product) {
+		//상품등록시 추가한 이미지파일 검색
+		FileDTO file = fileMapper.getFileWithTargetTable("product", product.getProductIdx());
+		// 상품정보불러오기
+		product = systemPreferencesMapper.selectProductByProductIdx(product.getProductIdx());
+		//파일고유번호 dto저장
+		if (file != null) {
+			product.setFileIdx(file.getIdx());
+		}
+		
+		return product;
+	}
+	
+	@Transactional
+	public Boolean modifyProduct(SupplierProductContractDTO product) throws IOException {
+		// 현재 product에 들어있는  파일 저장
+		product.setIdx(product.getProductIdx());
+		List<FileDTO> fileList = FileUtils.uploadFile(product, session);
+		// 현재 product에 들어있는 product_idx를 이용해서 저장된 파일 정보 불러오기
+		FileDTO file = fileMapper.getFileWithTargetTable("product", product.getProductIdx());
+		// 새로 업로드한 파일이 있을 경우에만
+	    if (!fileList.isEmpty()) {
+	        if (file != null) {   // 기존 파일이 존재하면
+	            // 기존 파일을 삭제하고
+	            FileUtils.deleteFile(file, session);
+	            // 새로 업로드한 파일로 DB 업데이트
+				for(FileDTO files : fileList) {
+					fileMapper.updateFiles(files, file.getIdx());
+				}
+	        } else { // 기존 파일이 없었으면 새 파일 정보 삽입
+	            fileMapper.insertFiles(fileList);
+	        }
+	    }
+	
+		int updateCount = systemPreferencesMapper.updateProduct(product);
+		
+		return updateCount > 0;
+	}
+
+	public boolean changeProductStatus(Integer productIdx, String status) {
+		int updateCount = systemPreferencesMapper.updateProductStatus(productIdx, status);
+		return updateCount > 0;
 	}
 
 	

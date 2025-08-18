@@ -109,6 +109,15 @@
 	       <artifactId>thumbnailator</artifactId>
 	       <version>0.4.8</version>
 	    </dependency>
+	    
+	    <!-- webp 지원 ImageIO플러그인 -->
+		<!-- https://mvnrepository.com/artifact/com.github.gotson/webp-imageio -->
+		<dependency>
+		    <groupId>com.github.gotson</groupId>
+		    <artifactId>webp-imageio</artifactId>
+		    <version>0.2.2</version>
+		</dependency>
+	
 	
 	    <!-- 롬복(Lombok) 라이브러리 -->
 	    <dependency>

@@ -14,6 +14,8 @@ public interface FileMapper {
 	FileDTO getFileWithFileIdx(int fileIdx);
 
 	FileDTO getFileWithTargetTable(@Param("targetTable") String targetTable, @Param("targetTableIdx")int targetTableIdx);
+
+	void updateFiles(@Param("file")FileDTO file, @Param("idx")int idx);
 	
 	
 	

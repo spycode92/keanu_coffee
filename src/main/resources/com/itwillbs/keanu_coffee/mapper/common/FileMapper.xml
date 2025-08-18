@@ -4,7 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.common.mapper.FileMapper">
 	
-	
+	<!-- 파일등록 -->
 	<insert id="insertFiles">
 		INSERT
 		INTO FILE(
@@ -28,6 +28,18 @@
 			)
 		</foreach>
 	</insert>
+	
+	<update id="updateFiles">
+		UPDATE file
+		SET 		
+			real_file_name = #{file.realFileName}
+			, original_file_name = #{file.originalFileName}
+			, sub_dir = #{file.subDir}
+			, file_size = #{file.fileSize}
+			, content_type = #{file.contentType}
+		where idx = #{idx}
+			
+	</update>
 	
 	<select id="getFileWithFileIdx" resultType="FileDTO">
 		SELECT *

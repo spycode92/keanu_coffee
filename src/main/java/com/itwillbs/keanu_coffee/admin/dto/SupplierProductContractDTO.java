@@ -59,6 +59,7 @@ public class SupplierProductContractDTO implements FileUploadHelpper {
     private String note;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    private Integer fileIdx;
 	
 	
 	

@@ -255,7 +255,7 @@ public class SystemPreferencesController {
         }
     }
 	
-	
+	//상품등록
     @PostMapping("/addProduct")
     @ResponseBody
     public ResponseEntity<String> addProduct(@ModelAttribute SupplierProductContractDTO product) throws IOException {
@@ -266,16 +266,74 @@ public class SystemPreferencesController {
     	
     	return ResponseEntity.ok("상품등록에 실패하였습니다.");
     }
-    
+    //상품목록,필터링
     @GetMapping("/getProductList")
     @ResponseBody
-    public List<SupplierProductContractDTO> getProdcutList(){
-    	List<SupplierProductContractDTO> productList = systemPreferencesService.getProductList();
+    public List<SupplierProductContractDTO> getProductList(
+    	    @RequestParam(value = "categoryIdx", required = false) Long categoryIdx,
+    	    @RequestParam(value = "categoryIdxList", required = false) List<Long> categoryIdxList
+    	) {
     	
-    	return productList;
+    	// 1. 소분류 여러 개(배열)로 필터(*
+        if (categoryIdxList != null && !categoryIdxList.isEmpty()) {
+            return systemPreferencesService.getProductsByCategoryIdxList(categoryIdxList);
+        }
+        // 2. 단일 소분류로 필터
+        else if (categoryIdx != null) {
+            return systemPreferencesService.getProductsByCategoryIdx(categoryIdx);
+        }
+        // 4. 전체 목록
+        else {
+            return systemPreferencesService.getProductList();
+        }
+    }
+    //상품상세정보
+    @GetMapping("/getProductDetail")
+    @ResponseBody
+    public SupplierProductContractDTO getProductDetail(SupplierProductContractDTO product) {
+    	product = systemPreferencesService.getProductDetail(product);
+    	
+    	return product;
     }
 	
+    //상품등록
+    @PostMapping("/modifyProduct")
+    @ResponseBody
+    public ResponseEntity<String> modifyProduct(@ModelAttribute SupplierProductContractDTO product) throws IOException {
+    	System.out.println(product);
+    	Boolean result = systemPreferencesService.modifyProduct(product);
+    	if(result) {
+    		return ResponseEntity.ok("상품정보가 수정되었습니다.");
+    	}
+    	
+    	return ResponseEntity.ok("상품정보 수정에 실패하였습니다.");
+    }
 	
+    //상품삭제
+    @DeleteMapping("/removeProduct")
+    public ResponseEntity<String> removeProduct(@RequestBody Map<String, Object> request) {
+    	
+    	Object idxObj = request.get("productIdx");
+        
+    	Integer productIdx = null;
+        
+    	if (idxObj != null) {
+            productIdx = Integer.valueOf(idxObj.toString());
+        }
+    	
+        if (productIdx == null) {
+            return ResponseEntity.badRequest().body("상품 번호가 올바르지 않습니다.");
+        }
+        
+        String status = "삭제";
+        boolean result = systemPreferencesService.changeProductStatus(productIdx, status);
+        
+        if (result) {
+            return ResponseEntity.ok("상품이 삭제(비활성화) 처리되었습니다.");
+        } else {
+            return ResponseEntity.status(500).body("상품 삭제 처리에 실패했습니다.");
+        }
+    }
 	
 	
 	
@@ -300,10 +358,6 @@ public class SystemPreferencesController {
 		//공급처 리스트 가져오기
 		List<SupplierProductContractDTO> supplierList = systemPreferencesService.getSuppliersInfo();
 		model.addAttribute("supplierList",supplierList);
-		
-		//상품 리스트 가져오기
-		List<SupplierProductContractDTO> productList = systemPreferencesService.getProductsInfo();
-		model.addAttribute("productList",productList);
 		
 		//공급계약 리스트 가져오기
 		List<SupplierProductContractDTO> supplyContractList = systemPreferencesService.getsupplyContractInfo();

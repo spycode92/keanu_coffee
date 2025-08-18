@@ -129,6 +129,7 @@
     <jsp:include page="/WEB-INF/views/admin/preference_modal/add_supplier.jsp"></jsp:include>
     <jsp:include page="/WEB-INF/views/admin/preference_modal/detail_supplier.jsp"></jsp:include>
     <jsp:include page="/WEB-INF/views/admin/preference_modal/add_product.jsp"></jsp:include>
+    <jsp:include page="/WEB-INF/views/admin/preference_modal/detail_product.jsp"></jsp:include>
     <section class="content">
         <div class="container">
             <h4 class="mt-4 mb-3"><i class="fas fa-users"></i> 조직 관리</h4>
@@ -210,6 +211,20 @@
 			                    <span>상품</span>
 			                    <button type="button" id="btnAddProduct" class="btn btn-sm btn-primary">+</button>
 			                </div>
+			                <div class="form-row mb-2">
+							    <div class="col">
+							        <select id="upperCategorySelect_" class="form-control">
+							            <option value="">대분류 선택</option>
+							            <!-- 상위카테고리 동적추가 -->
+							        </select>
+							    </div>
+							    <div class="col">
+							        <select id="lowerCategorySelect_" class="form-control" disabled>
+							            <option value="">소분류 선택</option>
+							            <!-- 하위카테고리 동적추가 -->
+							        </select>
+							    </div>
+							</div>
 			                <ul id="productList" class="list-group list-group-flush" style="max-height: 150px; overflow-y: auto;">
    			   					<!-- 상품목록들어옴 -->
 			                </ul>

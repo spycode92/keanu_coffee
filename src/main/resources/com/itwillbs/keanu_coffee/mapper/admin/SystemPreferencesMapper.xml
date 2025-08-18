@@ -281,8 +281,76 @@
 	<select id="selectAllProductList" resultType="SupplierProductContractDTO">
 		SELECT *
 		FROM product
+		WHERE status = 1
 	</select>
 	
+	<!-- 상품대분류 목록불러오기 -->
+	<select id="selectProductByCategoryIdxList" resultType="SupplierProductContractDTO">
+		SELECT *
+	    FROM product
+	    WHERE category_idx IN
+		    <foreach collection="list" item="categoryIdx" open="(" separator="," close=")">
+		        #{categoryIdx}
+		    </foreach>
+		    AND
+		    status = 1
+	</select>
+	
+	<!-- 소븐류 상품 필터링 -->
+	<select id="selectProductsByCategoryIdx" resultType="SupplierProductContractDTO">
+	    SELECT *
+	    FROM product
+	    WHERE category_idx = #{categoryIdx}
+	    	AND
+		    status = 1
+	</select>
+	
+	<!-- 상품상세정보 -->
+	<select id="selectProductByProductIdx" resultType="SupplierProductContractDTO">
+		SELECT 
+		    p.idx AS productIdx,
+		    p.product_name AS productName,
+		    c.idx AS categoryIdx,
+		    c.category_name AS categoryName,
+		    pc.idx AS parentCategoryIdx,
+		    pc.category_name AS parentCategoryName,
+		    p.product_weight AS productWeight,
+		    p.product_width AS productWidth,
+		    p.product_length AS productLength,
+		    p.product_height AS productHeight,
+		    p.product_volume AS productVolume,
+		    p.product_from AS productFrom,
+		    p.note
+		  FROM product p
+		  LEFT JOIN category c ON p.category_idx = c.idx
+		  LEFT JOIN category pc ON c.parent_category_idx = pc.idx
+		  WHERE p.idx = #{productIdx}
+	</select>
+	
+	<!-- 상품정보수정 -->
+	<update id="updateProduct" parameterType="SupplierProductContractDTO">
+		UPDATE product
+		SET 
+			product_name = #{productName}
+	        , category_idx = #{categoryIdx}
+	        , product_weight = #{productWeight}
+	        , product_width = #{productWidth}
+	        , product_length = #{productLength}
+	        , product_height = #{productHeight}
+	        , product_volume = #{productVolume}
+	        , product_from = #{productFrom}
+	        , note = #{note}
+		WHERE idx = #{productIdx}
+	</update>
+	
+	<!-- 상품상태변경 -->
+	<update id="updateProductStatus">
+		UPDATE product
+		SET
+			status = #{status}
+		WHERE
+			idx = #{productIdx}
+	</update>
 
 
 
