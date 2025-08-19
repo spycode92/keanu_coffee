@@ -106,7 +106,7 @@
 		FROM
 			VEHICLE v
 		LEFT OUTER JOIN
-			employee_info e
+			EMPLOYEE_INFO e
 		ON 
 			v.driver_idx = e.idx
 		WHERE 
