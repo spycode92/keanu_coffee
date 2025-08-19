@@ -8,20 +8,20 @@
 	<!--전체부서목록 가져오기 -->
 	<select id="getDepartmentInfo" resultType="DepartTeamRoleDTO" >
 		SELECT *
-		FROM department
+		FROM upper(department)
 	</select>
 	
 	<!-- 해당부서 팀목록 가져오기 -->
 	<select id="getTeamsInfoByDepartmentIdx" resultType="DepartTeamRoleDTO">
 		SELECT *
-		FROM team
+		FROM upper(team)
 		WHERE department_idx = #{departmentIdx}
 	</select>
 	
 	<!-- 해당부서 직책목록 가져오기 -->
 	<select id="getRolesInfoByDepartmentIdx" resultType="DepartTeamRoleDTO">
 		SELECT *
-		FROM role
+		FROM upper(role)
 		WHERE department_idx = #{departmentIdx}
 	</select>
 	
@@ -33,71 +33,71 @@
 	
 	<!-- 팀추가하기 -->
 	<insert id="insertTeam"  parameterType="DepartTeamRoleDTO" useGeneratedKeys="true" keyProperty="idx">
-		INSERT into team(team_name, department_idx)
+		INSERT into upper(team)(team_name, department_idx)
 		VALUES(	#{teamName}, #{departmentIdx})
 	</insert>
 	
 	<!-- 직책추가하기 -->
 	<insert id="insertRole"  parameterType="DepartTeamRoleDTO" useGeneratedKeys="true" keyProperty="idx">
-		INSERT into role(role_name, department_idx)
+		INSERT into upper(role)(role_name, department_idx)
 		VALUES(	#{roleName}, #{departmentIdx})
 	</insert>
 
 	<!-- 직책삭제하기 -->
 	<delete id="deleteRole" parameterType="long" > 
-		DELETE FROM role
+		DELETE FROM upper(role)
 		where idx = #{roleIdx}
 	</delete>
 	
 	<!-- 직책,메뉴,권한 테이블이 가지고있는 직책 삭제 -->
 	<delete id="deleteRoleMenuAuthoByRoleIdx">
-		DELETE FROM role_menu_autho
+		DELETE FROM upper(role_menu_autho)
 		where role_idx = #{roleIdx}
 	</delete>
 	
 	<!--  팀삭제 -->
 	<delete id="deleteTeam">
-		DELETE FROM team
+		DELETE FROM upper(team)
 		where idx = #{teamIdx}
 	</delete>
 	
 	<!-- 부서에속한 팀목록 -->
 	<select id="departTeamList" resultType="departTeamRoleDTO">
 		SELECT idx
-		from team
+		from upper(team)
 		where department_idx = #{departmentIdx}
 	</select>
 	
 	<!-- 부서에속한 직책목록 -->
 	<select id="departRoleList">
 		SELECT idx
-		from role
+		from upper(role)
 		where department_idx = #{departmentIdx}
 	</select>
 	
 	<!-- 부서삭제 -->
 	<delete id="deleteDepartment">
-		DELETE FROM department
+		DELETE FROM upper(department)
 		where idx = #{departmentIdx}
 	</delete>
 	
 	<!-- 부서이름 수정 -->
 	<update id="updateDepartment">
-		UPDATE department 
+		UPDATE upper(department) 
 		SET department_name = #{departmentName}
 		where idx = #{idx}
 	</update>
 	
 	<!-- 팀이름변경 -->
 	<update id="updateTeam">
-		UPDATE team
+		UPDATE upper(team)
 		SET team_name = #{teamName}
 		where idx = #{idx}
 	</update>
 	
 	<!-- 직책이름변경 -->
 	<update id="updateRole">
-		UPDATE role
+		UPDATE upper(role)
 		SET role_name = #{roleName}
 		where idx = #{idx}
 	</update>
@@ -115,7 +115,7 @@
 		    -- 계약이 존재하면 1, 아니면 0
 		    CASE WHEN COUNT(spc.idx) > 0 THEN 1 ELSE 0 END AS hasContract
 		FROM 
-		    supplier s
+		    upper(supplier) s
 		LEFT JOIN 
 		    supplier_product_contract spc
 		    ON s.idx = spc.supplier_idx
@@ -135,7 +135,7 @@
 	<!-- 등록계약리스트 -->
 	<select id="selectSupplyContractsInfo" resultType="SupplierProductContractDTO">
 		SELECT *
-		FROM v_supplier_product_contract_summary
+		FROM upper(v_supplier_product_contract_summary)
 		where status &lt;&gt; '삭제'
 	</select>
 	
@@ -166,27 +166,27 @@
 	<!-- 공급업체의 활성화된 계약 갯수 -->
 	<select id="countActiveContractsBySupplier" resultType="int" parameterType="long">
 		SELECT COUNT(*)
-		FROM supplier_product_contract
+		FROM upper(supplier_product_contract)
 		WHERE supplier_idx = #{supplierIdx}
 		AND status = '활성'
 	</select>
 	
 	<!-- 공급업체 삭제 -->
 	<delete id="deleteSupplierByIdx" parameterType="long">
-		DELETE FROM supplier
+		DELETE FROM upper(supplier)
 		WHERE idx = #{supplierIdx}
 	</delete>
 	
 	<!-- 공급업체상세정보 -->
 	<select id="selectSupplierInfo" resultType="SupplierProductContractDTO">
 		SELECT *
-		FROM supplier
+		FROM upper(supplier)
 		WHERE idx = #{idx}
 	</select>
 	
 	<!-- 공급업체정보수정 -->
 	<update id="updateSupplier">
-		UPDATE supplier
+		UPDATE upper(supplier)
 		SET
 			supplier_name = #{supplierName}
 			, supplier_manager = #{supplierManager}
@@ -210,13 +210,13 @@
 		, c.category_name as categoryName
 		, c.parent_category_idx as parentCategoryIdx
 		, p.category_name as parentCategoryName
-		FROM category c
+		FROM upper(category) c
 		LEFT JOIN category p ON c.parent_category_idx = p.idx
 	</select>
 	
 	<!-- 카테고리추가 -->
 	<insert id="insertCategory">
-		insert INTO category
+		insert INTO upper(category)
 		(category_name, parent_category_idx)
 		VALUES
 		(#{categoryName}, #{parentCategoryIdx})
@@ -224,7 +224,7 @@
 	
 	<!-- 카테고리수정 -->
 	<update id="updateCategory">
-		UPDATE category
+		UPDATE upper(category)
 		set category_name = #{categoryName}
 		where idx = #{idx}
 	</update>
@@ -232,27 +232,27 @@
 	<!-- 카테고리에 제품이들어있나확인 -->
 	<select id="countProductByCategoryIdx" resultType="int">
 		SELECT count(*)
-		FROM product
+		FROM upper(product)
 		where category_idx = #{idx}
 	</select>
 	
 	<!-- 자식카테고리가있나확인 -->
 	<select id="countCategoryByCategoryIdx" resultType="int">
 		SELECT count(*)
-		FROM category
+		FROM upper(category)
 		where parent_category_idx = #{idx}
 	</select>
 	
 	<!-- 카테고리삭제 -->
 	<delete id="deleteCategory">
-		DELETE FROM category
+		DELETE FROM upper(category)
 		where idx = #{idx}
 	</delete>
 	
 	<!-- 상품등록 -->
 	<insert id="insertProduct" parameterType="SupplierProductContractDTO" 
 		useGeneratedKeys="true" keyProperty="idx"> 
-		INSERT INTO product
+		INSERT INTO upper(product)
     (
         product_name,
         category_idx,
@@ -281,14 +281,14 @@
 	<!-- 상품목록전체불러오기 -->
 	<select id="selectAllProductList" resultType="SupplierProductContractDTO">
 		SELECT *
-		FROM product
+		FROM upper(product)
 		WHERE status = 1
 	</select>
 	
 	<!-- 상품대분류 목록불러오기 -->
 	<select id="selectProductByCategoryIdxList" resultType="SupplierProductContractDTO">
 		SELECT *
-	    FROM product
+	    FROM upper(product)
 	    WHERE category_idx IN
 		    <foreach collection="list" item="categoryIdx" open="(" separator="," close=")">
 		        #{categoryIdx}
@@ -300,7 +300,7 @@
 	<!-- 소븐류 상품 필터링 -->
 	<select id="selectProductsByCategoryIdx" resultType="SupplierProductContractDTO">
 	    SELECT *
-	    FROM product
+	    FROM upper(product)
 	    WHERE category_idx = #{categoryIdx}
 	    	AND
 		    status = 1
@@ -322,7 +322,7 @@
 		    p.product_volume AS productVolume,
 		    p.product_from AS productFrom,
 		    p.note
-		  FROM product p
+		  FROM upper(product) p
 		  LEFT JOIN category c ON p.category_idx = c.idx
 		  LEFT JOIN category pc ON c.parent_category_idx = pc.idx
 		  WHERE p.idx = #{productIdx}
@@ -330,7 +330,7 @@
 	
 	<!-- 상품정보수정 -->
 	<update id="updateProduct" parameterType="SupplierProductContractDTO">
-		UPDATE product
+		UPDATE upper(product)
 		SET 
 			product_name = #{productName}
 	        , category_idx = #{categoryIdx}
@@ -346,7 +346,7 @@
 	
 	<!-- 상품상태변경 -->
 	<update id="updateProductStatus">
-		UPDATE product
+		UPDATE upper(product)
 		SET
 			status = #{status}
 		WHERE
@@ -355,7 +355,7 @@
 	
 	<!-- 계약등록 -->
 	<insert id="insertContract">
-		INSERT into supplier_product_contract
+		INSERT into upper(supplier_product_contract)
 		(
 	        supplier_idx,
 	        product_idx,
@@ -400,19 +400,19 @@
 		    p.product_name AS productName,
 		    f.idx AS fileIdx
 		FROM
-		    supplier_product_contract AS spc
+		    upper(supplier_product_contract) AS spc
 		LEFT JOIN
-		    supplier AS s ON spc.supplier_idx = s.idx
+		    upper(supplier) AS s ON spc.supplier_idx = s.idx
 		LEFT JOIN
-		    product AS p ON spc.product_idx = p.idx
+		    upper(product) AS p ON spc.product_idx = p.idx
 		LEFT JOIN
-		    file AS f ON f.target_table = 'product' AND f.target_table_idx = p.idx
+		    upper(file) AS f ON f.target_table = 'product' AND f.target_table_idx = p.idx
 		WHERE spc.idx = #{idx}
 	</select>
 	
 	<!-- 계약수정 -->
 	<update id="updateContractDetail" parameterType="SupplierProductContractDTO">
-		UPDATE supplier_product_contract
+		UPDATE upper(supplier_product_contract)
 	    SET
 	        contract_price = #{contractPrice},
 	        contract_start = #{contractStart},
@@ -426,7 +426,7 @@
 	
 	<!-- 계약삭제 -->
 	<update id="deleteContractDetail">
-		UPDATE supplier_product_contract
+		UPDATE upper(supplier_product_contract)
 		SET
 			status = #{status}
 		WHERE idx = #{idx}

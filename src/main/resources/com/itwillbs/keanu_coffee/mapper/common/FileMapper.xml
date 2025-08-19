@@ -30,7 +30,7 @@
 	</insert>
 	
 	<update id="updateFiles">
-		UPDATE file
+		UPDATE FILE
 		SET 		
 			real_file_name = #{file.realFileName}
 			, original_file_name = #{file.originalFileName}
@@ -43,13 +43,13 @@
 	
 	<select id="getFileWithFileIdx" resultType="FileDTO">
 		SELECT *
-		FROM file
+		FROM FILE
 		where idx = #{fileIdx}
 	</select>
 	
 	<select id="getFileWithTargetTable" resultType="FileDTO">
 		SELECT *
-		FROM file
+		FROM FILE
 		where target_table = #{targetTable}
 			AND target_table_idx = #{targetTableIdx}
 	</select>
