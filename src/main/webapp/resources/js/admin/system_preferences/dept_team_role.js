@@ -44,7 +44,7 @@ $(function () {
 	            const deptName = result.value.trim();
 	
 	            $.ajax({
-	                url: '/admin/systemPreference/addDepartment',
+	                url: '/admin/systemPreference/dept/addDepartment',
 	                method: 'POST',
 	                contentType: 'application/json',
 	                data: JSON.stringify({ departmentName: deptName }),
@@ -114,7 +114,7 @@ $(function () {
 	            const teamName = result.value.trim();
 	
 	            $.ajax({
-	                url: '/admin/systemPreference/addTeam',
+	                url: '/admin/systemPreference/dept/addTeam',
 	                method: 'POST',
 	                contentType: 'application/json',
 	                data: JSON.stringify({ teamName: teamName, departmentIdx: selectedDeptIdx }),
@@ -187,7 +187,7 @@ $(function () {
 	            const roleName = result.value.trim();
 	
 	            $.ajax({
-	                url: '/admin/systemPreference/addRole',
+	                url: '/admin/systemPreference/dept/addRole',
 	                method: 'POST',
 	                contentType: 'application/json',
 	                data: JSON.stringify({ roleName: roleName, departmentIdx: selectedDeptIdx }),
@@ -239,7 +239,7 @@ $(function () {
 				let deptIdx = $(this).closest('li').data('departmentidx');
 		        let $targetLi = $(this).closest('li');
 		        $.ajax({
-		            url: '/admin/systemPreference/removeDepartment',
+		            url: '/admin/systemPreference/dept/removeDepartment',
 		            method: 'DELETE',
 		            contentType: 'application/json',
 		            data: JSON.stringify({ idx: deptIdx }),
@@ -286,7 +286,7 @@ $(function () {
 	            let teamIdx = $(this).closest('li').data('teamidx');
 	            let $targetLi = $(this).closest('li');
 	            $.ajax({
-	                url: '/admin/systemPreference/removeTeam',
+	                url: '/admin/systemPreference/dept/removeTeam',
 	                method: 'DELETE',
 	                contentType: 'application/json',
 	                data: JSON.stringify({ idx: teamIdx }),
@@ -332,7 +332,7 @@ $(function () {
 	            let roleIdx = $btn.closest('li').data('roleidx');
 	
 	            $.ajax({
-	                url: '/admin/systemPreference/removeRole',
+	                url: '/admin/systemPreference/dept/removeRole',
 	                method: 'DELETE',
 	                data: JSON.stringify({ idx: roleIdx }),
 	                contentType: 'application/json',
@@ -391,7 +391,7 @@ $(function () {
 	            let newName = result.value.trim();
 	
 	            $.ajax({
-	                url: '/admin/systemPreference/modifyDepartment',
+	                url: '/admin/systemPreference/dept/modifyDepartment',
 	                method: 'PUT',
 	                contentType: 'application/json',
 	                data: JSON.stringify({ idx: deptIdx, departmentName: newName }),
@@ -449,7 +449,7 @@ $(function () {
 	            let newName = result.value.trim();
 	
 	            $.ajax({
-	                url: '/admin/systemPreference/modifyTeam',
+	                url: '/admin/systemPreference/dept/modifyTeam',
 	                method: 'PUT',
 	                contentType: 'application/json',
 	                data: JSON.stringify({ idx: teamIdx, teamName: newName }),
@@ -507,7 +507,7 @@ $(function () {
 	            let newName = result.value.trim();
 	
 	            $.ajax({
-	                url: '/admin/systemPreference/modifyRole',
+	                url: '/admin/systemPreference/dept/modifyRole',
 	                method: 'PUT',
 	                contentType: 'application/json',
 	                data: JSON.stringify({ idx: roleIdx, roleName: newName }),
@@ -541,7 +541,7 @@ $(function () {
 	    $('#roleList').empty();
 	    if (!departmentIdx) return;
 	    $.ajax({
-	        url: '/admin/systemPreference/getTeamsAndRoles',
+	        url: '/admin/systemPreference/dept/getTeamsAndRoles',
 	        method: 'GET',
 	        data: { departmentIdx: departmentIdx },
 	        dataType: 'json',

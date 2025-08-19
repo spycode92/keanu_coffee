@@ -86,7 +86,7 @@ $(function() {
 	    }
 	
 	    $.ajax({
-	        url: '/admin/systemPreference/addSupplier', 
+	        url: '/admin/systemPreference/supplyCompany/addSupplier', 
 	        type: 'POST',
 	        contentType: 'application/json',
 	        data: JSON.stringify(supplierData),
@@ -111,7 +111,7 @@ $(function() {
 	// 상태별 공급업체 리스트 조회 Ajax 함수
 	function loadSupplierList(status) {
 	    $.ajax({
-	        url: '/admin/systemPreference/suppliers',
+	        url: '/admin/systemPreference/supplyCompany/suppliers',
 	        type: 'GET',
 	        data: { status: 'ALL' }, // 항상 전체 조회
 	        success: function(list) {
@@ -171,7 +171,7 @@ $(function() {
 	    }).then((result) => {
 	        if (result.isConfirmed) {
 	            $.ajax({
-	                url: '/admin/systemPreference/removeSupplier', // 아래 컨트롤러 URL에 맞게!
+	                url: '/admin/systemPreference/supplyCompany/removeSupplier', // 아래 컨트롤러 URL에 맞게!
 	                type: 'DELETE',
 	                contentType: 'application/json',
 	                data: JSON.stringify({ idx: supplierIdx }),
@@ -194,7 +194,7 @@ $(function() {
 	    const supplierIdx = $(this).data('id');
 	    // Ajax로 상세정보 조회
 	    $.ajax({
-	        url: '/admin/systemPreference/supplier/' + supplierIdx,
+	        url: '/admin/systemPreference/supplyCompany/supplier/' + supplierIdx,
 	        type: 'GET',
 	        dataType: 'json',
 	        success: function(data) {
@@ -295,7 +295,7 @@ $(function() {
 		};
 	
 	    $.ajax({
-	        url: '/admin/systemPreference/modifySupplier',
+	        url: '/admin/systemPreference/supplyCompany/modifySupplier',
 	        type: 'PUT',
 	        contentType: 'application/json',
 	        data: JSON.stringify(updateData),

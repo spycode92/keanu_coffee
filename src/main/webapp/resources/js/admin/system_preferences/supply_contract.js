@@ -1,6 +1,6 @@
 function loadSupplierProductContracts() {
     $.ajax({
-        url: '/admin/systemPreference/getContractList', // 실제 매핑된 서버 엔드포인트로 수정하세요.
+        url: '/admin/systemPreference/supplyContract/getContractList', // 실제 매핑된 서버 엔드포인트로 수정하세요.
         type: 'GET',
         dataType: 'json',
         success: function(contractList) {
@@ -46,7 +46,7 @@ function formatDateFromMillis(millis) {
 // 상품 리스트 불러오기 및 옵션 세팅
 function loadProductOptions(selectedProductIdx) {
     $.ajax({
-        url: '/admin/systemPreference/getProductList', // 실제 엔드포인트로 변경 필요
+        url: '/admin/systemPreference/product/getProductList', // 실제 엔드포인트로 변경 필요
         type: 'GET',
         dataType: 'json',
         success: function(productList) {
@@ -70,7 +70,7 @@ function loadProductOptions(selectedProductIdx) {
 // 공급업체 리스트 불러오기 및 옵션 세팅
 function loadSupplierOptions(selectedSupplierIdx) {
     $.ajax({
-        url: '/admin/systemPreference/suppliers', // 실제 엔드포인트로 변경 필요
+        url: '/admin/systemPreference/supplyCompany/suppliers', // 실제 엔드포인트로 변경 필요
         type: 'GET',
         dataType: 'json',
         success: function(supplierList) {
@@ -111,7 +111,7 @@ function openContractDetailModal(contractIdx) {
 	// 공통 fetch 함수 사용!
     $('#contractDetailModal').off('shown.bs.modal.myHandler').on('shown.bs.modal.myHandler', function () {
         $.ajax({
-            url: '/admin/systemPreference/getContractDetail',
+            url: '/admin/systemPreference/supplyContract/getContractDetail',
             type: 'GET',
             data: { idx: contractIdx },
             dataType: 'json',
@@ -222,7 +222,7 @@ $(function(){
 	    const formData = $form.serialize();
 	
 	    $.ajax({
-	        url: '/admin/systemPreference/addContract', // 실제 등록 엔드포인트
+	        url: '/admin/systemPreference/supplyContract/addContract', // 실제 등록 엔드포인트
 	        type: 'POST',
 	        data: formData,
 	        success: function(res) {
@@ -310,7 +310,7 @@ $(function(){
 	
 	    // 서버에 저장 요청
 	    $.ajax({
-	        url: '/admin/systemPreference/updateContractDetail',
+	        url: '/admin/systemPreference/supplyContract/updateContractDetail',
 	        type: 'POST',
 	        contentType: 'application/json',
 	        data: JSON.stringify(dataToSave),
@@ -318,7 +318,7 @@ $(function(){
 	           Swal.fire('성공', '계약 정보가 저장되었습니다.', 'success');
 		            // 서버에서 상세 데이터를 다시 받아 updateAndRestoreDetail()로 화면 갱신
 		            $.ajax({
-		                url: '/admin/systemPreference/getContractDetail',
+		                url: '/admin/systemPreference/supplyContract/getContractDetail',
 		                type: 'GET',
 		                data: { idx: currentContractIdx },
 		                dataType: 'json',
@@ -351,7 +351,7 @@ $(function(){
 	            };
 	
 	            $.ajax({
-	                url: '/admin/systemPreference/deleteContractDetail',
+	                url: '/admin/systemPreference/supplyContract/deleteContractDetail',
 	                type: 'POST',
 	                contentType: 'application/json',
 	                data: JSON.stringify(dataToDelete),

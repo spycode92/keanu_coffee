@@ -27,28 +27,49 @@ public class AdminController {
 		
 		return "/admin/admin_main";
 	}
-	
+	//직원관리
 	@GetMapping("/employeeManagement")
 	public String employeeManagement() {
 		
 		return "/admin/employee_management";
 	}
-	
-	@GetMapping("/preference")
-	public String systemP() {
+	//조직관리
+	@GetMapping("/preference/dept")
+	public String systemPreference_organization() {
 		
-		return "redirect:/admin/systemPreference";
+		return "redirect:/admin/systemPreference/dept";
 	}
-	
+	//공급업체관리
+	@GetMapping("/preference/supplyCompany")
+	public String systemPreference_supplyCompany() {
+		
+		return "redirect:/admin/systemPreference/supplyCompany";
+	}
+	//상품관리
+	@GetMapping("/preference/product")
+	public String systemPreference_product() {
+		
+		return "redirect:/admin/systemPreference/product";
+	}
+	//공급업체관리
+	@GetMapping("/preference/supplyContract")
+	public String systemPreference_supplyContract() {
+		
+		return "redirect:/admin/systemPreference/supplyContract";
+	}
+	//로그
 	@GetMapping("/log")
 	public String workingTree() {
 		return "redirect:/admin/workingLog";
 	}
-
+	
+	//대시보드
 	@GetMapping("/dash")
 	public String dashboard() {
 		return "redirect:/admin/dashboard";
 	}
+	
+	//
 	@GetMapping("/moveInventory")
 	public String moveInventory() {
 		return "/admin/employee_management/move_inventory";

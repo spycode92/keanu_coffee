@@ -11,7 +11,7 @@ import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
 
 @Mapper
-public interface SystemPreferencesMapper {
+public interface ProductMapper {
 	//부서목록 받아오기
 	List<DepartTeamRoleDTO> getDepartmentInfo();
 	

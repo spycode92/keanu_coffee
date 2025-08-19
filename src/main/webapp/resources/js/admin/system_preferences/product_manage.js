@@ -13,7 +13,7 @@ $(function () {
 	 // 상위 카테고리 리스트 불러오기 및 셀렉트박스 렌더링
     function loadUpperCategoryList() {
         $.ajax({
-            url: '/admin/systemPreference/categories',
+            url: '/admin/systemPreference/product/categories',
             method: 'GET',
             dataType: 'json',
             success: function(categoryList) {
@@ -102,7 +102,7 @@ $(function () {
 	    }
 	
 	    $.ajax({
-	        url: '/admin/systemPreference/addCategory', // 실제 매핑된 서버 주소로 맞추세요!
+	        url: '/admin/systemPreference/product/addCategory', // 실제 매핑된 서버 주소로 맞추세요!
 	        method: 'POST',
 	        contentType: 'application/json',
 	        data: JSON.stringify(newCategory),
@@ -153,7 +153,7 @@ $(function () {
 	            return;
 	        }
 	        $.ajax({
-	            url: '/admin/systemPreference/modifyCategory',
+	            url: '/admin/systemPreference/product/modifyCategory',
 	            method: 'PUT',
 	            contentType: 'application/json',
 	            data: JSON.stringify({ idx: categoryIdx, categoryName: newName }),
@@ -187,7 +187,7 @@ $(function () {
 	    }).then((result) => {
 	        if (result.isConfirmed) {
 	            $.ajax({
-	                url: `/admin/systemPreference/removeCategory`,
+	                url: `/admin/systemPreference/product/removeCategory`,
 	                method: 'DELETE',
 					contentType: 'application/json',
 					data: JSON.stringify({ idx: categoryIdx }),
@@ -213,7 +213,7 @@ $(function () {
 	//카테고리수정삭제모달불러오기
 	function renderCategoryListInModal() {
 	    $.ajax({
-	        url: '/admin/systemPreference/categories',
+	        url: '/admin/systemPreference/product/categories',
 	        type: 'GET',
 	        success: function (list) {
 	            const $list = $('#categoryListInModal');
@@ -351,7 +351,7 @@ $(function () {
 	    }
 	
 	    $.ajax({
-	        url: '/admin/systemPreference/addProduct',
+	        url: '/admin/systemPreference/product/addProduct',
 	        method: 'POST',
 	        data: formData,
 	        processData: false,            // 반드시 false (formData 전송 시)
@@ -370,7 +370,7 @@ $(function () {
 	// 상품 목록 불러오기 함수 (필터 조건 optional)
 	function loadProductList(parentCategoryIdx = '', childCategoryIdx = '') {
 	    $.ajax({
-	        url: '/admin/systemPreference/getProductList',
+	        url: '/admin/systemPreference/product/getProductList',
 	        type: 'GET',
 	        dataType: 'json',
 	        data: {
@@ -397,7 +397,7 @@ $(function () {
 	// 대분류 카테고리 리스트 불러오기 (상품카드 영역)
 	function loadUpperCategoryListCard() {
 	    $.ajax({
-	        url: '/admin/systemPreference/categories',
+	        url: '/admin/systemPreference/product/categories',
 	        method: 'GET',
 	        dataType: 'json',
 	        success: function(categoryList) {
@@ -495,7 +495,7 @@ $(function () {
 	// 복수 카테고리 아이디로 상품목록 필터링 함수
 	function loadProductListByCategoryIds(categoryIdxArray) {
 	    $.ajax({
-	        url: '/admin/systemPreference/getProductList',
+	        url: '/admin/systemPreference/product/getProductList',
 	        type: 'GET',
 	        dataType: 'json',
 	        traditional: true,
@@ -559,7 +559,7 @@ $(function () {
 	//상위카테고리불러오기함수
 	function loadAndRenderCategories(selectedParentIdx, selectedChildIdx) {
 	    $.ajax({
-	        url: '/admin/systemPreference/categories',
+	        url: '/admin/systemPreference/product/categories',
 	        type: 'GET',
 	        dataType: 'json',
 	        success: function(categories) {
@@ -607,7 +607,7 @@ $(function () {
 	//상품상세보기모달창정보불러오기
 	function loadProductDetail(productIdx) {
 	    $.ajax({
-	        url: '/admin/systemPreference/getProductDetail',
+	        url: '/admin/systemPreference/product/getProductDetail',
 	        type: 'GET',
 	        dataType: 'json',
 	        data: { productIdx },
@@ -670,7 +670,7 @@ $(function () {
 	    const formData = new FormData($('#productDetailForm')[0]);
 	
 	    $.ajax({
-	        url: '/admin/systemPreference/modifyProduct',  // 수정 API 경로에 맞게 변경
+	        url: '/admin/systemPreference/product/modifyProduct',  // 수정 API 경로에 맞게 변경
 	        type: 'POST',
 	        data: formData,
 	        processData: false,
@@ -761,7 +761,7 @@ $(function () {
 	    }).then((result) => {
 	        if (result.isConfirmed) {
 	            $.ajax({
-	                url: '/admin/systemPreference/removeProduct',
+	                url: '/admin/systemPreference/product/removeProduct',
 	                type: 'DELETE',
 	                contentType: 'application/json',
 	                data: JSON.stringify({ productIdx: productIdx }),
