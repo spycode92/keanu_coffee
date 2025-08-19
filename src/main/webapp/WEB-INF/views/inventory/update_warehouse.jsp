@@ -18,7 +18,7 @@
 	
 	}
 	form > table{
- 		border: 1px solid #fff; 
+/*  		border: 1px solid #fff;  */
  		padding: 50px; 
 /* 		margin: 50px auto; */
 		padding-left: 50px;
@@ -33,44 +33,45 @@
 	<section>
 	<h1>창고 위치 치수 변경</h1>
 	
-	<h2>기본 창고 구조 업데이트</h2>
-			<form action="/update-structure" method="post">
-  <table>
-    <tr>
-      <td><label  class="form-label" for="warehouse">창고 이름 또는 ID</label></td>
-      <td><input  class="form-control" type="text" id="warehouse" name="warehouse" required></td>
-    </tr>
-    <tr>
-      <td><label  class="form-label" for="rack">랙 수</label></td>
-      <td><input class="form-control" type="number" id="rack" name="rack" min="0" required></td>
-    </tr>
-    <tr>
-      <td><label  class="form-label" for="bay">랙당 베이 수</label></td>
-      <td><input class="form-control" type="number" id="bay" name="bay" min="0" required></td>
-    </tr>
-    <tr>
-      <td><label class="form-label" for="level">베이당 레벨 수</label></td>
-      <td><input class="form-control" type="number" id="level" name="level" min="0" required></td>
-    </tr>
-    <tr>
-      <td><label  class="form-label" for="boxes">레벨 위치당 소형 박스 수</label></td>
-      <td><input class="form-control" type="number" id="boxes" name="boxes" min="0" required></td>
-    </tr>
-    <tr>
-      <td><label  class="form-label" for="zone">피킹 존 수</label></td>
-      <td><input class="form-control" type="number" id="zone" name="zone" min="0" required></td>
-    </tr>
-    <tr>
-      <td><label  class="form-label" for="reason">업데이트 사유</label></td>
-      <td><textarea class="form-control" id="reason" name="reason" rows="4" cols="40" required></textarea></td>
-    </tr>
-    <tr>
-      <td colspan="2" style="text-align: center;"><br>
-        <button class="btn btn-primary"  type="submit">구조 업데이트</button>
-      </td>
-    </tr>
-  </table>
-</form>
+	
+	<form class="card" action="/update-structure" method="post">
+		<h3 class="card-header">기본 창고 구조 업데이트</h3>
+	  <table>
+	    <tr>
+	      <td><label  class="form-label" for="warehouse">창고 이름 또는 ID</label></td>
+	      <td><input  class="form-control" type="text" id="warehouse" name="warehouse" required></td>
+	    </tr>
+	    <tr>
+	      <td><label  class="form-label" for="rack">랙 수</label></td>
+	      <td><input class="form-control" type="number" id="rack" name="rack" min="0" required></td>
+	    </tr>
+	    <tr>
+	      <td><label  class="form-label" for="bay">랙당 베이 수</label></td>
+	      <td><input class="form-control" type="number" id="bay" name="bay" min="0" required></td>
+	    </tr>
+	    <tr>
+	      <td><label class="form-label" for="level">베이당 레벨 수</label></td>
+	      <td><input class="form-control" type="number" id="level" name="level" min="0" required></td>
+	    </tr>
+	    <tr>
+	      <td><label  class="form-label" for="boxes">레벨 위치당 소형 박스 수</label></td>
+	      <td><input class="form-control" type="number" id="boxes" name="boxes" min="0" required></td>
+	    </tr>
+	    <tr>
+	      <td><label  class="form-label" for="zone">피킹 존 수</label></td>
+	      <td><input class="form-control" type="number" id="zone" name="zone" min="0" required></td>
+	    </tr>
+	    <tr>
+	      <td><label  class="form-label" for="reason">업데이트 사유</label></td>
+	      <td><textarea class="form-control" id="reason" name="reason" rows="4" cols="40" required></textarea></td>
+	    </tr>
+	    <tr>
+	      <td colspan="2" style="text-align: center;"><br>
+	        <button class="btn btn-primary"  type="submit">구조 업데이트</button>
+	      </td>
+	    </tr>
+	  </table>
+	</form>
 	
 	  
 	  
@@ -167,8 +168,8 @@
 		
 <!-- 		<input type="submit">	     -->
 <!-- 	   </form> -->
-	   <form action="/update-structure" method="post">
-		  <h3>랙 크기 업데이트</h3>
+	   <form class="card" action="/update-structure" method="post">
+		  <h3 class="card-header">랙 크기 업데이트</h3>
 		  <table>
 		    <tr>
 		      <td><label  class="form-label" for="rack2">랙 번호</label></td>
@@ -192,8 +193,8 @@
 		    </tr>
 		  </table>
 		</form>
-		<form action="/update-structure" method="post">
-		  <h3>베이 크기 업데이트</h3>
+		<form class="card" action="/update-structure" method="post">
+		  <h3 class="card-header">베이 크기 업데이트</h3>
 		  <table>
 		    <tr>
 		      <td><label  class="form-label" for="rack3">랙 번호</label></td>
@@ -221,8 +222,8 @@
 		    </tr>
 		  </table>
 		</form>
-		<form action="/update-structure" method="post">
-		  <h3>레벨 크기 업데이트</h3>
+		<form class="card" action="/update-structure" method="post">
+		  <h3 class="card-header">레벨 크기 업데이트</h3>
 		  <table>
 		    <tr>
 		      <td><label  class="form-label" for="rack4">랙 번호</label></td>
