@@ -41,6 +41,7 @@
       <th>수량이 변경되었습니다</th>
       <th>타임스탬프</th>
       <th>직원 ID</th>
+      <th>업데이트 이유</th>
     </tr>
   </thead>
   <tbody>
