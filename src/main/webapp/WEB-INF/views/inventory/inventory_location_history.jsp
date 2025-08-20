@@ -19,6 +19,9 @@
 		width: 400px;
 		margin: 50px auto;
 	}
+	#searchInput {
+		width: 40%;
+	}
 </style>
 </head>
 <body>
@@ -26,13 +29,13 @@
 	<section>
 		<h1>제품 위치 기록</h1>
 		
-  <form id="searchForm" action="inventory/productHistorySearch" method="get">
+  <form class="card" id="searchForm" action="inventory/productHistorySearch" method="get">
     <label class="form-label" for="searchInput">Product Name:</label>
     <input class="form-control" type="text" id="searchInput" placeholder="제품 이름이나 아이디를 입력하세요..." >
     <input class="btn btn-sm btn-primary" type="submit"><br>
   </form><br>
 		
-		<div class="table-responsive">
+		<div class="table-responsive card">
 		<table class="table">
 	    <thead>
 	      <tr>

@@ -29,15 +29,7 @@
 			</Policies>
 		</RollingFile>
 		
-		<!-- 예외 로그 전용 파일 Appender -->
-		<RollingFile name="exceptionLog"
-			fileName="./my_log/exception.log"
-			filePattern="./my_log/exception-%d{yyyy-MM-dd}.log">
-			<PatternLayout pattern="${layoutPattern}" />
-			<Policies>
-				<SizeBasedTriggeringPolicy size="10MB" />
-			</Policies>
-		</RollingFile>
+
 		
 	</Appenders>
 	
@@ -90,12 +82,7 @@
 			<AppenderRef ref="console"></AppenderRef>
 		</Logger>
 		
-		<!-- Loggers 영역에 예외 전용 로거 추가 -->
-		<Logger name="com.itwillbs.keanu_coffee.Exception.controller.GlobalExceptionHandler"
-			level="ERROR" additivity="false">
-			<AppenderRef ref="console"/>
-			<AppenderRef ref="exceptionLog"/>
-		</Logger>
+
 	</Loggers>
 </Configuration>
 

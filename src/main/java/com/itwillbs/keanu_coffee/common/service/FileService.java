@@ -15,10 +15,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FileService {
 	
-	private final FileMapper fileMapper;
-
 	@Autowired
 	private HttpSession session;
-	// ------------------------------------------------------
+	private final FileMapper fileMapper;
+	
+	// -----------------------------------------
+
+	public FileDTO getFile(int fileIdx) {
+		
+		return fileMapper.getFileWithFileIdx(fileIdx);
+	}
+
+	public FileDTO getFile(String targetTable, int targetTableIdx ) {
+		
+		return fileMapper.getFileWithTargetTable(targetTable, targetTableIdx);
+	}
+	
+	
+	
 	
 }

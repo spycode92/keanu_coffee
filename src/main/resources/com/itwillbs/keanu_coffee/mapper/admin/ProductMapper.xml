@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.ProductMapper">
+	
+	<!-- 등록된상품리스트 -->
+	<select id="selectProductsInfo" resultType="SupplierProductContractDTO">
+		SELECT *
+		FROM PRODUCT
+	</select>
+	
+	<!-- 카테고리 전체 불러오기 -->
+	<resultMap id="categoryResultMap" type="SupplierProductContractDTO">
+	    <result property="idx" column="idx" />
+	    <result property="categoryName" column="categoryName" />
+	    <result property="parentCategoryIdx" column="parentCategoryIdx" />
+	    <result property="parentCategoryName" column="parentCategoryName" />
+	</resultMap>
+	<select id="selectAllCategoriesAsMap" resultMap="categoryResultMap">
+		SELECT c.idx
+		, c.category_name as categoryName
+		, c.parent_category_idx as parentCategoryIdx
+		, p.category_name as parentCategoryName
+		FROM CATEGORY c
+		LEFT JOIN CATEGORY p ON c.parent_category_idx = p.idx
+	</select>
+	<!-- 카테고리추가 -->
+	<insert id="insertCategory">
+		INSERT INTO CATEGORY
+		(category_name, parent_category_idx)
+		VALUES
+		(#{categoryName}, #{parentCategoryIdx})
+	</insert>
+	<!-- 카테고리수정 -->
+	<update id="updateCategory">
+		UPDATE CATEGORY
+		SET category_name = #{categoryName}
+		WHERE idx = #{idx}
+	</update>
+	<!-- 카테고리에 제품이들어있나확인 -->
+	<select id="countProductByCategoryIdx" resultType="int">
+		SELECT count(*)
+		FROM PRODUCT
+		WHERE category_idx = #{idx}
+	</select>
+	<!-- 자식카테고리가있나확인 -->
+	<select id="countCategoryByCategoryIdx" resultType="int">
+		SELECT count(*)
+		FROM CATEGORY
+		WHERE parent_category_idx = #{idx}
+	</select>
+	<!-- 카테고리삭제 -->
+	<delete id="deleteCategory">
+		DELETE FROM CATEGORY
+		WHERE idx = #{idx}
+	</delete>
+	<!-- 상품등록 -->
+	<insert id="insertProduct" parameterType="SupplierProductContractDTO" 
+		useGeneratedKeys="true" keyProperty="idx"> 
+		INSERT INTO PRODUCT
+    (
+        product_name,
+        category_idx,
+        product_weight,
+        product_width,
+        product_length,
+        product_height,
+        product_volume,
+        product_from,
+        note
+    )
+    VALUES
+    (
+        #{productName},
+        #{categoryIdx},
+        #{productWeight},
+        #{productWidth},
+        #{productLength},
+        #{productHeight},
+        #{productVolume},
+        #{productFrom},
+        #{note}
+    )
+	</insert>
+	<!-- 상품목록전체불러오기 -->
+	<select id="selectAllProductList" resultType="SupplierProductContractDTO">
+		SELECT *
+		FROM PRODUCT
+		WHERE status = 1
+	</select>
+	<!-- 상품대분류 목록불러오기 -->
+	<select id="selectProductByCategoryIdxList" resultType="SupplierProductContractDTO">
+		SELECT *
+	    FROM PRODUCT
+	    WHERE category_idx IN
+		    <foreach collection="list" item="categoryIdx" open="(" separator="," close=")">
+		        #{categoryIdx}
+		    </foreach>
+		    AND
+		    status = 1
+	</select>
+	<!-- 소븐류 상품 필터링 -->
+	<select id="selectProductsByCategoryIdx" resultType="SupplierProductContractDTO">
+	    SELECT *
+	    FROM PRODUCT
+	    WHERE category_idx = #{categoryIdx}
+	    	AND
+		    status = 1
+	</select>
+	<!-- 상품상세정보 -->
+	<select id="selectProductByProductIdx" resultType="SupplierProductContractDTO">
+		SELECT 
+		    p.idx AS productIdx,
+		    p.product_name AS productName,
+		    c.idx AS categoryIdx,
+		    c.category_name AS categoryName,
+		    pc.idx AS parentCategoryIdx,
+		    pc.category_name AS parentCategoryName,
+		    p.product_weight AS productWeight,
+		    p.product_width AS productWidth,
+		    p.product_length AS productLength,
+		    p.product_height AS productHeight,
+		    p.product_volume AS productVolume,
+		    p.product_from AS productFrom,
+		    p.note
+		  FROM PRODUCT p
+		  LEFT JOIN CATEGORY c ON p.category_idx = c.idx
+		  LEFT JOIN CATEGORY pc ON c.parent_category_idx = pc.idx
+		  WHERE p.idx = #{productIdx}
+	</select>
+	<!-- 상품정보수정 -->
+	<update id="updateProduct" parameterType="SupplierProductContractDTO">
+		UPDATE PRODUCT
+		SET 
+			product_name = #{productName}
+	        , category_idx = #{categoryIdx}
+	        , product_weight = #{productWeight}
+	        , product_width = #{productWidth}
+	        , product_length = #{productLength}
+	        , product_height = #{productHeight}
+	        , product_volume = #{productVolume}
+	        , product_from = #{productFrom}
+	        , note = #{note}
+		WHERE idx = #{productIdx}
+	</update>
+	<!-- 상품상태변경 -->
+	<update id="updateProductStatus">
+		UPDATE PRODUCT
+		SET
+			status = #{status}
+		WHERE
+			idx = #{productIdx}
+	</update>
+	
+</mapper>

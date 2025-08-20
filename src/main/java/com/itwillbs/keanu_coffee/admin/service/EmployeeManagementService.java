@@ -1,14 +1,23 @@
 package com.itwillbs.keanu_coffee.admin.service;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
+import com.itwillbs.keanu_coffee.common.dto.FileDTO;
+import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
+import com.itwillbs.keanu_coffee.common.utils.FileUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,17 +27,29 @@ public class EmployeeManagementService {
 	
 	private final EmployeeManagementMapper employeeManagementMapper;
 	private final BCryptPasswordEncoder passwordEncoder;
-
+	private final FileMapper fileMapper;
+	
+	@Autowired
+	private HttpSession session;
+	
 	//직원정보 DB입력로직
-	public int inputEmployeeInfo(EmployeeInfoDTO employee) {
+	@Transactional
+	public int inputEmployeeInfo(EmployeeInfoDTO employee) throws IOException {
 		// 첫 비밀번호 1234 
 		String empPassword = passwordEncoder.encode("1234");
 		// empId생성
-		String empId = empIdBuilder(employee);
+		String empNo = empNoBuilder(employee);
 		
 		//empId, empPassword DTO 주입
-		employee.setEmpId(empId);
+		employee.setEmpNo(empNo);
+		employee.setEmpId(empNo);
 		employee.setEmpPassword(empPassword);
+		
+		List<FileDTO> fileList = FileUtils.uploadFile(employee, session);
+		
+		if(!fileList.isEmpty()) {
+			fileMapper.insertFiles(fileList); // 새이미지저장
+		}
 		
 		return employeeManagementMapper.insertEmployeeInfo(employee);
 	}
@@ -44,9 +65,9 @@ public class EmployeeManagementService {
 	
 	
 	// empId 생성 메서드
-	public String empIdBuilder(EmployeeInfoDTO employee) {
+	public String empNoBuilder(EmployeeInfoDTO employee) {
 		//입력된휴대폰번호
-		String phone = employee.getPhone();
+		String phone = employee.getEmpPhone();
 		//휴대폰번호 뒷 4자리
 		String last4Digits = phone.substring(phone.length() - 4);
 		//오늘 날짜 MMdd 형식

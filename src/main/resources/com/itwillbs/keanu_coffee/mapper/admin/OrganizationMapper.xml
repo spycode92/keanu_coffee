@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper">
+	<!--전체부서목록 가져오기 -->
+	<select id="getDepartmentInfo" resultType="DepartTeamRoleDTO" >
+		SELECT *
+		FROM DEPARTMENT
+	</select>
+	<!-- 해당부서 팀목록 가져오기 -->
+	<select id="getTeamsInfoByDepartmentIdx" resultType="DepartTeamRoleDTO">
+		SELECT *
+		FROM TEAM
+		WHERE department_idx = #{departmentIdx}
+	</select>
+	<!-- 해당부서 직책목록 가져오기 -->
+	<select id="getRolesInfoByDepartmentIdx" resultType="DepartTeamRoleDTO">
+		SELECT *
+		FROM ROLE
+		WHERE department_idx = #{departmentIdx}
+	</select>
+	<!-- 부서추가하기 -->
+	<insert id="insertDepartment"  parameterType="DepartTeamRoleDTO" useGeneratedKeys="true" keyProperty="idx">
+		INSERT INTO DEPARTMENT(department_name)
+		VALUES(#{departmentName})
+	</insert>
+	<!-- 팀추가하기 -->
+	<insert id="insertTeam"  parameterType="DepartTeamRoleDTO" useGeneratedKeys="true" keyProperty="idx">
+		INSERT INTO TEAM(team_name, department_idx)
+		VALUES(#{teamName}, #{departmentIdx})
+	</insert>
+	<!-- 직책추가하기 -->
+	<insert id="insertRole"  parameterType="DepartTeamRoleDTO" useGeneratedKeys="true" keyProperty="idx">
+		INSERT INTO ROLE(role_name, department_idx)
+		VALUES(#{roleName}, #{departmentIdx})
+	</insert>
+	<!-- 직책삭제하기 -->
+	<delete id="deleteRole" parameterType="long" > 
+		DELETE FROM ROLE
+		where idx = #{roleIdx}
+	</delete>
+	<!-- 직책,메뉴,권한 테이블이 가지고있는 직책 삭제 -->
+	<delete id="deleteRoleMenuAuthoByRoleIdx">
+		DELETE FROM ROLE_MENU_AUTHO
+		where role_idx = #{roleIdx}
+	</delete>
+	<!--  팀삭제 -->
+	<delete id="deleteTeam">
+		DELETE FROM TEAM
+		where idx = #{teamIdx}
+	</delete>
+	<!-- 부서에속한 팀목록 -->
+	<select id="departTeamList" resultType="departTeamRoleDTO">
+		SELECT idx
+		from TEAM
+		where department_idx = #{departmentIdx}
+	</select>
+	<!-- 부서에속한 직책목록 -->
+	<select id="departRoleList">
+		SELECT idx
+		from ROLE
+		where department_idx = #{departmentIdx}
+	</select>
+	<!-- 부서삭제 -->
+	<delete id="deleteDepartment">
+		DELETE FROM DEPARTMENT
+		where idx = #{departmentIdx}
+	</delete>
+	<!-- 부서이름 수정 -->
+	<update id="updateDepartment">
+		UPDATE DEPARTMENT 
+		SET department_name = #{departmentName}
+		where idx = #{idx}
+	</update>
+	<!-- 팀이름변경 -->
+	<update id="updateTeam">
+		UPDATE TEAM
+		SET team_name = #{teamName}
+		where idx = #{idx}
+	</update>
+	<!-- 직책이름변경 -->
+	<update id="updateRole">
+		UPDATE ROLE
+		SET role_name = #{roleName}
+		where idx = #{idx}
+	</update>
+</mapper>

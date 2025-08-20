@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper">
+	
+	<!-- 계약등록 -->
+	<insert id="insertContract">
+		INSERT INTO SUPPLIER_PRODUCT_CONTRACT
+		(
+	        supplier_idx,
+	        product_idx,
+	        contract_price,
+	        contract_start,
+	        contract_end,
+	        min_order_quantity,
+	        max_order_quantity,
+	        status,
+	        note
+	    )
+	    VALUES
+	    (
+	        #{supplierIdx},
+	        #{productIdx},
+	        #{contractPrice},
+	        #{contractStart},
+	        #{contractEnd},
+	        #{minOrderQuantity},
+	        #{maxOrderQuantity},
+	        #{status},
+	        #{note}
+	    )
+	</insert>
+	<!-- 계약상세 -->
+	<select id="selectContractDetail" resultType="SupplierProductContractDTO">
+		SELECT
+		    spc.idx AS contractIdx,
+		    spc.contract_price AS contractPrice,
+		    spc.contract_start AS contractStart,
+		    spc.contract_end AS contractEnd,
+		    spc.status AS status,
+		    spc.note AS contractNote,
+		    spc.min_order_quantity As minOrderQuantity,
+		    spc.max_order_quantity As maxOrderQuantity,
+		    spc.note ,
+		    s.idx AS supplierIdx,
+		    s.supplier_name AS supplierName,
+		    p.idx AS productIdx,
+		    p.product_name AS productName,
+		    f.idx AS fileIdx
+		FROM
+		    SUPPLIER_PRODUCT_CONTRACT AS spc
+		LEFT JOIN
+		    SUPPLIER AS s ON spc.supplier_idx = s.idx
+		LEFT JOIN
+		    PRODUCT AS p ON spc.product_idx = p.idx
+		LEFT JOIN
+		    FILE AS f ON f.target_table = 'product' AND f.target_table_idx = p.idx
+		WHERE spc.idx = #{idx}
+	</select>
+	<!-- 계약수정 -->
+	<update id="updateContractDetail" parameterType="SupplierProductContractDTO">
+		UPDATE SUPPLIER_PRODUCT_CONTRACT
+	    SET
+	        contract_price = #{contractPrice},
+	        contract_start = #{contractStart},
+	        contract_end = #{contractEnd},
+	        min_order_quantity = #{minOrderQuantity},
+	        max_order_quantity = #{maxOrderQuantity},
+	        status = #{status},
+	        note = #{note}
+	    WHERE idx = #{idx}
+	</update>
+	<!-- 계약삭제 -->
+	<update id="deleteContractDetail">
+		UPDATE SUPPLIER_PRODUCT_CONTRACT
+		SET
+			status = #{status}
+		WHERE idx = #{idx}
+	</update>
+</mapper>

@@ -9,6 +9,7 @@
 	<!-- DTO지정 -->
 	<typeAliases>
 		<package name="com.itwillbs.keanu_coffee.admin.dto"/>
+		<package name="com.itwillbs.keanu_coffee.common.dto"/>
 	
 	</typeAliases>
 </configuration>
