@@ -29,10 +29,15 @@ public class EmployeeManagementController {
 	@GetMapping("")
 	public String employeeManagement(Model model, @RequestParam(defaultValue = "1") int pageNum, 
 			@RequestParam(defaultValue = "") String searchType,
-			@RequestParam(defaultValue = "") String searchKeyword) {
+			@RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue ="") String orderKey,
+			@RequestParam(defaultValue ="") String orderMethod) {
 		model.addAttribute("pageNum",pageNum);
 		model.addAttribute("searchType",searchType);
 		model.addAttribute("searchKeyword",searchKeyword);
+		model.addAttribute("sortKey",orderKey);
+		model.addAttribute("sortMethod",orderMethod);
+		
 		switch (searchType) {
         case "이름":
             searchType = "emp_name";
@@ -48,8 +53,7 @@ public class EmployeeManagementController {
             break;
 		}
 		
-		System.out.println("xml에 넘어가는 서치타입 : " + searchType);
-		int listLimit = 2;
+		int listLimit = 10;
 		int employeeCount = employeeManagementService.getEmployeeCount(searchType, searchKeyword);
 		
 		if (employeeCount > 0) {
@@ -63,7 +67,8 @@ public class EmployeeManagementController {
 			
 			model.addAttribute("pageInfo", pageInfoDTO);
 		
-			List<EmployeeInfoDTO> employeeList = employeeManagementService.getEmployeeList(pageInfoDTO.getStartRow(), listLimit, searchType, searchKeyword);
+			List<EmployeeInfoDTO> employeeList = employeeManagementService.getEmployeeList(
+					pageInfoDTO.getStartRow(), listLimit, searchType, searchKeyword, orderKey,orderMethod);
 			model.addAttribute("employeeList", employeeList);
 		}
 		return "/admin/employee_management";

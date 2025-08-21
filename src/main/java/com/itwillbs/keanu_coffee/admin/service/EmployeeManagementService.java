@@ -33,10 +33,11 @@ public class EmployeeManagementService {
 	private HttpSession session;
 	
 	//직원목록선택
-	public List<EmployeeInfoDTO> getEmployeeList(int startRow, int listLimit, String searchType, String searchKeyword) {
+	public List<EmployeeInfoDTO> getEmployeeList(
+			int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod) {
 		
 		
-		return employeeManagementMapper.selectEmployeeList(startRow, listLimit, searchType, searchKeyword);
+		return employeeManagementMapper.selectEmployeeList(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
 	}
 	
 	

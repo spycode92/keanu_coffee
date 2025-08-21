@@ -23,6 +23,9 @@
 			WHERE
 				${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
 			</if>
+			<if test="orderKey != ''">
+			ORDER BY ${orderKey} ${orderMethod}			
+			</if>
 		LIMIT
 			#{startRow}
 			, #{listLimit}

@@ -57,17 +57,20 @@
 		WHERE supplier_idx = #{supplierIdx}
 		AND status = '활성'
 	</select>
+	
 	<!-- 공급업체 삭제 -->
 	<delete id="deleteSupplierByIdx" parameterType="long">
 		DELETE FROM SUPPLIER
 		WHERE idx = #{supplierIdx}
 	</delete>
+	
 	<!-- 공급업체상세정보 -->
 	<select id="selectSupplierInfo" resultType="SupplierProductContractDTO">
 		SELECT *
 		FROM SUPPLIER
 		WHERE idx = #{idx}
 	</select>
+	
 	<!-- 공급업체정보수정 -->
 	<update id="updateSupplier">
 		UPDATE SUPPLIER
@@ -80,4 +83,5 @@
 		    , supplier_address2 = #{supplierAddress2}
 		WHERE idx = #{idx}
 	</update>
+	
 </mapper>

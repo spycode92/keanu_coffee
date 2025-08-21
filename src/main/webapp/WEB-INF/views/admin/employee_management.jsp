@@ -5,16 +5,93 @@
 <head>
 <meta charset="UTF-8">
 <title>메인페이지</title>
+<style type="text/css">
+/* 모달 */
+.modal {
+	position: fixed;
+	inset: 0;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	background: rgba(0, 0, 0, .45);
+	z-index: 1000;
+}
+
+.modal.open {
+	display: flex;
+}
+
+.modal-card {
+	width: min(860px, 96vw);
+	background: #fff;
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	overflow: hidden;
+}
+
+.modal-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 14px 16px;
+	border-bottom: 1px solid var(--border);
+}
+
+.modal-body {
+	padding: 14px 16px;
+}
+
+.modal-foot {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	padding: 12px 16px;
+	border-top: 1px solid var(--border);
+}
+
+.form .row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+}
+
+.form .modifyRow {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 10px;
+}
+
+.form .field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-bottom: 10px;
+}
+
+.seg-radio{
+  display:inline-grid;
+  grid-auto-flow:column;
+  align-items:center;
+  border:1px solid var(--border);
+  border-radius:10px;
+  height:38px;              /* 다른 input과 동일 높이 */
+  overflow:hidden;
+  background:#fff;
+}
+
+</style>
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/admin/employee_management.js"></script>
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
+<jsp:include page="/WEB-INF/views/admin/employee_modal/add_employee.jsp"></jsp:include> 
 <section class="content">
 	<div style="display: flex; align-items: center; gap: 8px; width: 35%">
 		<form action="/admin/employeeManagement">
@@ -27,16 +104,16 @@
 			<input type="submit" value="검색" class="btn btn-sm btn-primary">
 		</form>
 	</div>
-    <div class="table-responsive mt-3" style="max-height: 300px; overflow-y: auto;">
+    <div class="table-responsive mt-3" >
 		
 		<table class="table table-striped table-bordered" style="color:green;">
 			<tr>
-				<th>이름↕</th>
-				<th>성별</th>
-				<th>사번↕</th>
+				<th data-key="emp_name" onclick="allineTable(this)">이름↕</th>
+				<th >성별</th>
+				<th data-key="emp_no" onclick="allineTable(this)">사번↕</th>
 				<th>아이디</th>
-				<th>부서명↕</th>
-				<th>직급↕</th>
+				<th data-key="department_name" onclick="allineTable(this)">부서명↕</th>
+				<th data-key="role_name" onclick="allineTable(this)">직급↕</th>
 				<th>번호</th>
 				<th>이메일</th>
 				<th>입사일↕</th>
@@ -47,7 +124,7 @@
 					<td>${employee.empGender }</td>
 					<td>${employee.empNo }</td>
 					<td>${employee.empId }</td>
-					<td>${employee.deptName }</td>
+					<td>${employee.departmentName }</td>
 					<td>${employee.roleName }</td>
 					<td>${employee.empPhone }</td>
 					<td>${employee.empEmail }</td>
@@ -79,7 +156,7 @@
 					</c:if>
 				
 					<div style="text-align: right;">
-						<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary">
+						<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary" data-target="#addEmployeeModal">
 					</div>
 				</td>
 			</tr>

@@ -12,7 +12,8 @@ public interface EmployeeManagementMapper {
 	//직원목록 선택
 	List<EmployeeInfoDTO> selectEmployeeList(
 			@Param("startRow") int startRow, @Param("listLimit") int listLimit, 
-			@Param("searchType") String searchType, @Param("searchKeyword") String searchKeyword);
+			@Param("searchType") String searchType, @Param("searchKeyword") String searchKeyword,
+			@Param("orderKey")String orderKey, @Param("orderMethod")String orderMethod);
 
 	// 직원목록 수
 	int countEmployee(@Param("searchType")String searchType, @Param("searchKeyword")String searchKeyword);
