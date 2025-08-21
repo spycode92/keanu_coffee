@@ -129,33 +129,43 @@
     <section class="content">
         <div class="container">
             <div class="container mt-4">
-			    <!-- 제목 -->
-			    <h4 class="mb-4">공급계약 관리</h4>
-			
-			    <div class="row">
-			        <!-- 좌측: 공급업체, 상품 관리 (조직관리 좌측 두 칸 크기 동일) -->
-			        <div class="col-md-4">
-			            <!-- 공급업체 카드 -->
-			            <div class="card mb-4">
-			                <div class="card-header d-flex justify-content-between align-items-center">
-			                    <span>공급업체</span>
-			                    <button type="button" id="btnAddSupplier" class="btn btn-sm btn-primary">+</button>
-			                </div>
-			                <div class="mb-2">
-							    <label class="mr-2"><input type="radio" name="supplierStatus" value="ALL" checked>전체</label>
-							    <label class="mr-2"><input type="radio" name="supplierStatus" value="HAS_CONTRACT">계약중</label>
-							    <label class="mr-2"><input type="radio" name="supplierStatus" value="NO_CONTRACT">미계약</label>
-							</div>
-			                <ul id="supplierList" class="list-group list-group-flush" style="max-height: 150px; overflow-y: auto;">
-								<!-- 공급업체리스트표시 -->
-			                </ul>
-			            </div>
+			   <div>
+			   		<div style="display: flex; ">
+			   		
+					    <!-- 추가 버튼 -->
+					    <button type="button" id="btnAddSupplier" class="btn btn-primary btn-sm mb-3">+ 공급업체 추가</button>
+					
+					    <!-- 필터 라디오 버튼 -->
+					    <div class="mb-3">
+					        <label><input type="radio" name="supplierStatus" value="ALL" checked> 전체</label>
+					        <label class="ml-3"><input type="radio" name="supplierStatus" value="HAS_CONTRACT"> 계약중</label>
+					        <label class="ml-3"><input type="radio" name="supplierStatus" value="NO_CONTRACT"> 미계약</label>
+					    </div>
+			   		</div>
+				
+				    <!-- 공급업체 테이블 -->
+				    <table id="supplierTable" class="table table-bordered">
+				        <thead>
+				            <tr>
+				            	<th>업체 번호</th>
+				                <th>공급업체명</th>
+				                <th>계약 상태</th>
+				                <th>상세보기</th>
+				                <th>삭제</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <!-- JS로 렌더링 -->
+				        </tbody>
+				    </table>
+				</div>
+			    
 			
 			            
-			        </div>
+			       
 			
 			        
-			    </div>
+		
 			</div>
 			
 			<!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->

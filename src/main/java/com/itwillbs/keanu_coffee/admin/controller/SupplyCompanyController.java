@@ -51,7 +51,18 @@ public class SupplyCompanyController {
 	@GetMapping("/suppliers")
 	@ResponseBody
 	public List<SupplierProductContractDTO> getSuppliers() {
-        return supplyCompanyService.getSuppliersInfo();
+		
+		List<SupplierProductContractDTO> a = supplyCompanyService.getSuppliersInfo();
+		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println(a);
+		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+        return a;
 	}
 	
 	// 공급업체삭제
@@ -101,13 +112,6 @@ public class SupplyCompanyController {
 	
 	@GetMapping("")
 	public String systemPreference(Model model) {
-		
-		//공급처 리스트 가져오기
-		List<SupplierProductContractDTO> supplierList = supplyCompanyService.getSuppliersInfo();
-		model.addAttribute("supplierList",supplierList);
-		
-		
-		
 		
 		return "/admin/system_preference/supply_company_management";
 	}

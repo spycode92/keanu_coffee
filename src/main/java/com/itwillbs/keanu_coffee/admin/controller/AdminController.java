@@ -28,10 +28,10 @@ public class AdminController {
 		return "/admin/admin_main";
 	}
 	//직원관리
-	@GetMapping("/employeeManagement")
+	@GetMapping("/employeeManage")
 	public String employeeManagement() {
 		
-		return "/admin/employee_management";
+		return "redirect:/admin/employeeManagement";
 	}
 	//조직관리
 	@GetMapping("/preference/dept")

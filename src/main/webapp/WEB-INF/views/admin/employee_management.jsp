@@ -17,99 +17,76 @@
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 <section class="content">
 	<div style="display: flex; align-items: center; gap: 8px; width: 35%">
-		<select>
-			<option>이름</option>
-			<option>사번</option>
-			<option>아이디</option>
-		</select>
-		<input class="form-control" placeholder="텍스트 입력">
-		<input type="button" value="검색" class="btn btn-sm btn-primary">
+		<form action="/admin/employeeManagement">
+			<select name="searchType">
+				<option <c:if test="${searchType eq '이름' }">selected</c:if>> 이름</option>
+				<option <c:if test="${searchType eq '사번' }">selected</c:if>>사번</option>
+				<option <c:if test="${searchType eq '아이디' }">selected</c:if>>아이디</option>
+			</select>
+			<input class="form-control" placeholder="텍스트 입력" name="searchKeyword">
+			<input type="submit" value="검색" class="btn btn-sm btn-primary">
+		</form>
 	</div>
-	
-	<table class="table" style="color:green;">
-		<tr>
-			<th>이름↕</th>
-			<th>사번↕</th>
-			<th>아이디</th>
-			<th>부서명↕</th>
-			<th>직급↕</th>
-			<th>번호</th>
-			<th>이메일</th>
-			<th>입사일↕</th>
-		</tr>
-		<tr>
-			<td>김갑수</td>
-			<td>2010302029</td>
-			<td>2010302029</td>
-			<td>입고</td>
-			<td>관리자</td>
-			<td>010-3333-3333</td>
-			<td>kimgs@gmail.com</td>
-			<td>2022-03-13</td>
-		</tr>
-		<tr>
-			<td>김갑수</td>
-			<td>2010302029</td>
-			<td>2010302029</td>
-			<td>입고</td>
-			<td>관리자</td>
-			<td>010-3333-3333</td>
-			<td>kimgs@gmail.com</td>
-			<td>2022-03-13</td>
-		</tr>
-		<tr>
-			<td>김갑수</td>
-			<td>2010302029</td>
-			<td>2010302029</td>
-			<td>입고</td>
-			<td>관리자</td>
-			<td>010-3333-3333</td>
-			<td>kimgs@gmail.com</td>
-			<td>2022-03-13</td>
-		</tr>
-		<tr>
-			<td>김갑수</td>
-			<td>2010302029</td>
-			<td>2010302029</td>
-			<td>입고</td>
-			<td>관리자</td>
-			<td>010-3333-3333</td>
-			<td>kimgs@gmail.com</td>
-			<td>2022-03-13</td>
-		</tr>
-		<tr>
-			<td>김갑수</td>
-			<td>2010302029</td>
-			<td>2010302029</td>
-			<td>입고</td>
-			<td>관리자</td>
-			<td>010-3333-3333</td>
-			<td>kimgs@gmail.com</td>
-			<td>2022-03-13</td>
-		</tr>
-		<tr>
-			<td>김갑수</td>
-			<td>2010302029</td>
-			<td>2010302029</td>
-			<td>입고</td>
-			<td>관리자</td>
-			<td>010-3333-3333</td>
-			<td>kimgs@gmail.com</td>
-			<td>2022-03-13</td>
-		</tr>
-		<tr>
-			<td colspan="7" style="text-align: center; ">
-				이전 1 2 3 4 ..다음
-			</td>
-			<td>
-				<div style="text-align: right;">
-					<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary">
-				</div>
-			</td>
-		</tr>
+    <div class="table-responsive mt-3" style="max-height: 300px; overflow-y: auto;">
 		
+		<table class="table table-striped table-bordered" style="color:green;">
+			<tr>
+				<th>이름↕</th>
+				<th>성별</th>
+				<th>사번↕</th>
+				<th>아이디</th>
+				<th>부서명↕</th>
+				<th>직급↕</th>
+				<th>번호</th>
+				<th>이메일</th>
+				<th>입사일↕</th>
+			</tr>
+			<c:forEach var="employee" items="${employeeList }">
+				<tr>
+					<td>${employee.empName }</td>
+					<td>${employee.empGender }</td>
+					<td>${employee.empNo }</td>
+					<td>${employee.empId }</td>
+					<td>${employee.deptName }</td>
+					<td>${employee.roleName }</td>
+					<td>${employee.empPhone }</td>
+					<td>${employee.empEmail }</td>
+					<td>${employee.hireDate }</td>
+				</tr>
+			</c:forEach>
+			
+			<tr>
+				<td colspan="9" style="text-align: center; ">
+					<c:if test="${not empty pageInfo.maxPage or pageInfo.maxPage > 0}">
+						<input type="button" value="이전" 
+							onclick="location.href='/admin/employeeManagement?pageNum=${pageInfo.pageNum - 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}'" 
+							<c:if test="${pageInfo.pageNum eq 1}">disabled</c:if>>
+						
+						<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
+							<c:choose>
+								<c:when test="${i eq pageInfo.pageNum}">
+									<strong>${i}</strong>
+								</c:when>
+								<c:otherwise>
+									<a href="/admin/employeeManagement?pageNum=${i}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}">${i}</a>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+						
+						<input type="button" value="다음" 
+							onclick="location.href='/admin/employeeManagement?pageNum=${pageInfo.pageNum + 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}'" 
+						<c:if test="${pageInfo.pageNum eq pageInfo.maxPage}">disabled</c:if>>
+					</c:if>
 				
-	</table>
+					<div style="text-align: right;">
+						<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary">
+					</div>
+				</td>
+			</tr>
+			
+					
+		</table>
+	</div>
 	<!-- 모달 -->
 <div class="modal fade" id="employeeModal" tabindex="-1" role="dialog" aria-labelledby="employeeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -141,49 +118,7 @@
 </div>
 	
 </section>
-	<script type="text/javascript">
-		$("#addEmployee").click(function(){
-			window.open(
-			"/admin/employeeManagement/addEmployeeForm", // 매핑 주소
-	        "addEmployeePopup",  // 팝업 이름
-	        "width=500,height=500,top=100,left=100"  // 크기와 위치
-	        );
-		});
-
-
-	$(document).ready(function(){
-		// 헤더(:first)도 제외, 마지막행(:last)도 제외
-		$(".table tr").not(":first").not(":last").click(function(){
-		    let tds = $(this).find("td");
-		    $("#empName").text(tds.eq(0).text());
-		    $("#empNo").text(tds.eq(1).text());
-		    $("#empId").text(tds.eq(2).text());
-		    $("#empDept").text(tds.eq(3).text());
-		    $("#empRank").text(tds.eq(4).text());
-		    $("#empPhone").text(tds.eq(5).text());
-		    $("#empEmail").text(tds.eq(6).text());
-		    $("#empHireDate").text(tds.eq(7).text());
-		    $("#employeeModal").modal("show");
-		});
-		
-		$("#addEmployee").click(function(e){
-		    e.stopPropagation(); // tr 클릭 이벤트로 전파 방지
-		    windowPopup = window.open(
-		        "/admin/employeeManagement/addEmployeeForm",
-		        "addEmployeePopup",
-		        //"width=500px,height=1000px,resizable=yes,scrollbars=yes"
-		        "width=500,height=1000,resizable=yes"
-		        
-		    );
-		    if (windowPopup) {
-		    	  // 일부 브라우저에서 초기 크기 보정 시도 (정책상 무시될 수 있음)
-		    	  try { windowPopup.resizeTo(500, 700); } catch (e) {}
-		    	  windowPopup.focus();
-	    	}
-		});
-		
-	});
-	</script>
+	
 	</div>
 
 </body>

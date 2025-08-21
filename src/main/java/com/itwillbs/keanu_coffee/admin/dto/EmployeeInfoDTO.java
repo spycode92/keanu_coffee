@@ -14,6 +14,7 @@ import lombok.Data;
 @Data
 public class EmployeeInfoDTO implements FileUploadHelpper{
 	private Integer idx;
+	private Integer empIdx;
 	private String empNo;          // 사번 (PK)
 	private String empName;        // 이름
 	private String empGender;      // 성별

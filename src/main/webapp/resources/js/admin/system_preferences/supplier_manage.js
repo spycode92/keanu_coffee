@@ -113,42 +113,41 @@ $(function() {
 	    $.ajax({
 	        url: '/admin/systemPreference/supplyCompany/suppliers',
 	        type: 'GET',
-	        data: { status: 'ALL' }, // 항상 전체 조회
-	        success: function(list) {
-	            $('#supplierList').empty();
-	            if (list.length === 0) {
-	                $('#supplierList').append('<li class="list-group-item text-muted">업체가 없습니다.</li>');
+	        data: { status: status },
+	        success: function(response) {
+	            const list = response; // 배열 그대로 사용
+	            const tbody = $('#supplierTable tbody');
+	            tbody.empty();
+	
+	            if (!list || list.length === 0) {
+	                tbody.append('<tr><td colspan="4" class="text-center text-muted">업체가 없습니다.</td></tr>');
 	                return;
 	            }
-	            // 상태별로 필터링
+	
 	            let filteredList = list;
 	            if (status === 'HAS_CONTRACT') {
-	                filteredList = list.filter(function(supplier) { return supplier.hasContract; });
+	                filteredList = list.filter(supplier => supplier.hasContract === 1);
 	            } else if (status === 'NO_CONTRACT') {
-	                filteredList = list.filter(function(supplier) { return !supplier.hasContract; });
+	                filteredList = list.filter(supplier => supplier.hasContract === 0);
 	            }
-	            // 나머지 렌더링 로직 동일
+	
 	            filteredList.forEach(function(supplier) {
-					// 프론트에서 삭제검사
-					const isDeletable = !supplier.hasContract;
-					
-	                var contractBadge = supplier.hasContract
-	                    ? '<span class="badge badge-success ml-2">계약중</span>'
-	                    : '<span class="badge badge-secondary ml-2">미계약</span>';
-	                $('#supplierList').append(
-	                    `<li class="list-group-item d-flex justify-content-between align-items-center" data-id="${supplier.idx}" style="color: black;">
-	                        <div class="d-flex align-items-center supplier-name-area">
-					            <span class="supplier-name-text">${supplier.supplierName}</span>
-					            ${contractBadge}
-					        </div>
-					        <div>
-					            <button type="button" class="btn btn-sm btn-info btn-detail" data-id="${supplier.idx}">상세보기</button>
-					            <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="${supplier.idx}"
-									${isDeletable ? '' : 'disabled title="계약이 있어 삭제할 수 없습니다."'}>삭제</button>
-					        </div>
-	                    </li>`
-	                );
+	                const isDeletable = supplier.hasContract === 0;
+	                const contractBadge = supplier.hasContract === 1
+	                    ? '<span class="badge badge-success">계약중</span>'
+	                    : '<span class="badge badge-secondary">미계약</span>';
+	
+	                const tr = $('<tr></tr>').attr('data-id', supplier.idx);
+					tr.append(`<td>${supplier.idx}</td>`);
+	                tr.append(`<td>${supplier.supplierName}</td>`);
+	                tr.append(`<td>${contractBadge}</td>`);
+	                tr.append(`<td><button type="button" class="btn btn-sm btn-info btn-detail" data-id="${supplier.idx}">상세보기</button></td>`);
+	                tr.append(`<td><button type="button" class="btn btn-sm btn-danger btn-delete" data-id="${supplier.idx}" ${isDeletable ? '' : 'disabled title="계약이 있어 삭제할 수 없습니다."'}>삭제</button></td>`);
+	                tbody.append(tr);
 	            });
+	        },
+	        error: function(xhr, status, error) {
+	            console.error('AJAX 오류:', error);
 	        }
 	    });
 	}
@@ -160,7 +159,7 @@ $(function() {
 	
 		
 	//공급업체삭제
-	$('#supplierList').on('click', '.btn-delete', function() {
+	$('#supplierTable').on('click', '.btn-delete', function() {
 	    const supplierIdx = $(this).data('id');
 	    Swal.fire({
 	        title: '정말 삭제하시겠습니까?',
@@ -171,13 +170,13 @@ $(function() {
 	    }).then((result) => {
 	        if (result.isConfirmed) {
 	            $.ajax({
-	                url: '/admin/systemPreference/supplyCompany/removeSupplier', // 아래 컨트롤러 URL에 맞게!
+	                url: '/admin/systemPreference/supplyCompany/removeSupplier',
 	                type: 'DELETE',
 	                contentType: 'application/json',
 	                data: JSON.stringify({ idx: supplierIdx }),
 	                success: function() {
-	                    // 리스트에서 삭제
-	                    $(`li[data-id="${supplierIdx}"]`).remove();
+	                    // 테이블에서 삭제
+	                    $(`#supplierTable tr[data-id="${supplierIdx}"]`).remove();
 	                    Swal.fire('삭제되었습니다.', '', 'success');
 	                },
 	                error: function() {
@@ -190,35 +189,31 @@ $(function() {
 	
 	// 공급업체 상세보기 버튼 클릭 이벤트
 	let originalSupplierData = null; //전역변수선언
-	$('#supplierList').on('click', '.btn-detail', function() {
-	    const supplierIdx = $(this).data('id');
-	    // Ajax로 상세정보 조회
-	    $.ajax({
-	        url: '/admin/systemPreference/supplyCompany/supplier/' + supplierIdx,
-	        type: 'GET',
-	        dataType: 'json',
-	        success: function(data) {
-				originalSupplierData = data;
-		
-	            // 각 필드 값 채워넣기
-	            $('#supplierDetailForm #supplierIdx').val(data.idx);
-	            $('#supplierDetailForm #detailSupplierName').val(data.supplierName);
-	            $('#supplierDetailForm #detailSupplierManager').val(data.supplierManager);
-	            $('#supplierDetailForm #detailSupplierManagerPhone').val(data.supplierManagerPhone);
-	            $('#supplierDetailForm #detailSupplierZipcode').val(data.supplierZipcode);
-	            $('#supplierDetailForm #detailSupplierAddress1').val(data.supplierAddress1);
-	            $('#supplierDetailForm #detailSupplierAddress2').val(data.supplierAddress2);
-				
-	            // 모달 열기
-	            $('#supplierDetailModal').modal('show');
-				//읽기모드
-				setReadonlyMode();
-	        },
-	        error: function() {
-	            Swal.fire('상세 정보 조회 실패', '', 'error');
-	        }
-	    });
-	});
+	$('#supplierTable').on('click', '.btn-detail', function() {
+    const supplierIdx = $(this).data('id');
+    $.ajax({
+        url: '/admin/systemPreference/supplyCompany/supplier/' + supplierIdx,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            originalSupplierData = data;
+            $('#supplierDetailForm #supplierIdx').val(data.idx);
+            $('#supplierDetailForm #detailSupplierName').val(data.supplierName);
+            $('#supplierDetailForm #detailSupplierManager').val(data.supplierManager);
+            $('#supplierDetailForm #detailSupplierManagerPhone').val(data.supplierManagerPhone);
+            $('#supplierDetailForm #detailSupplierZipcode').val(data.supplierZipcode);
+            $('#supplierDetailForm #detailSupplierAddress1').val(data.supplierAddress1);
+            $('#supplierDetailForm #detailSupplierAddress2').val(data.supplierAddress2);
+
+            $('#supplierDetailModal').modal('show');
+            setReadonlyMode();
+        },
+        error: function() {
+            Swal.fire('상세 정보 조회 실패', '', 'error');
+        }
+    });
+});
+
 	//수정모달 다음주소찾기
 	setupDaumPostcode('#btnDetailSearchAddress', '#detailSupplierZipcode', '#detailSupplierAddress1', '#detailSupplierAddress2');
 	

@@ -32,6 +32,16 @@ public class EmployeeManagementService {
 	@Autowired
 	private HttpSession session;
 	
+	//직원목록선택
+	public List<EmployeeInfoDTO> getEmployeeList(int startRow, int listLimit, String searchType, String searchKeyword) {
+		
+		
+		return employeeManagementMapper.selectEmployeeList(startRow, listLimit, searchType, searchKeyword);
+	}
+	
+	
+	
+	
 	//직원정보 DB입력로직
 	@Transactional
 	public int inputEmployeeInfo(EmployeeInfoDTO employee) throws IOException {
@@ -79,5 +89,15 @@ public class EmployeeManagementService {
 		
 		return last4Digits + today + randomNum;
 	}
+
+
+
+
+	public int getEmployeeCount(String searchType, String searchKeyword) {
+		
+		return employeeManagementMapper.countEmployee(searchType, searchKeyword );
+	}
+
+	
 	
 }
