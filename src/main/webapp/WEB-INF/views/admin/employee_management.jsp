@@ -16,6 +16,7 @@
 	padding: 20px;
 	background: rgba(0, 0, 0, .45);
 	z-index: 1000;
+	
 }
 
 .modal.open {
@@ -80,11 +81,14 @@
   background:#fff;
 }
 
+body {
+color : black;
+}
+
 </style>
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/admin/employee_management.js"></script>

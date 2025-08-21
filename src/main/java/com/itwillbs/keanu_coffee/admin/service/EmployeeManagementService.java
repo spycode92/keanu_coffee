@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.http.HttpSession;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
+import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.utils.FileUtils;
@@ -26,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class EmployeeManagementService {
 	
 	private final EmployeeManagementMapper employeeManagementMapper;
+	private final OrganizationMapper organizationMapper;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final FileMapper fileMapper;
 	
@@ -35,11 +38,18 @@ public class EmployeeManagementService {
 	//직원목록선택
 	public List<EmployeeInfoDTO> getEmployeeList(
 			int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod) {
-		
-		
 		return employeeManagementMapper.selectEmployeeList(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
 	}
 	
+	// 직원 목록 갯수
+	public int getEmployeeCount(String searchType, String searchKeyword) {
+		return employeeManagementMapper.countEmployee(searchType, searchKeyword );
+	}
+
+	// 직원추가시 부서,팀,직책 정보 불러오기
+	public List<Map<String, Object>> getOrgData() {
+		return organizationMapper.getOrgData();
+	}
 	
 	
 	
@@ -94,10 +104,7 @@ public class EmployeeManagementService {
 
 
 
-	public int getEmployeeCount(String searchType, String searchKeyword) {
-		
-		return employeeManagementMapper.countEmployee(searchType, searchKeyword );
-	}
+
 
 	
 	

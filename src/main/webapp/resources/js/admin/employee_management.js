@@ -32,26 +32,50 @@ function allineTable(thElement) {
 	window.location.href = url;
 }
 
+//부서,팀,직책정보 함수
+function loadOrgData() {
+    $.ajax({
+        url: '/admin/employeeManagement/getOrgData',
+        success: function(data) {
+			orgData = data;
+			console.log(data);
+			processOrgData();
+       		populateDepartments();
+        },
+		error: function(){
+			Swal.fire('부서정보 불러오기 실패', '', 'error');
+		}
+    });
+}
+
+
 // DOM 로드후 
 document.addEventListener("DOMContentLoaded", function() {
     const modal = document.getElementById('addEmployeeModal');
     const btnOpen = document.getElementById('addEmployee');  // 직원추가 버튼 id="addEmployee" 있어야 함
     const btnClose = document.getElementById('closeModalBtn');
     const btnCancel = document.getElementById('cancelBtn');
-
+	
+	//직원추가버튼클릭시
     btnOpen.addEventListener('click', () => {
-        modal.classList.add('open');
+		modal.classList.add('open');
+		//부서,팀,직책 정보 함수
+		loadOrgData();
         modal.setAttribute('aria-hidden', 'false');
     });
-
-    function closeModal() {
-        modal.classList.remove('open');
-        modal.setAttribute('aria-hidden', 'true');
-    }
-
+	
+	
+	//모달 닫기 함수
+	function closeModal() {
+	    modal.classList.remove('open');
+	    modal.setAttribute('aria-hidden', 'true');
+	}
+	
+	//닫기, 취소 버튼 클릭시 모달닫기
     btnClose.addEventListener('click', closeModal);
     btnCancel.addEventListener('click', closeModal);
-
+	
+	//모달바깥 선택시 창닫기
     window.addEventListener('click', (event) => {
         if (event.target === modal) {
             closeModal();
