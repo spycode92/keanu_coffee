@@ -1,0 +1,30 @@
+package com.itwillbs.keanu_coffee.transport.controller;
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
+import com.itwillbs.keanu_coffee.transport.service.DriverService;
+
+import lombok.RequiredArgsConstructor;
+
+@Controller
+@RequestMapping("transport")
+@RequiredArgsConstructor
+public class DriverController {
+	private final DriverService driverService;
+	
+	// 차량 배정 가능한 운전기사 요청 API
+	@GetMapping("/assignDriver")
+	@ResponseBody
+	public ResponseEntity<List<EmployeeInfoDTO>> assignDriverList() {
+		List<EmployeeInfoDTO> driverDTO = driverService.getDriverList();
+		
+		return ResponseEntity.ok(driverDTO == null ? List.of() : driverDTO);
+	}
+}

@@ -1,6 +1,7 @@
 const DUPLICATE_CHECK_URL = "/transport/vehicle/dupCheck";
 const MODIFY_VEHICLE_URL = "/transport/vehicle/detail";
-const DELETE_VEHICLE_URL = "/transport/vehicle/delete"
+const DELETE_VEHICLE_URL = "/transport/vehicle/delete";
+const ASSIGN_DRIVER_URL = "/transport/assignDriver";
 
 // 모달 열기
 function openCreateModal() {
@@ -234,6 +235,67 @@ function onClickBulkDelete() {
   	});
 }
 
+// 기사 배정 버튼 클릭
+function onClickAssignDriver() {
+	$('#assignDriverModal').attr('aria-hidden','false').addClass('open');
+	
+	$.getJSON(ASSIGN_DRIVER_URL)
+	    .done(function(drivers) {
+		
+		renderDriverTable(drivers);
+
+    })
+    .fail(function() {
+      $modal.removeClass('open').attr('aria-hidden','true');
+      Swal.fire({icon:'error', text:'기사 정보를 불러오지 못했습니다.'});
+    });
+}
+
+function renderDriverTable(drivers) {
+	const tbody = $("#driverTableBody");
+	
+	tbody.empty();
+	
+	if (!drivers.length) {
+	    tbody.append('<tr><td colspan="4" class="text-center text-muted">배정할 기사가 없습니다.</td></tr>');
+	    return;
+  	}
+	
+	// 문자열로 렌더링
+  	const rowsHtml = drivers.map( function(driver) {
+	    return `
+	      <tr data-driver-id="${driver.idx}">
+	        <td><input type="radio" name="driverId" value="${driver.idx}"></td>
+	        <td>${driver.empNo ?? ''}</td>
+	        <td>${driver.empName ?? ''}</td>
+	        <td>${driver.empPhone ?? ''}</td>
+	      </tr>
+	    `
+  	}).join('');
+
+  	tbody.html(rowsHtml);
+}
+
+$('#driverTableBody').on('click', 'tr', function(e) {
+  if (!$(e.target).is('input[type="radio"]')) {
+    $(this).find('input[type="radio"]').prop('checked', true);
+  }
+});
+
+// 배정 버튼 클릭
+function assignDriver() {
+	const checked = $('input[name="driverId"]:checked');
+	
+	if (checked.length === 0) {
+	    Swal.fire({ icon:'info', text:'배정할 기사를 선택하세요.' });
+	    return;
+  	}
+
+	const selectedId = $('tr').data('driver-id');
+	const driverData = selectedId.dataset.test;
+	const selectedName = checked.closest('tr').find('td').eq(2).text().trim();
+}
+
 // 이벤트 바인딩
 $(document).ready(function () {
 	$("#openCreate").on("click", openCreateModal);
@@ -241,6 +303,7 @@ $(document).ready(function () {
     $("#cancelEdit").on("click", closeEditModal);
     $("#saveCreate").on("click", submitCreateForm);
 	$('#bulkDelete').on('click', onClickBulkDelete);
+	$('#btnAssignDriver').on('click', onClickAssignDriver);
 });
 
 
