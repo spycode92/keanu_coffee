@@ -3,7 +3,34 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper">
-
+	
+	<!-- 직원 수 조회 -->
+	<select id="countEmployee" resultType="int">
+		SELECT count(*)
+		FROM V_EMPLOYEE_FULL_INFO
+		<if test="searchType != ''">
+		WHERE
+			${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		
+	</select>
+	
+	<!-- 직원목록조회 -->
+	<select id="selectEmployeeList" resultType="EmployeeInfoDTO">
+		SELECT *
+		FROM V_EMPLOYEE_FULL_INFO
+			<if test="searchType != ''">
+			WHERE
+				${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="orderKey != ''">
+			ORDER BY ${orderKey} ${orderMethod}			
+			</if>
+		LIMIT
+			#{startRow}
+			, #{listLimit}
+	</select>
+	
 	<!-- 단일 회원 정보 검색 -->
 	<select id="selectEmployeeInfo" resultType="EmployeeInfoDTO" >
 		SELECT *

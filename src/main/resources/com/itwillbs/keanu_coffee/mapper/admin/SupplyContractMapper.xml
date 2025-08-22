@@ -3,7 +3,12 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper">
-	
+	<!-- 등록계약리스트 -->
+	<select id="selectSupplyContractsInfo" resultType="SupplierProductContractDTO">
+		SELECT *
+		FROM V_SUPPLIER_PRODUCT_CONTRACT_SUMMARY
+		where status &lt;&gt; '삭제'
+	</select>
 	<!-- 계약등록 -->
 	<insert id="insertContract">
 		INSERT INTO SUPPLIER_PRODUCT_CONTRACT

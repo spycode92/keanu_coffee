@@ -133,64 +133,39 @@
             
             <!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
 			<div class="container mt-4">
-			    <!-- 제목 -->
-			    <h4 class="mb-4">공급계약 관리</h4>
-			
-			    <div class="row">
-			        <!-- 좌측: 공급업체, 상품 관리 (조직관리 좌측 두 칸 크기 동일) -->
-			        <div class="col-md-4">
-			            		
-			            <!-- 상품 카드 -->
-			            <div class="card">
-			                <div class="card-header d-flex justify-content-between align-items-center">
-			                    <span>상품</span>
-			                    <button type="button" id="btnAddProduct" class="btn btn-sm btn-primary">+</button>
-			                </div>
-			                <div class="form-row mb-2">
-							    <div class="col">
-							        <select id="upperCategorySelect_" class="form-control">
-							            <option value="">대분류 선택</option>
-							            <!-- 상위카테고리 동적추가 -->
-							        </select>
-							    </div>
-							    <div class="col">
-							        <select id="lowerCategorySelect_" class="form-control" disabled>
-							            <option value="">소분류 선택</option>
-							            <!-- 하위카테고리 동적추가 -->
-							        </select>
-							    </div>
-							</div>
-			                <ul id="productList" class="list-group list-group-flush" style="max-height: 150px; overflow-y: auto;">
-   			   					<!-- 상품목록들어옴 -->
-			                </ul>
-			            </div>
-			        </div>
-			
-			        
-			    </div>
+				<h4 class="mb-4">공급계약 관리</h4>
+
+		            <div class="row mb-3">
+		                <div class="col-md-4 d-flex align-items-center gap-2">
+		                    <button type="button" id="btnAddProduct" class="btn btn-primary">상품 추가</button>
+		                </div>
+		                <div class="col-md-8 d-flex gap-2">
+		                    <select id="upperCategorySelect_" class="form-control">
+		                        <option value="">대분류 선택</option>
+		                    </select>
+		                    <select id="lowerCategorySelect_" class="form-control" disabled>
+		                        <option value="">소분류 선택</option>
+		                    </select>
+		                </div>
+		            </div>
+		
+		            <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
+		                <table id="productTable" class="table table-striped table-bordered mb-0">
+		                    <thead>
+		                        <tr>
+		                            <th>상품명</th>
+		                            <th>기능</th>
+		                        </tr>
+		                    </thead>
+		                    <tbody>
+		                        <!-- 상품 데이터 동적 렌더링 -->
+		                    </tbody>
+		                </table>
+		            </div>
+			    
 			</div>
 			
 			<!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
-            
-                 
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             
             
             

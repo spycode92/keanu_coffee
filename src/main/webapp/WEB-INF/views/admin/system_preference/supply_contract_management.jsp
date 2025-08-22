@@ -130,59 +130,29 @@
         <div class="container">
             
 			
-			<!-- 우측: 계약 리스트 (조직관리 우측 한 칸 크기 동일) -->
-			<div class="col-md-8">
-				<div class="card h-100">
-				    <div class="card-header d-flex justify-content-between align-items-center">
-				        <span>공급계약</span>
-				        <button type="button" id="btnAddContract" class="btn btn-sm btn-primary">+</button>
-				    </div>
-				    <div class="table-responsive mt-3" style="max-height: 300px; overflow-y: auto;">
-				        <table class="table" id="contractTable">
-				            <thead>
-				                <tr>
-				                    <th>공급업체</th>
-				                    <th>상품명</th>
-				                    <th>계약단가</th>
-				                    <th>계약기간</th>
-				                    <th>상태</th>
-				                    <th>상세보기</th>
-				                </tr>
-				            </thead>
-				            <tbody>
-				            </tbody>
-				        </table>
-				    </div>
-				</div>
-			</div>
+		    <div class="card-header d-flex justify-content-between align-items-center">
+		        <span>공급계약</span>
+		        <button type="button" id="btnAddContract" class="btn btn-sm btn-primary">+</button>
+		    </div>
+		    <div class="table-responsive mt-3" style="max-height: 300px; overflow-y: auto;">
+				<table class="table table-striped table-bordered" id="contractTable">
+		            <thead>
+		                <tr>
+		                    <th>공급업체</th>
+		                    <th>상품명</th>
+		                    <th>계약단가</th>
+		                    <th>계약기간</th>
+		                    <th>상태</th>
+		                    <th>상세보기</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+		            </tbody>
+		        </table>
+		    </div>
 
 		</div>
 			
-			<!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
-            
-                 
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-        </div>
     </section>
     
 </body>

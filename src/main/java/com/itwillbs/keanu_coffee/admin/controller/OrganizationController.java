@@ -35,6 +35,15 @@ import lombok.RequiredArgsConstructor;
 public class OrganizationController {
 	private final OrganizationService organizationService;
 	
+	@GetMapping("")
+	public String systemPreference(Model model) {
+		// 부서리스트 가져오기
+		List<DepartTeamRoleDTO> departmentList = organizationService.getDepartInfo();
+		model.addAttribute("departmentList", departmentList);
+		
+		return "/admin/system_preference/organization_management";
+	}
+	
 	// 조직관리
 	// 부서 선택시 팀, 직책 목록 보여주기
 	@GetMapping("/getTeamsAndRoles")
@@ -45,14 +54,10 @@ public class OrganizationController {
 		List<DepartTeamRoleDTO> teamList = organizationService.getTeamsByDepartmentIdx(departTeamRoleDTO.getDepartmentIdx()); //departmentIdx
 		List<DepartTeamRoleDTO> roleList = organizationService.getRolesByDepartmentIdx(departTeamRoleDTO.getDepartmentIdx()); //departmentIdx
 		
-		System.out.println(teamList);
-		System.out.println(roleList);
-		
 		Map<String, List<DepartTeamRoleDTO>> result = new HashMap<>();
 		
 		result.put("teams", teamList);
 	    result.put("roles", roleList);
-		
 		
 		return ResponseEntity.ok(result);
 	}
@@ -163,12 +168,5 @@ public class OrganizationController {
 		}
 	}
 	
-	@GetMapping("")
-	public String systemPreference(Model model) {
-		// 부서리스트 가져오기
-		List<DepartTeamRoleDTO> departmentList = organizationService.getDepartInfo();
-		model.addAttribute("departmentList", departmentList);
-		
-		return "/admin/system_preference/organization_management";
-	}
+
 }

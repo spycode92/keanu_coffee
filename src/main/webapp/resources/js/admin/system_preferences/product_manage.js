@@ -381,12 +381,12 @@ $(function () {
 	            let html = '';
 	            productList.forEach(function(product) {
 	                html += `
-	                <li class="list-group-item d-flex justify-content-between align-items-center" data-productidx="${product.idx}" style="color: black;">
-	                    <span>${product.productName}</span>
-	                    <button type="button" class="btn btn-sm btn-info btn-detail-product">상세보기</button>
-	                </li>`;
+	                <tr data-productidx="${product.idx}" style="color: black;">
+	                    <td>${product.productName}</td>
+	                    <td><button type="button" class="btn btn-sm btn-info btn-detail-product">상세보기</button></td>
+	                </tr>`;
 	            });
-	            $('#productList').html(html);
+	            $('#productTable tbody').html(html);
 	        },
 	        error: function() {
 	            Swal.fire('오류', '상품 목록을 불러오는 데 실패했습니다.', 'error');
@@ -458,9 +458,13 @@ $(function () {
 	        $lower.append('<option value="">소분류가 없습니다</option>');
 	        $lower.prop('disabled', true);
 
-	        $('#productList').html('<li class="list-group-item" style="color: black;">하위 카테고리없음</li>');
-
+			$('#productTable tbody').html(`
+			    <tr>
+			        <td colspan="2" class="text-center" style="color: black;">하위 카테고리가 없습니다</td>
+			    </tr>
+			`);
         	return;
+
 	    } else {
 	        $lower.append('<option value="all">전체</option>');
 	        childCategories.forEach(function(cat) {
@@ -484,7 +488,7 @@ $(function () {
 	        );
 	        const childCatIds = childCategories.map(cat => cat.idx);
 	
-	        loadProductListByCategoryIds(childCatIds);
+	        loadProductListByCategoryIdx(childCatIds);
 	    } else if (selectedVal) {
 	        loadProductList('', selectedVal);
 	    } else {
@@ -493,7 +497,7 @@ $(function () {
 	});
 	
 	// 복수 카테고리 아이디로 상품목록 필터링 함수
-	function loadProductListByCategoryIds(categoryIdxArray) {
+	function loadProductListByCategoryIdx(categoryIdxArray) {
 	    $.ajax({
 	        url: '/admin/systemPreference/product/getProductList',
 	        type: 'GET',
@@ -504,12 +508,12 @@ $(function () {
 	            let html = '';
 	            productList.forEach(function(product) {
 	                html += `
-	                <li class="list-group-item d-flex justify-content-between align-items-center" data-productidx="${product.idx}" style="color: black;">
-	                    <span>${product.productName}</span>
-	                    <button type="button" class="btn btn-sm btn-info btn-detail-product">상세보기</button>
-	                </li>`;
-	            });
-	            $('#productList').html(html);
+	                <tr data-productidx="${product.idx}" style="color: black;">
+                    <td>${product.productName}</td>
+                    <td><button type="button" class="btn btn-sm btn-info btn-detail-product">상세보기</button></td>
+                </tr>`;
+            });
+            $('#productTable tbody').html(html);
 	        },
 	        error: function() {
 	            Swal.fire('오류', '상품 목록을 불러오는 데 실패했습니다.', 'error');
@@ -543,17 +547,13 @@ $(function () {
 	
 	//상품상세모달창열기
 	$(document).on('click', '.btn-detail-product', function() {
-		//상품Idx 저장
-		const productIdx = $(this).closest('li').data('productidx');
-	    //없으면에러
-		if (!productIdx) {
+	    const productIdx = $(this).closest('tr').data('productidx');
+	    if (!productIdx) {
 	        Swal.fire('오류', '상품 정보를 불러올 수 없습니다.', 'error');
 	        return;
 	    }
-		// 모달열기
 	    $('#productDetailModal').modal('show');
-
-		initProductDetailModal(productIdx);
+	    initProductDetailModal(productIdx);
 	});
 	
 	//상위카테고리불러오기함수
@@ -685,7 +685,7 @@ $(function () {
 			        setTimeout(function() {
 			            $('#productDetailModal').modal('show');
 			            initProductDetailModal(productIdx); // 상세 초기화 + 최신 데이터 불러오기
-			        }, 500); // 0.5초 (필요에 따라 조절)
+			        }, 1000); // 0.5초 (필요에 따라 조절)
 			    }
 	        },
 	        error: function() {

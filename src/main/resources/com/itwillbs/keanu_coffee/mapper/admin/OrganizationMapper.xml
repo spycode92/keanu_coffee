@@ -85,4 +85,20 @@
 		SET role_name = #{roleName}
 		where idx = #{idx}
 	</update>
-</mapper>
+	<!-- 부서,팀,직책 정보 가져오기 -->
+	<select id="getOrgData" resultType="Map">
+		SELECT
+		d.idx as department_idx
+		, d.department_name
+		, r.idx as role_idx
+		, r.role_name
+		, t.idx as team_idx
+		, t.team_name
+		FROM DEPARTMENT d
+		LEFT JOIN ROLE r
+		ON d.idx = r.department_idx
+		LEFT JOIN TEAM t
+		ON d.idx = t.department_idx
+		
+	</select>
+</mapper> 
