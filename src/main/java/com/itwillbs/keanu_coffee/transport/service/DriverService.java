@@ -1,0 +1,22 @@
+package com.itwillbs.keanu_coffee.transport.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
+import com.itwillbs.keanu_coffee.transport.mapper.DriverMapper;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class DriverService {
+	private final DriverMapper driverMapper;
+
+	// 차량 배정 가능한 운전자 리스트
+	public List<EmployeeInfoDTO> getDriverList() {
+		return driverMapper.selectDriverList();
+	}
+
+}
