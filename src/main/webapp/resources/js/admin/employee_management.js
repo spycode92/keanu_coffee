@@ -31,14 +31,46 @@ function allineTable(thElement) {
 	// 이동요청
 	window.location.href = url;
 }
+let orgData;
+let structuredOrgData; 
+// 범용 함수: 플랫한 데이터를 그룹별로 묶어서 배열로 변환
+function groupDataByKey(flatData, groupKey, ...valueKeys) {
+    const result = {};
+
+    flatData.forEach(item => {
+        const group = item[groupKey];
+        
+        if (!result[group]) {
+            result[group] = {};
+            // valueKeys 만큼 Set 초기화
+            valueKeys.forEach(key => {
+                result[group][key] = new Set();
+            });
+        }
+        
+        // 각 valueKey에 해당하는 값들을 Set에 추가
+        valueKeys.forEach(key => {
+            result[group][key].add(item[key]);
+        });
+    });
+
+    // Set을 Array로 변환
+    Object.keys(result).forEach(group => {
+        valueKeys.forEach(key => {
+            result[group][key] = Array.from(result[group][key]);
+        });
+    });
+
+    return result;
+}
 
 //부서,팀,직책정보 함수
 function loadOrgData() {
     $.ajax({
         url: '/admin/employeeManagement/getOrgData',
         success: function(data) {
-			orgData = data;
-			console.log(data);
+			orgData = groupDataByKey(data, "department_name", "team_name", "role_name")
+			console.log(orgData);
 			processOrgData();
        		populateDepartments();
         },
