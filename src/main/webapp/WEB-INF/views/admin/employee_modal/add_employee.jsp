@@ -4,7 +4,7 @@
 <!-- 직원 추가용 모달 -->
 <div id="addEmployeeModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="addEmployeeModalLabel" tabindex="-1">
     <div class="modal-card">
-        <form action="/admin/employeeManagement/addEmployee" method="post" enctype="multipart/form-data" id="addEmployeeForm" class="form" style="color:black;">
+        <form action="/admin/employeeManagement/addEmployee" method="post" enctype="multipart/form-data" id="addEmployeeForm" class="modal-form" >
             <div class="modal-head">
                 <h5 id="addEmployeeModalLabel">직원 추가</h5>
                 <button type="button" id="closeModalBtn" aria-label="닫기" style="font-size: 24px; background:none; border:none; cursor:pointer;">&times;</button>

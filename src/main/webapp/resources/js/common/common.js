@@ -155,17 +155,86 @@ const InfoModalManager = {
     }
 };
 
+const ModalManager = {
+    init: function() {
+        // 모달 열기/닫기 및 버튼 이벤트 연결
+        this.bindEvents();
+    },
+    bindEvents: function() {
+        // 모든 모달 요소들 찾기
+        this.modals = document.querySelectorAll('.modal');
+        this.modals.forEach(modal => {
+            // 배경 클릭 시 닫기
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    this.closeModal(modal);
+                }
+            });
 
+            // X 닫기 버튼 클릭 시 닫기
+            const closeBtn = modal.querySelector('.modal-close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    this.closeModal(modal);
+                });
+            }
+        });
+    },
+    startEdit: function(modal) {
+        // 수정 버튼 숨김
+        const updateBtn = modal.querySelector('.btn-update');
+        if (updateBtn) updateBtn.style.display = 'none';
 
+        // 취소, 저장 버튼 보이기
+        const cancelBtn = modal.querySelector('.btn-cancel');
+        const saveBtn = modal.querySelector('.btn-primary');
+        if (cancelBtn) cancelBtn.style.display = 'inline-flex';
+        if (saveBtn) saveBtn.style.display = 'inline-flex';
+
+        // (필요 시 폼 활성화 등 추가 가능)
+    },
+    cancelEdit: function(modal) {
+        // 수정 버튼 다시 보이기
+        const updateBtn = modal.querySelector('.btn-update');
+        if (updateBtn) updateBtn.style.display = 'inline-flex';
+
+        // 취소, 저장 버튼 숨김
+        const cancelBtn = modal.querySelector('.btn-cancel');
+        const saveBtn = modal.querySelector('.btn-primary');
+        if (cancelBtn) cancelBtn.style.display = 'none';
+        if (saveBtn) saveBtn.style.display = 'none';
+
+        // (필요 시 폼 초기화 등 추가 가능)
+    },
+    saveEdit: function(modal) {
+        // 실제 저장 로직이 있을 경우 함수 내부에 구현
+        // 여기서는 저장 후 모달 닫기 예시
+        this.closeModal(modal);
+    },
+    closeModal: function(modal) {
+        modal.classList.remove('open');
+        // 수정 모드 초기화
+        this.cancelEdit(modal);
+    },
+    openModalById: function(id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.add('open');
+            this.cancelEdit(modal); // 모달 열 때 항상 편집 초기상태로
+        }
+    }
+};
 
 
 
 // 페이지 초기화(DOMContentLoaded)
 document.addEventListener('DOMContentLoaded', function() {
+	
     DarkModeManager.init();
     MobileMenuManager.init();
 	ProfileManager.init();
 	InfoModalManager.init();
+	ModalManager.init();
     //사이드바토글
 	const toggleBtn = document.getElementById('sidebar-toggle');
 	const sidebar = document.getElementById('sidebar');

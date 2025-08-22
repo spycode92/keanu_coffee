@@ -71,8 +71,152 @@ section { margin-bottom: 2rem; }
   <button class="btn btn-secondary" onclick="showError('에러 메시지! ⚠️')">에러 알림</button>
   <button class="btn btn-secondary" onclick="showWarning('경고 메시지! ⚠️')">경고 알림</button>
   <button class="btn btn-primary" onclick="showNotification('일반 정보 메시지! ℹ️')">정보 알림</button>
+
+	<h2>10. Modal 테스트</h2>
+	<button class="btn btn-primary" onclick="ModalManager.openModalById('formModal')">폼 모달 열기</button>
+	<button class="btn btn-primary" onclick="ModalManager.openModalById('tableModal')">테이블 모달 열기</button>
+	<button class="btn btn-primary" onclick="ModalManager.openModalById('listModal')">리스트 모달 열기</button>
+
+
+
+
 </section>
+
+<!-- Form Modal -->
+<div class="modal" id="formModal">
+    <div class="modal-card modal-form md">
+        <div class="modal-head">
+            <h3>폼 모달</h3>
+            <button class="modal-close-btn" onclick="ModalManager.closeModal(document.getElementById('formModal'))">✕</button>
+        </div>
+        <div class="modal-body">
+            <form class="form">
+                <div class="row">
+                    <div class="field">
+                        <label>이름</label>
+                        <input type="text" class="form-control" placeholder="이름 입력">
+                    </div>
+                    <div class="field">
+                        <label>이메일</label>
+                        <input type="email" class="form-control" placeholder="이메일 입력">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-foot">
+            <button class="btn btn-cancel" style="display:none;">취소</button>
+            <button class="btn btn-update">수정</button>
+            <button class="btn btn-primary" style="display:none;">저장</button>
+        </div>
+    </div>
+</div>
+
+<!-- Table Modal -->
+<div class="modal" id="tableModal">
+    <div class="modal-card modal-table lg">
+        <div class="modal-head">
+            <h3>테이블 모달</h3>
+            <button class="modal-close-btn" onclick="ModalManager.closeModal(document.getElementById('tableModal'))">✕</button>
+        </div>
+        <div class="modal-body">
+            <table class="table">
+                <thead>
+                    <tr><th>날짜</th><th>금액</th><th>상태</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>2025-08-01</td><td>10,000원</td><td>완료</td></tr>
+                    <tr><td>2025-08-10</td><td>5,000원</td><td>대기</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-foot">
+            <button class="btn btn-secondary" onclick="ModalManager.closeModal(document.getElementById('tableModal'))">닫기</button>
+            <button class="btn btn-secondary" onclick="ModalManager.closeModal(document.getElementById('tableModal'))">닫기</button>
+            <button class="btn btn-secondary" onclick="ModalManager.closeModal(document.getElementById('tableModal'))">닫기</button>
+            <button class="btn btn-secondary" onclick="ModalManager.closeModal(document.getElementById('tableModal'))">닫기</button>
+        </div>
+    </div>
+</div>
+
+<!-- List Modal -->
+<div class="modal" id="listModal">
+    <div class="modal-card modal-list sm">
+        <div class="modal-head">
+            <h3>리스트 모달</h3>
+            <button class="modal-close-btn" onclick="ModalManager.closeModal(document.getElementById('listModal'))">✕</button>
+        </div>
+        <div class="modal-body">
+            <ul>
+                <li>옵션 1</li>
+                <li>옵션 2</li>
+                <li>옵션 3</li>
+                <li>옵션 4</li>
+            </ul>
+        </div>
+        <div class="modal-foot">
+            <button class="btn btn-secondary" onclick="ModalManager.closeModal(document.getElementById('listModal'))">취소</button>
+        </div>
+    </div>
+</div>
+
   <script>
+  const ModalManager = {
+		    init: function() {
+		        this.bindEvents();
+		    },
+		    bindEvents: function() {
+		        this.modals = document.querySelectorAll('.modal');
+		        this.modals.forEach(modal => {
+		            modal.addEventListener('click', e => {
+		                if (e.target === modal) this.closeModal(modal);
+		            });
+		            const closeBtn = modal.querySelector('.modal-close-btn');
+		            if (closeBtn) closeBtn.addEventListener('click', () => this.closeModal(modal));
+
+		            const updateBtn = modal.querySelector('.btn-update');
+		            if (updateBtn) updateBtn.addEventListener('click', () => this.startEdit(modal));
+
+		            const cancelBtn = modal.querySelector('.btn-cancel');
+		            if (cancelBtn) cancelBtn.addEventListener('click', () => this.cancelEdit(modal));
+
+		            const saveBtn = modal.querySelector('.btn-primary');
+		            if (saveBtn) saveBtn.addEventListener('click', () => this.saveEdit(modal));
+		        });
+		    },
+		    startEdit: function(modal) {
+		        const updateBtn = modal.querySelector('.btn-update');
+		        if (updateBtn) updateBtn.style.display = 'none';
+
+		        const cancelBtn = modal.querySelector('.btn-cancel');
+		        const saveBtn = modal.querySelector('.btn-primary');
+		        if (cancelBtn) cancelBtn.style.display = 'inline-flex';
+		        if (saveBtn) saveBtn.style.display = 'inline-flex';
+		    },
+		    cancelEdit: function(modal) {
+		        const updateBtn = modal.querySelector('.btn-update');
+		        if (updateBtn) updateBtn.style.display = 'inline-flex';
+
+		        const cancelBtn = modal.querySelector('.btn-cancel');
+		        const saveBtn = modal.querySelector('.btn-primary');
+		        if (cancelBtn) cancelBtn.style.display = 'none';
+		        if (saveBtn) saveBtn.style.display = 'none';
+		    },
+		    saveEdit: function(modal) {
+		        this.closeModal(modal);
+		    },
+		    closeModal: function(modal) {
+		        modal.classList.remove('open');
+		        this.cancelEdit(modal);
+		    },
+		    openModalById: function(id) {
+		        const modal = document.getElementById(id);
+		        if (modal) {
+		            modal.classList.add('open');
+		            this.cancelEdit(modal);
+		        }
+		    }
+		};
+
     // 토글 스위치 클릭 시 active 상태 토글 예시
 	document.addEventListener('DOMContentLoaded', function() {
 		const toggle = document.getElementById('toggle1');
@@ -81,8 +225,11 @@ section { margin-bottom: 2rem; }
 			this.classList.toggle('active');
 			});
 		}
+		ModalManager.init()
 	});
   </script>
+  
+  
 
 </body>
 </html>
