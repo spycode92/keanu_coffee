@@ -1,0 +1,12 @@
+package com.itwillbs.keanu_coffee.transport.mapper;
+
+import java.util.List;
+
+import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
+
+public interface DriverMapper {
+
+	// 차량 배정 가능한 기사 리스트
+	List<EmployeeInfoDTO> selectDriverList();
+
+}
