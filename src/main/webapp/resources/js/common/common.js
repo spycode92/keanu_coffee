@@ -155,17 +155,68 @@ const InfoModalManager = {
     }
 };
 
+const ModalManager = {
+  init: function() {
+    this.bindEvents();
+    this.bindEscKey();
+  },
 
+  bindEvents: function() {
+    this.modals = document.querySelectorAll('.modal');
+    this.modals.forEach(modal => {
+      modal.addEventListener('click', e => {
+        if (e.target === modal) this.closeModal(modal);
+      });
+      const closeBtn = modal.querySelector('.modal-close-btn');
+      if (closeBtn) closeBtn.addEventListener('click', () => this.closeModal(modal));
+    });
+  },
 
+  bindEscKey: function() {
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        const topModal = this.getTopModal();
+        if (topModal) this.closeModal(topModal);
+      }
+    });
+  },
+
+  getTopModal: function() {
+    const opened = Array.from(document.querySelectorAll('.modal.open'));
+    return opened.length ? opened[opened.length - 1] : null;
+  },
+
+  // 요소 참조로 열기
+  openModal: function(modal) {
+    if (!(modal instanceof HTMLElement)) return;
+    modal.classList.add('open');
+    document.body.classList.add('modal-open');
+  },
+
+  // ID로 열기 호출 시 openModal을 사용
+  openModalById: function(id) {
+    const modal = document.getElementById(id);
+    this.openModal(modal);
+  },
+
+  closeModal: function(modal) {
+    modal.classList.remove('open');
+    if (!document.querySelector('.modal.open')) {
+      document.body.classList.remove('modal-open');
+    }
+  }
+};
 
 
 
 // 페이지 초기화(DOMContentLoaded)
 document.addEventListener('DOMContentLoaded', function() {
+	
     DarkModeManager.init();
     MobileMenuManager.init();
 	ProfileManager.init();
 	InfoModalManager.init();
+	ModalManager.init();
     //사이드바토글
 	const toggleBtn = document.getElementById('sidebar-toggle');
 	const sidebar = document.getElementById('sidebar');
