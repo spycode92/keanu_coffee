@@ -53,6 +53,16 @@ public class InventoryController {
 		
 		return "inventory/inventory_to_move";
 	}
+	@GetMapping("/test")
+	public String test() {
+		
+		return "test";
+	}
+	@GetMapping("/test2")
+	public String test2() {
+		
+		return "test2";
+	}
 
 
 
