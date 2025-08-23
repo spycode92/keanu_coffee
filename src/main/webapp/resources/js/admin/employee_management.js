@@ -31,6 +31,7 @@ function allineTable(thElement) {
 	// 이동요청
 	window.location.href = url;
 }
+
 let orgData;
 let structuredOrgData; 
 // 범용 함수: 플랫한 데이터를 그룹별로 묶어서 배열로 변환
@@ -90,29 +91,23 @@ document.addEventListener("DOMContentLoaded", function() {
 	
 	//직원추가버튼클릭시
     btnOpen.addEventListener('click', () => {
-		modal.classList.add('open');
+		 ModalManager.openModal(modal);
 		//부서,팀,직책 정보 함수
 		loadOrgData();
-        modal.setAttribute('aria-hidden', 'false');
     });
-	
-	
-	//모달 닫기 함수
-	function closeModal() {
-	    modal.classList.remove('open');
-	    modal.setAttribute('aria-hidden', 'true');
-	}
-	
-	//닫기, 취소 버튼 클릭시 모달닫기
-    btnClose.addEventListener('click', closeModal);
-    btnCancel.addEventListener('click', closeModal);
-	
-	//모달바깥 선택시 창닫기
-    window.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            closeModal();
-        }
+
+	 // 상세정보 모달 열기
+    document.querySelectorAll('.employee-row').forEach(row => {
+        row.addEventListener('click', () => {
+            const empIdx = row.dataset.empIdx;
+            // TODO: empIdx로 데이터 로딩 로직은 나중에 구현
+
+            // 모달 열기
+            const detailModal = document.getElementById('employeeDetailModal');
+            ModalManager.openModal(detailModal);
+        });
     });
+
 
 
     // === 기존 프로필 이미지 JS 유지 ===

@@ -951,3 +951,44 @@ body {
         overflow-x: auto;
     }
 }
+
+/*모달 반응형 */
+@media (max-width: 768px) {
+  .modal-card {
+    width: 90vw;              /* 화면 너비의 90% 사용 */
+    height: 80vh;             /* 화면 높이의 80% 사용 */
+    border-radius: 8px;       /* 모서리 둥글기 축소 */
+    padding: 1rem;            /* 패딩 축소 */
+    max-height: none;         /* max-height 해제 후 고정 height 사용 */
+  }
+  .modal-body {
+    padding: 0.75rem 1rem;    /* 콘텐츠 패딩 간소화 */
+  }
+  .modal-head, .modal-foot {
+    padding: 0.5rem 1rem;     /* 헤더/푸터 패딩 간소화 */
+  }
+  .modal-close-btn {
+    font-size: 1rem;          /* 닫기 버튼 크기 감소 */
+  }
+}
+
+/*모달 오픈시 body 스크롤 방지*/
+body.modal-open {
+  overflow: hidden;
+}
+
+/* 모달 반응형 */
+@media (max-width: 480px) {
+  .modal-card {
+    width: 100vw;             /* 화면 전체 너비 사용 */
+    height: 100vh;            /* 화면 전체 높이 사용 */
+    border-radius: 0;         /* 모서리 없앰 */
+    padding: 0;               /* 패딩 제거 */
+  }
+  .modal-head, .modal-body, .modal-foot {
+    padding: 0.5rem;          /* 일관된 작은 패딩 */
+  }
+  .modal-body {
+    overflow-y: scroll;       /* 스크롤 강제 */
+  }
+}
