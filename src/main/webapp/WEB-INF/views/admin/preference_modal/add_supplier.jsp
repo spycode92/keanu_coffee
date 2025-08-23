@@ -1,49 +1,73 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE html>
-<!-- 공급업체 등록 모달 -->
-<div class="modal fade supplier-modal" id="supplierModal" tabindex="-1" aria-labelledby="supplierModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-	    <form id="supplierForm">
-	        <div class="modal-content">
-	            <div class="modal-header">
-	                <h5 class="modal-title" id="supplierModalLabel">공급업체 등록</h5>
-	                <button type="button" class="close" data-dismiss="modal" aria-label="닫기">
-	                    <span aria-hidden="true">&times;</span>
-	                </button>
-	            </div>
-	            <div class="modal-body">
-	                <div class="form-group">
-	                    <label for="supplierName">업체명</label>
-	                    <input type="text" class="form-control" id="supplierName" name="supplierName" required>
-	                </div>
-	                <div class="form-group">
-	                    <label for="supplierManager">담당자</label>
-	                    <input type="text" class="form-control" id="supplierManager" name="supplierManager" required>
-	                </div>
-	                <div class="form-group">
-	                    <label for="supplierManagerPhone">연락처</label>
-	                    <input type="text" class="form-control" id="supplierManagerPhone" name="supplierManagerPhone" required>
-					</div>
-					<div class="form-group">
-		    			<label for="supplierZipcode" class="mb-1"><b>우편번호</b></label>
-		    			<div class="d-flex">
-							<input type="text" class="form-control mr-2" id="supplierZipcode" name="supplierZipcode" placeholder="Zipcode" readonly style="max-width:150px;">
-					        <button type="button" class="btn btn-primary" id="btnSearchAddress">우편번호 확인</button>
-					    </div>
-					</div>
-					<div class="form-group mb-1">
-					    <label for="supplierAddress" class="mb-1"><b>주소</b></label>
-					    <input type="text" class="form-control mb-2" id="supplierAddress1" name="supplierAddress1" placeholder="Address1" readonly >
-					    <input type="text" class="form-control" id="supplierAddress2" name="supplierAddress2" placeholder="Address2" required>
-					</div>
+
+<div id="supplierModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="supplierModalLabel" tabindex="-1">
+    <div class="modal-card md">
+        <form id="supplierForm">
+            <div class="modal-head">
+                <h5 id="supplierModalLabel">공급업체 등록</h5>
+                <button type="button"
+                        class="modal-close-btn"
+                        aria-label="닫기"
+                        onclick="ModalManager.closeModal(document.getElementById('supplierModal'))">
+                    &times;
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="field">
+                    <label class="form-label">업체명</label>
+                    <input type="text" class="form-control" id="supplierName" name="supplierName" required>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-custom-cancel" data-dismiss="modal">취소</button>
-                    <button type="submit" class="btn btn-primary">등록</button>
-		     	</div>
-			</div>
-		</form>
+                <div class="field">
+                    <label class="form-label">담당자</label>
+                    <input type="text" class="form-control" id="supplierManager" name="supplierManager" required>
+                </div>
+                <div class="field">
+                    <label class="form-label">연락처</label>
+                    <input type="text" class="form-control" id="supplierManagerPhone" name="supplierManagerPhone" required>
+                </div>
+                <div class="field">
+                    <label class="form-label">우편번호</label>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <input type="text"
+                               class="form-control"
+                               id="supplierZipcode"
+                               name="supplierZipcode"
+                               placeholder="우편번호"
+                               readonly
+                               style="flex: 1; max-width: 150px;">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                id="btnSearchAddress">
+                            우편번호 검색
+                        </button>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="form-label">주소</label>
+                    <input type="text"
+                           class="form-control"
+                           id="supplierAddress1"
+                           name="supplierAddress1"
+                           placeholder="기본 주소"
+                           readonly
+                           style="margin-bottom: 0.5rem;">
+                    <input type="text"
+                           class="form-control"
+                           id="supplierAddress2"
+                           name="supplierAddress2"
+                           placeholder="상세 주소"
+                           required>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button type="button"
+                        class="btn btn-secondary"
+                        onclick="ModalManager.closeModal(document.getElementById('supplierModal'))">
+                    취소
+                </button>
+                <button type="submit" class="btn btn-primary">등록</button>
+            </div>
+        </form>
     </div>
 </div>

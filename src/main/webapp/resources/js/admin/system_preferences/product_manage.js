@@ -7,7 +7,8 @@ $(function () {
 		loadUpperCategoryList(); // 상위 카테고리만 셀렉트박스 갱신
         $('#productAddForm')[0].reset();
         $('#productImagePreview').hide().attr('src', '#');
-        $('#productAddModal').modal('show');
+        const addModal = document.getElementById('productAddModal');
+        ModalManager.openModal(addModal);
     });
 	
 	 // 상위 카테고리 리스트 불러오기 및 셀렉트박스 렌더링
@@ -67,7 +68,8 @@ $(function () {
     $('#btnAddCategory').click(function () {
         $('#addCategoryForm')[0].reset();
 		renderParentCategoryOptions();
-        $('#addCategoryModal').modal('show');
+        const addCatModal = document.getElementById('addCategoryModal');
+        ModalManager.openModal(addCatModal);
     });
 	
 	// 기존 전체 카테고리 리스트 활용
@@ -118,9 +120,10 @@ $(function () {
 	    });
 	});
 	
-	//카테고리관리 모달열기
+	//카테고리 관리 모달 열기
 	$('#btnCategoryManage').click(function () {
-	    $('#categoryManageModal').modal('show');
+	    const manageModal = document.getElementById('categoryManageModal');
+        ModalManager.openModal(manageModal);
 	    renderCategoryListInModal();
 	});
 	
@@ -358,7 +361,8 @@ $(function () {
 	        contentType: false,            // 반드시 false (formData 전송 시)
 	        success: function (res) {
 	            Swal.fire('등록 완료', res, 'success');
-	            $('#productAddModal').modal('hide');
+	            const addModal = document.getElementById('productAddModal');
+            	ModalManager.closeModal(addModal);
 	            loadProductList(); // 상품 목록 새로고침
 	        },
 	        error: function (res) {
@@ -381,7 +385,7 @@ $(function () {
 	            let html = '';
 	            productList.forEach(function(product) {
 	                html += `
-	                <tr data-productidx="${product.idx}" style="color: black;">
+	                <tr data-productidx="${product.idx}" >
 	                    <td>${product.productName}</td>
 	                    <td><button type="button" class="btn btn-sm btn-info btn-detail-product">상세보기</button></td>
 	                </tr>`;
@@ -460,7 +464,7 @@ $(function () {
 
 			$('#productTable tbody').html(`
 			    <tr>
-			        <td colspan="2" class="text-center" style="color: black;">하위 카테고리가 없습니다</td>
+			        <td colspan="2" class="text-center" >하위 카테고리가 없습니다</td>
 			    </tr>
 			`);
         	return;
@@ -508,7 +512,7 @@ $(function () {
 	            let html = '';
 	            productList.forEach(function(product) {
 	                html += `
-	                <tr data-productidx="${product.idx}" style="color: black;">
+	                <tr data-productidx="${product.idx}" >
                     <td>${product.productName}</td>
                     <td><button type="button" class="btn btn-sm btn-info btn-detail-product">상세보기</button></td>
                 </tr>`;
@@ -552,8 +556,9 @@ $(function () {
 	        Swal.fire('오류', '상품 정보를 불러올 수 없습니다.', 'error');
 	        return;
 	    }
-	    $('#productDetailModal').modal('show');
-	    initProductDetailModal(productIdx);
+		const detailModal = document.getElementById('productDetailModal');
+        initProductDetailModal(productIdx);
+        ModalManager.openModal(detailModal);
 	});
 	
 	//상위카테고리불러오기함수
@@ -680,11 +685,12 @@ $(function () {
 			    const productIdx = $('#productDetailForm [name=productIdx]').val();
 			    if (productIdx) {
 			        // 모달 닫기
-			        $('#productDetailModal').modal('hide');
+			        const detailModal = document.getElementById('productDetailModal');
+            		ModalManager.closeModal(detailModal);
 			        // 약간의 delay 후 다시 열고 최신 상세정보 요청
 			        setTimeout(function() {
-			            $('#productDetailModal').modal('show');
-			            initProductDetailModal(productIdx); // 상세 초기화 + 최신 데이터 불러오기
+						initProductDetailModal(productIdx);
+                		ModalManager.openModal(detailModal);
 			        }, 1000); // 0.5초 (필요에 따라 조절)
 			    }
 	        },
@@ -767,7 +773,8 @@ $(function () {
 	                data: JSON.stringify({ productIdx: productIdx }),
 	                success: function(res) {
 	                    Swal.fire('삭제 완료', '상품이 정상적으로 삭제되었습니다.', 'success');
-	                    $('#productDetailModal').modal('hide');
+	                    const detailModal = document.getElementById('productDetailModal');
+            			ModalManager.closeModal(detailModal);
 	                    loadProductList(); // 상품 목록 새로고침
 	                },
 	                error: function(xhr) {

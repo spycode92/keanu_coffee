@@ -18,7 +18,8 @@ $(function() {
     // 공급업체 등록 모달 열기
     $('#btnAddSupplier').click(function() {
         $('#supplierForm')[0].reset();
-        $('#supplierModal').modal('show');
+		const modal = document.getElementById('supplierModal');
+        ModalManager.openModal(modal);
     });
 	
 	//핸드폰번호입력
@@ -92,8 +93,8 @@ $(function() {
 	        data: JSON.stringify(supplierData),
 			dataType: 'json',
 	        success: function(newSupplier) {
-	            $('#supplierModal').modal('hide');
-
+	            const modal = document.getElementById('supplierModal');
+				ModalManager.closeModal(modal);
 				// 라디오 버튼 값을 'ALL'로 변경
 			    $('input[name="supplierStatus"][value="ALL"]').prop('checked', true);
 			
@@ -205,7 +206,8 @@ $(function() {
             $('#supplierDetailForm #detailSupplierAddress1').val(data.supplierAddress1);
             $('#supplierDetailForm #detailSupplierAddress2').val(data.supplierAddress2);
 
-            $('#supplierDetailModal').modal('show');
+            const detailModal = document.getElementById('supplierDetailModal');
+			ModalManager.openModal(detailModal);
             setReadonlyMode();
         },
         error: function() {
@@ -297,7 +299,8 @@ $(function() {
 	        success: function() {
 	            Swal.fire('수정 완료', '', 'success');
 	            setReadonlyMode();
-	            $('#supplierDetailModal').modal('hide');
+	            const detailModal = document.getElementById('supplierDetailModal');
+				 ModalManager.closeModal(detailModal);
 	            // 필요 시 리스트 갱신 호출
 	            loadSupplierList();
 	        },

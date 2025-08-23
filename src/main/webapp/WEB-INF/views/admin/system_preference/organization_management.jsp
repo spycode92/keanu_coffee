@@ -5,171 +5,67 @@
 <head>
     <meta charset="UTF-8" />
     <title>관리자페이지 - 조직 관리</title>
-    <!-- jquery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- sweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- 기본포맷css, js -->
     <link href="/resources/css/common/common.css" rel="stylesheet" />
     <script src="/resources/js/common/common.js"></script>
-    <!-- 기능별커스텀js -->
     <script src="/resources/js/admin/system_preferences/dept_team_role.js"></script>
     <style>
-        .department-item.active,
-        .team-item.active,
-        .position-item.active {
-            background-color: var(--primary);
-            color: var(--primary-foreground);
-            font-weight: var(--font-weight-medium);
-        }
-        .supplier-modal .modal-content {
-		    background-color: #f5f1e9 !important; /* 부드러운 베이지색 */
-		    color: #000 !important;               /* 글자색 검정 */
-		}
-		
-		.product-modal .modal-content {
-		    background-color: #f5f1e9;  /* 부드러운 베이지색 배경 예시 */
-		    color: #000;                /* 검정 글자색 */
-		}
-		
-		.supplier-modal label,
-		.supplier-modal input.form-control,
-		.supplier-modal textarea.form-control,
-		.supplier-modal select.form-select {
-		    color: #000 !important;
-		}
-		
-		.supplier-modal .btn,
-		.supplier-modal .modal-title {
-		    color: #000 !important;
-		}
-		
-		.btn-custom-cancel {
-		    background-color: rgba(234, 110, 110, 0.52); /* #ea6e6e85 반투명 배경 */
-		    color: #fff;
-		    border: none;
-		    transition: background-color 0.3s ease;
-		}
-		
-		.btn-custom-cancel:hover {
-		    background-color: rgba(234, 110, 110, 0.8); /* 더 진한 배경색 */
-		    color: #fff;
-		}
-		
-		.dark .table th,
-		.dark .table td {
-		    color: var(--foreground) !important;  /* 다크모드 전역 글씨색에 맞춤 */
-		    background-color: transparent;        /* 필요시 배경도 지정 가능 */
-		}
-		
-		/* 혹은 라이트/다크 모두 대응하려면 일반 스타일 보완 */
-		.table th,
-		.table td {
-		    color: var(--foreground);             /* 바탕색과 동일하게 */
-		    background-color: transparent;
-		}
-		.dark .form-control {
-		    background-color: oklch(0.68 0.01 131.24);
-		}
-		
-		.supplier-name-area {
-		    display: flex;
-		    align-items: center;
-		    min-width: 0; /* flex에서 ellipsis 잘 적용됨 */
-		}
-		.supplier-name-text {
-		    max-width: 90px;
-		    white-space: nowrap;
-		    overflow: hidden;
-		    text-overflow: ellipsis;
-		    display: inline-block;
-		}
-		
-		#categoryListInModal {
-		    list-style: none;  /* 불릿 제거 */
-		    padding-left: 0;   /* 기본 들여쓰기 제거 */
-		    margin-left: 0;    /* 필요 시 마진도 제거 */
-		}
-		.list-group-item {
-			padding-right: 0;
-		}
-		.parent-category-bg {
-		    background-color: #d5d3b8; 
-		}
-		
-		.child-category-bg {
-		    background-color: #b3b5ac;
-		}
-		#btnCategoryManage {
-		    background-color: #e8bfbf;
-		    border-color: #e8bfbf;
-		    color: #000;
-		    transition: background-color 0.3s ease, border-color 0.3s ease;
-		}
-		
-		#btnCategoryManage:hover,
-		#btnCategoryManage:focus {
-		    background-color: #efa9a9;  /* 호버 시 더 진한 색 */
-		    border-color: #d59e9e;
-		    color: #000;
-		    text-decoration: none;
-		}
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .list-group { list-style: none; margin: 0; padding: 0; }
+        .list-group-item { padding: .75rem 1rem; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center; }
+        .list-group-item:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
-    <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
+    <jsp:include page="/WEB-INF/views/inc/top.jsp" />
     <section class="content">
         <div class="container">
             <h4 class="mt-4 mb-3"><i class="fas fa-users"></i> 조직 관리</h4>
-            <div class="row">
+            <div class="grid-3">
                 <!-- 부서 리스트 -->
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span>부서 리스트</span>
-                            <button type="button" id="btnAddDepartment" class="btn btn-sm btn-primary">+</button>
-                        </div>
-                        <ul id="departmentList" class="list-group list-group-flush" style="background-color: #5f7179;">
-                            <c:forEach items="${departmentList}" var="department">
-                                <li class="list-group-item d-flex justify-content-between align-items-center department-item" style="color: black;" data-departmentidx="${department.idx}">
-                                    <span class="department-name" >${department.departmentName}</span>
-                                    <div>
-	                                    <button type="button" class="btn btn-sm btn-secondary btn-edit-department">✎</button> 
-	                                    <button type="button" class="btn btn-sm btn-danger btn-delete-department">−</button>
-                                    </div>
-                                </li>
-                            </c:forEach>
-                        </ul>
+                <div class="card h-100">
+                    <div class="card-header">
+                        <span>부서 리스트</span>
+                        <button type="button" id="btnAddDepartment" class="btn btn-sm btn-primary">+</button>
                     </div>
+                    <ul id="departmentList" class="list-group">
+                        <c:forEach items="${departmentList}" var="department">
+                            <li class="list-group-item department-item"
+                                data-departmentidx="${department.idx}">
+                                <span class="department-name">${department.departmentName}</span>
+                                <div>
+                                    <button type="button"
+                                            class="btn btn-sm btn-secondary btn-edit-department">✎</button>
+                                    <button type="button"
+                                            class="btn btn-sm btn-destructive btn-delete-department">−</button>
+                                </div>
+                            </li>
+                        </c:forEach>
+                    </ul>
                 </div>
                 <!-- 팀 리스트 -->
-                <div class="col-md-4">
-                	<div class="card h-100">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span>팀 리스트</span>
-                            <button type="button" id="btnAddTeam" class="btn btn-sm btn-primary" disabled>+</button>
-                        </div>
-                        <ul id="teamList" class="list-group list-group-flush">
-                            <!-- 선택된 부서의 팀 목록이 로드됨 -->
-                        </ul>
+                <div class="card h-100">
+                    <div class="card-header">
+                        <span>팀 리스트</span>
+                        <button type="button" id="btnAddTeam" class="btn btn-sm btn-primary" disabled>+</button>
                     </div>
+                    <ul id="teamList" class="list-group">
+                        <!-- 선택된 부서의 팀 목록 -->
+                    </ul>
                 </div>
                 <!-- 직책 리스트 -->
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span>직책 리스트</span>
-                            <button type="button" id="btnAddRole" class="btn btn-sm btn-primary" disabled>+</button>
-                        </div>
-                        <ul id="roleList" class="list-group list-group-flush">
-                            <!-- 선택된 팀의 직책 목록이 로드됨 -->
-                        </ul>
+                <div class="card h-100">
+                    <div class="card-header">
+                        <span>직책 리스트</span>
+                        <button type="button" id="btnAddRole" class="btn btn-sm btn-primary" disabled>+</button>
                     </div>
+                    <ul id="roleList" class="list-group">
+                        <!-- 선택된 팀의 직책 목록 -->
+                    </ul>
                 </div>
             </div>
-            
         </div>
     </section>
-    
 </body>
 </html>

@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>메인페이지</title>
+<title>관리자페이지 - 직원관리</title>
 
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -18,16 +18,19 @@
 <jsp:include page="/WEB-INF/views/admin/employee_modal/add_employee.jsp"></jsp:include> 
 <jsp:include page="/WEB-INF/views/admin/employee_modal/detail_employee.jsp"></jsp:include> 
 <section class="content">
+	<h4>직원 관리</h4>
 	<div style="display: flex; align-items: center; gap: 8px; width: 35%">
-		<form action="/admin/employeeManagement">
-			<select name="searchType">
-				<option <c:if test="${searchType eq '이름' }">selected</c:if>> 이름</option>
-				<option <c:if test="${searchType eq '사번' }">selected</c:if>>사번</option>
-				<option <c:if test="${searchType eq '아이디' }">selected</c:if>>아이디</option>
-			</select>
-			<input class="form-control" placeholder="텍스트 입력" name="searchKeyword">
-			<input type="submit" value="검색" class="btn btn-sm btn-primary">
-		</form>
+		<div style="display: flex; align-items: center; gap: 8px; width: 35%;">
+ 			<form action="/admin/employeeManagement" style="display: flex; align-items: center; gap: 8px; width: 100%;">
+ 				<select name="searchType">
+					<option <c:if test="${searchType eq '이름' }">selected</c:if>> 이름</option>
+					<option <c:if test="${searchType eq '사번' }">selected</c:if>>사번</option>
+					<option <c:if test="${searchType eq '아이디' }">selected</c:if>>아이디</option>
+				</select>
+				<input class="form-control" placeholder="텍스트 입력" name="searchKeyword" style="width:200px;">
+				<input type="submit" value="검색" class="btn btn-sm btn-primary">
+			</form>
+		</div>
 	</div>
     <div class="table-responsive mt-3" >
 		

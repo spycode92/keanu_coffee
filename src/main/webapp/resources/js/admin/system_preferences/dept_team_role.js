@@ -51,7 +51,7 @@ $(function () {
 	                dataType: 'json',
 	                success: function(dept) {
 	                    $('#departmentList').append(
-	                        `<li class="list-group-item d-flex justify-content-between align-items-center department-item" style="color: black;" data-departmentidx="${dept.idx}">
+	                        `<li class="list-group-item d-flex justify-content-between align-items-center department-item"  data-departmentidx="${dept.idx}">
 	                            <span class="department-name">${dept.departmentName}</span>
 								<div>
 									<button type="button" class="btn btn-sm btn-secondary btn-edit-department">✎</button>
@@ -123,7 +123,7 @@ $(function () {
 	                    $('#teamList').find('li.text-muted').remove();
 	
 	                    $('#teamList').append(
-	                        `<li class="list-group-item d-flex justify-content-between align-items-center team-item" style="color: black;" data-teamidx="${team.idx}">
+	                        `<li class="list-group-item d-flex justify-content-between align-items-center team-item"  data-teamidx="${team.idx}">
 	                            <span>${team.teamName}</span>
 								<div>
 									<button type="button" class="btn btn-sm btn-secondary btn-edit-team">✎</button>
@@ -195,7 +195,7 @@ $(function () {
 	                success: function(role) {
 	                    $('#roleList').find('li.text-muted').remove();
 	                    $('#roleList').append(
-	                        `<li class="list-group-item d-flex justify-content-between align-items-center role-item" style="color: black;" data-roleidx="${role.idx}">
+	                        `<li class="list-group-item d-flex justify-content-between align-items-center role-item"  data-roleidx="${role.idx}">
 	                            <span>${role.roleName}</span>
 								<div>
 									<button type="button" class="btn btn-sm btn-secondary btn-edit-role">✎</button>
@@ -550,7 +550,7 @@ $(function () {
 	            if (Array.isArray(data.teams) && data.teams.length > 0) {
 	                data.teams.forEach(function(team) {
 	                    $('#teamList').append(
-	                        `<li class="list-group-item d-flex justify-content-between align-items-center team-item" style="color: black;" data-teamidx="${team.idx}">
+	                        `<li class="list-group-item d-flex justify-content-between align-items-center team-item" data-teamidx="${team.idx}">
 	                            <span>${team.teamName}</span>
 								<div>
                                     <button type="button" class="btn btn-sm btn-secondary btn-edit-team">✎</button> 
@@ -560,13 +560,13 @@ $(function () {
 	                    );
 	                });
 	            } else {
-	                $('#teamList').append(`<li class="list-group-item text-muted" style="color: black;">팀이 존재하지 않습니다.</li>`);
+	                $('#teamList').append(`<li class="list-group-item text-muted" >팀이 존재하지 않습니다.</li>`);
 	            }
 	            // 직책(roles) 표시
 	            if (Array.isArray(data.roles) && data.roles.length > 0) {
 	                data.roles.forEach(function(role) {
 	                    $('#roleList').append(
-	                        `<li class="list-group-item d-flex justify-content-between align-items-center role-item" style="color: black;" data-roleidx="${role.idx}">
+	                        `<li class="list-group-item d-flex justify-content-between align-items-center role-item" data-roleidx="${role.idx}">
 	                            <span>${role.roleName}</span>
 								<div>
 									<button type="button" class="btn btn-sm btn-secondary btn-edit-role">✎</button> 
@@ -576,7 +576,7 @@ $(function () {
 	                    );
 	                });
 	            } else {
-	                $('#roleList').append(`<li class="list-group-item text-muted" style="color: black;">직책이 존재하지 않습니다.</li>`);
+	                $('#roleList').append(`<li class="list-group-item text-muted" >직책이 존재하지 않습니다.</li>`);
 	            }
 	        }
 	    });
