@@ -26,8 +26,11 @@ public class LoginService {
 		employee = employeeManagementMapper.selectEmployeeInfo(empId);
 		
 		//조회된 정보가 있을때
-		if(passwordEncoder.matches(inputPw, employee.getEmpPassword())) {
-			return true;
+		if(employee != null ) {
+			// 비밀번호확인
+			if(passwordEncoder.matches(inputPw, employee.getEmpPassword())) {
+				return true;
+			}
 		}
 				
 		return false;
