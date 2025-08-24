@@ -40,13 +40,14 @@ public class LoginController {
 		//로그인 성공시 아이디, 이름, 포지션 저장
 		if(employee.getEmpStatus().equals("재직")) {
 			
+			session.setAttribute("sIdx", employee.getIdx());
 			session.setAttribute("sId", employee.getEmpId());
 			session.setAttribute("sName", employee.getEmpName());
 			session.setAttribute("sPosition", employee.getRoleIdx());
 		
 		// 프로필사진
 		if (file != null) {
-		    session.setAttribute("sFid", file.getIdx());
+		    session.setAttribute("sFIdx", file.getIdx());
 		}
 		
 		//임시 세션만료시간 1일

@@ -65,36 +65,74 @@ function groupDataByKey(flatData, groupKey, ...valueKeys) {
     return result;
 }
 
+// 드롭다운 초기화
+function processOrgData(rawData) {
+    // 원본 flatData를 부서별로 그룹화
+    orgData = groupDataByKey(rawData, "department_name", "team_name", "role_name");
+
+    // 기존 선택값 초기화
+    document.querySelector('select[name="deptName"]').value = "";
+    document.querySelector('select[name="teamName"]').innerHTML = '<option value="">없음</option>';
+    document.querySelector('select[name="roleName"]').innerHTML = '<option value="">없음</option>';
+}
+
+//부서 옵션 채우기
+function populateDepartments() {
+  const deptSel = document.querySelector('select[name="deptName"]');
+  deptSel.innerHTML = '<option value="">없음</option>';
+  Object.keys(orgData).forEach(dept => {
+    const opt = document.createElement('option');
+    opt.value = dept; opt.textContent = dept;
+    deptSel.appendChild(opt);
+  });
+}
+// 5) 부서 선택 시 팀·직책 동시 채우기
+function onDeptChange() {
+  const dept = document.querySelector('select[name="deptName"]').value;
+  const teamSel = document.querySelector('select[name="teamName"]');
+  const roleSel = document.querySelector('select[name="roleName"]');
+  teamSel.innerHTML = '<option value="">없음</option>';
+  roleSel.innerHTML = '<option value="">없음</option>';
+  if (!dept || !orgData[dept]) return;
+
+  orgData[dept].team_name.forEach(team => {
+    const o = document.createElement('option');
+    o.value = team; o.textContent = team;
+    teamSel.appendChild(o);
+  });
+  orgData[dept].role_name.forEach(role => {
+    const o = document.createElement('option');
+    o.value = role; o.textContent = role;
+    roleSel.appendChild(o);
+  });
+}
+
 //부서,팀,직책정보 함수
 function loadOrgData() {
-    $.ajax({
-        url: '/admin/employeeManagement/getOrgData',
-        success: function(data) {
-			orgData = groupDataByKey(data, "department_name", "team_name", "role_name")
-			console.log(orgData);
-			processOrgData();
+    ajaxGet('/admin/employeeManagement/getOrgData')
+		.then(data => {
+			processOrgData(data);
        		populateDepartments();
-        },
-		error: function(){
+		})
+		.catch(err => {
+			console.error('부서정보 로딩 오류', err);
 			Swal.fire('부서정보 불러오기 실패', '', 'error');
-		}
-    });
-}
+		});
+}      
 
 
 // DOM 로드후 
 document.addEventListener("DOMContentLoaded", function() {
-    const modal = document.getElementById('addEmployeeModal');
     const btnOpen = document.getElementById('addEmployee');  // 직원추가 버튼 id="addEmployee" 있어야 함
-    const btnClose = document.getElementById('closeModalBtn');
-    const btnCancel = document.getElementById('cancelBtn');
 	
-	//직원추가버튼클릭시
+	//직원추가버튼클릭시 직원추가모달 열기
     btnOpen.addEventListener('click', () => {
-		 ModalManager.openModal(modal);
+		 ModalManager.openModal(document.getElementById('addEmployeeModal'));
 		//부서,팀,직책 정보 함수
 		loadOrgData();
     });
+	// 부서 선택시 부서내의 팀, 직책 불러오기함수 호출
+	document.querySelector('select[name="deptName"]').addEventListener('change', onDeptChange);
 
 	 // 상세정보 모달 열기
     document.querySelectorAll('.employee-row').forEach(row => {
@@ -107,53 +145,36 @@ document.addEventListener("DOMContentLoaded", function() {
             ModalManager.openModal(detailModal);
         });
     });
-
-
-
-    // === 기존 프로필 이미지 JS 유지 ===
-    var fileId = "${userProfileImg.fileId}";
-    const existProfileImg = fileId && fileId !== '' && fileId !== 'null';
-    const profileImageAction = document.getElementById('profileImageAction');
-    const deleteProfileImgFlag = document.getElementById('deleteProfileImgFlag');
-    const profileImageInput = document.getElementById('profileImage');
-    var profileUrl = existProfileImg ? '/file/' + fileId + '?type=0' : '/resources/images/default_profile_photo.png';
-    document.getElementById('profilePreview').src = profileUrl;
-
-    profileImageInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                document.getElementById('profilePreview').src = evt.target.result;
-            }
-            reader.readAsDataURL(file);
-            profileImageAction.value = 'insert';
-            deleteProfileImgFlag.value = 'false';
-        } else {
-            profileImageAction.value = 'none';
-        }
-    });
-
-    document.getElementById('deleteProfileImgBtn').addEventListener('click', function() {
-        document.getElementById('profilePreview').src = '/resources/images/default_profile_photo.png';
-        profileImageAction.value = 'delete';
-        deleteProfileImgFlag.value = 'true';
-        profileImageInput.value = '';
-    });
-
-    profileImageInput.addEventListener('change', function(event) {
-        const files = event.target.files;
-        for (let i = 0; i < files.length; i++) {
-            if (!files[i].type.startsWith('image/')) {
-                alert('이미지 파일만 업로드 가능합니다.');
-                document.getElementById('profilePreview').src = profileUrl;
-                profileImageInput.value = '';
-                return;
-            }
-        }
-    });
 });
 
+/* 직원추가 모달 사용 */
+document.addEventListener("DOMContentLoaded", function() {
+    // 직원 추가 모달 전용 요소
+    const profileInput = document.getElementById("addProfileImage");
+    const profilePreview = document.getElementById("addProfilePreview");
+    const deleteBtn = document.getElementById("deleteAddProfileBtn");
+    const defaultSrc = "/resources/images/default_profile_photo.png";
+
+    // 요소가 없으면 종료
+    if (!profileInput || !profilePreview || !deleteBtn) return;
+
+    // 이미지 선택 시 미리보기
+    profileInput.addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            profilePreview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // x버튼 클릭 시 프로필 이미지 초기화
+    deleteBtn.addEventListener("click", function() {
+        profileInput.value = "";
+        profilePreview.src = defaultSrc;
+    });
+});
 
 
 

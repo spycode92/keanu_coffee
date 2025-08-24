@@ -119,7 +119,7 @@ public class ProductController {
     	return product;
     }
 	
-    //상품등록
+    //상품수정
     @PostMapping("/modifyProduct")
     @ResponseBody
     public ResponseEntity<String> modifyProduct(@ModelAttribute SupplierProductContractDTO product) throws IOException {

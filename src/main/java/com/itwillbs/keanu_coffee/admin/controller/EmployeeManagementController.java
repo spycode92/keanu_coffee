@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -77,6 +78,18 @@ public class EmployeeManagementController {
 		return "/admin/employee_management";
 	}
 	
+	// 직원 정보 1명 불러오기 with idx
+	@GetMapping("/getOneEmployeeInfo")
+	@ResponseBody
+	public EmployeeInfoDTO getOneEmployeeInfo(HttpSession session) {
+		EmployeeInfoDTO employee = new EmployeeInfoDTO();
+		employee.setEmpIdx((int)session.getAttribute("sIdx"));
+		employee = employeeManagementService.getOneEmployeeInfoByEmpIdx(employee.getEmpIdx());
+		
+		return employee;
+	}
+	
+	
 	//직원추가 모달창 부서,팀,직책 정보 불러오기
 	@GetMapping("/getOrgData")
 	@ResponseBody
@@ -92,18 +105,36 @@ public class EmployeeManagementController {
 	//관리자페이지 회원추가 로직
 	@PostMapping("/addEmployee")
 	public String addEmployeeForm(EmployeeInfoDTO employee, Model model) throws IOException {
-		// 
+		
 		int inputCount = employeeManagementService.inputEmployeeInfo(employee);
 		if (inputCount == 0) {
 			model.addAttribute("msg", "추가실패");
 		}
 		model.addAttribute("msg", "추가완료");
 		model.addAttribute("targetURL", "/admin/employeeManagement/addEmployeeForm"); 
-		return "/commons/result_process";
+		return "redirect:/admin/employeeManagement";
 //		return "";
 	}
 	
-	//직원 개인정보 변경폼
+	//직원 개인정보 변경로직
+	@PostMapping("/modifyEmployeeInfo")
+	public String modifyEmployeeInfo(EmployeeInfoDTO employee, HttpServletRequest request, HttpSession session) throws IllegalStateException, IOException {
+		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println(employee);
+		System.out.println(employee.getFiles()[0]);
+		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		int updateCount = employeeManagementService.modifyEmployeeInfo(employee);
+		String refererUrl = request.getHeader("Referer");
+				
+		if (refererUrl != null && !refererUrl.isEmpty()) {
+	        return "redirect:" + refererUrl;
+	    } else {
+	        return "redirect:/";  // 기본 홈페이지로
+	    }
+	}
+	
 	
 	
 	

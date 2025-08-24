@@ -540,7 +540,7 @@ body {
   display: flex;
   align-items: center;
   background: var(--primary, #222);
-  color: #242c6b;
+  color: var(--foreground, #222);
   padding: 0 24px;
 }
 
@@ -629,6 +629,72 @@ body {
   background-color: var(--primary);
   color: var(--primary-foreground);
   font-weight: var(--font-weight-medium);
+}
+
+/* =======================
+   Top Navigation Profile
+======================= */
+.profile-wrapper {
+  position: relative;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid #d9d9d9;
+  cursor: pointer;
+}
+.profile-popover {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  min-width: 180px;
+  padding: 12px;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 999;
+}
+.profile-popover.show {
+  display: flex;
+}
+.profile-popover .top-user {
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Dark mode toggle (Top nav) */
+.darkmode-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.darkmode-label {
+  font-size: 0.9rem;
+  color: var(--foreground);
+}
+
+/* =======================
+   ID Check Wrapper (Top nav)
+======================= */
+.id-check-wrapper {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.id-check-wrapper .form-control {
+  flex: 1;
+}
+.id-check-wrapper .btn {
+  white-space: nowrap;
+  height: 38px;
 }
 
 /* =======================

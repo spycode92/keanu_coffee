@@ -34,7 +34,7 @@
 	</div>
     <div class="table-responsive mt-3" >
 		
-		<table class="table table-striped table-bordered" style="color:green;">
+		<table class="table table-striped table-bordered" >
 			<tr>
 				<th data-key="emp_name" onclick="allineTable(this)">이름↕</th>
 				<th >성별</th>

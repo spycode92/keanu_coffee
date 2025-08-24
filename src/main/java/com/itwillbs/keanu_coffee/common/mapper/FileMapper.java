@@ -16,6 +16,8 @@ public interface FileMapper {
 	FileDTO getFileWithTargetTable(@Param("targetTable") String targetTable, @Param("targetTableIdx")int targetTableIdx);
 
 	void updateFiles(@Param("file")FileDTO file, @Param("idx")int idx);
+	// 파일삭제
+	void deleteFile(int idx);
 	
 	
 	

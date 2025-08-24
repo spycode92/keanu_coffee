@@ -33,6 +33,7 @@ public class EmployeeInfoDTO implements FileUploadHelpper{
     private String empStatus;         // 재직 상태 ('재직','퇴사','휴직')
     private Timestamp createdAt;   // 생성일
     private Timestamp updatedAt;   // 수정일
+    private Integer fileIdx;
     
     //프로필사진 등록 확인 파라미터
     private String profileImageAction;

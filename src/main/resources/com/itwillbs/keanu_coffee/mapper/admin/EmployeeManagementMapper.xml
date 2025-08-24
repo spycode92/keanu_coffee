@@ -39,7 +39,7 @@
 	</select>
 	
 	<!-- 회원추가 -->
-	<insert id="insertEmployeeInfo">
+	<insert id="insertEmployeeInfo" useGeneratedKeys="true" keyProperty="idx">
 		INSERT INTO EMPLOYEE_INFO
 		VALUES(
 			null
@@ -82,5 +82,32 @@
 			department_idx = NULL
 		WHERE department_idx = #{departmentIdx}
 	</update>
+	
+	<!-- idx로 회원정보 조회하기 -->
+	<select id="selectOneEmployeeInfoByEmpIdx" resultType="EmployeeInfoDTO">
+		SELECT *
+		FROM V_EMPLOYEE_FULL_INFO
+		WHERE idx = #{empIdx}
+	</select>
+	
+	<!--  회원정보 업데이트하기 -->
+	<update id="updateEmployeeInfo" parameterType="com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO">
+    UPDATE EMPLOYEE_INFO
+    <set>
+        <if test="empPhone != null and empPhone != ''">
+            emp_phone = #{empPhone},
+        </if>
+        <if test="empEmail != null">
+            emp_email = #{empEmail},
+        </if>
+        <if test="empPassword != null and empPassword != ''">
+            emp_password = #{empPassword},
+        </if>
+        <if test="empStatus != null and empStatus != ''">
+            emp_status = #{empStatus},
+        </if>
+    </set>
+    WHERE idx = #{empIdx}
+</update>
 	
 </mapper>

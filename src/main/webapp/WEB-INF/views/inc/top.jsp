@@ -1,87 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<style type="text/css">
-	.profile-wrapper {
-		position: relative; /* popover 기준점 */
-	}
-	
-	.avatar {
-		width: 40px;
-		height: 40px;
-		object-fit: cover;
-		border-radius: 50%;
-		border: 1px solid #d9d9d9;
-		cursor: pointer;
-	}
-	
-	.profile-popover {
-	    position: absolute;
-	    top: 48px;
-	    right: 0;
-	    min-width: 180px;
-	    padding: 12px;
-	    background-color: var(--card);
-	    border: 1px solid var(--border);
-	    border-radius: var(--radius);
-	    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-	
-	    /* 숨김 처리 */
-	    display: none;
-	    flex-direction: column;
-	    align-items: center;
-	    gap: 12px;
-	
-	    /* transition에서 opacity/visibility를 사용하려면 display:none 대신 아래 스타일 사용 */
-	    /* opacity: 0;
-	    visibility: hidden;
-	    transition: opacity 0.2s ease, visibility 0.2s ease; */
-	
-	    z-index: 999;
-	}
-	
-	.profile-popover.show {
-	    display: flex; /* flex로 보임 처리 */
-	    /* opacity: 1;
-	    visibility: visible; */
-	}
-	
-	.profile-popover .top-user {
-		font-size: 1rem;
-		font-weight: 600;
-		text-align: center;
-	}
-	
-	.darkmode-wrapper {
-		display: flex;
-		align-items: center; /* 세로 가운데 맞춤 */
-		gap: 8px; /* 라벨과 버튼 간격 */
-	}
-	
-	.darkmode-label {
-		font-size: 0.9rem;
-		color: var(--foreground);
-	}
-	
-	.id-check-wrapper {
-	    display: flex;
-	    gap: 8px; /* 입력창과 버튼 사이 간격 */
-	    align-items: center;
-	}
-	
-	.id-check-wrapper .form-control {
-	    flex: 1; /* 입력창이 남는 공간 전부 차지 */
-	}
-	
-	.id-check-wrapper .btn {
-	    white-space: nowrap; /* 버튼 글자가 줄바꿈 되지 않게 */
-	    height: 38px; /* input 높이와 맞춰주기 */
-	}
-	
-	
 
-</style>
 <nav class="top-nav">
-	
+	<jsp:include page="/WEB-INF/views/inc/change_info.jsp"></jsp:include> 
 	<button id="sidebar-toggle" class="sidebar-toggle">&#9776;</button>
 	<span class="site-title">물류관리 ERP</span>
   
@@ -90,7 +11,7 @@
 			<a id="profile" href="javascript:void(0)" >
 				<c:choose>
 				<c:when test="${!empty sessionScope.sFid}">
-					<img class="avatar" alt="profile" src="/file/thumnail/${sessionScope.sFid }?width=40&height=40"
+					<img class="avatar" alt="profile" src="/file/thumbnail/${sessionScope.sFid }?width=40&height=40"
 						style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%; border: 1px solid #d9d9d9;">
 				</c:when>
 				<c:otherwise>
@@ -101,8 +22,8 @@
 			</a>
 			<div id="employeeInfo" class="profile-popover" role="menu" aria-hidden="true" >
 				<span class="top-user">${sessionScope.sName }</span>
-				<span class="changeInfo"><a href="javascript:void(0)" id="open-info-modal">정보변경</a></span>
-				<span class="logout" ><a href="/logout" onclick="return confirm('정말 로그아웃하시겠습니까?');">로그아웃</a></span>
+				<span class="changeInfo"><button type="button" class="btn btn-link" data-modal-target="change-info-modal"> 정보 변경</button></span>
+				<span class="logout" ><button type="button" class="btn btn-secondary" data-action="logout">로그아웃</button></span>
 				<div class="darkmode-wrapper" style="color: #e0e5e6;">
 					<span class="darkmode-label">다크모드 :</span>
 					<button id="dark-mode-toggle" class="toggle-switch" aria-label="다크모드" style="text-align: right;"></button><br>	
@@ -111,60 +32,7 @@
 		</div>
 	</div>
 </nav>
-<!-- 정보변경 모달창 -->
-<div id="change-info-modal" class="settings-modal">
-	<div class="settings-content">
-		<div class="settings-header">
-			<h2>정보 변경</h2>
-			<button id="close-info-modal" class="settings-close">&times;</button>
-		</div>
-		
-		<form action="/user/updateInfo" method="post">
-			<label>프로필 사진</label>
-		    <div style="position: relative; display: inline-block;">
-		        <img id="profilePreview"
-		            src=""
-		            alt="프로필 사진"
-		            style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 1px solid #d9d9d9;">
-		        <button type="button"
-		            id="deleteProfileImgBtn"
-		            style="position: absolute; top: 2px; right: 2px; background: #FF8C00; border: none; color: white; border-radius: 50%; width: 22px; height: 22px; font-weight: bold; cursor: pointer;">
-		            ×
-		        </button>
-		    </div>
-		    <br>
-		    <input type="file" name="files"  class="form-control" id="profileImage" accept="image/*" style="margin:10px 0px; padding:6px 12px; border:1px solid #ccc; border-radius:4px; font-size:14px; ">
-		    <input type="hidden" id="profileImageAction" name="profileImageAction" value="none">
-		    <input type="hidden" id="deleteProfileImgFlag" name="deleteProfileImgFlag" value="false">
-		
-			<!-- ID -->
-			<div class="id-check-wrapper">
-			    <input class="form-control" type="text" id="empId" name="empId" value="${sessionScope.sId}">
-			    <button type="button" class="btn btn-secondary" id="check-id-btn">중복확인</button>
-			</div>
-			<small id="id-check-result" style="font-size: 0.85rem; color: gray;"></small>
-			
-			<!-- 비밀번호 -->
-			<label class="form-label" for="empPassword">새 비밀번호</label>
-			<input class="form-control" type="password" id="empPassword" name="empPassword">
-			
-			<!-- 휴대폰 번호 -->
-			<label class="form-label" for="empPhone">휴대폰 번호</label>
-			<input class="form-control" type="text" id="empPhone" name="empPhone"
-			       value="${sessionScope.sPhone}">
-			
-			<!-- 이메일 -->
-			<label class="form-label" for="empEmail">이메일</label>
-			<input class="form-control" type="email" id="empEmail" name="empEmail"
-			       value="${sessionScope.sEmail}">
-			
-			<div style="margin-top: 1rem; text-align: right;">
-				<button type="submit" class="btn btn-primary">저장</button>
-				<button type="button" id="cancel-info-modal" class="btn btn-secondary">취소</button>
-			</div>
-		</form>
-	</div>
-</div>
+
 	
 
 <div class="dashboard-layout">
@@ -247,67 +115,5 @@
       
 		</ul>
 	</aside>
-	
-	
-	<script type="text/javascript">
-		document.addEventListener("DOMContentLoaded", function(){
-			var fileId = "${userProfileImg.fileId}";
-			
-			const existProfileImg = fileId && fileId !== '' && fileId !== 'null'; // true||false
-			
-			const profileImageAction = document.getElementById('profileImageAction'); // isnert, delete, update, none
-			const deleteProfileImgFlag = document.getElementById('deleteProfileImgFlag'); //
-			const profileImageInput = document.getElementById('profileImage'); //선택된 파일
-			
-			var profileUrl = existProfileImg ? '/file/' + fileId + '?type=0' : '/resources/images/default_profile_photo.png';
-			
-			document.getElementById('profilePreview').src = profileUrl;
-			
-			//파일 선택 시preview에 보여줌
-			document.getElementById('profileImage').addEventListener('change', function(e) {
-				const file = e.target.files[0];
-				
-				if (file) {
-			        const reader = new FileReader();
-			        reader.onload = function(evt) {
-			            // 읽은 이미지 데이터를 profilePreview 이미지의 src에 설정
-			            document.getElementById('profilePreview').src = evt.target.result;
-			        }
-			        reader.readAsDataURL(file);  // 파일을 DataURL 형식으로 읽기 (이미지 미리보기용)
-			        profileImageAction.value = 'insert';
-			        deleteProfileImgFlag.value = 'false';
-			    } else {
-			        // 파일선택 취소 시 "none" 처리
-			        profileImageAction.value = 'none';
-			    }
-			});
-			
-			//이미지 삭제 버튼
-			$('#deleteProfileImgBtn').on('click', function() {
-			    // 프리뷰 이미지를 디폴트 이미지로 교체
-			    $('#profilePreview').attr('src', '/resources/images/default_profile_photo.png');
-			    // 삭제 의도를 서버에 전달할 수 있게 hidden input 값을 true로 설정
-			    profileImageAction.value = 'delete';
-			    deleteProfileImgFlag.value = 'true';
-	
-			    // 파일 선택된 것도 비워줌
-			    profileImageInput.value = '';
-			});
-			
-			document.querySelector('.custom-file-input').addEventListener('change', function(event) {
-				const files = event.target.files;
-				for (let i = 0; i < files.length; i++) {
-					if (!files[i].type.startsWith('image/')) {
-						alert('이미지 파일만 업로드 가능합니다.');
-						document.getElementById('profilePreview').src = profileUrl;
-						profileImageInput.value = '';  // 파일 입력값 비움
-						return;
-					}
-				}					
-	    	});
-			
-		});
-	</script>
-
 
   <!-- 여기서부터 개별 페이지 내용 들어감 -->
