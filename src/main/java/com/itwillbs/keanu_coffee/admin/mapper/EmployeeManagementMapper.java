@@ -8,7 +8,9 @@ import org.apache.ibatis.annotations.Param;
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 
 public interface EmployeeManagementMapper {
-
+	// 로그인용 아이디로 회원정보 조회
+	EmployeeInfoDTO selectEmployeeInfoById(String empNo);
+	
 	//직원목록 선택
 	List<EmployeeInfoDTO> selectEmployeeList(
 			@Param("startRow") int startRow, @Param("listLimit") int listLimit, 
@@ -22,9 +24,6 @@ public interface EmployeeManagementMapper {
 	
 	//회원 추가
 	int insertEmployeeInfo(EmployeeInfoDTO employee);
-
-	// 회원정보 검색
-	EmployeeInfoDTO selectEmployeeInfo(String empId);
 	
 	// 회원직책 NULL로 변경
 	void updateRoleToNull(Long roleIdx);
@@ -38,5 +37,7 @@ public interface EmployeeManagementMapper {
 	
 	// 회원 정보 업데이트하기
 	int updateEmployeeInfo(EmployeeInfoDTO employee);
+
+
 
 }

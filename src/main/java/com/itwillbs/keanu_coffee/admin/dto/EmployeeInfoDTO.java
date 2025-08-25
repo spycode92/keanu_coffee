@@ -13,17 +13,12 @@ import lombok.Data;
 
 @Data
 public class EmployeeInfoDTO implements FileUploadHelpper{
-	private Integer idx;
 	private Integer empIdx;
 	private String empNo;          // 사번 (PK)
 	private String empName;        // 이름
 	private String empGender;      // 성별
-	private String deptName;       // 부서명
-	private String departmentName; // 부서명
-	private Integer departmentIdx; //부서고유번호
-	private String teamName;     //팀명
+	private String departmentIdx;       // 부서명
 	private Integer teamIdx; //팀고유번호
-	private String roleName;    // 직급
 	private Integer roleIdx; //직급고유번호
 	private String empPhone;          // 전화번호
 	private String empEmail;          // 이메일
@@ -33,7 +28,6 @@ public class EmployeeInfoDTO implements FileUploadHelpper{
     private String empStatus;         // 재직 상태 ('재직','퇴사','휴직')
     private Timestamp createdAt;   // 생성일
     private Timestamp updatedAt;   // 수정일
-    private Integer fileIdx;
     
     //프로필사진 등록 확인 파라미터
     private String profileImageAction;
@@ -53,6 +47,6 @@ public class EmployeeInfoDTO implements FileUploadHelpper{
 	}
 	@Override
 	public Integer getTargetTableIdx() {
-		return idx;
+		return empIdx;
 	}
 }
