@@ -35,14 +35,14 @@
 	<resultMap id="roleResultMap" type="roleDTO">
 		<id property="roleIdx" column="role_idx" />
 		<result property="roleName" column="role_name" />
-		<result property="departmentIdx" column="department_idx" />
+		<result property="departmentIdx" column="role_department_idx" />
 	</resultMap>
 	
 	<!-- 팀(TEAM) 테이블 ResultMap -->
 	<resultMap id="teamResultMap" type="teamDTO">
 		<id property="teamIdx" column="team_idx" /> 
 		<result property="teamName" column="team_name" />
-		<result property="departmentIdx" column="department_idx" />
+		<result property="departmentIdx" column="team_department_idx" />
 	</resultMap>
 	
 	<!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
@@ -80,7 +80,7 @@
 	</select>
 	
 	<!-- 직원목록조회 -->
-	<select id="selectEmployeeList" resultType="EmployeeInfoDTO">
+	<select id="selectEmployeeList" resultMap="employeeFullInfoResultMap">
 		SELECT 
 			e.emp_idx
 			, e.emp_no
@@ -165,16 +165,16 @@
 	</select>
 	
 	<!-- 회원추가 -->
-	<insert id="insertEmployeeInfo" useGeneratedKeys="true" keyProperty="idx">
+	<insert id="insertEmployeeInfo" useGeneratedKeys="true" keyProperty="empIdx">
 		INSERT INTO EMPLOYEE_INFO
 		VALUES(
 			null
 			, #{empNo}
 			, #{empName}
 			, #{empGender}
-			, COALESCE(#{departmentIdx}, 1)
-			, COALESCE(#{teamIdx}, 1)
-			, COALESCE(#{roleIdx}, 1)
+			, #{departmentIdx}
+			, #{teamIdx}
+			, #{roleIdx}
 			, #{empPhone}
 			, #{empEmail}
 			, #{empPassword}

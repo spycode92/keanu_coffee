@@ -52,17 +52,17 @@
                 <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">
                     <div class="field">
                         <label class="form-label">부서</label>
-                        <select name="deptName" class="form-control">
+                        <select name="departmentIdx" class="form-control">
                         </select>
                     </div>
                     <div class="field">
                         <label class="form-label">팀</label>
-                        <select name="teamName" class="form-control">
+                        <select name="teamIdx" class="form-control">
                         </select>
                     </div>
                     <div class="field">
                         <label class="form-label">직책</label>
-                        <select name="roleName" class="form-control">
+                        <select name="roleIdx" class="form-control">
                         </select>
                     </div>
                 </div>

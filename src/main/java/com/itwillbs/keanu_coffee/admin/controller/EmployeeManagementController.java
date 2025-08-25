@@ -115,7 +115,6 @@ public class EmployeeManagementController {
 	//직원추가 모달창 직원추가 로직
 	@PostMapping("/addEmployee")
 	public String addEmployeeForm(EmployeeInfoDTO employee, Model model) throws IOException {
-		
 		int inputCount = employeeManagementService.inputEmployeeInfo(employee);
 		if (inputCount == 0) {
 			model.addAttribute("msg", "추가실패");

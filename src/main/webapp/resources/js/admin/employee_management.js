@@ -35,23 +35,30 @@ function allineTable(thElement) {
 let orgData;
 let structuredOrgData; 
 // 범용 함수: 플랫한 데이터를 그룹별로 묶어서 배열로 변환
-function groupDataByKey(flatData, groupKey, ...valueKeys) {
-    const result = {};
+function groupDataByKey(flatData, groupKey,groupIdx, ...valueKeys) {
+    //flatData를 직렬화할수 있게 저장할 result객체생성
+	const result = {};
 
     flatData.forEach(item => {
-        const group = item[groupKey];
+        const groupName = item[groupKey];
+		const groupIdxValue = item[groupIdx];
         
-        if (!result[group]) {
-            result[group] = {};
-            // valueKeys 만큼 Set 초기화
-            valueKeys.forEach(key => {
-                result[group][key] = new Set();
+        if (!result[groupIdxValue]) { //result{}에 [groupName]으로 된 배열이 없다면
+            
+			result[groupIdxValue] = { // result[groupName] 정의
+ 				common_code_idx: groupIdxValue,
+				common_code_name: groupName	
+			};
+			
+            //Set 초기화
+            valueKeys.forEach(key => { // valueKeys수만큼 result[groupName][Key] 생성
+                result[groupIdxValue][key] = new Set();
             });
         }
         
         // 각 valueKey에 해당하는 값들을 Set에 추가
         valueKeys.forEach(key => {
-            result[group][key].add(item[key]);
+            result[groupIdxValue][key].add(item[key]);
         });
     });
 
@@ -68,44 +75,54 @@ function groupDataByKey(flatData, groupKey, ...valueKeys) {
 // 드롭다운 초기화
 function processOrgData(rawData) {
     // 원본 flatData를 부서별로 그룹화
-    orgData = groupDataByKey(rawData, "common_code_name", "team_name", "role_name");
+    orgData = groupDataByKey(rawData, "common_code_name","common_code_idx"
+		, "team_name", "team_idx", "role_name", "role_idx");
 	console.log(orgData);
     // 기존 선택값 초기화
-    document.querySelector('select[name="deptName"]').value = "";
-    document.querySelector('select[name="teamName"]').innerHTML = '<option value="">없음</option>';
-    document.querySelector('select[name="roleName"]').innerHTML = '<option value="">없음</option>';
+    document.querySelector('select[name="departmentIdx"]').value = "";
+    document.querySelector('select[name="teamIdx"]').innerHTML = '<option value="">없음</option>';
+    document.querySelector('select[name="roleIdx"]').innerHTML = '<option value="">없음</option>';
 }
 
 //부서 옵션 채우기
 function populateDepartments() {
-	const deptSel = document.querySelector('select[name="deptName"]');
+	const deptSel = document.querySelector('select[name="departmentIdx"]');
 	deptSel.innerHTML = '<option value="">없음</option>';
 	Object.keys(orgData).forEach(dept => {
 		const opt = document.createElement('option');
-		opt.value = dept; 
-		opt.textContent = dept;
+		opt.value = orgData[dept].common_code_idx; 
+		opt.textContent = orgData[dept].common_code_name; 
 		deptSel.appendChild(opt);
 	});
 }
 // 5) 부서 선택 시 팀·직책 동시 채우기
 function onDeptChange() {
-  const dept = document.querySelector('select[name="deptName"]').value;
-  const teamSel = document.querySelector('select[name="teamName"]');
-  const roleSel = document.querySelector('select[name="roleName"]');
-  teamSel.innerHTML = '<option value="">없음</option>';
-  roleSel.innerHTML = '<option value="">없음</option>';
-  if (!dept || !orgData[dept]) return;
-
-  orgData[dept].team_name.forEach(team => {
-    const o = document.createElement('option');
-    o.value = team; o.textContent = team;
-    teamSel.appendChild(o);
-  });
-  orgData[dept].role_name.forEach(role => {
-    const o = document.createElement('option');
-    o.value = role; o.textContent = role;
-    roleSel.appendChild(o);
-  });
+	const dept = document.querySelector('select[name="departmentIdx"]').value;
+	const teamSel = document.querySelector('select[name="teamIdx"]');
+	const roleSel = document.querySelector('select[name="roleIdx"]');
+	teamSel.innerHTML = '<option value="">없음</option>';
+	roleSel.innerHTML = '<option value="">없음</option>';
+	
+	//부서 idx로 부서 찾기
+//	const deptName = Object.keys(orgData).find(dept => 
+//        orgData[dept].common_code_idx == selectedDeptIdx
+//    );
+	
+	if (!dept || !orgData[dept]) return;
+	
+	orgData[dept].team_name.forEach((team, index) => {
+		const o = document.createElement('option');
+		o.value = orgData[dept].team_idx[index];  
+		o.textContent = team;
+		teamSel.appendChild(o);
+	});
+	
+	orgData[dept].role_name.forEach((role, index) => {
+		const o = document.createElement('option');
+	    o.value = orgData[dept].role_idx[index]; 
+		o.textContent = role;
+	    roleSel.appendChild(o);
+	});
 }
 
 //부서,팀,직책정보 함수
@@ -134,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		loadOrgData();
     });
 	// 부서 선택시 부서내의 팀, 직책 불러오기함수 호출
-	document.querySelector('select[name="deptName"]').addEventListener('change', onDeptChange);
+	document.querySelector('select[name="departmentIdx"]').addEventListener('change', onDeptChange);
 
 	 // 상세정보 모달 열기
     document.querySelectorAll('.employee-row').forEach(row => {

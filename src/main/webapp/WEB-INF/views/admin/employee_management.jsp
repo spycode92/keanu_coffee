@@ -39,7 +39,7 @@
 				<th data-key="e.emp_name" onclick="allineTable(this)">이름↕</th>
 				<th >성별</th>
 				<th data-key="e.emp_no" onclick="allineTable(this)">사번↕</th>
-				<th data-key="c.common_code_name" onclick="allineTable(this)">부서명↕</th>
+				<th data-key="c.common_code_name" onclick="allineTable(this)">부서↕</th>
 				<th data-key="t.team_name" onclick="allineTable(this)">팀명↕</th>
 				<th data-key="r.role_name" onclick="allineTable(this)">직급↕</th>
 				<th>번호</th>
@@ -51,9 +51,18 @@
 					<td>${employee.empName }</td>
 					<td>${employee.empGender }</td>
 					<td>${employee.empNo }</td>
-					<td>${employee.commonCode.commonCodeName }</td>
-					<td>${employee.team.teamName }</td>
-					<td>${employee.role.roleName }</td>
+					<td>
+						${empty employee.commonCode.commonCodeName ?
+							 '미배정' : employee.commonCode.commonCodeName }
+					</td>
+					<td>
+						${empty employee.team.teamName ?
+							'미배정' : employee.team.teamName }
+					</td>
+					<td>
+						${empty employee.role.roleName ?
+							'미배정' : employee.role.roleName }
+					</td>
 					<td>${employee.empPhone }</td>
 					<td>${employee.empEmail }</td>
 					<td>${employee.hireDate }</td>

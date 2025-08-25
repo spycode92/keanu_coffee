@@ -38,7 +38,15 @@ public class EmployeeManagementService {
 	//직원목록선택
 	public List<EmployeeInfoDTO> getEmployeeList(
 			int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod) {
-		return employeeManagementMapper.selectEmployeeList(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
+		
+		
+		List<EmployeeInfoDTO> List = employeeManagementMapper.selectEmployeeList(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
+		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println(List);
+		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		return List;
 	}
 	
 	// 직원 목록 갯수
@@ -46,14 +54,12 @@ public class EmployeeManagementService {
 		return employeeManagementMapper.countEmployee(searchType, searchKeyword );
 	}
 
-	// 직원추가시 부서,팀,직책 정보 불러오기
+	// 직원추가모달 부서,팀,직책 정보 불러오기
 	public List<Map<String, Object>> getOrgData() {
 		return organizationMapper.getOrgData();
 	}
 	
-	
-	
-	//직원정보 DB입력로직
+	//직원추가 로직
 	@Transactional
 	public int inputEmployeeInfo(EmployeeInfoDTO employee) throws IOException {
 		// 첫 비밀번호 1234 
@@ -69,15 +75,6 @@ public class EmployeeManagementService {
 		
 		return inputCount;
 	}
-	
-	//직원아이디 사용해서 직원정보 선택
-	public EmployeeInfoDTO getEmployeeInfo(EmployeeInfoDTO employee) {
-		return employee;
-//		return employeeManagementMapper.selectEmployeeInfo(empId);
-	}
-	
-	
-	
 	
 	
 	// empId 생성 메서드
