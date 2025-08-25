@@ -6,7 +6,7 @@
 	<!-- 차량관리 페이징 -->
 	<select id="selectVehicleCount" resultType="int">
 		SELECT
-			COUNT(idx)
+			COUNT(vehicle_idx)
 		FROM 
 			VEHICLE
 		WHERE
@@ -35,7 +35,7 @@
 	<!-- 차량 리스트 -->
 	<select id="selectVehicleList" resultType="com.itwillbs.keanu_coffee.transport.dto.VehicleDTO">
 		SELECT
-			v.idx AS vehicleIdx
+			v.vehicle_idx AS vehicleIdx
 			, v.vehicle_number
 			, v.vehicle_type
 			, v.capacity
@@ -48,7 +48,7 @@
 		LEFT OUTER JOIN
 			EMPLOYEE_INFO e
 		ON 
-			v.driver_idx = e.idx
+			v.emp_idx = e.emp_idx
 		WHERE 
 		<choose>
 			<when test="filter != null and filter == '미배정'">
@@ -95,7 +95,7 @@
 	<!-- 차량 상세정보 -->
 	<select id="selectByIdx" resultType="com.itwillbs.keanu_coffee.transport.dto.VehicleDTO">
 		SELECT
-			v.idx AS vehicleIdx
+			v.vehicle_idx AS vehicleIdx
 			, v.vehicle_number
 			, v.vehicle_type
 			, v.capacity
@@ -129,7 +129,7 @@
 		FROM
 			VEHICLE
 		WHERE
-			idx 
+			vehicle_idx 
 		IN
 		<foreach collection="list" item="id" open="(" separator="," close=")">
 			#{id}

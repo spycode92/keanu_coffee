@@ -266,14 +266,14 @@ function renderDriverTable(drivers) {
 	    return `
 	      <tr data-driver-id="${driver.idx}">
 	        <td><input type="radio" name="driverId" value="${driver.idx}"></td>
-	        <td>${driver.empNo ?? ''}</td>
-	        <td>${driver.empName ?? ''}</td>
-	        <td>${driver.empPhone ?? ''}</td>
+	        <td>${driver.empNo}</td>
+	        <td>${driver.empName}</td>
+	        <td>${driver.empPhone}</td>
 	      </tr>
 	    `
-  	}).join('');
+	}).join('');
 
-  	tbody.html(rowsHtml);
+	tbody.html(rowsHtml);
 }
 
 $('#driverTableBody').on('click', 'tr', function(e) {
@@ -281,7 +281,7 @@ $('#driverTableBody').on('click', 'tr', function(e) {
     $(this).find('input[type="radio"]').prop('checked', true);
   }
 });
-
+	
 // 배정 버튼 클릭
 function assignDriver() {
 	const checked = $('input[name="driverId"]:checked');
@@ -294,6 +294,10 @@ function assignDriver() {
 	const selectedId = $('tr').data('driver-id');
 	const driverData = selectedId.dataset.test;
 	const selectedName = checked.closest('tr').find('td').eq(2).text().trim();
+	
+  // 상세 모달에 반영
+  $('#driverName').val(selectedName);
+  $('#driverIdx').val(selectedId);  
 }
 
 // 이벤트 바인딩

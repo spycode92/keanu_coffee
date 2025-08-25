@@ -5,7 +5,7 @@
 <mapper namespace="com.itwillbs.keanu_coffee.transport.mapper.DriverMapper">
 	<select id="selectDriverList" resultType="com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO">
 		SELECT
-			idx
+			emp_idx
 			, emp_no
 			, emp_name
 			, emp_phone
