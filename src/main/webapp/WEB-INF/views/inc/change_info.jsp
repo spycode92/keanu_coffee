@@ -13,7 +13,7 @@
                 <!-- 프로필 사진 -->
                 <div class="field">
                     <label>프로필 사진</label>
-                    <h1>${sessionScope.sFIdx }와${sessionScope.sIdx }</h1>
+                    
                     <input type="hidden" name="fileIdx" value=${sessionScope.sFIdx }>
                     <input type="hidden" name="empIdx" value=${sessionScope.sIdx }>
                     <div style="display: flex; justify-content: center; margin-bottom: 10px;">
