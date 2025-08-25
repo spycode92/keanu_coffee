@@ -11,6 +11,6 @@ public class VehicleDTO {
 	private VehicleStatus status; // 차량 상태
 	private int manufactureYear; // 연식
 	private String manufacturerModel; //모델/제조사
-	private int driverIdx; //운전자 idx
+	private int empIdx; //운전자 idx
 	private String driverName; // 운전자 이름
 }
