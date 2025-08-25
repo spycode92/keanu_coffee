@@ -9,16 +9,7 @@
 	<div class="top-nav-actions" style="margin-left:auto; display:flex; align-items:center; gap:16px;">
 		<div class="profile-wrapper">
 			<a id="profile" href="javascript:void(0)" >
-				<c:choose>
-				<c:when test="${!empty sessionScope.sFid}">
-					<img class="avatar" alt="profile" src="/file/thumbnail/${sessionScope.sFid }?width=40&height=40"
-						style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%; border: 1px solid #d9d9d9;">
-				</c:when>
-				<c:otherwise>
-					<img class="avatar" alt="profile" src="/resources/images/default_profile_photo.png"
-						style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%; border: 1px solid #d9d9d9;">
-				</c:otherwise>
-				</c:choose>
+				${empNo }${empName }
 			</a>
 			<div id="employeeInfo" class="profile-popover" role="menu" aria-hidden="true" >
 				<span class="top-user">${sessionScope.sName }</span>
@@ -39,7 +30,7 @@
   <!-- 사이드바 -->
 	<aside id="sidebar" class="sidebar">
 		<ul>
-			<c:if test="${sessionScope.sId eq 'admin'}">
+		
 				<li>
 					<a href="/admin"><span>관리자페이지</span></a>
 	<!-- 				<a href=""><span>물류부서관리</span></a> -->
@@ -53,7 +44,7 @@
 						<li><a href="/admin/preference/supplyContract">공급계약</a></li>
 					</ul>
 				</li>
-			</c:if>
+		
 			<li>
 				<a href="/inbound/main"><span>입고 관리</span></a>
 				<ul class="submenu">

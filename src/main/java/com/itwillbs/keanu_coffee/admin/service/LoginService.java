@@ -36,10 +36,11 @@ public class LoginService {
 			// 재직중일때
 			if(employee.getEmpStatus().equals("재직")){
 
-				// 비밀번호 확인
+				// 비밀번호가 일치할 때
 				if(passwordEncoder.matches(inputPw, employee.getEmpPassword())) {
-				
-					session.setAttribute(empNo, "empNo");
+					session.setAttribute("empIdx", employee.getEmpIdx()); // 사원고유번호 저장
+					session.setAttribute("empNo", employee.getEmpNo()); // 사번정보저장
+					session.setAttribute("empName", employee.getEmpName()); // 사원이름 저장
 					return true;
 				}
 				

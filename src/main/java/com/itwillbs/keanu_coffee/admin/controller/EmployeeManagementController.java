@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class EmployeeManagementController {
 	private final EmployeeManagementService employeeManagementService;
 	
-	//관리자페이지 회원추가폼으로 이동
+	//직원관리페이지
 	@GetMapping("")
 	public String employeeManagement(Model model, @RequestParam(defaultValue = "1") int pageNum, 
 			@RequestParam(defaultValue = "") String searchType,
@@ -83,10 +83,24 @@ public class EmployeeManagementController {
 	@ResponseBody
 	public EmployeeInfoDTO getOneEmployeeInfo(HttpSession session) {
 		EmployeeInfoDTO employee = new EmployeeInfoDTO();
-		employee.setEmpIdx((int)session.getAttribute("sIdx"));
+		
+		employee.setEmpIdx((int)session.getAttribute("empIdx"));
 		employee = employeeManagementService.getOneEmployeeInfoByEmpIdx(employee.getEmpIdx());
 		
 		return employee;
+	}
+	
+	//직원 개인정보 변경로직
+	@PostMapping("/modifyEmployeeInfo")
+	public String modifyEmployeeInfo(EmployeeInfoDTO employee, HttpServletRequest request, HttpSession session) throws IllegalStateException, IOException {
+		int updateCount = employeeManagementService.modifyEmployeeInfo(employee);
+		String refererUrl = request.getHeader("Referer");
+				
+		if (refererUrl != null && !refererUrl.isEmpty()) {
+	        return "redirect:" + refererUrl;
+	    } else {
+	        return "redirect:/";  // 기본 홈페이지로
+	    }
 	}
 	
 	
@@ -116,24 +130,7 @@ public class EmployeeManagementController {
 //		return "";
 	}
 	
-	//직원 개인정보 변경로직
-	@PostMapping("/modifyEmployeeInfo")
-	public String modifyEmployeeInfo(EmployeeInfoDTO employee, HttpServletRequest request, HttpSession session) throws IllegalStateException, IOException {
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println(employee);
-		System.out.println(employee.getFiles()[0]);
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		int updateCount = employeeManagementService.modifyEmployeeInfo(employee);
-		String refererUrl = request.getHeader("Referer");
-				
-		if (refererUrl != null && !refererUrl.isEmpty()) {
-	        return "redirect:" + refererUrl;
-	    } else {
-	        return "redirect:/";  // 기본 홈페이지로
-	    }
-	}
+
 	
 	
 	
