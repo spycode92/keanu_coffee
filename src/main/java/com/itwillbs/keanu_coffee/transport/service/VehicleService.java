@@ -39,9 +39,9 @@ public class VehicleService {
 		return vehicleMapper.selectByIdx(idx);
 	}
 
-	// 차량 삭제
-	public int deleteByIdx(List<Integer> idx) {
-		return vehicleMapper.deleteByIdx(idx);
+	// 차량 상태 사용불가로 변경
+	public int modifyStatus(List<Integer> idx, String status) {
+		return vehicleMapper.updateStatus(idx, status);
 	}
 
 
