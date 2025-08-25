@@ -71,7 +71,7 @@
 	<!-- 직원 수 조회 -->
 	<select id="countEmployee" resultType="int">
 		SELECT count(*)
-		FROM V_EMPLOYEE_FULL_INFO
+		FROM EMPLOYEE_INFO
 		<if test="searchType != ''">
 		WHERE
 			${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
@@ -81,8 +81,25 @@
 	
 	<!-- 직원목록조회 -->
 	<select id="selectEmployeeList" resultType="EmployeeInfoDTO">
-		SELECT *
-		FROM V_EMPLOYEE_FULL_INFO
+		SELECT 
+			e.emp_idx
+			, e.emp_no
+			, e.emp_name
+			, e.emp_gender
+			, e.department_idx
+			, c.common_code_name
+			, e.team_idx
+			, t.team_name
+			, e.role_idx
+			, r.role_name
+			, e.emp_phone
+			, e.emp_email
+			, e.hire_date
+			, e.emp_status 
+		FROM EMPLOYEE_INFO e
+			LEFT JOIN COMMON_CODE c ON e.department_idx = c.common_code_idx
+			LEFT JOIN TEAM t ON e.team_idx = t.team_idx
+			LEFT JOIN ROLE r ON e.role_idx = r.role_idx
 			<if test="searchType != ''">
 			WHERE
 				${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
@@ -160,7 +177,6 @@
 			, COALESCE(#{roleIdx}, 1)
 			, #{empPhone}
 			, #{empEmail}
-			, #{empId}
 			, #{empPassword}
 			, #{hireDate}
 			, default

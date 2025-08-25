@@ -68,8 +68,8 @@ function groupDataByKey(flatData, groupKey, ...valueKeys) {
 // 드롭다운 초기화
 function processOrgData(rawData) {
     // 원본 flatData를 부서별로 그룹화
-    orgData = groupDataByKey(rawData, "department_name", "team_name", "role_name");
-
+    orgData = groupDataByKey(rawData, "common_code_name", "team_name", "role_name");
+	console.log(orgData);
     // 기존 선택값 초기화
     document.querySelector('select[name="deptName"]').value = "";
     document.querySelector('select[name="teamName"]').innerHTML = '<option value="">없음</option>';
@@ -78,13 +78,14 @@ function processOrgData(rawData) {
 
 //부서 옵션 채우기
 function populateDepartments() {
-  const deptSel = document.querySelector('select[name="deptName"]');
-  deptSel.innerHTML = '<option value="">없음</option>';
-  Object.keys(orgData).forEach(dept => {
-    const opt = document.createElement('option');
-    opt.value = dept; opt.textContent = dept;
-    deptSel.appendChild(opt);
-  });
+	const deptSel = document.querySelector('select[name="deptName"]');
+	deptSel.innerHTML = '<option value="">없음</option>';
+	Object.keys(orgData).forEach(dept => {
+		const opt = document.createElement('option');
+		opt.value = dept; 
+		opt.textContent = dept;
+		deptSel.appendChild(opt);
+	});
 }
 // 5) 부서 선택 시 팀·직책 동시 채우기
 function onDeptChange() {
@@ -111,6 +112,7 @@ function onDeptChange() {
 function loadOrgData() {
     ajaxGet('/admin/employeeManagement/getOrgData')
 		.then(data => {
+			console.log(data);
 			processOrgData(data);
        		populateDepartments();
 		})

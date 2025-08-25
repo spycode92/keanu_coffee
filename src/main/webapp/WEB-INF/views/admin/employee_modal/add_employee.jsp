@@ -20,28 +20,6 @@
             <div class="modal-body">
                 <!-- 프로필 + 파일 입력 + 이름/성별 -->
 				<div style="display: flex; gap: 2rem; margin-bottom: 1rem;">
-				    <!-- 왼쪽: 프로필 & 파일 입력 -->
-				    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
-				        <div style="position: relative; width:100px; height:100px;">
-				            <img id="addProfilePreview"
-				                 src="/resources/images/default_profile_photo.png"
-				                 alt="프로필 사진"
-				                 style="width:100%; height:100%; object-fit:cover; border-radius:50%; border:1px solid #d9d9d9;">
-				            <button type="button"
-				                    id="deleteAddProfileBtn"
-				                    class="btn btn-destructive btn-sm"
-				                    style="position:absolute; top:-8px; right:-8px; width:24px; height:24px; padding:0; border-radius:50%; display:flex; align-items:center; justify-content:center;">
-				                ×
-				            </button>
-				        </div>
-				        <input type="file"
-				               name="files"
-				               id="addProfileImage"
-				               accept="image/*"
-				               class="form-control"
-				               style="width:100px; padding:.25rem .5rem;">
-				    </div>
-				
 				    <!-- 오른쪽: 이름/성별 -->
 				    <div style="flex:1; display:flex; flex-direction: column; gap:1rem;">
 				        <div class="field">

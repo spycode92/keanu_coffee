@@ -90,7 +90,7 @@ public class EmployeeManagementController {
 		return employee;
 	}
 	
-	//직원 개인정보 변경로직
+	//개인정보 변경로직
 	@PostMapping("/modifyEmployeeInfo")
 	public String modifyEmployeeInfo(EmployeeInfoDTO employee, HttpServletRequest request, HttpSession session) throws IllegalStateException, IOException {
 		int updateCount = employeeManagementService.modifyEmployeeInfo(employee);
@@ -103,20 +103,16 @@ public class EmployeeManagementController {
 	    }
 	}
 	
-	
 	//직원추가 모달창 부서,팀,직책 정보 불러오기
 	@GetMapping("/getOrgData")
 	@ResponseBody
 	public List<Map<String, Object>> getOrgData() {
 		//부서별 팀.직책 데이터 구성
 		List<Map<String, Object>> orgDataList = employeeManagementService.getOrgData();
-		System.out.println(orgDataList);
 		return orgDataList;
 	}
 	
-		
-	
-	//관리자페이지 회원추가 로직
+	//직원추가 모달창 직원추가 로직
 	@PostMapping("/addEmployee")
 	public String addEmployeeForm(EmployeeInfoDTO employee, Model model) throws IOException {
 		

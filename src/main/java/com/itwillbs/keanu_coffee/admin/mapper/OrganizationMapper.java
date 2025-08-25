@@ -53,7 +53,8 @@ public interface OrganizationMapper {
 	int updateTeam(@Param("idx")int idx, @Param("teamName")String teamName);
 	//직책이름 변경
 	int updateRole(@Param("idx")int idx, @Param("roleName")String roleName);
-
+	
+	//직책 팀, 부서 정보 가져오기
 	List<Map<String, Object>> getOrgData();
 	
 }

@@ -36,24 +36,24 @@
 		
 		<table class="table table-striped table-bordered" >
 			<tr>
-				<th data-key="emp_name" onclick="allineTable(this)">이름↕</th>
+				<th data-key="e.emp_name" onclick="allineTable(this)">이름↕</th>
 				<th >성별</th>
-				<th data-key="emp_no" onclick="allineTable(this)">사번↕</th>
-				<th>아이디</th>
-				<th data-key="department_name" onclick="allineTable(this)">부서명↕</th>
-				<th data-key="role_name" onclick="allineTable(this)">직급↕</th>
+				<th data-key="e.emp_no" onclick="allineTable(this)">사번↕</th>
+				<th data-key="c.common_code_name" onclick="allineTable(this)">부서명↕</th>
+				<th data-key="t.team_name" onclick="allineTable(this)">팀명↕</th>
+				<th data-key="r.role_name" onclick="allineTable(this)">직급↕</th>
 				<th>번호</th>
 				<th>이메일</th>
-				<th>입사일↕</th>
+				<th data-key="e.hire_date" onclick="allineTable(this)">입사일↕</th>
 			</tr>
 			<c:forEach var="employee" items="${employeeList }">
 				<tr class="employee-row" data-emp-idx="${employee.empIdx}">
 					<td>${employee.empName }</td>
 					<td>${employee.empGender }</td>
 					<td>${employee.empNo }</td>
-					<td>${employee.empId }</td>
-					<td>${employee.departmentName }</td>
-					<td>${employee.roleName }</td>
+					<td>${employee.commonCode.commonCodeName }</td>
+					<td>${employee.team.teamName }</td>
+					<td>${employee.role.roleName }</td>
 					<td>${employee.empPhone }</td>
 					<td>${employee.empEmail }</td>
 					<td>${employee.hireDate }</td>

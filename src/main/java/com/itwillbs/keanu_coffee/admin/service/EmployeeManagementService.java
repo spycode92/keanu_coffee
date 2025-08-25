@@ -67,12 +67,6 @@ public class EmployeeManagementService {
 		// 정보 입력 후 empIdx 받아오기
 		int inputCount = employeeManagementMapper.insertEmployeeInfo(employee);
 		
-		List<FileDTO> fileList = FileUtils.uploadFile(employee, session);
-		
-		if(!fileList.isEmpty()) {
-			fileMapper.insertFiles(fileList); // 새이미지저장
-		}
-		
 		return inputCount;
 	}
 	
