@@ -66,6 +66,12 @@ public class FileController {
 	    
 	    // 2. 실제 이미지 파일 경로 생성
 	    String filePath = FileUtils.getFilePath(fileDTO, session);
+	    
+	    // null일때 대비
+        if (filePath == null) {
+            return ResponseEntity.notFound().build();
+        }
+	    
 	    // 3. 썸네일 생성(메모리에)
 	    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 	    Thumbnails.of(new File(filePath))

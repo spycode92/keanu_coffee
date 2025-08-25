@@ -10,7 +10,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class FileDTO {
-	private int idx; // 업로드 파일 ID(PK 값)
+	private Integer idx; // 업로드 파일 ID(PK 값)
 	private String targetTable;
 	private int targetTableIdx; // 게시물 번호(FK 값)
 	private String originalFileName; // 원본 파일명

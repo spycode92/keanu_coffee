@@ -3,6 +3,27 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper">
+	<!-- 로그인용 아이디로 회원정보 조회 -->
+	<select id="selectEmployeeInfoById" resultType="EmployeeInfoDTO">
+		SELECT 
+			emp_idx
+			, emp_no
+			, emp_name
+			, emp_gender
+			, department_idx
+			, team_idx
+			, role_idx
+			, emp_phone
+			, emp_email
+			, emp_password
+			, hire_date
+			, emp_status
+		FROM
+			EMPLOYEE_INFO
+		WHERE
+			emp_no = #{empNo}
+	</select>
+	
 	
 	<!-- 직원 수 조회 -->
 	<select id="countEmployee" resultType="int">
@@ -39,7 +60,7 @@
 	</select>
 	
 	<!-- 회원추가 -->
-	<insert id="insertEmployeeInfo">
+	<insert id="insertEmployeeInfo" useGeneratedKeys="true" keyProperty="idx">
 		INSERT INTO EMPLOYEE_INFO
 		VALUES(
 			null
@@ -82,5 +103,32 @@
 			department_idx = NULL
 		WHERE department_idx = #{departmentIdx}
 	</update>
+	
+	<!-- idx로 회원정보 조회하기 -->
+	<select id="selectOneEmployeeInfoByEmpIdx" resultType="EmployeeInfoDTO">
+		SELECT *
+		FROM V_EMPLOYEE_FULL_INFO
+		WHERE idx = #{empIdx}
+	</select>
+	
+	<!--  회원정보 업데이트하기 -->
+	<update id="updateEmployeeInfo" parameterType="com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO">
+    UPDATE EMPLOYEE_INFO
+    <set>
+        <if test="empPhone != null and empPhone != ''">
+            emp_phone = #{empPhone},
+        </if>
+        <if test="empEmail != null">
+            emp_email = #{empEmail},
+        </if>
+        <if test="empPassword != null and empPassword != ''">
+            emp_password = #{empPassword},
+        </if>
+        <if test="empStatus != null and empStatus != ''">
+            emp_status = #{empStatus},
+        </if>
+    </set>
+    WHERE idx = #{empIdx}
+</update>
 	
 </mapper>

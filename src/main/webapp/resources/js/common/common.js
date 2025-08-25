@@ -155,68 +155,69 @@ const InfoModalManager = {
     }
 };
 
-const ModalManager = {
-  init: function() {
-    this.bindEvents();
-    this.bindEscKey();
-  },
 
-  bindEvents: function() {
-    this.modals = document.querySelectorAll('.modal');
-    this.modals.forEach(modal => {
-      modal.addEventListener('click', e => {
-        if (e.target === modal) this.closeModal(modal);
-      });
-      const closeBtn = modal.querySelector('.modal-close-btn');
-      if (closeBtn) closeBtn.addEventListener('click', () => this.closeModal(modal));
-    });
-  },
-
-  bindEscKey: function() {
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' || e.key === 'Esc') {
-        const topModal = this.getTopModal();
-        if (topModal) this.closeModal(topModal);
-      }
-    });
-  },
-
-  getTopModal: function() {
-    const opened = Array.from(document.querySelectorAll('.modal.open'));
-    return opened.length ? opened[opened.length - 1] : null;
-  },
-
-  // 요소 참조로 열기
-  openModal: function(modal) {
-    if (!(modal instanceof HTMLElement)) return;
-    modal.classList.add('open');
-    document.body.classList.add('modal-open');
-  },
-
-  // ID로 열기 호출 시 openModal을 사용
-  openModalById: function(id) {
-    const modal = document.getElementById(id);
-    this.openModal(modal);
-  },
-
-  closeModal: function(modal) {
-    modal.classList.remove('open');
-    if (!document.querySelector('.modal.open')) {
-      document.body.classList.remove('modal-open');
+// 알림 메시지 관리
+const NotificationManager = {
+    show: function(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <span>${message}</span>
+            <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
+        `;
+        
+        // 알림 컨테이너가 없으면 생성
+        let container = document.getElementById('notification-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'notification-container';
+            container.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                max-width: 400px;
+            `;
+            document.body.appendChild(container);
+        }
+        
+        container.appendChild(notification);
+        
+        // 자동 제거 (5초 후)
+        setTimeout(function() {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 5000);
+    },
+    
+    success: function(message) {
+        this.show(message, 'success');
+    },
+    
+    error: function(message) {
+        this.show(message, 'error');
+    },
+    
+    warning: function(message) {
+        this.show(message, 'warning');
     }
-  }
 };
+
+// 전역 함수들
+window.showNotification = NotificationManager.show.bind(NotificationManager);
+window.showSuccess = NotificationManager.success.bind(NotificationManager);
+window.showError = NotificationManager.error.bind(NotificationManager);
+window.showWarning = NotificationManager.warning.bind(NotificationManager);
 
 
 
 // 페이지 초기화(DOMContentLoaded)
 document.addEventListener('DOMContentLoaded', function() {
-	
     DarkModeManager.init();
     MobileMenuManager.init();
 	ProfileManager.init();
 	InfoModalManager.init();
-	ModalManager.init();
     //사이드바토글
 	const toggleBtn = document.getElementById('sidebar-toggle');
 	const sidebar = document.getElementById('sidebar');

@@ -65,6 +65,8 @@ public class EmployeeManagementService {
 		employee.setEmpNo(empNo);
 		employee.setEmpId(empNo);
 		employee.setEmpPassword(empPassword);
+		// 정보 입력 후 empIdx 받아오기
+		int inputCount = employeeManagementMapper.insertEmployeeInfo(employee);
 		
 		List<FileDTO> fileList = FileUtils.uploadFile(employee, session);
 		
@@ -72,13 +74,14 @@ public class EmployeeManagementService {
 			fileMapper.insertFiles(fileList); // 새이미지저장
 		}
 		
-		return employeeManagementMapper.insertEmployeeInfo(employee);
+		return inputCount;
 	}
 	
 	//직원아이디 사용해서 직원정보 선택
 	public EmployeeInfoDTO getEmployeeInfo(EmployeeInfoDTO employee) {
 		String empId = employee.getEmpId();
-		return employeeManagementMapper.selectEmployeeInfo(empId);
+		return employee;
+//		return employeeManagementMapper.selectEmployeeInfo(empId);
 	}
 	
 	
@@ -94,11 +97,65 @@ public class EmployeeManagementService {
 		//오늘 날짜 MMdd 형식
 		String today = new SimpleDateFormat("MMdd").format(new Date());
 		
-		// 랜덤 4자리 숫자
+		// 랜덤 2자리 숫자
 		Random rnd = new Random();
-        int randomNum = rnd.nextInt(9000) + 1000; // 1000 ~ 9999
+        int randomNum = rnd.nextInt(90) + 10; // 10 ~ 99
 		
 		return last4Digits + today + randomNum;
+	}
+	
+	//회원idx를 이용해서 회원정보 불러오기
+	public EmployeeInfoDTO getOneEmployeeInfoByEmpIdx(Integer empIdx) {
+		return employeeManagementMapper.selectOneEmployeeInfoByEmpIdx(empIdx);
+	}
+	// 회원정보 업데이트 
+	@Transactional
+	public int modifyEmployeeInfo(EmployeeInfoDTO employee) throws IllegalStateException, IOException {
+		Integer empIdx = employee.getEmpIdx();
+		EmployeeInfoDTO OgEmployee = employeeManagementMapper.selectOneEmployeeInfoByEmpIdx(empIdx);
+		// 새로 받은 비밀번호가 존재한다면 암호화
+		if(employee.getEmpPassword() != null && !employee.getEmpPassword().trim().isEmpty()) {
+			String encodedPassword = passwordEncoder.encode(employee.getEmpPassword());
+			employee.setEmpPassword(encodedPassword);
+		}
+		// 이메일 전화번호 비밀번호 저장
+		int updateCount = employeeManagementMapper.updateEmployeeInfo(employee);
+		
+		// 입력받은 프로필 사진이 있을때
+		if(employee.getFiles() != null && employee.getFiles().length > 0) {
+			
+			// 기존 저장된 프로필사진이존재 한다면 파일을 지우고
+			if(session.getAttribute("sFIdx") != null) {
+				//기존 파일 정보
+				FileDTO file = fileMapper.getFileWithTargetTable("employee_info", empIdx);
+				
+				FileUtils.deleteFile(file, session);
+				// 새로 등록하는 파일 업로드
+				List<FileDTO> fileList = FileUtils.uploadFile(employee, session);
+				// 파일DB 업로드
+				if(!fileList.isEmpty()) {
+					for(FileDTO files : fileList) {
+						System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+						System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+						System.out.println(files);
+						System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+						System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+					}
+				}
+			}
+		} else {// 입력된 사진이 없을때
+			
+			// 기존 저장된 프로필사진이존재 한다면 파일을 삭제
+			if(session.getAttribute("sFIdx") != null) {
+				//기존 파일 정보
+				FileDTO file = fileMapper.getFileWithTargetTable("employee_info", empIdx);
+				FileUtils.deleteFile(file, session);
+				fileMapper.deleteFile(file.getIdx());
+				session.removeAttribute("sFId");
+			}
+		}
+		
+		return updateCount;
 	}
 
 

@@ -17,6 +17,9 @@ public interface FileMapper {
 
 	void updateFiles(@Param("file")FileDTO file, @Param("idx")int idx);
 	
+	// 파일삭제
+	void deleteFile(int idx);
+	
 	
 	
 

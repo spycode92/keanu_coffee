@@ -53,6 +53,12 @@
 		where target_table = #{targetTable}
 			AND target_table_idx = #{targetTableIdx}
 	</select>
+	
+	<delete id="deleteFile">
+		DELETE 
+		FROM FILE
+		WHERE idx = #{idx};
+	</delete>
 
 
 

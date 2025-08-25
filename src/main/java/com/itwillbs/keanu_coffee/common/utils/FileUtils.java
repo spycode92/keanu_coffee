@@ -182,9 +182,41 @@ public class FileUtils {
 	
 	//파일경로
 	public static String getFilePath(FileDTO fileDTO, HttpSession session) {
-	    String realPath = session.getServletContext().getRealPath(uploadPath);
-	    Path path = Paths.get(realPath, fileDTO.getSubDir(), fileDTO.getRealFileName());
-	    return path.toString();
+	    try {
+	        // null 체크 추가
+	        if (fileDTO == null) {
+	            System.err.println("FileDTO가 null입니다.");
+	            return null;
+	        }
+	        
+	        if (session == null || session.getServletContext() == null) {
+	            System.err.println("Session 또는 ServletContext가 null입니다.");
+	            return null;
+	        }
+	        
+	        String realPath = session.getServletContext().getRealPath(uploadPath);
+	        if (realPath == null) {
+	            System.err.println("getRealPath()가 null을 반환했습니다.");
+	            // 대체 경로 사용
+	            realPath = System.getProperty("user.dir") + "/uploads";
+	        }
+	        
+	        String subDir = fileDTO.getSubDir() != null ? fileDTO.getSubDir() : "";
+	        String fileName = fileDTO.getRealFileName();
+	        
+	        if (fileName == null || fileName.trim().isEmpty()) {
+	            System.err.println("파일명이 null 또는 빈 문자열입니다.");
+	            return null;
+	        }
+	        
+	        Path path = Paths.get(realPath, subDir, fileName);
+	        return path.toString();
+	        
+	    } catch (Exception e) {
+	        System.err.println("getFilePath 에러: " + e.getMessage());
+	        e.printStackTrace();
+	        return null;  // 예외 발생 시 null 반환
+	    }
 	}
 	
 	

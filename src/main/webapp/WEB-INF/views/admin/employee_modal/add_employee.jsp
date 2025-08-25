@@ -23,12 +23,12 @@
 				    <!-- 왼쪽: 프로필 & 파일 입력 -->
 				    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
 				        <div style="position: relative; width:100px; height:100px;">
-				            <img id="profilePreview"
+				            <img id="addProfilePreview"
 				                 src="/resources/images/default_profile_photo.png"
 				                 alt="프로필 사진"
 				                 style="width:100%; height:100%; object-fit:cover; border-radius:50%; border:1px solid #d9d9d9;">
 				            <button type="button"
-				                    id="deleteProfileBtn"
+				                    id="deleteAddProfileBtn"
 				                    class="btn btn-destructive btn-sm"
 				                    style="position:absolute; top:-8px; right:-8px; width:24px; height:24px; padding:0; border-radius:50%; display:flex; align-items:center; justify-content:center;">
 				                ×
@@ -36,7 +36,7 @@
 				        </div>
 				        <input type="file"
 				               name="files"
-				               id="profileImage"
+				               id="addProfileImage"
 				               accept="image/*"
 				               class="form-control"
 				               style="width:100px; padding:.25rem .5rem;">
@@ -75,29 +75,16 @@
                     <div class="field">
                         <label class="form-label">부서</label>
                         <select name="deptName" class="form-control">
-                            <option value="">없음</option>
-                            <option value="개발부">개발부</option>
-                            <option value="마케팅부">마케팅부</option>
-                            <option value="영업부">영업부</option>
                         </select>
                     </div>
                     <div class="field">
                         <label class="form-label">팀</label>
                         <select name="teamName" class="form-control">
-                            <option value="">없음</option>
-                            <option value="프론트엔드팀">프론트엔드팀</option>
-                            <option value="백엔드팀">백엔드팀</option>
-                            <option value="기획팀">기획팀</option>
                         </select>
                     </div>
                     <div class="field">
                         <label class="form-label">직책</label>
-                        <select name="empPosition" class="form-control">
-                            <option value="">없음</option>
-                            <option value="사원">사원</option>
-                            <option value="주임">주임</option>
-                            <option value="대리">대리</option>
-                            <option value="과장">과장</option>
+                        <select name="roleName" class="form-control">
                         </select>
                     </div>
                 </div>
