@@ -9,37 +9,14 @@
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link
+	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
+	rel="stylesheet">
+<link
 	href="${pageContext.request.contextPath}/resources/css/common/common.css"
 	rel="stylesheet">
 <script
 	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <style type="text/css">
-.container {
-	max-width: 1264px;
-	margin: 0 auto;
-	padding: 0 16px;
-}
-
-/* 검색/필터 바 */
-        .filters {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px;
-            display: grid;
-            grid-template-columns: repeat(3, minmax(200px, 1fr));
-            gap: 10px;
-        }
-        .filters .field { display: flex; flex-direction: column; gap: 6px; }
-        .filters .search { display: flex; flex-direction: column; gap: 6px; }
-        .search { width: 500px; }
-        .filters label { font-size: .85rem; color: var(--muted-foreground); }
-        .filters input, .filters select {
-            height: 38px; padding: 0 10px; border: 1px solid var(--border); border-radius: 10px; background: #fff;
-        }
-        .filters .actions {
-            display: flex; align-items: end; justify-content: center; gap: 8px;
-        }
 
 .badge {
 	display: inline-block;
@@ -97,45 +74,91 @@
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
-	<section class="container">
+	<div class="container">
 		<h1>기사관리</h1>
-		<div>
+		<div class="content">
 			<!-- 검색/필터 -->
-	        <section class="filters" aria-label="검색 및 필터">
+	        <form class="filters" aria-label="검색 및 필터">
 	            <div class="field">
-	                <select id="filterStatus">
-	                    <option value="">전체</option>
+	                <select id="filterStatus" name="filter">
+	                    <option value="전체">전체</option>
 	                    <option value="대기">대기</option>
 	                    <option value="운행중">운행중</option>
 	                </select>
 	            </div>
 	            <div class="search">
-	                <input id="filterText" type="text" placeholder="이름/차량번호/적재량 검색 가능" />
+	                <input id="filterText" type="text" name="searchKeyword" placeholder="이름/차량번호 검색 가능" />
 	            </div>
 	            <div class="actions">
-	                <button class="btn secondary" id="btnReset">초기화</button>
 	                <button class="btn" id="btnSearch">검색</button>
 	            </div>
-	        </section>
+	        </form>
 			<div>
 				<h3>기사목록</h3>
-				<table class="table" id="driverTable">
-                    <thead>
-                        <tr>
-                            <th>이름</th>
-                            <th>연락처</th>
-                            <th>면허만료일</th>
-                            <th>배정 차량</th>
-                            <th>상태</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- JS 렌더링 -->
-                    </tbody>
-                </table>
+				<c:choose>
+					<c:when test="${empty driverList}">
+						<div class="empty-result">검색된 차량이 없습니다.</div>
+					</c:when>
+					<c:otherwise>
+						<table class="table" id="driverTable">
+					    	<thead>
+		                        <tr>
+		                            <th>이름</th>
+		                            <th>연락처</th>
+		                            <th>차량번호</th>
+		                            <th>적재량</th>
+		                            <th>운송상태</th>
+		                            <th>상태</th>
+		                        </tr>
+		                    </thead>
+							<tbody>
+								<c:forEach var="driver" items="${driverList}">
+									<tr>
+										<td>${driver.empName}</td>
+										<td>${driver.empPhone}</td>
+										<td>
+											${driver.vehicleNumber ? driver.vehicleNumber : "미배정"}
+										</td>
+										<td>
+											${driver.capacity == 1000 ? "1.0t" : "1.5t"}
+										</td>
+										<td>
+											${driver.status eq "운행중" ? "운행중" : "대기"}
+										</td>
+										<td>${driver.empStatus}</td>
+									</tr>
+								
+								</c:forEach>
+							</tbody>
+						</table>
+					
+					</c:otherwise>
+				</c:choose> 
 			</div>
 		</div>
-	</section>
+		<div class="pager">
+			<div>
+				<c:if test="${not empty pageInfo.maxPage or pageInfo.maxPage > 0}">
+					<input type="button" value="이전" 
+						onclick="location.href='/transport/vehicle?pageNum=${pageInfo.pageNum - 1}&filter=${param.filter}&searchKeyword=${param.searchKeyword}'" 
+						<c:if test="${pageInfo.pageNum eq 1}">disabled</c:if>>
+					<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
+						<c:choose>
+							<c:when test="${i eq pageInfo.pageNum}">
+								<strong>${i}</strong>
+							</c:when>
+							<c:otherwise>
+								<a href="/transport/vehicle?pageNum=${i}&filter=${param.filter}&searchKeyword=${param.searchKeyword}">${i}</a>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+					<input type="button" value="다음" 
+						onclick="location.href='/transport/vehicle?pageNum=${pageInfo.pageNum + 1}&filter=${param.filter}&searchKeyword=${param.searchKeyword}'" 
+					<c:if test="${pageInfo.pageNum eq pageInfo.maxPage}">disabled</c:if>>
+				</c:if>
+			</div>
+		</div>
+	</div>
 	<!-- 기사 상세 + 차량 배정/변경 모달 -->
         <div class="modal" id="driverModal" aria-hidden="true">
             <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="driverTitle">
@@ -235,21 +258,6 @@
 
     // ---- 목록 렌더 ----
     const tbody = document.querySelector('#driverTable tbody');
-    function renderTable() {
-        tbody.innerHTML = '';
-        drivers.forEach(function(d) {
-            const tr = document.createElement('tr');
-            tr.innerHTML =
-                '<td>' + d.name + '</td>' +
-                '<td>' + d.phone + '</td>' +
-                '<td>' + d.license + '</td>' +
-                '<td>' + (d.car ? (d.car.no + ' (' + d.car.cap + ')') : '<span class="muted">미배정</span>') + '</td>' +
-                '<td>' + (d.status === '운행중' ? '<span class="badge run">운행중</span>' : '<span class="badge wait">대기</span>') + '</td>';
-            tr.addEventListener('click', function() { openDriver(d.id); });
-            tbody.appendChild(tr);
-        });
-    }
-    renderTable();
 
     // ---- 기사 모달 ----
     const driverModal = document.getElementById('driverModal');

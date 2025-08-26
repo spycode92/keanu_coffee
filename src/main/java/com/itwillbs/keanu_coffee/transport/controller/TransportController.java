@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
+import com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO;
 import com.itwillbs.keanu_coffee.transport.dto.VehicleDTO;
 import com.itwillbs.keanu_coffee.transport.service.DriverService;
 import com.itwillbs.keanu_coffee.transport.service.VehicleService;
@@ -38,6 +39,22 @@ public class TransportController {
 			Model model) {
 		int listLimit = 10;
 		int listCount = driverService.getDriverCount(filter, searchKeyword);
+		
+		if (listCount > 0) {
+			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, listCount, pageNum, 10);
+			
+			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
+				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+				model.addAttribute("targetURL", "/transport/drivers");
+				return "commons/result_process";
+			}
+			
+			model.addAttribute("pageInfo", pageInfoDTO);
+			
+			List<DriverVehicleDTO> driverList = driverService.getDriverList(pageInfoDTO.getStartRow(), listLimit, filter, searchKeyword);
+			
+			model.addAttribute("driverList", driverList );
+		}
 		return "/transport/drivers";
 	}
 	
@@ -65,7 +82,8 @@ public class TransportController {
 			
 			List<VehicleDTO> vehicleList = vehicleService.getVehicleList(pageInfoDTO.getStartRow(), listLimit, filter, searchKeyword);
 			
-			System.out.println(vehicleList);
+			// 차량 리스트
+//			System.out.println(vehicleList);
 			
 			model.addAttribute("vehicleList", vehicleList );
 		}

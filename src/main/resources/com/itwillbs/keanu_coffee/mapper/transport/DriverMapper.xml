@@ -3,19 +3,86 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.transport.mapper.DriverMapper">
-	<select id="selectDriverList" resultType="com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO">
+	<!-- 운전자 수 카운트 -->
+	<select id="selectDriverCount" resultType="int">
 		SELECT
-			emp_idx
-			, emp_no
-			, emp_name
-			, emp_phone
+			count(e.emp_idx)
 		FROM
-			EMPLOYEE_INFO
+			EMPLOYEE_INFO e
+		LEFT OUTER JOIN
+			VEHICLE v
+		ON 
+			v.emp_idx = e.emp_idx
 		WHERE
-			department_idx = 3
+		<choose>
+			<when test="filter != null and filter == '대기'">
+				v.status = '대기'
+			</when>
+			<when test="filter != null and filter == '운행중'">
+				v.status = '운행중'
+			</when>
+			<otherwise>
+			 	1 = 1
+			</otherwise>
+		</choose>
+		<if test="searchKeyword != null and searchKeyword != ''">
+		AND 
+			(e.emp_name LIKE CONCAT('%', #{searchKeyword}, '%')	
+		OR 
+			v.vehicle_number LIKE CONCAT('%', #{searchKeyword}, '%'))
+		</if>
 		AND
-			role_idx = 6
+			e.department_idx = 5
 		AND
-			emp_status = '재직'
+			e.team_idx = 4
+		AND
+			e.role_idx = 8
+	</select>
+	
+	<!-- 운전자 리스트 -->
+	<select id="selectDriverList" resultType="com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO">
+		SELECT
+			e.emp_idx
+			, e.emp_no
+			, e.emp_name
+			, e.emp_phone
+			, e.emp_status
+			, v.vehicle_number
+			, v.vehicle_type
+			, v.capacity
+			, v.status
+		FROM
+			EMPLOYEE_INFO e
+		LEFT OUTER JOIN
+			VEHICLE v
+		ON 
+			v.emp_idx = e.emp_idx
+		WHERE
+			e.department_idx = 5
+		AND
+			e.team_idx = 4
+		AND
+			e.role_idx = 8
+		AND
+		<choose>
+			<when test="filter != null and filter == '대기'">
+				v.status = '대기'
+			</when>
+			<when test="filter != null and filter == '운행중'">
+				v.status = '운행중'
+			</when>
+			<otherwise>
+			 	1 = 1
+			</otherwise>
+		</choose>
+		<if test="searchKeyword != null and searchKeyword != ''">
+		AND 
+			(e.emp_name LIKE CONCAT('%', #{searchKeyword}, '%')	
+		OR 
+			v.vehicle_number LIKE CONCAT('%', #{searchKeyword}, '%'))
+		</if>
+		LIMIT
+			#{startRow}     
+			, #{listLimit} 
 	</select>
 </mapper>
