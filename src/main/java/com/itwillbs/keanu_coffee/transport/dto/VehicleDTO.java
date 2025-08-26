@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class VehicleDTO {
-	private int vehicleIdx;
+	private Integer vehicleIdx;
 	private String vehicleNumber; // 차량번호
 	private String vehicleType; // 차량 종류
 	private int capacity; // 적재용량
