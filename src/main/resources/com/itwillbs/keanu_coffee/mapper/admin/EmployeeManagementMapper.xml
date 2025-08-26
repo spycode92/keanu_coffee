@@ -3,6 +3,50 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper">
+	<!-- resultMap 정의 -->
+	<!-- 직원정보(EMPLOYEE_INFO)테이블 ResultMap -->
+	<resultMap id="employeeFullInfoResultMap" type="EmployeeInfoDTO">
+		<id property="empIdx" column="emp_idx" />
+		<result property="empNo" column="emp_no" />
+		<result property="empName" column="emp_name" />
+		<result property="empGender" column="emp_gender" />
+		<result property="departmentIdx" column="department_idx" />
+		<result property="empPhone" column="emp_phone" />
+		<result property="empEmail" column="emp_email" />
+		<result property="empPassword" column="emp_password" />
+		<result property="hireDate" column="hire_date" />
+		<result property="empStatus" column="emp_status" />
+		
+		<association property="commonCode" resultMap="commonCodeResultMap"/>
+		<association property="team" resultMap="teamResultMap"/>
+		<association property="role" resultMap="roleResultMap"/>
+	</resultMap>
+	
+	<!-- 공통코드(COMMON_CODE) 테이블 ResultMap -->
+	<resultMap id="commonCodeResultMap" type="commonCodeDTO">
+		<id property="commonCodeIdx" column="common_code_idx" /> 
+		<result property="groupCode" column="group_code" />
+		<result property="commonCode" column="common_code" />
+		<result property="commonCodeName" column="common_code_name" />
+		<result property="description" column="description" />
+	</resultMap>
+	
+	<!-- 직책(ROLE) 테이블 ResultMap -->
+	<resultMap id="roleResultMap" type="roleDTO">
+		<id property="roleIdx" column="role_idx" />
+		<result property="roleName" column="role_name" />
+		<result property="departmentIdx" column="department_idx" />
+	</resultMap>
+	
+	<!-- 팀(TEAM) 테이블 ResultMap -->
+	<resultMap id="teamResultMap" type="teamDTO">
+		<id property="teamIdx" column="team_idx" /> 
+		<result property="teamName" column="team_name" />
+		<result property="departmentIdx" column="department_idx" />
+	</resultMap>
+	
+	<!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
+
 	<!-- 로그인용 아이디로 회원정보 조회 -->
 	<select id="selectEmployeeInfoById" resultType="EmployeeInfoDTO">
 		SELECT 
@@ -23,7 +67,6 @@
 		WHERE
 			emp_no = #{empNo}
 	</select>
-	
 	
 	<!-- 직원 수 조회 -->
 	<select id="countEmployee" resultType="int">
@@ -52,6 +95,51 @@
 			, #{listLimit}
 	</select>
 	
+	<!-- idx로 회원정보 조회하기 -->
+	<select id="selectOneEmployeeInfoByEmpIdx" resultMap="employeeFullInfoResultMap">
+		SELECT
+			e.emp_idx
+			, e.emp_no
+			, e.emp_name
+			, e.emp_gender
+			, e.department_idx
+			, c.common_code_name
+			, e.team_idx
+			, t.team_name
+			, e.role_idx
+			, r.role_name
+			, e.emp_phone
+			, e.emp_email
+			, e.hire_date
+			, e.emp_status
+		FROM EMPLOYEE_INFO e
+		LEFT JOIN COMMON_CODE c ON e.department_idx = c.common_code_idx
+		LEFT JOIN TEAM t ON e.team_idx = t.team_idx
+		LEFT JOIN ROLE r ON e.role_idx = r.role_idx
+		WHERE emp_idx = #{empIdx}
+	</select>
+	
+	<!--  회원정보 업데이트하기 -->
+	<update id="updateEmployeeInfo" parameterType="EmployeeInfoDTO">
+    UPDATE EMPLOYEE_INFO
+    <set>
+        <if test="empPhone != null and empPhone != ''">
+            emp_phone = #{empPhone},
+        </if>
+        <if test="empEmail != null">
+            emp_email = #{empEmail},
+        </if>
+        <if test="empPassword != null and empPassword != ''">
+            emp_password = #{empPassword},
+        </if>
+        <if test="empStatus != null and empStatus != ''">
+            emp_status = #{empStatus},
+        </if>
+    </set>
+    WHERE emp_idx = #{empIdx}
+	</update>	
+
+
 	<!-- 단일 회원 정보 검색 -->
 	<select id="selectEmployeeInfo" resultType="EmployeeInfoDTO" >
 		SELECT *
@@ -104,31 +192,8 @@
 		WHERE department_idx = #{departmentIdx}
 	</update>
 	
-	<!-- idx로 회원정보 조회하기 -->
-	<select id="selectOneEmployeeInfoByEmpIdx" resultType="EmployeeInfoDTO">
-		SELECT *
-		FROM V_EMPLOYEE_FULL_INFO
-		WHERE idx = #{empIdx}
-	</select>
+
 	
-	<!--  회원정보 업데이트하기 -->
-	<update id="updateEmployeeInfo" parameterType="com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO">
-    UPDATE EMPLOYEE_INFO
-    <set>
-        <if test="empPhone != null and empPhone != ''">
-            emp_phone = #{empPhone},
-        </if>
-        <if test="empEmail != null">
-            emp_email = #{empEmail},
-        </if>
-        <if test="empPassword != null and empPassword != ''">
-            emp_password = #{empPassword},
-        </if>
-        <if test="empStatus != null and empStatus != ''">
-            emp_status = #{empStatus},
-        </if>
-    </set>
-    WHERE idx = #{empIdx}
-</update>
+	
 	
 </mapper>

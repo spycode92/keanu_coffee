@@ -20,6 +20,8 @@ public interface EmployeeManagementMapper {
 	// 직원목록 수
 	int countEmployee(@Param("searchType")String searchType, @Param("searchKeyword")String searchKeyword);
 
+	// idx로 회원정보 조회하기
+	EmployeeInfoDTO selectOneEmployeeInfoByEmpIdx(Integer empIdx);
 	
 	
 	//회원 추가
@@ -32,8 +34,6 @@ public interface EmployeeManagementMapper {
 	// 부서, 팀, 직책 널로바꾸기
 	void updateDeptTeamRoleToNull(Long departmentIdx);
 	
-	// idx로 회원정보 조회하기
-	EmployeeInfoDTO selectOneEmployeeInfoByEmpIdx(Integer empIdx);
 	
 	// 회원 정보 업데이트하기
 	int updateEmployeeInfo(EmployeeInfoDTO employee);
