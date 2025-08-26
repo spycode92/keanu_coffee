@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 import com.itwillbs.keanu_coffee.transport.dto.VehicleDTO;
+import com.itwillbs.keanu_coffee.transport.service.DriverService;
 import com.itwillbs.keanu_coffee.transport.service.VehicleService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TransportController {
 	private final VehicleService vehicleService;
+	private final DriverService driverService;
 	
 	// 운송 대시보드
 	@GetMapping("")
@@ -29,7 +31,13 @@ public class TransportController {
 	
 	// 기사 목록 페이지
 	@GetMapping("/drivers")
-	public String driverList() {
+	public String driverList(
+			@RequestParam(defaultValue = "1") int pageNum, 
+			@RequestParam(defaultValue = "all") String filter,
+			@RequestParam(defaultValue = "") String searchKeyword,
+			Model model) {
+		int listLimit = 10;
+		int listCount = driverService.getDriverCount(filter, searchKeyword);
 		return "/transport/drivers";
 	}
 	
