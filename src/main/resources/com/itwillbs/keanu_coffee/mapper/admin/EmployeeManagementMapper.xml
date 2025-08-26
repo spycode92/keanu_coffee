@@ -48,7 +48,7 @@
 	<!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
 
 	<!-- 로그인용 아이디로 회원정보 조회 -->
-	<select id="selectEmployeeInfoById" resultType="EmployeeInfoDTO">
+	<select id="selectEmployeeInfoByEmpNo" resultType="EmployeeInfoDTO">
 		SELECT 
 			emp_idx
 			, emp_no

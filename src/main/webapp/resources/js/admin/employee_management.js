@@ -187,11 +187,16 @@ function formatTimestampToDate(timestamp) {
 }
 
 
-
-
-
-
-
+// 상세정보모달 수정버튼 동작함수
+function editEmployee(empIdx){
+	const detailModal = document.getElementById('employeeDetailModal');
+	const modifyModal = document.getElementById('modifyhEmployeeModal');
+	ModalManager.closeModal(detailModal);
+	// 약간의 지연 후 열기
+    setTimeout(() => {
+        ModalManager.openModal(modifyModal);
+    }, 100); // 100ms 후에 열기
+}
 
 
 
@@ -230,4 +235,7 @@ document.addEventListener("DOMContentLoaded", function() {
             ModalManager.openModal(detailModal);
         });
     });
+
+
+
 });

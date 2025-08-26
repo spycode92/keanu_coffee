@@ -17,6 +17,7 @@
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 <jsp:include page="/WEB-INF/views/admin/employee_modal/add_employee.jsp"></jsp:include> 
 <jsp:include page="/WEB-INF/views/admin/employee_modal/detail_employee.jsp"></jsp:include> 
+<jsp:include page="/WEB-INF/views/admin/employee_modal/modify_employee.jsp"></jsp:include> 
 <section class="content">
 	<h4>직원 관리</h4>
 	<div style="display: flex; align-items: center; gap: 8px; width: 35%">
