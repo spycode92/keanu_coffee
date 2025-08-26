@@ -31,7 +31,10 @@ window.addEventListener('load', function () {
           codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
             if (result) {
               console.log(result)
-              document.getElementById('result').textContent = result.text
+              document.getElementById('result').textContent = result.text;
+              
+             location.href='/inventory/qrScanner?qr=' + result.text;
+             
             }
             if (err && !(err instanceof ZXing.NotFoundException)) {
               console.error(err)
