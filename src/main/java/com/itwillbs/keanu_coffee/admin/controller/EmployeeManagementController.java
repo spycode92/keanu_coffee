@@ -78,7 +78,7 @@ public class EmployeeManagementController {
 		return "/admin/employee_management";
 	}
 	
-	// 직원 정보 1명 불러오기 with idx
+	// 자기정보 불러오기
 	@GetMapping("/getOneEmployeeInfo")
 	@ResponseBody
 	public EmployeeInfoDTO getOneEmployeeInfo(HttpSession session) {
@@ -123,6 +123,16 @@ public class EmployeeManagementController {
 		model.addAttribute("targetURL", "/admin/employeeManagement/addEmployeeForm"); 
 		return "redirect:/admin/employeeManagement";
 //		return "";
+	}
+	
+	//직원정보 상세보기 모달창 정보 불러오기
+	@GetMapping("/getOneEmployeeInfoByIdx")
+	@ResponseBody
+	public EmployeeInfoDTO getOneEmployeeInfoByIdx(EmployeeInfoDTO employee) {
+		
+		employee = employeeManagementService.getOneEmployeeInfoByEmpIdx(employee.getEmpIdx());
+		
+		return employee;
 	}
 	
 

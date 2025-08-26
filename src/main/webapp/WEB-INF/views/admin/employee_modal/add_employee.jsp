@@ -24,7 +24,7 @@
 				    <div style="flex:1; display:flex; flex-direction: column; gap:1rem;">
 				        <div class="field">
 				            <label class="form-label">이름</label>
-				            <input type="text" name="empName" required class="form-control">
+				            <input type="text" id="addEmpName" name="empName" required class="form-control" placeholder="한글만입력가능합니다.">
 				        </div>
 				        <div class="field">
 				            <label class="form-label">성별</label>
@@ -44,7 +44,7 @@
                     </div>
                     <div class="field" style="flex:1;">
                         <label class="form-label">연락처</label>
-                        <input type="text" name="empPhone" required class="form-control">
+                        <input type="text" name="empPhone" id="addEmpPhone" required class="form-control">
                     </div>
                 </div>
 
@@ -69,7 +69,7 @@
 
                 <!-- 고용일 -->
                 <div class="field">
-                    <label class="form-label">고용일</label>
+                    <label class="form-label">입사일</label>
                     <input type="date" name="hireDate" class="form-control">
                 </div>
             </div>

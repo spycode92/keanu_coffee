@@ -146,55 +146,98 @@ document.addEventListener("DOMContentLoaded", function() {
 	
 	//직원추가버튼클릭시 직원추가모달 열기
     btnOpen.addEventListener('click', () => {
-		 ModalManager.openModal(document.getElementById('addEmployeeModal'));
+		const modal = document.getElementById('addEmployeeModal');
+		modal.querySelectorAll('input').forEach(input => input.value = '');
+    	modal.querySelectorAll('select').forEach(select => select.value = '');
+    	modal.querySelectorAll('textarea').forEach(textarea => textarea.value = '');
+		
+
+		ModalManager.openModal(modal);
 		//부서,팀,직책 정보 함수
 		loadOrgData();
     });
 	// 부서 선택시 부서내의 팀, 직책 불러오기함수 호출
 	document.querySelector('select[name="departmentIdx"]').addEventListener('change', onDeptChange);
-
-	 // 상세정보 모달 열기
-    document.querySelectorAll('.employee-row').forEach(row => {
-        row.addEventListener('click', () => {
-            const empIdx = row.dataset.empIdx;
-            // TODO: empIdx로 데이터 로딩 로직은 나중에 구현
-
-            // 모달 열기
-            const detailModal = document.getElementById('employeeDetailModal');
-            ModalManager.openModal(detailModal);
-        });
-    });
+	
+	const inputName = document.getElementById('addEmpName');
+	const inputPhone = document.getElementById('addEmpPhone');
+	
+	//이름 한글만 입력가능
+	inputName.addEventListener('blur', (e) => {
+		// 한글만 허용하는 정규식
+		const hangulPattern = /^[가-힣]*$/;
+		let value = e.target.value;
+		value = value.replace(/[^가-힣]/g, '');
+		e.target.value = value;
+	});
+	
+	//핸드폰번호 숫자만입력, 010-1111-1111형식
+	inputPhone.addEventListener('input', (e) => {
+		 // 1. 숫자만 남기기
+	    let value = e.target.value.replace(/\D/g, '');
+	    // 2. 최대 11자리(010 + 8자리)로 자르기
+	    if (value.length > 11) {
+	        value = value.slice(0, 11);
+	    }
+	    // 3. 자동 하이픈 삽입 (010-1111-1111 형식)
+	    //    3-4-4 기준으로 그룹 나누기
+	    const part1 = value.slice(0, 3);
+	    const part2 = value.length > 3 ? value.slice(3, 7) : '';
+	    const part3 = value.length > 7 ? value.slice(7) : '';
+	
+	    let formatted = part1;
+	    if (part2) {
+	        formatted += '-' + part2;
+	    }
+	    if (part3) {
+	        formatted += '-' + part3;
+	    }
+	
+	    e.target.value = formatted;
+	});
+	
+	// 상세정보 모달 열기
+	document.querySelectorAll('.employee-row').forEach(row => {
+	    row.addEventListener('click', async () => { 
+	        const empIdx = row.dataset.empIdx;
+	        
+	        // 1. 데이터 가져오기
+	        const data = await getEmpData(empIdx);
+	        if (!data) {
+	            console.error('직원 정보 로드 실패');
+	            return;
+	        }
+	        
+	        // 2. 모달의 input 요소에 값 채우기
+	        document.getElementById('empNo').value        = data.empNo   || '';
+	        document.getElementById('empName').value      = data.empName || '';
+	        document.getElementById('empGender').value    = data.empId   || '';
+	        document.getElementById('empDeptName').value      = data.departmentName || '';
+	        document.getElementById('empDeptIdx').value      = data.departmentName || '';
+	        document.getElementById('empPhone').value     = data.phoneNumber    || '';
+	        document.getElementById('empEmail').value     = data.email          || '';
+	        document.getElementById('empHireDate').value  = data.hireDate       || '';
+	        
+	        // 3. 모달 열기
+	        const detailModal = document.getElementById('employeeDetailModal');
+	        ModalManager.openModal(detailModal);
+	    });
+	});
+	
+	//상세정보 직원 정보 불러오기
+	function getEmpData(empIdx){
+		return ajaxGet("/admin/employeeManagement/getOneEmployeeInfoByIdx"
+			, params = {empIdx : empIdx})
+			
+			.then(function(data) {
+				return data;
+			})
+			.catch(function(err) {
+				console.error('사용자 정보 로드 중 오류:', err);
+	            return null;
+			});
+	}
 });
-
-/* 직원추가 모달 사용 */
-document.addEventListener("DOMContentLoaded", function() {
-    // 직원 추가 모달 전용 요소
-    const profileInput = document.getElementById("addProfileImage");
-    const profilePreview = document.getElementById("addProfilePreview");
-    const deleteBtn = document.getElementById("deleteAddProfileBtn");
-    const defaultSrc = "/resources/images/default_profile_photo.png";
-
-    // 요소가 없으면 종료
-    if (!profileInput || !profilePreview || !deleteBtn) return;
-
-    // 이미지 선택 시 미리보기
-    profileInput.addEventListener("change", function(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            profilePreview.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    });
-
-    // x버튼 클릭 시 프로필 이미지 초기화
-    deleteBtn.addEventListener("click", function() {
-        profileInput.value = "";
-        profilePreview.src = defaultSrc;
-    });
-});
-
 
 
 

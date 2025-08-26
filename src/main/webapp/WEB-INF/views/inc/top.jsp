@@ -31,19 +31,19 @@
 	<aside id="sidebar" class="sidebar">
 		<ul>
 		
-				<li>
-					<a href="/admin"><span>관리자페이지</span></a>
-	<!-- 				<a href=""><span>물류부서관리</span></a> -->
-					<ul class="submenu">
-						<li><a href="/admin/employeeManage">사원관리</a></li>
-						<li><a href="/admin/dash">통계</a></li>
-						<li><a href="/admin/workingLog">작업관리</a></li>
-						<li><a href="/admin/preference/dept">조직관리</a></li>
-						<li><a href="/admin/preference/supplyCompany">공급업체관리</a></li>
-						<li><a href="/admin/preference/product">상품관리</a></li>
-						<li><a href="/admin/preference/supplyContract">공급계약</a></li>
-					</ul>
-				</li>
+			<li>
+				<a href="/admin"><span>관리자페이지</span></a>
+<!-- 				<a href=""><span>물류부서관리</span></a> -->
+				<ul class="submenu">
+					<li><a href="/admin/employeeManage">사원관리</a></li>
+					<li><a href="/admin/dash">통계</a></li>
+					<li><a href="/admin/workingLog">작업관리</a></li>
+					<li><a href="/admin/preference/dept">조직관리</a></li>
+					<li><a href="/admin/preference/supplyCompany">공급업체관리</a></li>
+					<li><a href="/admin/preference/product">상품관리</a></li>
+					<li><a href="/admin/preference/supplyContract">공급계약</a></li>
+				</ul>
+			</li>
 		
 			<li>
 				<a href="/inbound/main"><span>입고 관리</span></a>
