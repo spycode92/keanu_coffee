@@ -3,32 +3,57 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper">
-	
-	
+
 	<!-- 단일 회원 정보 검색 -->
 	<select id="selectEmployeeInfo" resultType="EmployeeInfoDTO" >
 		SELECT *
-		FROM EMPLOYEE_INFO
+		FROM V_EMPLOYEE_FULL_INFO
 		WHERE emp_id = #{empId}
 	</select>
-
+	
 	<!-- 회원추가 -->
 	<insert id="insertEmployeeInfo">
 		INSERT INTO EMPLOYEE_INFO
 		VALUES(
-			#{empId}
+			null
+			, #{empNo}
 			, #{empName}
-			, #{empEmail}
+			, #{empGender}
+			, COALESCE(#{departmentIdx}, 1)
+			, COALESCE(#{teamIdx}, 1)
+			, COALESCE(#{roleIdx}, 1)
 			, #{empPhone}
-			, #{empPosition}
-			, #{empTeam}
-			, default
+			, #{empEmail}
+			, #{empId}
 			, #{empPassword}
-			, now()
+			, #{hireDate}
+			, default
+			, default
+			, default
 		)
 	</insert>
-
-
-
-
+	
+	<!-- 직책 비우기 -->
+	<update id="updateRoleToNull">
+		UPDATE EMPLOYEE_INFO
+		SET role_idx = NULL
+		WHERE role_idx = #{roleIdx}
+	</update>
+	
+	<!-- 팀비우기 -->
+	<update id="updateTeamToNull">
+		UPDATE EMPLOYEE_INFO
+		SET team_idx = NULL
+		WHERE team_idx = #{teamIdx}
+	</update>
+	
+	<!-- 부서, 팀, 직책 비우기 -->
+	<update id="updateDeptTeamRoleToNull">
+		UPDATE EMPLOYEE_INFO
+		SET team_idx = NULL,
+			role_idx = NULL,
+			department_idx = NULL
+		WHERE department_idx = #{departmentIdx}
+	</update>
+	
 </mapper>

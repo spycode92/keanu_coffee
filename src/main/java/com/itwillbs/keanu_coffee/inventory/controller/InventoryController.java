@@ -3,7 +3,7 @@ package com.itwillbs.keanu_coffee.inventory.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.keanu_coffee.inventory.service.InventoryService;
 
@@ -16,8 +16,13 @@ public class InventoryController {
 	public String inventoryDashboard() {
 		return "inventory/inventoryDashboard";
 	}
-  
-  
+	
+	// 재고 조회 / 검수 
+	@GetMapping("/stockCheck")
+	public String stockCheckForm() {
+		return "inventory/stockCheck";
+	}
+   
 	@GetMapping("/productHistory")
 	public String productHistory() {
 		
@@ -48,16 +53,13 @@ public class InventoryController {
 		
 		return "inventory/inventory_to_move";
 	}
-	@GetMapping("/test")
-	public String test() {
-		
-		return "test";
+
+	@GetMapping("/qrScanner")
+	public String qrScanner(@RequestParam(required = false) String param) {
+	
+		return "inventory/QR-scanner";
 	}
-	@GetMapping("/test2")
-	public String test2() {
-		
-		return "test2";
-	}
+
 
 
 }

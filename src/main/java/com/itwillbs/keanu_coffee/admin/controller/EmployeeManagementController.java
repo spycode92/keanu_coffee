@@ -1,5 +1,7 @@
 package com.itwillbs.keanu_coffee.admin.controller;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -24,13 +26,12 @@ public class EmployeeManagementController {
 	public String addEmployeeForm() {
 		return "/admin/popup/add_employee_form";
 	}
-	
-	
+		
 	
 	//관리자페이지 회원추가 로직
 	@PostMapping("/addEmployee")
-	public String addEmployeeForm(EmployeeInfoDTO employee, Model model) {
-		
+	public String addEmployeeForm(EmployeeInfoDTO employee, Model model) throws IOException {
+		// 
 		int inputCount = employeeManagementService.inputEmployeeInfo(employee);
 		if (inputCount == 0) {
 			model.addAttribute("msg", "추가실패");
@@ -38,7 +39,11 @@ public class EmployeeManagementController {
 		model.addAttribute("msg", "추가완료");
 		model.addAttribute("targetURL", "/admin/employeeManagement/addEmployeeForm"); 
 		return "/commons/result_process";
+//		return "";
 	}
+	
+	//직원 개인정보 변경폼
+	
 	
 	
 }

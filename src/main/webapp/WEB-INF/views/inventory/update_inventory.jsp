@@ -19,7 +19,7 @@
 	
 	}
 	table {
-		border: 1px solid #fff;
+/* 		border: 1px solid #fff; */
 		padding: 50px;
 		width: 500px;
 	
@@ -29,8 +29,7 @@
 <body>
 
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
-	<section>
-		<h1>재고 업데이트</h1>
+	<section >
 		
 <!-- 		<form action="/inventory/updateInventory" method="post"> -->
 <!-- 			<label for="inventoryId">재고 ID</label> -->
@@ -57,7 +56,8 @@
 <!-- 			</select> -->
 <!-- 			<input type="submit"> -->
 <!-- 		</form> -->
-			<form action="/inventory/updateInventory" method="post">
+			<form class="card" action="/inventory/updateInventory" method="post">
+			   <h1 class="card-header">재고 업데이트</h1>
 			  <table>
 			  	   <tr>
 			      <td class="form-label">직원 ID:</td>

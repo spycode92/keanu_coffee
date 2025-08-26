@@ -19,7 +19,7 @@
 	
 	}
 	table {
-		border: 1px solid #fff;
+/* 		border: 1px solid #fff; */
 		padding: 50px;
 		width: 500px;
 	
@@ -30,7 +30,7 @@
 
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 	<section>
-		<h1>재고를 옮기다</h1>
+		
 		
 <!-- 		<form action="/inventory/updateInventory" method="post"> -->
 <!-- 			<p>직원 ID: John</p> -->
@@ -59,7 +59,8 @@
 <!-- 			</select> -->
 <!-- 			<input type="submit"> -->
 <!-- 		</form> -->
-			<form action="/inventory/updateInventory" method="post">
+			<form class="card" action="/inventory/updateInventory" method="post">
+				<h1 class="card-header">재고를 옮기다</h1>
 			  <table>
 			    <tr>
 			      <td class="form-label">직원 ID:</td>
@@ -95,18 +96,7 @@
 			    </tr>
 			</table>
 		</form>
-		<div class="d-flex justify-content-between align-items-center p-3">
-        <div class="text-muted">페이지 1 / 13</div>
-        <div class="d-flex gap-2">
-          <a href="#" class="btn btn-secondary btn-sm">« 처음</a>
-          <a href="#" class="btn btn-secondary btn-sm">‹ 이전</a>
-          <a href="#" class="btn btn-primary btn-sm">1</a>
-          <a href="#" class="btn btn-secondary btn-sm">2</a>
-          <a href="#" class="btn btn-secondary btn-sm">3</a>
-          <a href="#" class="btn btn-secondary btn-sm">다음 ›</a>
-          <a href="#" class="btn btn-secondary btn-sm">끝 »</a>
-        </div>
-      </div>
+
 	</section>
 </body>
 </html>

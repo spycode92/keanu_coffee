@@ -7,11 +7,11 @@
 <title>메인페이지</title>
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
-<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
@@ -152,23 +152,36 @@
 
 
 	$(document).ready(function(){
-	    // 헤더 제외, 데이터 있는 tr에 클릭 이벤트
-	    $(".table tr").not(":first").click(function(){
-	        let tds = $(this).find("td");
-	
-	        // td 순서대로 값 가져와서 모달에 넣기
-	        $("#empName").text(tds.eq(0).text());
-	        $("#empNo").text(tds.eq(1).text());
-	        $("#empId").text(tds.eq(2).text());
-	        $("#empDept").text(tds.eq(3).text());
-	        $("#empRank").text(tds.eq(4).text());
-	        $("#empPhone").text(tds.eq(5).text());
-	        $("#empEmail").text(tds.eq(6).text());
-	        $("#empHireDate").text(tds.eq(7).text());
-	
-	        // 모달 띄우기
-	        $("#employeeModal").modal("show");
-	    });
+		// 헤더(:first)도 제외, 마지막행(:last)도 제외
+		$(".table tr").not(":first").not(":last").click(function(){
+		    let tds = $(this).find("td");
+		    $("#empName").text(tds.eq(0).text());
+		    $("#empNo").text(tds.eq(1).text());
+		    $("#empId").text(tds.eq(2).text());
+		    $("#empDept").text(tds.eq(3).text());
+		    $("#empRank").text(tds.eq(4).text());
+		    $("#empPhone").text(tds.eq(5).text());
+		    $("#empEmail").text(tds.eq(6).text());
+		    $("#empHireDate").text(tds.eq(7).text());
+		    $("#employeeModal").modal("show");
+		});
+		
+		$("#addEmployee").click(function(e){
+		    e.stopPropagation(); // tr 클릭 이벤트로 전파 방지
+		    windowPopup = window.open(
+		        "/admin/employeeManagement/addEmployeeForm",
+		        "addEmployeePopup",
+		        //"width=500px,height=1000px,resizable=yes,scrollbars=yes"
+		        "width=500,height=1000,resizable=yes"
+		        
+		    );
+		    if (windowPopup) {
+		    	  // 일부 브라우저에서 초기 크기 보정 시도 (정책상 무시될 수 있음)
+		    	  try { windowPopup.resizeTo(500, 700); } catch (e) {}
+		    	  windowPopup.focus();
+	    	}
+		});
+		
 	});
 	</script>
 	</div>

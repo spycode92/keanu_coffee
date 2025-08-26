@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.common.mapper.FileMapper">
+	
+	<!-- 파일등록 -->
+	<insert id="insertFiles">
+		INSERT
+		INTO FILE(
+			target_table,
+			target_table_idx,
+			original_file_name,
+			real_file_name, 
+			sub_dir, 
+			file_size, 
+			content_type)
+		VALUES
+		<foreach collection="list" item="file" separator=",">
+			(
+				#{file.targetTable}
+				, #{file.targetTableIdx}
+				, #{file.originalFileName}
+				, #{file.realFileName}
+				, #{file.subDir}
+				, #{file.fileSize}
+				, #{file.contentType}
+			)
+		</foreach>
+	</insert>
+	
+	<update id="updateFiles">
+		UPDATE FILE
+		SET 		
+			real_file_name = #{file.realFileName}
+			, original_file_name = #{file.originalFileName}
+			, sub_dir = #{file.subDir}
+			, file_size = #{file.fileSize}
+			, content_type = #{file.contentType}
+		where idx = #{idx}
+			
+	</update>
+	
+	<select id="getFileWithFileIdx" resultType="FileDTO">
+		SELECT *
+		FROM FILE
+		where idx = #{fileIdx}
+	</select>
+	
+	<select id="getFileWithTargetTable" resultType="FileDTO">
+		SELECT *
+		FROM FILE
+		where target_table = #{targetTable}
+			AND target_table_idx = #{targetTableIdx}
+	</select>
+
+
+
+
+</mapper>
