@@ -140,6 +140,76 @@ function loadOrgData() {
 }      
 
 
+let EmpData = "";
+
+//직원Idx로 정보불러오기함수
+function getEmpData(empIdx) {
+	ajaxGet('/admin/employeeManagement/getEmployeeDetailByIdx',{empIdx : empIdx})
+		.then(data => {
+			console.log('직원 상세정보 : ' + data);
+			EmpData = data;
+			populateEmployeeDetail(EmpData);
+			return data
+		})
+		.catch(err => {
+			console.err('직원정보로딩 오류 : ' + err);
+			swal.fire('직원 정보를 불러오는데 실패했습니다.','','error');
+		})
+}
+
+
+function populateEmployeeDetail(employeeData) {
+    // 기본 정보 채우기
+    document.getElementById('empNameDetail').textContent = employeeData.empName || '';
+    document.getElementById('empNoDetail').textContent = employeeData.empNo || '';
+    document.getElementById('empGenderDetail').textContent = employeeData.empGender || '';
+    document.getElementById('empPhoneDetail').textContent = employeeData.empPhone || '';
+    document.getElementById('empEmailDetail').textContent = employeeData.empEmail || '';
+    document.getElementById('empHireDateDetail').textContent = formatTimestampToDate(employeeData.hireDate) || '';
+    
+    // 조직 정보 채우기
+    document.getElementById('empDeptDetail').textContent = employeeData.commonCode.commonCodeName || '';
+    document.getElementById('empteamDetail').textContent = employeeData.team.teamName || '';
+    document.getElementById('empRoleDetail').textContent = employeeData.role.roleName || '';
+	return  
+}
+
+// Timestamp를 YYYY-MM-DD 형식으로 변환
+function formatTimestampToDate(timestamp) {
+    if (!timestamp) return '';
+    
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
+}
+
+
+// 상세정보모달 수정버튼 동작함수
+function editEmployee(empIdx){
+	const detailModal = document.getElementById('employeeDetailModal');
+	const modifyModal = document.getElementById('modifyhEmployeeModal');
+	ModalManager.closeModal(detailModal);
+	// 약간의 지연 후 열기
+    setTimeout(() => {
+        ModalManager.openModal(modifyModal);
+    }, 100); // 100ms 후에 열기
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 // DOM 로드후 
 document.addEventListener("DOMContentLoaded", function() {
     const btnOpen = document.getElementById('addEmployee');  // 직원추가 버튼 id="addEmployee" 있어야 함
@@ -158,107 +228,19 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 	// 부서 선택시 부서내의 팀, 직책 불러오기함수 호출
 	document.querySelector('select[name="departmentIdx"]').addEventListener('change', onDeptChange);
-	
-	const inputName = document.getElementById('addEmpName');
-	const inputPhone = document.getElementById('addEmpPhone');
-	
-	//이름 한글만 입력가능
-	inputName.addEventListener('blur', (e) => {
-		// 한글만 허용하는 정규식
-		const hangulPattern = /^[가-힣]*$/;
-		let value = e.target.value;
-		value = value.replace(/[^가-힣]/g, '');
-		e.target.value = value;
-	});
-	
-	//핸드폰번호 숫자만입력, 010-1111-1111형식
-	inputPhone.addEventListener('input', (e) => {
-		 // 1. 숫자만 남기기
-	    let value = e.target.value.replace(/\D/g, '');
-	    // 2. 최대 11자리(010 + 8자리)로 자르기
-	    if (value.length > 11) {
-	        value = value.slice(0, 11);
-	    }
-	    // 3. 자동 하이픈 삽입 (010-1111-1111 형식)
-	    //    3-4-4 기준으로 그룹 나누기
-	    const part1 = value.slice(0, 3);
-	    const part2 = value.length > 3 ? value.slice(3, 7) : '';
-	    const part3 = value.length > 7 ? value.slice(7) : '';
-	
-	    let formatted = part1;
-	    if (part2) {
-	        formatted += '-' + part2;
-	    }
-	    if (part3) {
-	        formatted += '-' + part3;
-	    }
-	
-	    e.target.value = formatted;
-	});
-	
-	// 상세정보 모달 열기
-	document.querySelectorAll('.employee-row').forEach(row => {
-	    row.addEventListener('click', async () => { 
-	        const empIdx = row.dataset.empIdx;
-	        
-	        // 1. 데이터 가져오기
-	        const data = await getEmpData(empIdx);
-	        if (!data) {
-	            console.error('직원 정보 로드 실패');
-	            return;
-	        }
-	        
-	        // 2. 모달의 input 요소에 값 채우기
-	        document.getElementById('empNo').value        = data.empNo   || '';
-	        document.getElementById('empName').value      = data.empName || '';
-	        document.getElementById('empGender').value    = data.empId   || '';
-	        document.getElementById('empDeptName').value      = data.departmentName || '';
-	        document.getElementById('empDeptIdx').value      = data.departmentName || '';
-	        document.getElementById('empPhone').value     = data.phoneNumber    || '';
-	        document.getElementById('empEmail').value     = data.email          || '';
-	        document.getElementById('empHireDate').value  = data.hireDate       || '';
-	        
-	        // 3. 모달 열기
-	        const detailModal = document.getElementById('employeeDetailModal');
-	        ModalManager.openModal(detailModal);
-	    });
-	});
-	
-	//상세정보 직원 정보 불러오기
-	function getEmpData(empIdx){
-		return ajaxGet("/admin/employeeManagement/getOneEmployeeInfoByIdx"
-			, params = {empIdx : empIdx})
+
+	 // 상세정보 모달 열기
+    document.querySelectorAll('.employee-row').forEach(row => {
+        row.addEventListener('click', () => {
+            const empIdx = row.dataset.empIdx;
+
+            EmpData = getEmpData(empIdx);
 			
-			.then(function(data) {
-				return data;
-			})
-			.catch(function(err) {
-				console.error('사용자 정보 로드 중 오류:', err);
-	            return null;
-			});
-	}
+            // 모달 열기
+            const detailModal = document.getElementById('employeeDetailModal');
+            ModalManager.openModal(detailModal);
+        });
+    });
+
+
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

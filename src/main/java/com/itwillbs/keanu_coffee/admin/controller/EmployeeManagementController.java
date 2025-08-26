@@ -125,10 +125,9 @@ public class EmployeeManagementController {
 //		return "";
 	}
 	
-	//직원정보 상세보기 모달창 정보 불러오기
-	@GetMapping("/getOneEmployeeInfoByIdx")
+	@GetMapping("/getEmployeeDetailByIdx")
 	@ResponseBody
-	public EmployeeInfoDTO getOneEmployeeInfoByIdx(EmployeeInfoDTO employee) {
+	public EmployeeInfoDTO getEmployeeDetailByIdx(EmployeeInfoDTO employee) {
 		
 		employee = employeeManagementService.getOneEmployeeInfoByEmpIdx(employee.getEmpIdx());
 		
