@@ -16,9 +16,11 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 public class makeQRCode {
-	public static void createQR(String data, String path,
+	public static void createQR(
+			String data, String path,
 	            String charset, Map hashMap,
-	            int height, int width)
+	            int height, int width
+	            )
 	throws WriterException, IOException
 	{
 		Path filePath = Paths.get(path);
@@ -40,11 +42,10 @@ public class makeQRCode {
 	{
 	
 	// The data that the QR code will contain
-	String data = "http://c5d2504t1p2.keanuCoffee.com/test";
+	String data = "Isak is so cool";
 	
 	// The path where the image will get saved
-	String path = "demo.png";
-	
+	String path = "C:\\Users\\isaks\\Downloads\\qrCode.jpg";	
 	// Encoding charset
 	String charset = "UTF-8";
 	
