@@ -125,6 +125,15 @@ public class EmployeeManagementController {
 //		return "";
 	}
 	
+	@GetMapping("/getEmployeeDetailByIdx")
+	@ResponseBody
+	public EmployeeInfoDTO getEmployeeDetailByIdx(EmployeeInfoDTO employee) {
+		
+		employee = employeeManagementService.getOneEmployeeInfoByEmpIdx(employee.getEmpIdx());
+		
+		return employee;
+	}
+	
 
 	
 	

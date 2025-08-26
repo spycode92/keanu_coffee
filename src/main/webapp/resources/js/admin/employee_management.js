@@ -140,6 +140,69 @@ function loadOrgData() {
 }      
 
 
+let EmpData = "";
+
+//직원Idx로 정보불러오기함수
+function getEmpData(empIdx) {
+	ajaxGet('/admin/employeeManagement/getEmployeeDetailByIdx',{empIdx : empIdx})
+		.then(data => {
+			console.log('직원 상세정보 : ' + data);
+			EmpData = data;
+			populateEmployeeDetail(EmpData);
+			return data
+		})
+		.catch(err => {
+			console.err('직원정보로딩 오류 : ' + err);
+			swal.fire('직원 정보를 불러오는데 실패했습니다.','','error');
+		})
+}
+
+
+function populateEmployeeDetail(employeeData) {
+    // 기본 정보 채우기
+    document.getElementById('empNameDetail').textContent = employeeData.empName || '';
+    document.getElementById('empNoDetail').textContent = employeeData.empNo || '';
+    document.getElementById('empGenderDetail').textContent = employeeData.empGender || '';
+    document.getElementById('empPhoneDetail').textContent = employeeData.empPhone || '';
+    document.getElementById('empEmailDetail').textContent = employeeData.empEmail || '';
+    document.getElementById('empHireDateDetail').textContent = formatTimestampToDate(employeeData.hireDate) || '';
+    
+    // 조직 정보 채우기
+    document.getElementById('empDeptDetail').textContent = employeeData.commonCode.commonCodeName || '';
+    document.getElementById('empteamDetail').textContent = employeeData.team.teamName || '';
+    document.getElementById('empRoleDetail').textContent = employeeData.role.roleName || '';
+	return  
+}
+
+// Timestamp를 YYYY-MM-DD 형식으로 변환
+function formatTimestampToDate(timestamp) {
+    if (!timestamp) return '';
+    
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // DOM 로드후 
 document.addEventListener("DOMContentLoaded", function() {
     const btnOpen = document.getElementById('addEmployee');  // 직원추가 버튼 id="addEmployee" 있어야 함
@@ -157,65 +220,12 @@ document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll('.employee-row').forEach(row => {
         row.addEventListener('click', () => {
             const empIdx = row.dataset.empIdx;
-            // TODO: empIdx로 데이터 로딩 로직은 나중에 구현
 
+            EmpData = getEmpData(empIdx);
+			
             // 모달 열기
             const detailModal = document.getElementById('employeeDetailModal');
             ModalManager.openModal(detailModal);
         });
     });
 });
-
-/* 직원추가 모달 사용 */
-document.addEventListener("DOMContentLoaded", function() {
-    // 직원 추가 모달 전용 요소
-    const profileInput = document.getElementById("addProfileImage");
-    const profilePreview = document.getElementById("addProfilePreview");
-    const deleteBtn = document.getElementById("deleteAddProfileBtn");
-    const defaultSrc = "/resources/images/default_profile_photo.png";
-
-    // 요소가 없으면 종료
-    if (!profileInput || !profilePreview || !deleteBtn) return;
-
-    // 이미지 선택 시 미리보기
-    profileInput.addEventListener("change", function(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            profilePreview.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    });
-
-    // x버튼 클릭 시 프로필 이미지 초기화
-    deleteBtn.addEventListener("click", function() {
-        profileInput.value = "";
-        profilePreview.src = defaultSrc;
-    });
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
