@@ -19,4 +19,9 @@ public class DriverService {
 		return driverMapper.selectDriverList();
 	}
 
+	// 페이징을 위한 운전자 수
+	public int getDriverCount(String filter, String searchKeyword) {
+		return driverMapper.selectDriverCount(filter, searchKeyword);
+	}
+
 }
