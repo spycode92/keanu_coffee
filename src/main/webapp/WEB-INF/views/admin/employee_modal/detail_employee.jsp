@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<div id="employeeDetailModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="employeeDetailModalLabel" tabindex="-1">
+<div id="employeeDetailModal" class="modal" >
     <div class="modal-card sm">
         <div class="modal-head">
             <h5 id="employeeDetailModalLabel">직원 정보</h5>
@@ -26,7 +26,7 @@
         <div class="modal-foot">
             <button type="button"
                     class="btn btn-update"
-                    onclick="editEmployee('${sessionScope.empIdx}');">
+                    id="DetailmodifyBtn" >
                 수정
             </button>
             <button type="button"

@@ -125,6 +125,7 @@ public class EmployeeManagementController {
 //		return "";
 	}
 	
+	//직원 정보 조회
 	@GetMapping("/getEmployeeDetailByIdx")
 	@ResponseBody
 	public EmployeeInfoDTO getEmployeeDetailByIdx(EmployeeInfoDTO employee) {
@@ -132,6 +133,29 @@ public class EmployeeManagementController {
 		employee = employeeManagementService.getOneEmployeeInfoByEmpIdx(employee.getEmpIdx());
 		
 		return employee;
+	}
+	
+	// 직원 정보 수정
+	@PostMapping("/updateEmployee")
+	public String updateEmployee(EmployeeInfoDTO employee) {
+		employeeManagementService.updateEmployeeInfo(employee);
+		
+		return "redirect:/admin/employeeManagement"; 
+	}
+	
+	// 직원 비밀번호 초기화(1234)
+	@PostMapping("/resetPw")
+	@ResponseBody
+	public Map<String, Object> resetPw(EmployeeInfoDTO employee) {
+		// AJAX결과 리턴 객체 생성
+		Map<String, Object> result = new HashMap<>();
+		
+		int updateCount = employeeManagementService.resetPw(employee);
+		
+		result.put("success", updateCount > 0);
+		
+		return 	result;
+
 	}
 	
 

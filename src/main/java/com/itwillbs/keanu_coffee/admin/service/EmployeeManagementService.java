@@ -117,6 +117,21 @@ public class EmployeeManagementService {
 		
 		return updateCount;
 	}
+	
+	// 관리자가 직원정보 업데이트
+	public void updateEmployeeInfo(EmployeeInfoDTO employee) {
+		employeeManagementMapper.updateEmployeeInfo(employee);
+	}
+	
+	//직원 비밀번호 초기화(1234)
+	public int resetPw(EmployeeInfoDTO employee) {
+		String empPassword = passwordEncoder.encode("1234");
+		employee.setEmpPassword(empPassword);
+		
+		int updateCount = employeeManagementMapper.updateEmployeeInfo(employee);
+		
+		return updateCount;
+	}
 
 
 

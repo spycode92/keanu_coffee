@@ -72,6 +72,20 @@ function groupDataByKey(flatData, groupKey,groupIdx, ...valueKeys) {
     return result;
 }
 
+//부서,팀,직책정보 함수
+function loadOrgData() {
+    ajaxGet('/admin/employeeManagement/getOrgData')
+		.then(data => {
+			processOrgData(data);
+       		populateDepartments();
+		})
+		.catch(err => {
+			console.error('부서정보 로딩 오류', err);
+			Swal.fire('부서정보 불러오기 실패', '', 'error');
+		});
+}   
+
+
 // 드롭다운 초기화
 function processOrgData(rawData) {
     // 원본 flatData를 부서별로 그룹화
@@ -103,11 +117,6 @@ function onDeptChange() {
 	teamSel.innerHTML = '<option value="">없음</option>';
 	roleSel.innerHTML = '<option value="">없음</option>';
 	
-	//부서 idx로 부서 찾기
-//	const deptName = Object.keys(orgData).find(dept => 
-//        orgData[dept].common_code_idx == selectedDeptIdx
-//    );
-	
 	if (!dept || !orgData[dept]) return;
 	
 	orgData[dept].team_name.forEach((team, index) => {
@@ -125,19 +134,7 @@ function onDeptChange() {
 	});
 }
 
-//부서,팀,직책정보 함수
-function loadOrgData() {
-    ajaxGet('/admin/employeeManagement/getOrgData')
-		.then(data => {
-			console.log(data);
-			processOrgData(data);
-       		populateDepartments();
-		})
-		.catch(err => {
-			console.error('부서정보 로딩 오류', err);
-			Swal.fire('부서정보 불러오기 실패', '', 'error');
-		});
-}      
+   
 
 
 let EmpData = "";
@@ -168,9 +165,14 @@ function populateEmployeeDetail(employeeData) {
     document.getElementById('empHireDateDetail').textContent = formatTimestampToDate(employeeData.hireDate) || '';
     
     // 조직 정보 채우기
-    document.getElementById('empDeptDetail').textContent = employeeData.commonCode.commonCodeName || '';
-    document.getElementById('empteamDetail').textContent = employeeData.team.teamName || '';
-    document.getElementById('empRoleDetail').textContent = employeeData.role.roleName || '';
+    document.getElementById('empDeptDetail').textContent =
+		employeeData.commonCode ? employeeData.commonCode.commonCodeName : '';
+
+	document.getElementById('empteamDetail').textContent =
+		employeeData.team ? employeeData.team.teamName : '';
+	
+	document.getElementById('empRoleDetail').textContent =
+		 employeeData.role ? employeeData.role.roleName : '';
 	return  
 }
 
@@ -190,15 +192,117 @@ function formatTimestampToDate(timestamp) {
 // 상세정보모달 수정버튼 동작함수
 function editEmployee(empIdx){
 	const detailModal = document.getElementById('employeeDetailModal');
-	const modifyModal = document.getElementById('modifyhEmployeeModal');
+	const modifyModal = document.getElementById('modifyEmployeeModal');
+
 	ModalManager.closeModal(detailModal);
-	// 약간의 지연 후 열기
-    setTimeout(() => {
-        ModalManager.openModal(modifyModal);
-    }, 100); // 100ms 후에 열기
+	
+	getOrgData()
+		.then(() => {
+			return getModifyEmpData(empIdx)
+		})
+		.then(employeeData =>{
+			const form = document.getElementById('modifyEmployeeForm');
+//			form.elements['departmentIdx'].value = employeeData.department_idx || '';
+//			onModifyDeptChange();
+//			form.elements['teamIdx'].value = employeeData.team_idx || '';
+//    		form.elements['roleIdx'].value = employeeData.role_idx || '';
+
+			ModalManager.openModal(modifyModal);
+		})
+		.catch(err => {
+			console.error('에러 발생', err)
+		})
+	
+}
+//수정모달창 정보불러오기 함수
+function getModifyEmpData(empIdx){
+	return ajaxGet('/admin/employeeManagement/getEmployeeDetailByIdx',{empIdx : empIdx})
+		.then(data => {
+			EmpData = data;
+			populateModifyEmployeeDetail(EmpData);
+			return data
+		})
+		.catch(err => {
+			swal.fire('직원 정보를 불러오는데 실패했습니다.','','error');
+			throw err;
+		})
 }
 
+function populateModifyEmployeeDetail(employeeData) {
+	const form = document.getElementById('modifyEmployeeForm');
+	form.elements['empIdx'].value = employeeData.empIdx || '';
+    form.elements['empName'].value = employeeData.empName || '';
+	form.elements['empNo'].value = employeeData.empNo || '';
+	form.elements['empGender'].value = employeeData.empGender || '';
+	form.elements['empPhone'].value = employeeData.empPhone || '';
+	form.elements['empEmail'].value = employeeData.empEmail || '';
+	form.elements['hireDate'].value = formatTimestampToDate(employeeData.hireDate) || '';
+	
+	// 조직 정보 셀렉트 박스 값 설정 (옵셔널 체이닝 권장)
+	form.elements['departmentIdx'].value = employeeData.departmentIdx || '';
+	onModifyDeptChange();
+	form.elements['teamIdx'].value = employeeData.team?.teamIdx || '';
+	form.elements['roleIdx'].value = employeeData.role?.roleIdx || '';
+	return  
+}
 
+function getOrgData(){
+	return ajaxGet('/admin/employeeManagement/getOrgData')
+		.then(data => {
+			processOrgData(data);
+       		populateModifyDepartments();
+			return data;
+		})
+		.catch(err => {
+			console.error('부서정보 로딩 오류', err);
+			Swal.fire('부서정보 불러오기 실패', '', 'error');
+			throw err;
+		});
+}
+
+//수정 부서 옵션 채우기
+function populateModifyDepartments() {
+	const modifyModal = document.getElementById('modifyEmployeeModal');
+	const deptSel = modifyModal.querySelector('select[name="departmentIdx"]');
+	deptSel.innerHTML = '<option value="">없음</option>';
+	Object.keys(orgData).forEach(dept => {
+		const opt = document.createElement('option');
+		opt.value = orgData[dept].common_code_idx; 
+		opt.textContent = orgData[dept].common_code_name; 
+		deptSel.appendChild(opt);
+		console.log(modifyModal.querySelector('select[name="departmentIdx"]').innerHTML);
+	});
+}
+
+// 수정 부서 선택 시 팀·직책 동시 채우기
+function onModifyDeptChange() {
+	const form = document.getElementById('modifyEmployeeForm');
+	const dept = form.querySelector('select[name="departmentIdx"]').value;
+	const teamSel = form.querySelector('select[name="teamIdx"]');
+	const roleSel = form.querySelector('select[name="roleIdx"]');
+	teamSel.innerHTML = '<option value="">없음</option>';
+	roleSel.innerHTML = '<option value="">없음</option>';
+	
+	if (!dept || !orgData[dept]) return;
+	
+	orgData[dept].team_name.forEach((team, index) => {
+		const o = document.createElement('option');
+		
+		o.value = orgData[dept].team_idx[index];  
+		o.textContent = team;
+		teamSel.appendChild(o);
+		console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		console.log(o.value);
+	});
+	
+	orgData[dept].role_name.forEach((role, index) => {
+		const o = document.createElement('option');
+
+	    o.value = orgData[dept].role_idx[index]; 
+		o.textContent = role;
+	    roleSel.appendChild(o);
+	});
+}
 
 
 
@@ -232,9 +336,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	 // 상세정보 모달 열기
     document.querySelectorAll('.employee-row').forEach(row => {
         row.addEventListener('click', () => {
-            const empIdx = row.dataset.empIdx;
+            selectEmpIdx = row.dataset.empIdx;
 
-            EmpData = getEmpData(empIdx);
+            EmpData = getEmpData(selectEmpIdx);
 			
             // 모달 열기
             const detailModal = document.getElementById('employeeDetailModal');
@@ -242,5 +346,44 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
+	const DetailmodifyBtn = document.getElementById('DetailmodifyBtn');
+	DetailmodifyBtn.addEventListener('click', () => {
+		editEmployee(selectEmpIdx);
+		
+	});
+	const form = document.getElementById('modifyEmployeeForm');
+	form.querySelector('select[name="departmentIdx"]').addEventListener('change', onModifyDeptChange);
+	
+	// 수정모달 비밀번호 초기화버튼 클릭
+	document.getElementById('resetPw').addEventListener('click', function() {
+		const form = document.getElementById('modifyEmployeeForm');
+		const empIdxValue = form.elements['empIdx'].value;
+		
+		if (!empIdxValue) {
+	        Swal.fire('오류', '직원 정보가 없습니다.', 'error');
+	        return;
+    	}
+		
+		ajaxPost("/admin/employeeManagement/resetPw",{empIdx : empIdxValue })
+			.then(data => {
+				if(data.success){
+					Swal.fire('비밀번호가 초기화되었습니다.', 'success');
+				} else {
+					Swal.fire('비밀번호 초기화에 실패했습니다.', 'error');
+				}
+			})
+			.catch(err => {
+				console.error('비밀번호 초기화 오류', err);
+				Swal.fire('비밀번호 초기화 실패', '', 'error');
+				throw err;
+			});
+		
+		console.log("현재empIdx  : " + empIdxValue);
+	
+	});
+
+
 
 });
+
+let selectEmpIdx = "";
