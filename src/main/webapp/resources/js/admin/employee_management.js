@@ -80,7 +80,6 @@ function loadOrgData() {
        		populateDepartments();
 		})
 		.catch(err => {
-			console.error('부서정보 로딩 오류', err);
 			Swal.fire('부서정보 불러오기 실패', '', 'error');
 		});
 }   
@@ -91,7 +90,6 @@ function processOrgData(rawData) {
     // 원본 flatData를 부서별로 그룹화
     orgData = groupDataByKey(rawData, "common_code_name","common_code_idx"
 		, "team_name", "team_idx", "role_name", "role_idx");
-	console.log(orgData);
     // 기존 선택값 초기화
     document.querySelector('select[name="departmentIdx"]').value = "";
     document.querySelector('select[name="teamIdx"]').innerHTML = '<option value="">없음</option>';
@@ -149,7 +147,6 @@ function getEmpData(empIdx) {
 			return data
 		})
 		.catch(err => {
-			console.err('직원정보로딩 오류 : ' + err);
 			swal.fire('직원 정보를 불러오는데 실패했습니다.','','error');
 		})
 }
@@ -210,7 +207,12 @@ function editEmployee(empIdx){
 			ModalManager.openModal(modifyModal);
 		})
 		.catch(err => {
-			console.error('에러 발생', err)
+			Swal.fire({
+                icon: 'error',
+                title: '에러',
+                text: '수정창 불러오기 실패.',
+                confirmButtonText: '확인'
+            });
 		})
 	
 }
@@ -254,7 +256,6 @@ function getOrgData(){
 			return data;
 		})
 		.catch(err => {
-			console.error('부서정보 로딩 오류', err);
 			Swal.fire('부서정보 불러오기 실패', '', 'error');
 			throw err;
 		});
@@ -270,7 +271,6 @@ function populateModifyDepartments() {
 		opt.value = orgData[dept].common_code_idx; 
 		opt.textContent = orgData[dept].common_code_name; 
 		deptSel.appendChild(opt);
-		console.log(modifyModal.querySelector('select[name="departmentIdx"]').innerHTML);
 	});
 }
 
@@ -291,8 +291,6 @@ function onModifyDeptChange() {
 		o.value = orgData[dept].team_idx[index];  
 		o.textContent = team;
 		teamSel.appendChild(o);
-		console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		console.log(o.value);
 	});
 	
 	orgData[dept].role_name.forEach((role, index) => {
@@ -367,18 +365,24 @@ document.addEventListener("DOMContentLoaded", function() {
 		ajaxPost("/admin/employeeManagement/resetPw",{empIdx : empIdxValue })
 			.then(data => {
 				if(data.success){
-					Swal.fire('비밀번호가 초기화되었습니다.', 'success');
+					Swal.fire({
+						icon: 'success',
+						title: '성공',
+						text:'비밀번호가 초기화되었습니다.',
+						confirmButtonText: '확인'});
 				} else {
-					Swal.fire('비밀번호 초기화에 실패했습니다.', 'error');
+					Swal.fire({
+						icon: 'error',
+						title: '실패',
+						text:'비밀번호 초기화에 실패했습니다.',
+						confirmButtonText: '확인'});
 				}
 			})
 			.catch(err => {
-				console.error('비밀번호 초기화 오류', err);
 				Swal.fire('비밀번호 초기화 실패', '', 'error');
 				throw err;
 			});
 		
-		console.log("현재empIdx  : " + empIdxValue);
 	
 	});
 
