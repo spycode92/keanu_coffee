@@ -1,8 +1,15 @@
 package com.itwillbs.keanu_coffee.inbound.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.itwillbs.keanu_coffee.admin.service.ProductService;
+import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderDTO;
+import com.itwillbs.keanu_coffee.common.service.PurchaseOrderService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -10,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/inbound")
 public class InboundController {
+	
+	private final PurchaseOrderService purchaseOrderService;
 	
 	// 대시보드
 	@GetMapping("/main")
@@ -19,7 +28,9 @@ public class InboundController {
 	
 	// 입고조회
 	@GetMapping("/management")
-	public String showInboundManagement() {
+	public String showInboundManagement(Model model) {
+		List<PurchaseOrderDTO> OrderDetailList = purchaseOrderService.orderDetail();
+		model.addAttribute("orderList", OrderDetailList);
 		return "/inbound/inboundManagement";
 	}
 	
