@@ -33,28 +33,28 @@ public interface OrganizationMapper {
 	void insertRole(RoleDTO roleDTO);
 	
 	// 직책삭제
-	int deleteRole(Integer integer);
+	Integer deleteRole(Integer roleIdx);
 	
 	// 직책,메뉴,권한 테이블이 가지고있는 직책 삭제
-	void deleteRoleMenuAuthoByRoleIdx(Integer integer);
+	void deleteRoleMenuAuthoByRoleIdx(Integer roleIdx);
 	
 	// 팀 삭제
-	int deleteTeam(Integer teamIdx);
+	Integer deleteTeam(Integer teamIdx);
 	
 	//부서에 속한 팀목록
-	List<DepartmentDTO> departTeamList(Long departmentIdx);
+	List<TeamDTO> departTeamList(Integer departmentIdx);
 	
 	//부서에 속한 직책목록
-	List<DepartmentDTO> departRoleList(Long departmentIdx);
+	List<RoleDTO> departRoleList(Integer departmentIdx);
 	
 	//부서삭제
-	int deleteDepartment(Long departmentIdx);
+	Integer deleteDepartment(Integer departmentIdx);
 	//부서이름 변경
-	int updateDepartment(@Param("idx") int idx, @Param("departmentName") String departmentName);
+	Integer updateDepartment(@Param("departmentIdx") int departmentIdx, @Param("departmentName") String departmentName);
 	//팀이름 변경
-	int updateTeam(@Param("teamIdx")int teamIdx, @Param("teamName")String teamName);
+	Integer updateTeam(@Param("teamIdx")int teamIdx, @Param("teamName")String teamName);
 	//직책이름 변경
-	int updateRole(@Param("roleIdx")int roleIdx, @Param("roleName")String roleName);
+	Integer updateRole(@Param("roleIdx")int roleIdx, @Param("roleName")String roleName);
 	
 	//직책 팀, 부서 정보 가져오기
 	List<Map<String, Object>> getOrgData();

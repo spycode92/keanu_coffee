@@ -239,11 +239,12 @@ $(function () {
 		        
 				let departmentIdx = $(this).closest('li').data('departmentidx');
 		        let $targetLi = $(this).closest('li');
+				
 		        $.ajax({
 		            url: '/admin/systemPreference/dept/removeDepartment',
 		            method: 'DELETE',
 		            contentType: 'application/json',
-		            data: JSON.stringify({ departmentIdx: departmentIdx }),
+		            data: JSON.stringify({departmentIdx:departmentIdx}),
 		            success: function() {
 		                $targetLi.remove();
 	
@@ -330,12 +331,12 @@ $(function () {
 	        cancelButtonText: '취소'
 	    }).then((result) => {
 	        if (result.isConfirmed) {
-	            let roleIdx = $btn.closest('li').data('roleidx');
+	            let roleidx = $btn.closest('li').data('roleidx');
 	
 	            $.ajax({
 	                url: '/admin/systemPreference/dept/removeRole',
 	                method: 'DELETE',
-	                data: JSON.stringify({ roleIdx: roleIdx }),
+	                data: JSON.stringify({ roleIdx: roleidx }),
 	                contentType: 'application/json',
 	                success: () => {
 	                    $btn.closest('li').remove();  // 삭제 성공 시 UI에서 해당 li 제거

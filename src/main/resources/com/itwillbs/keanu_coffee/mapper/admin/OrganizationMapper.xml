@@ -39,23 +39,23 @@
 		VALUES(#{roleName}, #{departmentIdx})
 	</insert>
 	<!-- 직책삭제하기 -->
-	<delete id="deleteRole" parameterType="long" > 
+	<delete id="deleteRole" parameterType="Integer" > 
 		DELETE FROM ROLE
-		where idx = #{roleIdx}
+		where role_idx = #{roleIdx}
 	</delete>
 	<!-- 직책,메뉴,권한 테이블이 가지고있는 직책 삭제 -->
 	<delete id="deleteRoleMenuAuthoByRoleIdx">
-		DELETE FROM ROLE_MENU_AUTHO
+		DELETE FROM ROLE_BOARD_AUTHO
 		where role_idx = #{roleIdx}
 	</delete>
 	<!--  팀삭제 -->
 	<delete id="deleteTeam">
 		DELETE FROM TEAM
-		where idx = #{teamIdx}
+		where team_idx = #{teamIdx}
 	</delete>
 	<!-- 부서에속한 팀목록 -->
 	<select id="departTeamList" resultType="TeamDTO">
-		SELECT idx
+		SELECT team_idx
 		from TEAM
 		where department_idx = #{departmentIdx}
 	</select>

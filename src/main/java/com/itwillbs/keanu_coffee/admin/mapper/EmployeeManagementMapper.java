@@ -37,7 +37,7 @@ public interface EmployeeManagementMapper {
 	// 팀 NULL로 바꾸기
 	void updateTeamToNull(Integer teamIdx);
 	// 부서, 팀, 직책 널로바꾸기
-	void updateDeptTeamRoleToNull(Long departmentIdx);
+	void updateDeptTeamRoleToNull(Integer departmentIdx);
 	
 	
 	// 회원 정보 업데이트하기

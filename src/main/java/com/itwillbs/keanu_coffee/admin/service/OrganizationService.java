@@ -68,24 +68,24 @@ public class OrganizationService {
 	
 	//부서삭제
 	@Transactional
-	public boolean removeDepartmentByIdx(Long departmentIdx) {
+	public boolean removeDepartmentByIdx(Integer departmentIdx) {
 		// 해당 부서의 팀,직책 모두 NULL처리
 		employeeManagementMapper.updateDeptTeamRoleToNull(departmentIdx);
 		
 		//해당 부서에 속해있는 팀목록, 팀수
-		List<DepartmentDTO> departTeamDTOList 
+		List<TeamDTO> TeamDTOList 
 			= organizationMapper.departTeamList(departmentIdx);
 		
-		for (DepartmentDTO departmentDTO : departTeamDTOList) {
-			deleteTeamByIdx((Integer)departmentDTO.getDepartmentIdx());
+		for (TeamDTO teamDTO : TeamDTOList) {
+			deleteTeamByIdx((Integer)teamDTO.getTeamIdx());
 		}
 		
 		//해당 부서에 속해있는 직책 목록
-		List<DepartmentDTO> departRoleDTOList 
+		List<RoleDTO> RoleDTOList 
 			= organizationMapper.departRoleList(departmentIdx);
 		
-		for (DepartmentDTO dto : departRoleDTOList) {
-			deleteRoleByIdx(dto.getDepartmentIdx());
+		for (RoleDTO roleDTO : RoleDTOList) {
+			deleteRoleByIdx(roleDTO.getRoleIdx());
 		}
 		
 		int deletedDept =organizationMapper.deleteDepartment(departmentIdx);
@@ -106,15 +106,15 @@ public class OrganizationService {
 	
 	// 직책삭제
 	@Transactional
-	public boolean deleteRoleByIdx(Integer integer) {
+	public boolean deleteRoleByIdx(Integer roleIdx) {
 		// 중간테이블 게시판,권한,직책 테이블의 내용삭제
-		organizationMapper.deleteRoleMenuAuthoByRoleIdx(integer);
+		organizationMapper.deleteRoleMenuAuthoByRoleIdx(roleIdx);
 		
 		// 직원정보 테이블의 roleIdx를 Null 값 또는 기본값 처리
-		employeeManagementMapper.updateRoleToNull(integer);
+		employeeManagementMapper.updateRoleToNull(roleIdx);
 		
 		// 직책삭제
-		int affectedRows = organizationMapper.deleteRole(integer);
+		int affectedRows = organizationMapper.deleteRole(roleIdx);
 		return affectedRows == 1;
 	}
 	

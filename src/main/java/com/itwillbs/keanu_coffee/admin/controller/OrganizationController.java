@@ -90,17 +90,15 @@ public class OrganizationController {
 	@PostMapping("/addRole")
 	@ResponseBody
 	public ResponseEntity<RoleDTO> addRole(@RequestBody RoleDTO roleDTO){
-		
 		RoleDTO saved = organizationService.addRole(roleDTO);
-		
 		return ResponseEntity.ok(saved);
 	}
 	
 	//부서삭제
 	@DeleteMapping("/removeDepartment")
 	@ResponseBody
-	public ResponseEntity<Void> removeDepartment(@RequestBody Map<String, Long> data) {
-		Long departmentIdx = data.get("deparmentidx");
+	public ResponseEntity<Void> removeDepartment(@RequestBody Map<String, Integer> data) {
+		Integer departmentIdx = data.get("departmentIdx");
 		boolean deleted = organizationService.removeDepartmentByIdx(departmentIdx);
 		
 		if (deleted) {
@@ -114,7 +112,7 @@ public class OrganizationController {
 	@DeleteMapping("/removeTeam")
 	@ResponseBody
 	public ResponseEntity<Void> deleteTeam(@RequestBody Map<String, Integer> data) {
-		Integer teamIdx = data.get("idx");
+		Integer teamIdx = data.get("teamIdx");
 	    boolean deleted = organizationService.deleteTeamByIdx(teamIdx);
 	    if (deleted) {
 	        return ResponseEntity.ok().build();
@@ -127,7 +125,7 @@ public class OrganizationController {
 	@DeleteMapping("/removeRole")
 	@ResponseBody
 	public ResponseEntity<Void> deleteRole(@RequestBody Map<String, Integer> data) {
-		Integer roleIdx = data.get("idx");
+		Integer roleIdx = data.get("roleIdx");
 		boolean deleted = organizationService.deleteRoleByIdx(roleIdx);
 		if (deleted) {
 			return ResponseEntity.ok().build();
@@ -164,11 +162,6 @@ public class OrganizationController {
 	@PutMapping("/modifyRole")
 	@ResponseBody
 	public ResponseEntity<Void> modifyRole(@RequestBody RoleDTO roleDTO) {
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println(roleDTO);
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
 		boolean success = organizationService.modifyRoleName(roleDTO.getRoleIdx(), roleDTO.getRoleName());
 		if (success) {
 			return ResponseEntity.ok().build();
