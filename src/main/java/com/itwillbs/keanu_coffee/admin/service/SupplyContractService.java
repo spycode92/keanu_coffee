@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
@@ -28,28 +28,28 @@ public class SupplyContractService {
 	private final FileMapper fileMapper;
 	
 	//공급계약리스트
-	public List<SupplierProductContractDTO> getsupplyContractInfo() {
+	public List<SupplierDTO> getsupplyContractInfo() {
 		return supplyContractMapper.selectSupplyContractsInfo();
 	}
 	
 	//계약등록
-	public boolean addContract(SupplierProductContractDTO supplyContract) {
+	public boolean addContract(SupplierDTO supplyContract) {
 		int insertCount = supplyContractMapper.insertContract(supplyContract);
 		return insertCount > 0;
 	}
 	//계약상세
-	public SupplierProductContractDTO getContractDetail(SupplierProductContractDTO supplyContract) {
+	public SupplierDTO getContractDetail(SupplierDTO supplyContract) {
 		
 		return supplyContractMapper.selectContractDetail(supplyContract);
 	}
 	//계약수정
-	public SupplierProductContractDTO updateContractDetail(SupplierProductContractDTO contract) {
+	public SupplierDTO updateContractDetail(SupplierDTO contract) {
 		int updateCount = supplyContractMapper.updateContractDetail(contract);
 		
 		return contract;
 	}
 	//계약삭제
-	public boolean deleteContractDetail(SupplierProductContractDTO contract) {
+	public boolean deleteContractDetail(SupplierDTO contract) {
 		int updateCount = supplyContractMapper.deleteContractDetail(contract);
 		return updateCount > 0;
 	}

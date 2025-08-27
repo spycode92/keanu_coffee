@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyCompanyMapper;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
@@ -29,19 +29,19 @@ public class SupplyCompanyService {
 	private final FileMapper fileMapper;
 	
 	//등록된공급업체리스트
-	public List<SupplierProductContractDTO> getSuppliersInfo() {
+	public List<SupplierDTO> getSuppliersInfo() {
 		return supplyCompanyMapper.selectSuppliersInfo();
 	}
 	
 	//공급업체등록
-	public SupplierProductContractDTO addSupplier(SupplierProductContractDTO supplierDTO) {
+	public SupplierDTO addSupplier(SupplierDTO supplierDTO) {
 		supplyCompanyMapper.insertSupplier(supplierDTO);
 		
 		return supplierDTO;
 	}
 	
 	//상태별 공급업체 필터링
-	public List<SupplierProductContractDTO> getSuppliersByStatus(String status) {
+	public List<SupplierDTO> getSuppliersByStatus(String status) {
 		 String dbStatus = null;
         if ("ACTIVE".equals(status)) {
             dbStatus = "계약중";
@@ -65,12 +65,12 @@ public class SupplyCompanyService {
 	}
 	
 	//공급업체 상세보기
-	public SupplierProductContractDTO selectSupplierByIdx(Long idx) {
+	public SupplierDTO selectSupplierByIdx(Long idx) {
 
 		return supplyCompanyMapper.selectSupplierInfo(idx);
 	}
 	//공급업체 정보변경
-	public int modifySupplier(SupplierProductContractDTO supplier) {
+	public int modifySupplier(SupplierDTO supplier) {
 		return supplyCompanyMapper.updateSupplier(supplier);
 	}
 	

@@ -8,22 +8,22 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 
 @Mapper
 public interface SupplyCompanyMapper {
 	//공급업체 리스트
-	List<SupplierProductContractDTO> selectSuppliersInfo();
+	List<SupplierDTO> selectSuppliersInfo();
 	// 공급업체등록
-	void insertSupplier(SupplierProductContractDTO supplierDTO);
+	void insertSupplier(SupplierDTO supplierDTO);
 	//공급업체 필터링
-	List<SupplierProductContractDTO> selectSupplierByStatus(String dbStatus);
+	List<SupplierDTO> selectSupplierByStatus(String dbStatus);
 	//공급업체 삭제시 계약이남아있나 확인
 	int countActiveContractsBySupplier(Long supplierIdx);
 	// 공급업체 삭제
 	int deleteSupplierByIdx(Long supplierIdx);
 	//공급업체상세정보
-	SupplierProductContractDTO selectSupplierInfo(Long idx);
+	SupplierDTO selectSupplierInfo(Long idx);
 	// 공급업체 정보 수정
-	int updateSupplier(SupplierProductContractDTO supplier);
+	int updateSupplier(SupplierDTO supplier);
 }

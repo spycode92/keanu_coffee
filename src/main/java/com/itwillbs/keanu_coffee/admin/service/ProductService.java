@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.ProductMapper;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
@@ -30,24 +30,24 @@ public class ProductService {
 	
 	
 	//등록된상품리스트
-	public List<SupplierProductContractDTO> getProductsInfo() {
+	public List<SupplierDTO> getProductsInfo() {
 		return productMapper.selectProductsInfo();
 	}
 	
 	
 	// 카테고리 전체목록
-	public List<SupplierProductContractDTO> getAllCategoriesAsMap() {
+	public List<SupplierDTO> getAllCategoriesAsMap() {
 		return productMapper.selectAllCategoriesAsMap();
 	}
 	
 	// 카테고리 추가
-	public void addCategoryFromMap(SupplierProductContractDTO category) {
+	public void addCategoryFromMap(SupplierDTO category) {
 		productMapper.insertCategory(category);
 
 	}
 	
 	//카테고리수정
-	public void modifyCategory(SupplierProductContractDTO category) {
+	public void modifyCategory(SupplierDTO category) {
 		productMapper.updateCategory(category);		
 	}
 	
@@ -68,7 +68,7 @@ public class ProductService {
 	
 	//상품등록
 	@Transactional
-	public Boolean addProduct(SupplierProductContractDTO product) throws IOException {
+	public Boolean addProduct(SupplierDTO product) throws IOException {
 		//상품DB등록
 		int insertCount = productMapper.insertProduct(product);
 		//상품파일업로드
@@ -82,23 +82,23 @@ public class ProductService {
 		
 	}
 	//상품전체
-	public List<SupplierProductContractDTO> getProductList() {
+	public List<SupplierDTO> getProductList() {
 
 		return productMapper.selectAllProductList();
 	}
 	
 	//대분류 필터링
-	public List<SupplierProductContractDTO> getProductsByCategoryIdxList(List<Long> categoryIdxList) {
+	public List<SupplierDTO> getProductsByCategoryIdxList(List<Long> categoryIdxList) {
 		return productMapper.selectProductByCategoryIdxList(categoryIdxList);
 	}
 	
 	//소분류필터링
-	public List<SupplierProductContractDTO> getProductsByCategoryIdx(Long categoryIdx) {
+	public List<SupplierDTO> getProductsByCategoryIdx(Long categoryIdx) {
 		return productMapper.selectProductsByCategoryIdx(categoryIdx);
 	}
 	
 	//상품상세정보
-	public SupplierProductContractDTO getProductDetail(SupplierProductContractDTO product) {
+	public SupplierDTO getProductDetail(SupplierDTO product) {
 		//상품등록시 추가한 이미지파일 검색
 		FileDTO file = fileMapper.getFileWithTargetTable("product", product.getProductIdx());
 		// 상품정보불러오기
@@ -113,7 +113,7 @@ public class ProductService {
 	
 	//상품정보수정
 	@Transactional
-	public Boolean modifyProduct(SupplierProductContractDTO product) throws IOException {
+	public Boolean modifyProduct(SupplierDTO product) throws IOException {
 		// 현재 product에 들어있는  파일 저장
 		product.setIdx(product.getProductIdx());
 		List<FileDTO> fileList = FileUtils.uploadFile(product, session);
