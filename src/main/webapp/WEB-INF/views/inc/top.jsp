@@ -79,8 +79,7 @@
               <li><a href="/inventory/updatedInventory">업데이트된 재고 테이블</a></li>
               <li><a href="/inventory/inventoryToMove">이동할 재고</a></li>
 
-              <li><a href="/inventory/test">test</a></li>
-              <li><a href="/inventory/test2">test2</a></li>
+              <li><a href="/inventory/qrScanner">QR 스캐너</a></li>
               <li><a href="/inventory/locationType">로케이션 지정</a></li>
               <li><a href="/inventory/stockCheck">재고 조회/검수</a></li>
 			  </ul>
