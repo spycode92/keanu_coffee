@@ -8,6 +8,7 @@ $(function () {
 	$('#btnAddTeam').prop('disabled', false);
     let selectedDeptIdx = null;
     let selectedTeamIdx = null;
+
     // 부서 선택시 이벤트
     $(document).on('click', '.department-item', function () {
         $('.department-item').removeClass('active');
@@ -51,7 +52,7 @@ $(function () {
 	                dataType: 'json',
 	                success: function(dept) {
 	                    $('#departmentList').append(
-	                        `<li class="list-group-item d-flex justify-content-between align-items-center department-item"  data-departmentidx="${dept.idx}">
+	                        `<li class="list-group-item d-flex justify-content-between align-items-center department-item"  data-departmentidx="${dept.departmentIdx}">
 	                            <span class="department-name">${dept.departmentName}</span>
 								<div>
 									<button type="button" class="btn btn-sm btn-secondary btn-edit-department">✎</button>
@@ -123,7 +124,7 @@ $(function () {
 	                    $('#teamList').find('li.text-muted').remove();
 	
 	                    $('#teamList').append(
-	                        `<li class="list-group-item d-flex justify-content-between align-items-center team-item"  data-teamidx="${team.idx}">
+	                        `<li class="list-group-item d-flex justify-content-between align-items-center team-item"  data-teamidx="${team.teamIdx}">
 	                            <span>${team.teamName}</span>
 								<div>
 									<button type="button" class="btn btn-sm btn-secondary btn-edit-team">✎</button>
@@ -195,7 +196,7 @@ $(function () {
 	                success: function(role) {
 	                    $('#roleList').find('li.text-muted').remove();
 	                    $('#roleList').append(
-	                        `<li class="list-group-item d-flex justify-content-between align-items-center role-item"  data-roleidx="${role.idx}">
+	                        `<li class="list-group-item d-flex justify-content-between align-items-center role-item"  data-roleidx="${role.roleIdx}">
 	                            <span>${role.roleName}</span>
 								<div>
 									<button type="button" class="btn btn-sm btn-secondary btn-edit-role">✎</button>
@@ -236,13 +237,14 @@ $(function () {
 	    }).then((result) => {
 		    if (result.isConfirmed) {
 		        
-				let deptIdx = $(this).closest('li').data('departmentidx');
+				let departmentIdx = $(this).closest('li').data('departmentidx');
 		        let $targetLi = $(this).closest('li');
+				
 		        $.ajax({
 		            url: '/admin/systemPreference/dept/removeDepartment',
 		            method: 'DELETE',
 		            contentType: 'application/json',
-		            data: JSON.stringify({ idx: deptIdx }),
+		            data: JSON.stringify({departmentIdx:departmentIdx}),
 		            success: function() {
 		                $targetLi.remove();
 	
@@ -289,7 +291,7 @@ $(function () {
 	                url: '/admin/systemPreference/dept/removeTeam',
 	                method: 'DELETE',
 	                contentType: 'application/json',
-	                data: JSON.stringify({ idx: teamIdx }),
+	                data: JSON.stringify({ teamIdx: teamIdx }),
 	                success: function() {
 	                    $targetLi.remove(); // UI에서 제거
 	                    Swal.fire({
@@ -329,12 +331,12 @@ $(function () {
 	        cancelButtonText: '취소'
 	    }).then((result) => {
 	        if (result.isConfirmed) {
-	            let roleIdx = $btn.closest('li').data('roleidx');
+	            let roleidx = $btn.closest('li').data('roleidx');
 	
 	            $.ajax({
 	                url: '/admin/systemPreference/dept/removeRole',
 	                method: 'DELETE',
-	                data: JSON.stringify({ idx: roleIdx }),
+	                data: JSON.stringify({ roleIdx: roleidx }),
 	                contentType: 'application/json',
 	                success: () => {
 	                    $btn.closest('li').remove();  // 삭제 성공 시 UI에서 해당 li 제거
@@ -394,7 +396,7 @@ $(function () {
 	                url: '/admin/systemPreference/dept/modifyDepartment',
 	                method: 'PUT',
 	                contentType: 'application/json',
-	                data: JSON.stringify({ idx: deptIdx, departmentName: newName }),
+	                data: JSON.stringify({ departmentIdx: deptIdx, departmentName: newName }),
 	                success: function() {
 	                    $li.find('.department-name').text(newName);
 	                    Swal.fire({
@@ -452,7 +454,7 @@ $(function () {
 	                url: '/admin/systemPreference/dept/modifyTeam',
 	                method: 'PUT',
 	                contentType: 'application/json',
-	                data: JSON.stringify({ idx: teamIdx, teamName: newName }),
+	                data: JSON.stringify({ teamIdx: teamIdx, teamName: newName }),
 	                success: function() {
 	                    $li.find('span').text(newName);
 	                    Swal.fire({
@@ -480,8 +482,11 @@ $(function () {
 	    e.stopPropagation();
 	    let $li = $(this).closest('li');
 	    let currentName = $li.find('span').text();
+//	    let roleIdx = 10;
 	    let roleIdx = $li.data('roleidx');
-	
+		console.log(",ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
+		console.log(roleIdx);
+		console.log(",ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
 	    Swal.fire({
 	        title: '직책명을 수정하세요',
 	        input: 'text',
@@ -510,7 +515,7 @@ $(function () {
 	                url: '/admin/systemPreference/dept/modifyRole',
 	                method: 'PUT',
 	                contentType: 'application/json',
-	                data: JSON.stringify({ idx: roleIdx, roleName: newName }),
+	                data: JSON.stringify({roleIdx:roleIdx,roleName:newName }),
 	                success: function() {
 	                    $li.find('span').text(newName);
 	                    Swal.fire({
@@ -546,11 +551,14 @@ $(function () {
 	        data: { departmentIdx: departmentIdx },
 	        dataType: 'json',
 	        success: function(data) {
+				console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
+				console.log(data);
+				console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
 	            // 팀 목록 표시
 	            if (Array.isArray(data.teams) && data.teams.length > 0) {
 	                data.teams.forEach(function(team) {
 	                    $('#teamList').append(
-	                        `<li class="list-group-item d-flex justify-content-between align-items-center team-item" data-teamidx="${team.idx}">
+	                        `<li class="list-group-item d-flex justify-content-between align-items-center team-item" data-teamidx="${team.teamIdx}">
 	                            <span>${team.teamName}</span>
 								<div>
                                     <button type="button" class="btn btn-sm btn-secondary btn-edit-team">✎</button> 
@@ -566,7 +574,7 @@ $(function () {
 	            if (Array.isArray(data.roles) && data.roles.length > 0) {
 	                data.roles.forEach(function(role) {
 	                    $('#roleList').append(
-	                        `<li class="list-group-item d-flex justify-content-between align-items-center role-item" data-roleidx="${role.idx}">
+	                        `<li class="list-group-item d-flex justify-content-between align-items-center role-item" data-roleidx="${role.roleIdx}">
 	                            <span>${role.roleName}</span>
 								<div>
 									<button type="button" class="btn btn-sm btn-secondary btn-edit-role">✎</button> 
