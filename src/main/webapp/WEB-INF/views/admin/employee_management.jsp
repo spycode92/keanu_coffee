@@ -47,6 +47,7 @@
 				<th>번호</th>
 				<th>이메일</th>
 				<th data-key="e.hire_date" onclick="allineTable(this)">입사일↕</th>
+				<th data-key="e.emp_status" onclick="allineTable(this)">상태↕</th>
 			</tr>
 			<c:forEach var="employee" items="${employeeList }">
 				<tr class="employee-row" data-emp-idx="${employee.empIdx}">
@@ -68,6 +69,7 @@
 					<td>${employee.empPhone }</td>
 					<td>${employee.empEmail }</td>
 					<td>${employee.hireDate }</td>
+					<td>${employee.empStatus }</td>
 				</tr>
 			</c:forEach>
 			
