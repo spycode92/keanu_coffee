@@ -351,7 +351,27 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 	const form = document.getElementById('modifyEmployeeForm');
 	form.querySelector('select[name="departmentIdx"]').addEventListener('change', onModifyDeptChange);
+	//수정모달 핸드폰 번호입력제약사항
+	form.querySelector('input[name="empPhone"]').addEventListener('input', function(e) {
+	    let input = e.target.value;
+	    
+	    // 숫자 외 모든 문자 제거
+	    input = input.replace(/\D/g, '');
 	
+	    // 13자리 초과 입력 차단
+	    if (input.length > 11) {
+	        input = input.substring(0, 11);
+	    }
+	
+	    // 하이픈 자동 삽입 (예: 010-1234-5678 형태)
+	    if (input.length > 3 && input.length <= 7) {
+	        input = input.substring(0, 3) + '-' + input.substring(3);
+	    } else if (input.length > 7) {
+	        input = input.substring(0, 3) + '-' + input.substring(3, 7) + '-' + input.substring(7);
+	    }
+	
+	    e.target.value = input;
+	});
 	// 수정모달 비밀번호 초기화버튼 클릭
 	document.getElementById('resetPw').addEventListener('click', function() {
 		const form = document.getElementById('modifyEmployeeForm');
