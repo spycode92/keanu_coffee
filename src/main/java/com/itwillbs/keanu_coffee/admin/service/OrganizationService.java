@@ -133,7 +133,6 @@ public class OrganizationService {
 		int affectedRows = organizationMapper.updateRole(idx, roleName);
 		
 		return  affectedRows == 1;
-	}
-	
+	}	
 	
 }

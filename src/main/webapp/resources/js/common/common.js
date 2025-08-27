@@ -328,16 +328,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 	// 정보변경 버튼 클릭 처리
-	document.querySelectorAll('[data-modal-target]').forEach(btn => {
-	    btn.addEventListener('click', async() => {
-			try {
+	document.querySelectorAll('[data-modal-target]').forEach(btn => {  
+	    btn.addEventListener('click', async() => {  
+			try { 
 		        const modalId = btn.getAttribute('data-modal-target');
 		        ModalManager.openModalById(modalId);
 
 				await loadCurrentUserInfo();
 	            captureOriginalData();
 	            switchMode(false);
-			} catch (error) {
+			} catch (error) { 
             	console.error('정보 불러오기 또는 초기화 중 오류:', error);
         	}
 	    });

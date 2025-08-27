@@ -88,17 +88,17 @@
 	<!-- 부서,팀,직책 정보 가져오기 -->
 	<select id="getOrgData" resultType="Map">
 		SELECT
-		d.idx as department_idx
-		, d.department_name
-		, r.idx as role_idx
+		c.common_code_idx
+		, c.common_code_name
+		, r.role_idx
 		, r.role_name
-		, t.idx as team_idx
+		, t.team_idx
 		, t.team_name
-		FROM DEPARTMENT d
+		FROM COMMON_CODE c
 		LEFT JOIN ROLE r
-		ON d.idx = r.department_idx
+		ON c.common_code_idx = r.department_idx
 		LEFT JOIN TEAM t
-		ON d.idx = t.department_idx
-		
+		ON c.common_code_idx = t.department_idx
+		WHERE c.group_code = 'DEPARTMENT'
 	</select>
 </mapper> 
