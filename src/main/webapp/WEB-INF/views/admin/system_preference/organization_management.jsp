@@ -32,7 +32,7 @@
                     <ul id="departmentList" class="list-group">
                         <c:forEach items="${departmentList}" var="department">
                             <li class="list-group-item department-item"
-                                data-departmentidx="${department.idx}">
+                                data-departmentidx="${department.departmentIdx}">
                                 <span class="department-name">${department.departmentName}</span>
                                 <div>
                                     <button type="button"

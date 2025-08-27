@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
+import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
 
 @Mapper

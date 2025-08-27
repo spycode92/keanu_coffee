@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.relation.Role;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
+import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
+import com.itwillbs.keanu_coffee.admin.dto.RoleDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
+import com.itwillbs.keanu_coffee.admin.dto.TeamDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
@@ -30,37 +33,37 @@ public class OrganizationService {
 	
 	
 	//부서 전체 목록 받아오기
-	public List<DepartTeamRoleDTO> getDepartInfo() {
+	public List<DepartmentDTO> getDepartInfo() {
 		return organizationMapper.getDepartmentInfo();
 	}
 	
 	//해당 부서의 팀 목록 받아오기
-	public List<DepartTeamRoleDTO> getTeamsByDepartmentIdx(int departmentIdx) {
+	public List<TeamDTO> getTeamsByDepartmentIdx(int departmentIdx) {
 
 		return organizationMapper.getTeamsInfoByDepartmentIdx(departmentIdx);
 	}
 	
 	//해당 부서의 직책목록 받아오기
-	public List<DepartTeamRoleDTO> getRolesByDepartmentIdx(int departmentIdx) {
+	public List<RoleDTO> getRolesByDepartmentIdx(int departmentIdx) {
 		return organizationMapper.getRolesInfoByDepartmentIdx(departmentIdx);
 	}
 	
 	//부서추가
-	public DepartTeamRoleDTO addDepartment(DepartTeamRoleDTO departTeamRoleDTO) {
+	public DepartmentDTO addDepartment(DepartmentDTO departTeamRoleDTO) {
 		organizationMapper.insertDepartment(departTeamRoleDTO);
 		return departTeamRoleDTO;
 	}
 	
 	//팀 추가
-	public DepartTeamRoleDTO addTeam(DepartTeamRoleDTO departTeamRoleDTO) {
-		organizationMapper.insertTeam(departTeamRoleDTO);
-		return departTeamRoleDTO;
+	public TeamDTO addTeam(TeamDTO teamdto) {
+		organizationMapper.insertTeam(teamdto);
+		return teamdto;
 	}
 	
 	//직책추가
-	public DepartTeamRoleDTO addRole(DepartTeamRoleDTO departTeamRoleDTO) {
-		organizationMapper.insertRole(departTeamRoleDTO);
-		return departTeamRoleDTO;
+	public RoleDTO addRole(RoleDTO roleDTO) {
+		organizationMapper.insertRole(roleDTO);
+		return roleDTO;
 	}
 	
 	//부서삭제
@@ -70,19 +73,19 @@ public class OrganizationService {
 		employeeManagementMapper.updateDeptTeamRoleToNull(departmentIdx);
 		
 		//해당 부서에 속해있는 팀목록, 팀수
-		List<DepartTeamRoleDTO> departTeamDTOList 
+		List<DepartmentDTO> departTeamDTOList 
 			= organizationMapper.departTeamList(departmentIdx);
 		
-		for (DepartTeamRoleDTO dto : departTeamDTOList) {
-			deleteTeamByIdx((long)dto.getIdx());
+		for (DepartmentDTO departmentDTO : departTeamDTOList) {
+			deleteTeamByIdx((Integer)departmentDTO.getDepartmentIdx());
 		}
 		
 		//해당 부서에 속해있는 직책 목록
-		List<DepartTeamRoleDTO> departRoleDTOList 
+		List<DepartmentDTO> departRoleDTOList 
 			= organizationMapper.departRoleList(departmentIdx);
 		
-		for (DepartTeamRoleDTO dto : departRoleDTOList) {
-			deleteRoleByIdx((long)dto.getIdx());
+		for (DepartmentDTO dto : departRoleDTOList) {
+			deleteRoleByIdx(dto.getDepartmentIdx());
 		}
 		
 		int deletedDept =organizationMapper.deleteDepartment(departmentIdx);
@@ -92,7 +95,7 @@ public class OrganizationService {
 	
 	// 팀 삭제
 	@Transactional
-	public boolean deleteTeamByIdx(Long teamIdx) {
+	public boolean deleteTeamByIdx(Integer teamIdx) {
 		// 직원정보 테이블의 팀 널로 바꾸기
 		employeeManagementMapper.updateTeamToNull(teamIdx);
 		
@@ -103,15 +106,15 @@ public class OrganizationService {
 	
 	// 직책삭제
 	@Transactional
-	public boolean deleteRoleByIdx(Long roleIdx) {
+	public boolean deleteRoleByIdx(Integer integer) {
 		// 중간테이블 게시판,권한,직책 테이블의 내용삭제
-		organizationMapper.deleteRoleMenuAuthoByRoleIdx(roleIdx);
+		organizationMapper.deleteRoleMenuAuthoByRoleIdx(integer);
 		
 		// 직원정보 테이블의 roleIdx를 Null 값 또는 기본값 처리
-		employeeManagementMapper.updateRoleToNull(roleIdx);
+		employeeManagementMapper.updateRoleToNull(integer);
 		
 		// 직책삭제
-		int affectedRows = organizationMapper.deleteRole(roleIdx);
+		int affectedRows = organizationMapper.deleteRole(integer);
 		return affectedRows == 1;
 	}
 	

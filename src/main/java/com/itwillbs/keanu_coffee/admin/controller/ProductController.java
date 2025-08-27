@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
+import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
 import com.itwillbs.keanu_coffee.admin.service.OrganizationService;
