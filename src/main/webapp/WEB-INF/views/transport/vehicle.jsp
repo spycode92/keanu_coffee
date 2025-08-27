@@ -430,7 +430,7 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 							</thead>
 							<tbody>
 								<c:forEach var="vehicle" items="${vehicleList}">
-									<tr class="rowLink" data-vehicle-id="${vehicle.vehicleIdx}">
+									<tr class="rowLink" data-vehicle-id="${vehicle.vehicleIdx}" data-status="${vehicle.status}">
 										<td><input type="checkbox" class="rowCheck"/></td>
 										<td>${vehicle.vehicleNumber}</td>
 										<td>${vehicle.vehicleType}</td>
@@ -464,7 +464,6 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 													<span class="badge left">${vehicle.status}</span>
 												</c:otherwise>
 											</c:choose>
-										
 										</td>
 									</tr>
 								</c:forEach>
