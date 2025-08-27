@@ -18,4 +18,7 @@ public interface DriverMapper {
 	// 페이징된 운전자 리스트
 	List<DriverVehicleDTO> selectDriverList(@Param("startRow") int startRow, @Param("listLimit") int listLimit, @Param("filter") String filter, @Param("searchKeyword") String searchKeyword);
 
+	// 운전자 상세정보
+	DriverVehicleDTO selectDriver(Integer idx);
+
 }

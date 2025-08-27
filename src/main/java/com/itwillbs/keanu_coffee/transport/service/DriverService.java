@@ -30,4 +30,9 @@ public class DriverService {
 		return driverMapper.selectDriverList(startRow, listLimit, filter, searchKeyword);
 	}
 
+	// 운전자 상세정보
+	public DriverVehicleDTO getDriver(Integer idx) {
+		return driverMapper.selectDriver(idx);
+	}
+
 }

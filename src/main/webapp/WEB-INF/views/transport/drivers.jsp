@@ -16,6 +16,8 @@
 	rel="stylesheet">
 <script
 	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/transport/driver.js"></script>
 <style type="text/css">
 
 .badge {
@@ -111,9 +113,9 @@
 		                            <th>상태</th>
 		                        </tr>
 		                    </thead>
-							<tbody>
+							<tbody id="driverTbody">
 								<c:forEach var="driver" items="${driverList}">
-									<tr>
+									<tr class="driverInfo" data-driver-idx="${driver.empIdx}">
 										<td>${driver.empName}</td>
 										<td>${driver.empPhone}</td>
 										<td>
@@ -160,36 +162,47 @@
 		</div>
 	</div>
 	<!-- 기사 상세 + 차량 배정/변경 모달 -->
-        <div class="modal" id="driverModal" aria-hidden="true">
-            <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="driverTitle">
+        <div class="modal" id="formModal" aria-hidden="true">
+            <div class="modal-card modal-form lg">
                 <div class="modal-head">
                     <strong id="driverTitle">기사 정보</strong>
-                    <button class="btn secondary" id="closeDriverModal">닫기</button>
+                    <button class="modal-close-btn" onclick="ModalManager.closeModal(document.getElementById('formModal'))">✕</button>
                 </div>
                 <div class="modal-body">
-                    <div class="grid-2" style="margin-bottom:12px">
+                    <div style="margin-bottom:12px">
+                        <div class="field">
+                            <label>사번</label>
+                            <input id="empNo" disabled />
+                        </div>
                         <div class="field">
                             <label>이름</label>
-                            <input id="v_name" disabled />
+                            <input id="empName" disabled />
                         </div>
                         <div class="field">
                             <label>연락처</label>
-                            <input id="v_phone" disabled />
-                        </div>
-                        <div class="field">
-                            <label>면허만료일</label>
-                            <input id="v_license" disabled />
+                            <input id="empPhone" disabled />
                         </div>
                         <div class="field">
                             <label>상태</label>
-                            <input id="v_status" disabled />
+                            <input id="empStatus" disabled />
                         </div>
                     </div>
-
+					<!-- 차량 선택 -->
                     <div class="section-title">차량</div>
-                    <div id="vehicleArea">
-                        <!-- JS: 배정된 차량 정보 or 배정 버튼 -->
-                    </div>
+					<table class="table responsive" aria-label="차량 선택 테이블">
+						<thead>
+				            <tr>
+				              <th scope="col" class="col-radio"></th>
+				              <th scope="col">차량번호</th>
+				              <th scope="col">차종</th>
+				              <th scope="col">적재량(kg)</th>
+				              <th scope="col">상태</th>
+				            </tr>
+				    	</thead>
+					    <tbody id="vehicleRows">
+					    <!-- Ajax로 행 렌더링 -->
+						</tbody>
+					</table>
                 </div>
                 <div class="modal-foot">
                     <button class="btn outline" id="vehicleAssignBtn" style="display:none">차량 배정</button>
@@ -197,199 +210,5 @@
                 </div>
             </div>
         </div>
-
-        <!-- 차량 선택 모달(서브) -->
-        <div class="modal" id="vehicleModal" aria-hidden="true">
-            <div class="sub-card" role="dialog" aria-modal="true" aria-labelledby="vehicleTitle">
-                <div class="modal-head">
-                    <strong id="vehicleTitle">차량 선택</strong>
-                    <button class="btn secondary" id="closeVehicleModal">닫기</button>
-                </div>
-                <div class="modal-body">
-                    <div class="toolbar">
-                        <input id="qCarNo" type="text" placeholder="차량번호 검색 (예: 89바)" />
-                        <select id="qCap">
-                            <option value="">전체 적재량</option>
-                            <option>1.0t</option>
-                            <option>1.5t</option>
-                            <option>2.5t</option>
-                            <option>5t</option>
-                        </select>
-                        <button class="btn" id="qSearch">검색</button>
-                        <button class="btn secondary" id="qReset">초기화</button>
-                    </div>
-                    <div class="card" style="border:none; box-shadow:none">
-                        <table id="vehicleTable">
-                            <thead>
-                                <tr>
-                                    <th style="width:48px"></th>
-                                    <th>차량번호</th>
-                                    <th>적재량</th>
-                                    <th>차종</th>
-                                    <th>상태</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- JS 렌더링 -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-foot">
-                    <button class="btn" id="confirmAssign">배정</button>
-                </div>
-            </div>
-        </div>
-<script>
-    // ---- 더미 데이터 ----
-    const drivers = [
-        { id: 1, name: '김배송', phone: '010-1111-1111', license: '2026-12-31', status: '대기', car: null },
-        { id: 2, name: '이배송', phone: '010-2222-2222', license: '2025-10-31', status: '운행중', car: { no: '89바 1234', cap: '1.5t', type: '카고' } },
-        { id: 3, name: '최배송', phone: '010-3333-3333', license: '2027-01-15', status: '대기', car: null }
-    ];
-
-    const vehicles = [
-        { no: '89바 1234', cap: '1.5t', type: '카고', status: '가용' },
-        { no: '77나 4567', cap: '5t', type: '윙바디', status: '가용' },
-        { no: '55다 1111', cap: '1.0t', type: '탑차', status: '가용' },
-        { no: '12라 2222', cap: '2.5t', type: '카고', status: '정비중' },
-        { no: '34마 3333', cap: '1.5t', type: '냉동탑', status: '가용' }
-    ];
-
-    // ---- 목록 렌더 ----
-    const tbody = document.querySelector('#driverTable tbody');
-
-    // ---- 기사 모달 ----
-    const driverModal = document.getElementById('driverModal');
-    const closeDriverModal = document.getElementById('closeDriverModal');
-    const vehicleArea = document.getElementById('vehicleArea');
-    const vehicleAssignBtn = document.getElementById('vehicleAssignBtn');
-    const vehicleChangeBtn = document.getElementById('vehicleChangeBtn');
-    let currentDriverId = null;
-
-    function openDriver(id) {
-        const d = drivers.find(function(x){ return x.id === id; });
-        if (!d) return;
-        currentDriverId = id;
-
-        // 기사 정보 (읽기 전용)
-        document.getElementById('v_name').value = d.name;
-        document.getElementById('v_phone').value = d.phone;
-        document.getElementById('v_license').value = d.license;
-        document.getElementById('v_status').value = d.status;
-
-        // 차량 영역
-        if (d.car) {
-            vehicleArea.innerHTML =
-                '<div class="vehicle-box">' +
-                    '<div class="vehicle-meta">' +
-                        '<div><strong>' + d.car.no + '</strong></div>' +
-                        '<small>적재량 ' + d.car.cap + ' · 차종 ' + d.car.type + '</small>' +
-                    '</div>' +
-                    '<div>' +
-                        '<button class="btn outline" id="openChange">차량 변경</button>' +
-                    '</div>' +
-                '</div>';
-            vehicleAssignBtn.style.display = 'none';
-            vehicleChangeBtn.style.display = 'none';
-            // 버튼 핸들러
-            vehicleArea.querySelector('#openChange').addEventListener('click', openVehiclePicker);
-        } else {
-            vehicleArea.innerHTML =
-                '<div class="vehicle-box" style="border-style: dashed;">' +
-                    '<div class="vehicle-meta">' +
-                        '<div><strong>배정된 차량이 없습니다</strong></div>' +
-                        '<small>아래 버튼을 눌러 차량을 배정하세요.</small>' +
-                    '</div>' +
-                    '<div>' +
-                        '<button class="btn" id="openAssign">차량 배정</button>' +
-                    '</div>' +
-                '</div>';
-            vehicleAssignBtn.style.display = 'none';
-            vehicleChangeBtn.style.display = 'none';
-            // 버튼 핸들러
-            vehicleArea.querySelector('#openAssign').addEventListener('click', openVehiclePicker);
-        }
-
-        driverModal.classList.add('open');
-    }
-
-    closeDriverModal.addEventListener('click', function(){ driverModal.classList.remove('open'); });
-
-    // ---- 차량 선택 모달 ----
-    const vehicleModal = document.getElementById('vehicleModal');
-    const closeVehicleModal = document.getElementById('closeVehicleModal');
-    const vTbody = document.querySelector('#vehicleTable tbody');
-    const qCarNo = document.getElementById('qCarNo');
-    const qCap = document.getElementById('qCap');
-    const qSearch = document.getElementById('qSearch');
-    const qReset = document.getElementById('qReset');
-    let vehicleRows = vehicles.slice();
-    let selectedVehicleNo = null;
-
-    function openVehiclePicker() {
-        selectedVehicleNo = null;
-        qCarNo.value = '';
-        qCap.value = '';
-        vehicleRows = vehicles.slice();
-        renderVehicleTable();
-        vehicleModal.classList.add('open');
-    }
-
-    function renderVehicleTable() {
-        vTbody.innerHTML = '';
-        vehicleRows.forEach(function(v) {
-            const tr = document.createElement('tr');
-            tr.innerHTML =
-                '<td><input class="radio" type="radio" name="pickVehicle" value="' + v.no + '" ' + (v.status !== '가용' ? 'disabled' : '') + '></td>' +
-                '<td>' + v.no + '</td>' +
-                '<td>' + v.cap + '</td>' +
-                '<td>' + v.type + '</td>' +
-                '<td>' + v.status + '</td>';
-            const radio = tr.querySelector('input[type="radio"]');
-            if (v.status === '가용') {
-                radio.addEventListener('change', function(e){ selectedVehicleNo = e.target.value; });
-            }
-            vTbody.appendChild(tr);
-        });
-    }
-
-    qSearch.addEventListener('click', function() {
-        const term = qCarNo.value.trim();
-        const cap = qCap.value;
-        vehicleRows = vehicles.filter(function(v){
-            if (term && v.no.indexOf(term) === -1) return false;
-            if (cap && v.cap !== cap) return false;
-            return true;
-        });
-        renderVehicleTable();
-    });
-
-    qReset.addEventListener('click', function() {
-        qCarNo.value = '';
-        qCap.value = '';
-        vehicleRows = vehicles.slice();
-        renderVehicleTable();
-    });
-
-    closeVehicleModal.addEventListener('click', function(){ vehicleModal.classList.remove('open'); });
-
-    // 배정 확정
-    document.getElementById('confirmAssign').addEventListener('click', function() {
-        if (!selectedVehicleNo) {
-            alert('배정할 차량을 선택하세요.');
-            return;
-        }
-        const d = drivers.find(function(x){ return x.id === currentDriverId; });
-        const v = vehicles.find(function(x){ return x.no === selectedVehicleNo; });
-        if (!d || !v) return;
-
-        d.car = { no: v.no, cap: v.cap, type: v.type };
-        vehicleModal.classList.remove('open');
-        openDriver(d.id); // 모달 내용 갱신
-        renderTable();    // 목록 갱신
-    });
-</script>
-
-</body>
+	</body>
 </html>
