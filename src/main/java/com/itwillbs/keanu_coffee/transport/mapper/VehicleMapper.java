@@ -1,3 +1,4 @@
+
 package com.itwillbs.keanu_coffee.transport.mapper;
 
 import java.util.List;
@@ -23,8 +24,8 @@ public interface VehicleMapper {
 	// 차량 상세정보
 	VehicleDTO selectByIdx(int idx);
 
-	// 차량 삭제
-	int deleteByIdx(List<Integer> idx);
+	// 차량 사용불가 상태로 변경
+	int updateStatus(@Param("idx") List<Integer> idx, @Param("status") String status);
 
 
 }

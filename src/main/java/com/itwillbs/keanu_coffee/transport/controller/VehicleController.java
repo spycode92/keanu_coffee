@@ -72,15 +72,21 @@ public class VehicleController {
 		return ResponseEntity.ok(vehicleDTO);
 	}
 	
-	// 차량 삭제
-	@DeleteMapping("/vehicle/delete")
+	// 차량 상태 사용불가로 변경
+	@PostMapping("/vehicle/status")
 	@ResponseBody
-	public ResponseEntity<?> deleteVehicles(@RequestBody List<Integer> idx) {
-		if (idx == null || idx.isEmpty()) {
+	public ResponseEntity<?> deleteVehicles(@RequestBody Map<String, Object> body) {
+		
+		@SuppressWarnings("unchecked")
+		List<Integer> idx = (List<Integer>) body.get("idx");
+		
+		String status = (String) body.get("status");
+		
+		if (idx == null || idx.isEmpty() || status == null) {
 			return ResponseEntity.badRequest().build();
 		}
 		
-		int deleted = vehicleService.deleteByIdx(idx);
+		int deleted = vehicleService.modifyStatus(idx, status);
 		
 		return ResponseEntity.ok(Map.of("deleted", deleted));
 	}

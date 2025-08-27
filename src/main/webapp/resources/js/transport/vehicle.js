@@ -1,6 +1,6 @@
 const DUPLICATE_CHECK_URL = "/transport/vehicle/dupCheck";
 const MODIFY_VEHICLE_URL = "/transport/vehicle/detail";
-const DELETE_VEHICLE_URL = "/transport/vehicle/delete";
+const MODIFY_VEHICLE_STATUS_URL = "/transport/vehicle/status";
 const ASSIGN_DRIVER_URL = "/transport/assignDriver";
 
 // 모달 열기
@@ -141,29 +141,84 @@ function openEditModal(vehicleIdx) {
 	  $("#idx").val(v.vehicleIdx);
 	  
       // 상세 정보 입력
-      $('#vehicleNumber').val(v.vehicleNumber);
-      $('#vehicleType').val(v.vehicleType);
-      $('#capacity').val(String(v.capacity)); 
-      $('#year').val(v.manufactureYear || '');
-      $('#model').val(v.manufacturerModel || '');
-      $('#driverName').val(v.driverName || '');
-      $('#manufacturerModel').val(v.manufacturerModel);
-      $('#manufactureYear').val(v.manufactureYear);
+      $("#vehicleNumber").val(v.vehicleNumber);
+      $("#vehicleType").val(v.vehicleType);
+	  $("#status").val(v.status);
+      $("#capacity").val(String(v.capacity)); 
+      $("#driverName").val(v.driverName || '');
+      $("#manufacturerModel").val(v.manufacturerModel);
+      $("#manufactureYear").val(v.manufactureYear);
 
 	  v.capacity === 1000 ? $('#capacity').val("1.0t") : $('#capacity').val("1.5t");
 
-	  const status = v.status;
-	  $('status').val(status);
+      const isModify = (v.status === '운행중' || v.status === '대기');	  
+	  $('#saveEdit').prop('disabled', isModify);
+	  $('#status').prop('disabled', isModify);
 
-	  // 운행중 또는 사용불가인 경우 기사등록 버튼 비활성화
-      const isModify = (v.status === '운행중' || v.status === '사용불가');
-      $('#btnAssignDriver').prop('disabled', isModify);
-	  $('#vehicleType').prop('disabled', isModify);
+		
+	 $("#editModal").data('vehicleIdx', v.vehicleIdx);
+
     })
     .fail(function(status) {
-      $modal.removeClass('open').attr('aria-hidden','true');
       Swal.fire({icon:'error', text:'차량 정보를 불러오지 못했습니다.'});
+	  closeEditModal();
     });
+}
+
+// 저장 버튼 클릭
+function saveEdit() {
+	const modal = $("#editModal");
+	const idx = Number(modal.data("vehicleIdx"));
+	const status = $("#status");
+	const oldStatus = status.data("prev");
+	const newStatus = status.val();
+	
+	console.log(idx);
+	
+	if (!idx) {
+		Swal.fire({icon:'error', text:'잘못된 차량입니다.'}); return; 
+	}
+	
+	// 상태 변경이 없을 경우 모달창 닫기
+	if (newStatus === oldStatus) {
+		closeEditModal();
+    	return;
+	}
+	
+	// 사용불가 확인
+	const confirmStatus = (newStatus === "사용불가") 
+		? Swal.fire({
+			icon:'warning',
+        	title:'사용불가 처리',
+        	text:'이 차량을 사용불가로 변경하시겠습니까?',
+			showCancelButton:true,
+	        confirmButtonText:'변경',
+	        cancelButtonText:'취소'
+		}).then(r => r.isConfirmed)
+		: Promise.resolve(true);
+		
+	$('#saveEdit').prop('disabled', true);
+	
+	confirmStatus.then(ok => {
+		if (!ok) {
+			$('#saveEdit').prop('disabled', false); return; 
+		}
+		
+		requestBulkUpdateStatus([idx], newStatus)
+			.done(() => {
+				closeEditModal();
+				Swal.fire({ icon:'success', text:'상태가 변경되었습니다.' });
+				reloadVehicleContent();
+			})
+			.fail(xhr => {
+				const msg = (xhr.responseJSON && xhr.responseJSON.message) || '변경에 실패했습니다. 잠시 후 다시 시도해주세요.';
+				Swal.fire({
+					icon:'error', 
+					text: msg
+				});
+			});
+	});
+	
 }
 
 // 체크박스 전체 선택
@@ -182,13 +237,16 @@ function collectSelectedVehicleIdx() {
     	.filter(function (id) { return id != null; });
 }
 
-// 서버 삭제 요청
-function requestBulkDelete(idxArray) {
+// 서버 상태변경 요청
+function requestBulkUpdateStatus(idxArray, status) {
 	return $.ajax({
-     url: DELETE_VEHICLE_URL,
-     method: 'DELETE',
+     url: MODIFY_VEHICLE_STATUS_URL,
+     method: 'POST',
      contentType: 'application/json',
-     data: JSON.stringify(idxArray)
+     data: JSON.stringify({
+		idx : idxArray,
+		status
+   	  })
    });	
 }
 
@@ -208,6 +266,17 @@ function onClickBulkDelete() {
     	return;
   	}
 
+	const rows = $('#vehicleTable tbody input[type="checkbox"]:checked').closest('tr');
+	const hasLocked = rows.toArray().some((tr) => {
+		const status = $(tr).data("status");
+		return status === "대기" || status === "운행중";
+	});
+	
+	if (hasLocked) {
+		Swal.fire({ icon:'error', text:'대기 중이거나 운행 중인 차량은 삭제할 수 없습니다.' });
+    	return;
+	}
+
   	Swal.fire({
     	icon: 'warning',
     	title: '선택 삭제',
@@ -220,7 +289,7 @@ function onClickBulkDelete() {
 
     	$('#bulkDelete').prop('disabled', true);
 
-    	requestBulkDelete(idx)
+    	requestBulkUpdateStatus(idx, '사용불가')
       	.done(function () {
         	reloadVehicleContent();
         	Swal.fire({ icon: 'success', text: '삭제되었습니다.' });
@@ -235,70 +304,6 @@ function onClickBulkDelete() {
   	});
 }
 
-// 기사 배정 버튼 클릭
-function onClickAssignDriver() {
-	$('#assignDriverModal').attr('aria-hidden','false').addClass('open');
-	
-	$.getJSON(ASSIGN_DRIVER_URL)
-	    .done(function(drivers) {
-		
-		renderDriverTable(drivers);
-
-    })
-    .fail(function() {
-      $modal.removeClass('open').attr('aria-hidden','true');
-      Swal.fire({icon:'error', text:'기사 정보를 불러오지 못했습니다.'});
-    });
-}
-
-function renderDriverTable(drivers) {
-	const tbody = $("#driverTableBody");
-	
-	tbody.empty();
-	
-	if (!drivers.length) {
-	    tbody.append('<tr><td colspan="4" class="text-center text-muted">배정할 기사가 없습니다.</td></tr>');
-	    return;
-  	}
-	
-	// 문자열로 렌더링
-  	const rowsHtml = drivers.map( function(driver) {
-	    return `
-	      <tr data-driver-id="${driver.idx}">
-	        <td><input type="radio" name="driverId" value="${driver.idx}"></td>
-	        <td>${driver.empNo}</td>
-	        <td>${driver.empName}</td>
-	        <td>${driver.empPhone}</td>
-	      </tr>
-	    `
-	}).join('');
-
-	tbody.html(rowsHtml);
-}
-
-$('#driverTableBody').on('click', 'tr', function(e) {
-  if (!$(e.target).is('input[type="radio"]')) {
-    $(this).find('input[type="radio"]').prop('checked', true);
-  }
-});
-	
-// 배정 버튼 클릭
-function assignDriver() {
-	const checked = $('input[name="driverId"]:checked');
-	
-	if (checked.length === 0) {
-	    Swal.fire({ icon:'info', text:'배정할 기사를 선택하세요.' });
-	    return;
-  	}
-
-	const selectedId = $('tr').data('driver-id');
-	const driverData = selectedId.dataset.test;
-	const selectedName = checked.closest('tr').find('td').eq(2).text().trim();
-	
-  // 상세 모달에 반영
-  $('#driverName').val(selectedName);
-  $('#driverIdx').val(selectedId);  
-}
 
 // 이벤트 바인딩
 $(document).ready(function () {
@@ -307,7 +312,6 @@ $(document).ready(function () {
     $("#cancelEdit").on("click", closeEditModal);
     $("#saveCreate").on("click", submitCreateForm);
 	$('#bulkDelete').on('click', onClickBulkDelete);
-	$('#btnAssignDriver').on('click', onClickAssignDriver);
+	$('#saveEdit').on('click', saveEdit);
 });
-
 
