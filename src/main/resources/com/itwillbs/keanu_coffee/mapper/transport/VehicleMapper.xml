@@ -136,4 +136,40 @@
 			#{id}
 		</foreach>
 	</update>
+	
+	<!-- 배정 가능한 차량 목록 -->
+	<select id="selectAvailableList" resultType="com.itwillbs.keanu_coffee.transport.dto.VehicleDTO">
+		SELECT
+			vehicle_idx
+			, vehicle_number
+			, vehicle_type
+			, capacity
+		FROM
+			VEHICLE
+		WHERE
+			status = #{status}
+		AND
+			emp_idx is null
+	</select>
+	
+	<!-- 기사 배정 -->
+	<update id="updateDriver">
+		UPDATE
+			VEHICLE
+		SET
+			<choose>
+				<when test="isAssign == 'false'">
+					emp_idx = #{empIdx}
+					, status = '대기'
+				</when>
+				<otherwise>
+					emp_idx = null
+					, status = '미배정'
+				</otherwise>
+			</choose>
+		where
+			vehicle_idx = #{vehicleIdx}
+	</update>
 </mapper>
+
+

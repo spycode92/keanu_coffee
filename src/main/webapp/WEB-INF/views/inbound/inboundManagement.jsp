@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -71,6 +73,13 @@
 		    text-align: center;
 		    vertical-align: middle; /* 세로 중앙정렬 */
 		}
+		
+		.link-order-number {
+			color: inherit;
+			text-decoration: none;
+			cursor: pointer;
+		}
+		
 	</style>
 </head>
 <body>
@@ -80,7 +89,7 @@
 	<!-- 반드시 content 안에서 시작 -->
 	<section class="content">
 
-		<!-- 페이지 타이틀 (여백은 mb-2로만) -->
+		<!-- 페이지 타이틀 -->
 		<div class="d-flex justify-content-between align-items-center mb-2">
 		     <h1 class="card-title" style="margin:0;">입고관리</h1>
 		</div>
@@ -180,7 +189,7 @@
 		    <div class="card-header d-flex justify-content-between align-items-center">
 		        <div class="card-title">
 		            입고 목록
-		            <span class="text-muted" style="font-size: 0.9em;">검색결과: 총 <strong>128</strong>건</span>
+		            <span class="text-muted" style="font-size: 0.9em;">검색결과: 총 <strong id="resultCount"></strong>건</span>
 		        </div>
 		        <div class="d-flex gap-2">
 					<a href="#" class="btn btn-primary btn-sm">새 입고 등록</a>
@@ -200,173 +209,108 @@
 							<th>창고</th>
 							<th>상태</th>
 							<th>품목수</th>
-							<th>총수량</th>
-							<th>출고예정수량</th>
+<!-- 							<th>총수량</th> -->
+							<th>입고예정수량</th>
 							<th>담당자</th>
 							<th>비고</th>
 						</tr>
 					</thead>
+	<!-- ==============================================================================================================리스트 존========= -->				
 					<tbody>
-						<tr>
-							<td><input type="checkbox" /></td>
-							<td>IN-20250811-001</td>
-							<td>2025-08-11</td>
-							<td>에이스상사</td>
-							<td>중앙창고</td>
-							<td><span class="badge badge-pending">대기</span></td>
-							<td>4</td>
-							<td>540</td>
-							<td>200</td>
-							<td>김담당</td>
-							<td>-</td>
-						</tr>
-						<tr>
-							<td><input type="checkbox" /></td>
-							<td>IN-20250811-002</td>
-							<td>2025-08-11</td>
-							<td>그린푸드</td>
-							<td>동부창고</td>
-							<td><span class="badge badge-confirmed">확정</span></td>
-							<td>8</td>
-							<td>1,220</td>
-							<td>600</td>
-							<td>이담당</td>
-							<td>부분입고</td>
-						</tr>
-						<tr>
-							<td><input type="checkbox" /></td>
-							<td>IN-20250810-015</td>
-							<td>2025-08-10</td>
-							<td>베스트유통</td>
-							<td>서부창고</td>
-							<td><span class="badge badge-completed">완료</span></td>
-							<td>3</td>
-							<td>180</td>
-							<td>50</td>
-							<td>박담당</td>
-							<td>-</td>
-						</tr>
-					    <tr>
-					        <td><input type="checkbox" /></td>
-					        <td>IN-20250809-011</td>
-					        <td>2025-08-09</td>
-					        <td>프레시마켓</td>
-					        <td>중앙창고</td>
-					        <td><span class="badge badge-pending">대기</span></td>
-					        <td>7</td>
-					        <td>1,050</td>
-					        <td>200</td>
-					        <td>박담당</td>
-					        <td>-</td>
-					    </tr>
-					    <tr>
-					        <td><input type="checkbox" /></td>
-					        <td>IN-20250808-010</td>
-					        <td>2025-08-08</td>
-					        <td>그린푸드</td>
-					        <td>동부창고</td>
-					        <td><span class="badge badge-confirmed">확정</span></td>
-					        <td>9</td>
-					        <td>1,350</td>
-					        <td>500</td>
-					        <td>최담당</td>
-					        <td>부분입고</td>
-					    </tr>
-					    <tr>
-					        <td><input type="checkbox" /></td>
-					        <td>IN-20250808-009</td>
-					        <td>2025-08-08</td>
-					        <td>에이스상사</td>
-					        <td>서부창고</td>
-					        <td><span class="badge badge-completed">완료</span></td>
-					        <td>4</td>
-					        <td>600</td>
-					        <td>130</td>
-					        <td>김담당</td>
-					        <td>-</td>
-					    </tr>
-					    <tr>
-					        <td><input type="checkbox" /></td>
-					        <td>IN-20250807-008</td>
-					        <td>2025-08-07</td>
-					        <td>베스트유통</td>
-					        <td>중앙창고</td>
-					        <td><span class="badge badge-pending">대기</span></td>
-					        <td>3</td>
-					        <td>450</td>
-					        <td>180</td>
-					        <td>이담당</td>
-					        <td>-</td>
-					    </tr>
-					    <tr>
-					        <td><input type="checkbox" /></td>
-					        <td>IN-20250807-007</td>
-					        <td>2025-08-07</td>
-					        <td>프레시마켓</td>
-					        <td>동부창고</td>
-					        <td><span class="badge badge-confirmed">확정</span></td>
-					        <td>8</td>
-					        <td>1,200</td>
-					        <td>380</td>
-					        <td>박담당</td>
-					        <td>-</td>
-					    </tr>
-					    <tr>
-					        <td><input type="checkbox" /></td>
-					        <td>IN-20250806-006</td>
-					        <td>2025-08-06</td>
-					        <td>그린푸드</td>
-					        <td>서부창고</td>
-					        <td><span class="badge badge-completed">완료</span></td>
-					        <td>2</td>
-					        <td>320</td>
-					        <td>150</td>
-					        <td>최담당</td>
-					        <td>검수완료</td>
-					    </tr>
-					    <tr>
-					        <td><input type="checkbox" /></td>
-					        <td>IN-20250806-005</td>
-					        <td>2025-08-06</td>
-					        <td>에이스상사</td>
-					        <td>중앙창고</td>
-					        <td><span class="badge badge-pending">대기</span></td>
-					        <td>6</td>
-					        <td>960</td>
-					        <td>440</td>
-					        <td>김담당</td>
-					        <td>-</td>
-					    </tr>
-					    <tr>
-					        <td><input type="checkbox" /></td>
-					        <td>IN-20250805-004</td>
-					        <td>2025-08-05</td>
-					        <td>프레시마켓</td>
-					        <td>동부창고</td>
-					        <td><span class="badge badge-confirmed">확정</span></td>
-					        <td>5</td>
-					        <td>780</td>
-					        <td>340</td>
-					        <td>이담당</td>
-					        <td>-</td>
-					    </tr>
-					    <tr>
-					        <td><input type="checkbox" /></td>
-					        <td>IN-20250805-003</td>
-					        <td>2025-08-05</td>
-					        <td>베스트유통</td>
-					        <td>서부창고</td>
-					        <td><span class="badge badge-completed">완료</span></td>
-					        <td>7</td>
-					        <td>1,100</td>
-					        <td>650</td>
-					        <td>박담당</td>
-					        <td>-</td>
-					    </tr>
+						<!-- 출력 카운터 초기화 -->
+  						<c:set var="displayCount" value="0" />
+						
+						<c:forEach var="order" items="${orderList }">
+							<!-- orderNumber가 존재하는 항목만 행 생성 -->
+							<c:if test="${not empty order.orderNumber}">	
+								<tr>
+								
+									<!-- 체크박스 -->
+									<td>
+										<input type="checkbox" name="selectedOrder" value="${order.orderIdx}" />
+									</td>
+									
+									<!-- 입고번호 -->
+									<td>
+										<c:choose>
+											<c:when test="${not empty order.orderNumber and not empty order.orderIdx }">
+												<c:url var="detailUrl" value="/inbound/inboundDetail">
+													<c:param name="orderNumber" value="${order.orderNumber}" />
+													<c:param name="orderIdx" value="${order.orderIdx}" />
+												</c:url>
+												<a href="${detailUrl}" class="link-order-number">
+													<c:out value="${order.orderNumber}" />
+												</a>
+											</c:when>
+											<c:otherwise>-</c:otherwise>
+										</c:choose>
+									</td>
+															
+									<!-- 입고일자 -->
+									<td>-</td>
+															
+									<!-- 공급업체 -->
+									<td>-</td>
+															
+									<!-- 창고 -->
+									<td>-</td>
+															
+									<!-- 상태 -->
+									<td>
+										-
+									</td>
+															
+									<!-- 품목수 -->
+									<td>
+										<c:choose>
+											<c:when test="${not empty order.items}">
+												<c:out value="${fn:length(order.items)}" />
+											</c:when>
+											<c:otherwise>-</c:otherwise>
+										</c:choose>
+									</td>
+															
+									<!-- 총수량 -->
+<!-- 									<td>-</td> -->
+															
+									<!-- 입고예정수량 -->
+									<td>
+										<c:choose>
+											<c:when test="${not empty order.items}">
+												<!-- 합계 변수 초기화 -->
+												<c:set var="sumQty" value="0" />
+												<c:forEach var="item" items="${order.items}">
+													<c:set var="sumQty" value="${sumQty + (empty item.quantity ? 0 : item.quantity)}" />
+												</c:forEach>
+												<c:out value="${sumQty}" />
+											</c:when>
+											<c:otherwise>-</c:otherwise>
+										</c:choose>
+									</td>
+															
+									<!-- 담당자 -->
+									<td>-</td>
+															
+									<!-- 비고 -->
+									<td>-</td>
+								</tr>
+								
+								<!-- 출력 카운트 증가 -->
+								<c:set var="displayCount" value="${displayCount + 1 }"/>
+								
+							</c:if>		
+						</c:forEach>
+						<!-- 출력된 행이 하나도 없을 경우 안내문 -->
+						<c:if test="${displayCount == 0}">
+							<tr>
+								<td colspan="11" class="text-center">order_number가 존재하는 행이 없습니다.</td>
+							</tr>
+						</c:if>
 					</tbody>
+	<!-- ==============================================================================================================리스트 존========= -->				
 				</table>
 			</div>
-
+	
 			<div class="d-flex justify-content-between align-items-center p-3">
 				<div class="text-muted">페이지 1 / 13</div>
 				<div class="d-flex gap-2">
@@ -450,6 +394,14 @@
 		        alert("품목 코드/명을 입력하세요.");
 		    }
 		});
+	</script>
+	<script>
+		(function(){
+			var cntEl = document.getElementById('resultCount');
+			if(cntEl){
+				cntEl.textContent = '${displayCount}';
+			}
+		})();
 	</script>
 </body>
 </html>

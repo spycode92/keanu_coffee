@@ -91,6 +91,44 @@ public class VehicleController {
 		return ResponseEntity.ok(Map.of("deleted", deleted));
 	}
 	
+	// 배정 가능한 차량 리스트
+	@GetMapping("/vehicle/available")
+	@ResponseBody
+	public ResponseEntity<List<VehicleDTO>> availableVehicleList(@RequestParam String status) {
+		List<VehicleDTO> vehicles = vehicleService.getAvailableList(status);
+		
+		if (vehicles == null) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		return ResponseEntity.ok(vehicles);
+	}
+	
+	// 기사 배정
+	@PostMapping("/vehicle/edit")
+	public ResponseEntity<VehicleDTO> modifyVehicleDriver(@RequestBody Map<String, String> body) {
+		String vehicleIdxStr = (String) body.get("vehicleIdx");
+		String empIdxStr = (String) body.get("empIdx");
+		String isAssign =  (String) body.get("isAssign");
+		
+		Integer vehicleIdx = vehicleIdxStr != null ? Integer.parseInt(vehicleIdxStr) : null;
+		Integer empIdx = empIdxStr != null ? Integer.parseInt(empIdxStr) : null;
+		
+		if (vehicleIdx == null || empIdx == null) {
+			return ResponseEntity.badRequest().build();
+		}
+		
+		int updateCount = vehicleService.modifyDrvier(vehicleIdx, empIdx, isAssign);
+		
+		if (updateCount < 0) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		VehicleDTO vehicle = vehicleService.findByIdx(vehicleIdx);
+		
+		return ResponseEntity.ok(vehicle);
+	}
+	
 	// 차량번호 중복 체크
 	@GetMapping("/vehicle/dupCheck")
 	@ResponseBody
@@ -120,5 +158,7 @@ public class VehicleController {
 		
 		return match.group(1) + match.group(2) + match.group(3);
 	}
+
+	
 
 }

@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
+import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
 import com.itwillbs.keanu_coffee.admin.service.OrganizationService;
 import com.itwillbs.keanu_coffee.admin.service.SupplyCompanyService;
@@ -39,9 +39,9 @@ public class SupplyCompanyController {
 	// 공급업체등록
 	@PostMapping("/addSupplier")
 	@ResponseBody
-	public SupplierProductContractDTO addSupplier(@RequestBody SupplierProductContractDTO supplierDto) {
+	public SupplierDTO addSupplier(@RequestBody SupplierDTO supplierDto) {
 	    // service로 저장, id/idx 반영된 저장 결과 반환
-		SupplierProductContractDTO savedSupplier = supplyCompanyService.addSupplier(supplierDto);
+		SupplierDTO savedSupplier = supplyCompanyService.addSupplier(supplierDto);
 		
 	    // 바로 프론트로 등록된 객체 전달 (or 새로 조회하여 보낼수도 있음)
 	    return savedSupplier;
@@ -50,9 +50,9 @@ public class SupplyCompanyController {
 	//상태별공급업체필터링
 	@GetMapping("/suppliers")
 	@ResponseBody
-	public List<SupplierProductContractDTO> getSuppliers() {
+	public List<SupplierDTO> getSuppliers() {
 		
-		List<SupplierProductContractDTO> a = supplyCompanyService.getSuppliersInfo();
+		List<SupplierDTO> a = supplyCompanyService.getSuppliersInfo();
 		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
 		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
 		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
@@ -81,14 +81,14 @@ public class SupplyCompanyController {
 	//공급업체상세보기
 	@GetMapping("/supplier/{idx}")
 	@ResponseBody
-	public SupplierProductContractDTO getSupplierDetail(@PathVariable Long idx) {
+	public SupplierDTO getSupplierDetail(@PathVariable Long idx) {
 	    return supplyCompanyService.selectSupplierByIdx(idx);
 	}
 	
 	//공급업체정보수정
 	@PutMapping("/modifySupplier")
 	@ResponseBody
-	public String modifySupplier(@RequestBody SupplierProductContractDTO supplier) {
+	public String modifySupplier(@RequestBody SupplierDTO supplier) {
 	    int updateCount = supplyCompanyService.modifySupplier(supplier);
 	    if (updateCount > 0) {
 	        return "success";

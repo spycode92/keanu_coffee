@@ -10,15 +10,19 @@ import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.utils.FileUtils.FileUploadHelpper;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmployeeInfoDTO implements FileUploadHelpper{
 	private Integer empIdx;
 	private String empNo;          // 사번 (PK)
 	private String empName;        // 이름
 	private String empGender;      // 성별
-	private String departmentIdx;       // 부서명
+	private Integer departmentIdx;       // 부서고유번호
 	private Integer teamIdx; //팀고유번호
 	private Integer roleIdx; //직급고유번호
 	private String empPhone;          // 전화번호

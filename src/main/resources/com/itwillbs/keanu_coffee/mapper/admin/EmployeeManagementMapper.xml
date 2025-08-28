@@ -35,20 +35,20 @@
 	<resultMap id="roleResultMap" type="roleDTO">
 		<id property="roleIdx" column="role_idx" />
 		<result property="roleName" column="role_name" />
-		<result property="departmentIdx" column="department_idx" />
+		<result property="departmentIdx" column="role_department_idx" />
 	</resultMap>
 	
 	<!-- 팀(TEAM) 테이블 ResultMap -->
 	<resultMap id="teamResultMap" type="teamDTO">
 		<id property="teamIdx" column="team_idx" /> 
 		<result property="teamName" column="team_name" />
-		<result property="departmentIdx" column="department_idx" />
+		<result property="departmentIdx" column="team_department_idx" />
 	</resultMap>
 	
 	<!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
 
 	<!-- 로그인용 아이디로 회원정보 조회 -->
-	<select id="selectEmployeeInfoById" resultType="EmployeeInfoDTO">
+	<select id="selectEmployeeInfoByEmpNo" resultType="EmployeeInfoDTO">
 		SELECT 
 			emp_idx
 			, emp_no
@@ -71,7 +71,7 @@
 	<!-- 직원 수 조회 -->
 	<select id="countEmployee" resultType="int">
 		SELECT count(*)
-		FROM V_EMPLOYEE_FULL_INFO
+		FROM EMPLOYEE_INFO
 		<if test="searchType != ''">
 		WHERE
 			${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
@@ -80,9 +80,26 @@
 	</select>
 	
 	<!-- 직원목록조회 -->
-	<select id="selectEmployeeList" resultType="EmployeeInfoDTO">
-		SELECT *
-		FROM V_EMPLOYEE_FULL_INFO
+	<select id="selectEmployeeList" resultMap="employeeFullInfoResultMap">
+		SELECT 
+			e.emp_idx
+			, e.emp_no
+			, e.emp_name
+			, e.emp_gender
+			, e.department_idx
+			, c.common_code_name
+			, e.team_idx
+			, t.team_name
+			, e.role_idx
+			, r.role_name
+			, e.emp_phone
+			, e.emp_email
+			, e.hire_date
+			, e.emp_status 
+		FROM EMPLOYEE_INFO e
+			LEFT JOIN COMMON_CODE c ON e.department_idx = c.common_code_idx
+			LEFT JOIN TEAM t ON e.team_idx = t.team_idx
+			LEFT JOIN ROLE r ON e.role_idx = r.role_idx
 			<if test="searchType != ''">
 			WHERE
 				${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
@@ -123,14 +140,32 @@
 	<update id="updateEmployeeInfo" parameterType="EmployeeInfoDTO">
     UPDATE EMPLOYEE_INFO
     <set>
+    	<if test="empName != null and empName != ''">
+    		emp_name = #{empName},
+    	</if>
+    	<if test="empGender != null and empName != ''">
+    		emp_gender = #{empGender},
+    	</if>
+        <if test="departmentIdx != null and departmentIdx != ''">
+            department_idx = #{departmentIdx},
+        </if>
+        <if test="teamIdx != null and teamIdx != ''">
+            team_idx = #{teamIdx},
+        </if>
+        <if test="roleIdx != null and roleIdx != ''">
+            role_idx = #{roleIdx},
+        </if>
         <if test="empPhone != null and empPhone != ''">
             emp_phone = #{empPhone},
         </if>
-        <if test="empEmail != null">
+        <if test="empEmail != null and empEmail != ''">
             emp_email = #{empEmail},
         </if>
         <if test="empPassword != null and empPassword != ''">
             emp_password = #{empPassword},
+        </if>
+        <if test="hireDate != null ">
+            hire_date = #{hireDate},
         </if>
         <if test="empStatus != null and empStatus != ''">
             emp_status = #{empStatus},
@@ -148,19 +183,18 @@
 	</select>
 	
 	<!-- 회원추가 -->
-	<insert id="insertEmployeeInfo" useGeneratedKeys="true" keyProperty="idx">
+	<insert id="insertEmployeeInfo" useGeneratedKeys="true" keyProperty="empIdx">
 		INSERT INTO EMPLOYEE_INFO
 		VALUES(
 			null
 			, #{empNo}
 			, #{empName}
 			, #{empGender}
-			, COALESCE(#{departmentIdx}, 1)
-			, COALESCE(#{teamIdx}, 1)
-			, COALESCE(#{roleIdx}, 1)
+			, #{departmentIdx}
+			, #{teamIdx}
+			, #{roleIdx}
 			, #{empPhone}
 			, #{empEmail}
-			, #{empId}
 			, #{empPassword}
 			, #{hireDate}
 			, default
