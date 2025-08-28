@@ -27,6 +27,8 @@ import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
 import com.itwillbs.keanu_coffee.admin.service.OrganizationService;
 import com.itwillbs.keanu_coffee.admin.service.SupplyCompanyService;
+import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
+import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +37,45 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/systemPreference/supplyCompany")
 public class SupplyCompanyController {
 	private final SupplyCompanyService supplyCompanyService;
+	
+	//공급업체관리 목록조회
+	@GetMapping("")
+	public String systemPreference(Model model, @RequestParam(defaultValue = "1") int pageNum, 
+			@RequestParam(defaultValue = "") String searchType,
+			@RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue = "") String orderKey,
+			@RequestParam(defaultValue = "") String orderMethod) {
+		model.addAttribute("pageNum",pageNum);
+		model.addAttribute("searchType",searchType);
+		model.addAttribute("searchKeyword",searchKeyword);
+		model.addAttribute("sortKey",orderKey);
+		model.addAttribute("sortMethod",orderMethod);
+		//한페이지보여줄수
+		int listLimit = 10;
+		// 조회된 목록수
+		int supplierCount = supplyCompanyService.getSupplierCount(searchType, searchKeyword);
+		// 조회된 목록이 1개이상일때
+		if(supplierCount > 0) {
+			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, supplierCount, pageNum, 3);
+			
+			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
+				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+				model.addAttribute("targetURL", "/admin/customer/notice_list");
+				return "commons/result_process";
+			}
+			
+			model.addAttribute("pageInfo", pageInfoDTO);
+		
+		
+			List<SupplierDTO> supplierList = supplyCompanyService.getSuppliersInfo(
+				pageInfoDTO.getStartRow(), listLimit, searchType, searchKeyword, orderKey,orderMethod);
+			model.addAttribute("supplierList",supplierList);
+		}
+		
+		return "/admin/system_preference/supply_company_management";
+	}
+	
+	
 	// 공급계약관리
 	// 공급업체등록
 	@PostMapping("/addSupplier")
@@ -45,24 +86,6 @@ public class SupplyCompanyController {
 		
 	    // 바로 프론트로 등록된 객체 전달 (or 새로 조회하여 보낼수도 있음)
 	    return savedSupplier;
-	}
-	
-	//상태별공급업체필터링
-	@GetMapping("/suppliers")
-	@ResponseBody
-	public List<SupplierDTO> getSuppliers() {
-		
-		List<SupplierDTO> a = supplyCompanyService.getSuppliersInfo();
-		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println(a);
-		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println("ㅡ,ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-        return a;
 	}
 	
 	// 공급업체삭제
@@ -89,6 +112,8 @@ public class SupplyCompanyController {
 	@PutMapping("/modifySupplier")
 	@ResponseBody
 	public String modifySupplier(@RequestBody SupplierDTO supplier) {
+		System.out.println(supplier);
+		
 	    int updateCount = supplyCompanyService.modifySupplier(supplier);
 	    if (updateCount > 0) {
 	        return "success";
@@ -99,20 +124,5 @@ public class SupplyCompanyController {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@GetMapping("")
-	public String systemPreference(Model model) {
-		
-		return "/admin/system_preference/supply_company_management";
-	}
+
 }
