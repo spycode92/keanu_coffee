@@ -29,8 +29,13 @@ public class SupplyCompanyService {
 	private final FileMapper fileMapper;
 	
 	//등록된공급업체리스트
-	public List<SupplierDTO> getSuppliersInfo() {
-		return supplyCompanyMapper.selectSuppliersInfo();
+	public List<SupplierDTO> getSuppliersInfo(int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod) {
+		return supplyCompanyMapper.selectSuppliersInfo(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
+	}
+
+	// 공급업체목록 수
+	public int getSupplierCount(String searchType, String searchKeyword) {
+		return supplyCompanyMapper.getSupplierCount(searchType, searchKeyword);
 	}
 	
 	//공급업체등록
