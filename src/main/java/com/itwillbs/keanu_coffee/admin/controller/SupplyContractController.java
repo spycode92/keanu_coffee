@@ -23,10 +23,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
+import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplyContractDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
 import com.itwillbs.keanu_coffee.admin.service.OrganizationService;
 import com.itwillbs.keanu_coffee.admin.service.SupplyContractService;
+import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
+import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,12 +41,47 @@ public class SupplyContractController {
 	private final SupplyContractService supplyContractService;
 	
     // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-    // 공급계약
+    // 공급계약목록
+	@GetMapping("")
+	public String systemPreference(Model model, @RequestParam(defaultValue = "1") int pageNum, 
+			@RequestParam(defaultValue = "") String searchType,
+			@RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue ="") String orderKey,
+			@RequestParam(defaultValue ="") String orderMethod) {
+		model.addAttribute("pageNum",pageNum);
+		model.addAttribute("searchType",searchType);
+		model.addAttribute("searchKeyword",searchKeyword);
+		model.addAttribute("sortKey",orderKey);
+		model.addAttribute("sortMethod",orderMethod);
+		int listLimit = 10;
+		int contractListCount = supplyContractService.getContractListCount(searchType, searchKeyword);
+		
+		if (contractListCount > 0) {
+			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, contractListCount, pageNum, 3);
+			
+			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
+				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+				model.addAttribute("targetURL", "/admin/customer/notice_list");
+				return "commons/result_process";
+			}
+			
+			model.addAttribute("pageInfo", pageInfoDTO);
+		
+			List<SupplyContractDTO> supplyContractList = supplyContractService.getsupplyContractInfo(
+					pageInfoDTO.getStartRow(), listLimit, searchType, searchKeyword, orderKey,orderMethod);
+			model.addAttribute("supplyCotractList", supplyContractList);
+		}
+		
+		
+		
+		return "/admin/system_preference/supply_contract_management";
+	}
+	
     @GetMapping("/getContractList")
     @ResponseBody
-    public List<SupplierDTO> getContractList() {
+    public List<SupplyContractDTO> getContractList() {
 		//공급계약 리스트 가져오기
-		List<SupplierDTO> supplyContractList = supplyContractService.getsupplyContractInfo();
+		List<SupplyContractDTO> supplyContractList = supplyContractService.getsupplyContractInfo();
 
     	return supplyContractList;
     }
@@ -50,7 +89,7 @@ public class SupplyContractController {
     //공급계약등록
     @PostMapping("/addContract")
     @ResponseBody
-    public SupplierDTO addContract(SupplierDTO supplyContract) {
+    public SupplyContractDTO addContract(SupplyContractDTO supplyContract) {
     	
     	boolean result = supplyContractService.addContract(supplyContract);
     	
@@ -60,16 +99,16 @@ public class SupplyContractController {
     // 공급계약상세정보
     @GetMapping("/getContractDetail")
     @ResponseBody
-    public SupplierDTO getContractDetail(SupplierDTO supplyContract) {
-    	SupplierDTO contractDetail = supplyContractService.getContractDetail(supplyContract);
+    public SupplyContractDTO getContractDetail(SupplyContractDTO supplyContract) {
+    	SupplyContractDTO contractDetail = supplyContractService.getContractDetail(supplyContract);
     	return contractDetail;
     }
     
     //공급계약수정
     @PostMapping("/updateContractDetail")
     @ResponseBody
-    public SupplierDTO updateContractDetail(@RequestBody SupplierDTO contract) {
-    	SupplierDTO saved = supplyContractService.updateContractDetail(contract);
+    public SupplyContractDTO updateContractDetail(@RequestBody SupplyContractDTO contract) {
+    	SupplyContractDTO saved = supplyContractService.updateContractDetail(contract);
     	
     	return contract;
     }
@@ -77,7 +116,7 @@ public class SupplyContractController {
     //공급계약삭제
     @PostMapping("/deleteContractDetail")
     @ResponseBody
-    public ResponseEntity<Map<String,String>> deleteContractDetail(@RequestBody SupplierDTO contract) {
+    public ResponseEntity<Map<String,String>> deleteContractDetail(@RequestBody SupplyContractDTO contract) {
     	boolean result = supplyContractService.deleteContractDetail(contract);
     	Map<String,String> response = new HashMap<>();
         if (result) {
@@ -90,22 +129,5 @@ public class SupplyContractController {
     
     }
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@GetMapping("")
-	public String systemPreference(Model model) {
-		
-		
-		return "/admin/system_preference/supply_contract_management";
-	}
+
 }

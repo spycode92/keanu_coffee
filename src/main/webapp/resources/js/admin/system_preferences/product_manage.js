@@ -391,42 +391,5 @@ $(function () {
 	    }
 	});
 	
-	//삭제버튼 
-	$(document).on('click', '#btnDeleteProduct', function() {
-	    const productIdx = $('#productDetailForm [name=productIdx]').val();
-	    if (!productIdx) {
-	        Swal.fire('오류', '상품 정보가 올바르지 않습니다.', 'error');
-	        return;
-	    }
-	    Swal.fire({
-	        title: '정말 삭제하시겠습니까?',
-	        text: '삭제 후 복구할 수 없습니다.',
-	        icon: 'warning',
-	        showCancelButton: true,
-	        confirmButtonText: '삭제',
-	        cancelButtonText: '취소'
-	    }).then((result) => {
-	        if (result.isConfirmed) {
-	            $.ajax({
-	                url: '/admin/systemPreference/product/removeProduct',
-	                type: 'DELETE',
-	                contentType: 'application/json',
-	                data: JSON.stringify({ productIdx: productIdx }),
-	                success: function(res) {
-	                    Swal.fire('삭제 완료', '상품이 정상적으로 삭제되었습니다.', 'success');
-	                    const detailModal = document.getElementById('productDetailModal');
-            			ModalManager.closeModal(detailModal);
-	                     // 상품 목록 새로고침
-	                },
-	                error: function(xhr) {
-	                    let msg = '삭제 중 오류가 발생했습니다.';
-	                    if (xhr && xhr.responseText) {
-	                        msg = xhr.responseText;
-	                    }
-	                    Swal.fire('실패', msg, 'error');
-	                }
-	            });
-	        }
-	    });
-	});
+	
 });

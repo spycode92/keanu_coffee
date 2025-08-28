@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplyContractDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
@@ -28,31 +29,39 @@ public class SupplyContractService {
 	private final FileMapper fileMapper;
 	
 	//공급계약리스트
-	public List<SupplierDTO> getsupplyContractInfo() {
-		return supplyContractMapper.selectSupplyContractsInfo();
+	public List<SupplyContractDTO> getsupplyContractInfo(
+			int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod) {
+		return supplyContractMapper.selectSupplyContractsInfo(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
+	}
+	
+	// 계약목록 수
+	public int getContractListCount(String searchType, String searchKeyword) {
+		return supplyContractMapper.countContractList(searchType, searchKeyword);
 	}
 	
 	//계약등록
-	public boolean addContract(SupplierDTO supplyContract) {
+	public boolean addContract(SupplyContractDTO supplyContract) {
 		int insertCount = supplyContractMapper.insertContract(supplyContract);
 		return insertCount > 0;
 	}
 	//계약상세
-	public SupplierDTO getContractDetail(SupplierDTO supplyContract) {
+	public SupplyContractDTO getContractDetail(SupplyContractDTO supplyContract) {
 		
 		return supplyContractMapper.selectContractDetail(supplyContract);
 	}
+	
 	//계약수정
-	public SupplierDTO updateContractDetail(SupplierDTO contract) {
+	public SupplyContractDTO updateContractDetail(SupplyContractDTO contract) {
 		int updateCount = supplyContractMapper.updateContractDetail(contract);
 		
 		return contract;
 	}
 	//계약삭제
-	public boolean deleteContractDetail(SupplierDTO contract) {
+	public boolean deleteContractDetail(SupplyContractDTO contract) {
 		int updateCount = supplyContractMapper.deleteContractDetail(contract);
 		return updateCount > 0;
 	}
+
 
 	
 	
