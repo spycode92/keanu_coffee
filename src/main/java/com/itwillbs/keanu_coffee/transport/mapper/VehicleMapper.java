@@ -1,3 +1,4 @@
+
 package com.itwillbs.keanu_coffee.transport.mapper;
 
 import java.util.List;
@@ -26,5 +27,10 @@ public interface VehicleMapper {
 	// 차량 사용불가 상태로 변경
 	int updateStatus(@Param("idx") List<Integer> idx, @Param("status") String status);
 
+	// 배정 가능한 차량 목록
+	List<VehicleDTO> selectAvailableList(String status);
+
+	// 기사 배정
+	int updateDriver(@Param("vehicleIdx") Integer vehicleIdx, @Param("empIdx") Integer empIdx, @Param("isAssign") String isAssign);
 
 }
