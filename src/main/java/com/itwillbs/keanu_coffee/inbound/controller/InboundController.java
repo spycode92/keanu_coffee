@@ -12,9 +12,11 @@ import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderDTO;
 import com.itwillbs.keanu_coffee.common.service.PurchaseOrderService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Controller
 @RequiredArgsConstructor
+@Log4j2
 @RequestMapping("/inbound")
 public class InboundController {
 	
@@ -30,6 +32,7 @@ public class InboundController {
 	@GetMapping("/management")
 	public String showInboundManagement(Model model) {
 		List<PurchaseOrderDTO> OrderDetailList = purchaseOrderService.orderDetail();
+		log.info("OrderDetailList : " + OrderDetailList);
 		model.addAttribute("orderList", OrderDetailList);
 		return "/inbound/inboundManagement";
 	}
