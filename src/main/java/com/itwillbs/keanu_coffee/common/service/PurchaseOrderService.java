@@ -16,7 +16,6 @@ public class PurchaseOrderService {
 	private final PurchaseOrderMapper purchaseOrderMapper;
 	
 	public List<PurchaseOrderDTO> orderDetail() {
-		
 		return purchaseOrderMapper.orderDetail();
 	}
 	
