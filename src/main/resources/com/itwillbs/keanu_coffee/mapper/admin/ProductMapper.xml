@@ -5,13 +5,13 @@
 <mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.ProductMapper">
 	
 	<!-- 등록된상품리스트 -->
-	<select id="selectProductsInfo" resultType="SupplierProductContractDTO">
+	<select id="selectProductsInfo" resultType="ProductDTO">
 		SELECT *
 		FROM PRODUCT
 	</select>
 	
 	<!-- 카테고리 전체 불러오기 -->
-	<resultMap id="categoryResultMap" type="SupplierProductContractDTO">
+	<resultMap id="categoryResultMap" type="ProductDTO">
 	    <result property="idx" column="idx" />
 	    <result property="categoryName" column="categoryName" />
 	    <result property="parentCategoryIdx" column="parentCategoryIdx" />
@@ -56,7 +56,7 @@
 		WHERE idx = #{idx}
 	</delete>
 	<!-- 상품등록 -->
-	<insert id="insertProduct" parameterType="SupplierProductContractDTO" 
+	<insert id="insertProduct" parameterType="ProductDTO" 
 		useGeneratedKeys="true" keyProperty="idx"> 
 		INSERT INTO PRODUCT
     (
@@ -84,13 +84,13 @@
     )
 	</insert>
 	<!-- 상품목록전체불러오기 -->
-	<select id="selectAllProductList" resultType="SupplierProductContractDTO">
+	<select id="selectAllProductList" resultType="ProductDTO">
 		SELECT *
 		FROM PRODUCT
 		WHERE status = 1
 	</select>
 	<!-- 상품대분류 목록불러오기 -->
-	<select id="selectProductByCategoryIdxList" resultType="SupplierProductContractDTO">
+	<select id="selectProductByCategoryIdxList" resultType="ProductDTO">
 		SELECT *
 	    FROM PRODUCT
 	    WHERE category_idx IN
@@ -101,7 +101,7 @@
 		    status = 1
 	</select>
 	<!-- 소븐류 상품 필터링 -->
-	<select id="selectProductsByCategoryIdx" resultType="SupplierProductContractDTO">
+	<select id="selectProductsByCategoryIdx" resultType="ProductDTO">
 	    SELECT *
 	    FROM PRODUCT
 	    WHERE category_idx = #{categoryIdx}
@@ -109,7 +109,7 @@
 		    status = 1
 	</select>
 	<!-- 상품상세정보 -->
-	<select id="selectProductByProductIdx" resultType="SupplierProductContractDTO">
+	<select id="selectProductByProductIdx" resultType="ProductDTO">
 		SELECT 
 		    p.idx AS productIdx,
 		    p.product_name AS productName,
@@ -130,7 +130,7 @@
 		  WHERE p.idx = #{productIdx}
 	</select>
 	<!-- 상품정보수정 -->
-	<update id="updateProduct" parameterType="SupplierProductContractDTO">
+	<update id="updateProduct" parameterType="ProductDTO">
 		UPDATE PRODUCT
 		SET 
 			product_name = #{productName}
