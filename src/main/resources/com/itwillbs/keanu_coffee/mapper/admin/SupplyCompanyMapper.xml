@@ -128,26 +128,7 @@
 			, #{supplierAddress1}
 			, #{supplierAddress2})
 	</insert>
-	<!-- 공급업체필터링 -->
-	<select id="selectSupplierByStatus" resultType="SupplierDTO">
-		SELECT * FROM SUPPLIER
-    	WHERE status = #{dbStatus}
-	</select>
-	
-	<!-- 공급업체의 활성화된 계약 갯수 -->
-	<select id="countActiveContractsBySupplier" resultType="Integer" parameterType="Integer">
-		SELECT COUNT(*)
-		FROM SUPPLIER_PRODUCT_CONTRACT
-		WHERE supplier_idx = #{supplierIdx}
-		AND status = '활성'
-	</select>
-	
-	<!-- 공급업체 삭제 -->
-	<delete id="deleteSupplierByIdx" parameterType="Integer">
-		DELETE FROM SUPPLIER
-		WHERE supplier_idx = #{supplierIdx}
-	</delete>
-	
+
 	<!-- 공급업체상세정보 -->
 	<select id="selectSupplierInfo" resultType="SupplierDTO">
 		SELECT *
@@ -165,8 +146,8 @@
 			, supplier_zipcode = #{supplierZipcode}
 			, supplier_address1 = #{supplierAddress1}
 		    , supplier_address2 = #{supplierAddress2}
-		    , supplier_status = #{supplierStatus}
-		WHERE supplier_idx = #{idx}
+		    , status = #{status}
+		WHERE supplier_idx = #{supplierIdx}
 	</update>
 	
 </mapper>

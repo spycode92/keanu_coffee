@@ -117,6 +117,7 @@
   	        <form class="filters" aria-label="검색 및 필터">
 	            <div class="field">
 	                <select id="filterStatus" name="searchType">
+	                    <option value="">전체</option>
 	                    <option value="활성">활성</option>
 	                    <option value="비활성">비활성</option>
 	                    <option value="삭제">삭제</option>
@@ -142,7 +143,7 @@
                     </thead>
                     <tbody>
 	                    <c:forEach items="${supplierList }" var="supplier">
-	                        <tr data-supplierIdx="${supplier.supplierIdx }">
+	                        <tr class="supplier-row" data-supplieridx="${supplier.supplierIdx }">
 	                        	<td>${supplier.supplierIdx }</td>
 	                        	<td>${supplier.supplierName }</td>
 	                        	<td>${supplier.supplierManager }</td>

@@ -30,6 +30,7 @@ public class SupplyCompanyService {
 	
 	//등록된공급업체리스트
 	public List<SupplierDTO> getSuppliersInfo(int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod) {
+		
 		return supplyCompanyMapper.selectSuppliersInfo(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
 	}
 
@@ -74,6 +75,7 @@ public class SupplyCompanyService {
 
 		return supplyCompanyMapper.selectSupplierInfo(idx);
 	}
+	
 	//공급업체 정보변경
 	public int modifySupplier(SupplierDTO supplier) {
 		return supplyCompanyMapper.updateSupplier(supplier);

@@ -112,6 +112,8 @@ public class SupplyCompanyController {
 	@PutMapping("/modifySupplier")
 	@ResponseBody
 	public String modifySupplier(@RequestBody SupplierDTO supplier) {
+		System.out.println(supplier);
+		
 	    int updateCount = supplyCompanyService.modifySupplier(supplier);
 	    if (updateCount > 0) {
 	        return "success";

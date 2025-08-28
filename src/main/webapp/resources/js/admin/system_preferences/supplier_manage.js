@@ -125,31 +125,36 @@ $(function() {
 	
 	// 공급업체 상세보기 버튼 클릭 이벤트
 	let originalSupplierData = null; //전역변수선언
-	$('#supplierTable').on('click', '.btn-detail', function() {
-    const supplierIdx = $(this).data('id');
-    $.ajax({
-        url: '/admin/systemPreference/supplyCompany/supplier/' + supplierIdx,
-        type: 'GET',
-        dataType: 'json',
-        success: function(data) {
-            originalSupplierData = data;
-            $('#supplierDetailForm #supplierIdx').val(data.idx);
-            $('#supplierDetailForm #detailSupplierName').val(data.supplierName);
-            $('#supplierDetailForm #detailSupplierManager').val(data.supplierManager);
-            $('#supplierDetailForm #detailSupplierManagerPhone').val(data.supplierManagerPhone);
-            $('#supplierDetailForm #detailSupplierZipcode').val(data.supplierZipcode);
-            $('#supplierDetailForm #detailSupplierAddress1').val(data.supplierAddress1);
-            $('#supplierDetailForm #detailSupplierAddress2').val(data.supplierAddress2);
-
-            const detailModal = document.getElementById('supplierDetailModal');
-			ModalManager.openModal(detailModal);
-            setReadonlyMode();
-        },
-        error: function() {
-            Swal.fire('상세 정보 조회 실패', '', 'error');
-        }
-    });
-});
+	$('.supplier-row').each(function() {
+		$(this).on('click', function(){
+			const supplierIdx = $(this).data('supplieridx')
+			
+			$.ajax({
+	    	    url: '/admin/systemPreference/supplyCompany/supplier/' + supplierIdx,
+		        type: 'GET',
+		        dataType: 'json',
+		        success: function(data) {
+		            originalSupplierData = data;
+		            $('#supplierDetailForm #supplierIdx').val(data.supplierIdx);
+		            $('#supplierDetailForm #detailSupplierName').val(data.supplierName);
+		            $('#supplierDetailForm #detailSupplierManager').val(data.supplierManager);
+		            $('#supplierDetailForm #detailSupplierManagerPhone').val(data.supplierManagerPhone);
+		            $('#supplierDetailForm #detailSupplierZipcode').val(data.supplierZipcode);
+		            $('#supplierDetailForm #detailSupplierAddress1').val(data.supplierAddress1);
+		            $('#supplierDetailForm #detailSupplierAddress2').val(data.supplierAddress2);
+		            $('#supplierDetailForm #detailSupplierStatus').val(data.status);
+		
+		            const detailModal = document.getElementById('supplierDetailModal');
+					ModalManager.openModal(detailModal);
+		            setReadonlyMode();
+		        },
+		        error: function() {
+		            Swal.fire('상세 정보 조회 실패', '', 'error');
+		        }
+	   		});
+		});	
+	});
+	
 
 	//수정모달 다음주소찾기
 	setupDaumPostcode('#btnDetailSearchAddress', '#detailSupplierZipcode', '#detailSupplierAddress1', '#detailSupplierAddress2');
@@ -158,6 +163,7 @@ $(function() {
 	function setReadonlyMode() {
 	    $('#supplierDetailForm input').prop('readonly', true);
 		$('#btnDetailSearchAddress').prop('disabled', true);
+		$('#detailSupplierStatus').prop('disabled', true);
 	    $('.btn-edit').show();
 	    $('.btn-save, .btn-cancel-edit').hide();
 	}
@@ -166,6 +172,7 @@ $(function() {
 	function setEditMode() {
 	    $('#supplierDetailForm input').prop('readonly', false);
 		$('#btnDetailSearchAddress').prop('disabled', false);
+		$('#detailSupplierStatus').prop('disabled', false);
 	    $('.btn-edit').hide();
 	    $('.btn-save, .btn-cancel-edit').show();
 	}
@@ -178,7 +185,7 @@ $(function() {
 	// 수정모드 > 취소(상세보기) 모드 전환
 	$('.btn-cancel-edit').on('click', function() {
 	    if (originalSupplierData) {
-	        $('#supplierDetailForm #supplierIdx').val(originalSupplierData.idx);
+	        $('#supplierDetailForm #supplierIdx').val(originalSupplierData.supplierIdx);
 	        $('#supplierDetailForm #detailSupplierName').val(originalSupplierData.supplierName);
 	        $('#supplierDetailForm #detailSupplierManager').val(originalSupplierData.supplierManager);
 	        $('#supplierDetailForm #detailSupplierManagerPhone').val(originalSupplierData.supplierManagerPhone);
@@ -214,16 +221,16 @@ $(function() {
 	// 수정완료(저장) 폼 제출 처리
 	$('#supplierDetailForm').on('submit', function(e) {
 	    e.preventDefault();
-	
 	    // 폼 데이터 직렬화 또는 JSON 객체 생성 공백제거
 	    const updateData = {
-		    idx: $('#supplierIdx').val(),
+		    supplierIdx: $('#supplierIdx').val(),
 		    supplierName: $('#detailSupplierName').val().trim(),
 		    supplierManager: $('#detailSupplierManager').val().trim(),
 		    supplierManagerPhone: $('#detailSupplierManagerPhone').val().trim(),
 		    supplierZipcode: $('#detailSupplierZipcode').val().trim(),
 		    supplierAddress1: $('#detailSupplierAddress1').val().trim(),
-		    supplierAddress2: $('#detailSupplierAddress2').val().trim()
+		    supplierAddress2: $('#detailSupplierAddress2').val().trim(),
+			status: $('#detailSupplierStatus').val().trim()
 		};
 	
 	    $.ajax({
@@ -232,11 +239,12 @@ $(function() {
 	        contentType: 'application/json',
 	        data: JSON.stringify(updateData),
 	        success: function() {
-	            Swal.fire('수정 완료', '', 'success');
+	            Swal.fire('수정 완료', '', 'success').then( () => {
 	            setReadonlyMode();
 	            const detailModal = document.getElementById('supplierDetailModal');
-				 ModalManager.closeModal(detailModal);
-
+				ModalManager.closeModal(detailModal);
+				location.href = '/admin/systemPreference/supplyCompany'
+				});
 	        },
 	        error: function() {
 	            Swal.fire('수정 실패', '서버 오류가 발생했습니다.', 'error');
