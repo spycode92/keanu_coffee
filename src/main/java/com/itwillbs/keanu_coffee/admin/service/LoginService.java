@@ -29,7 +29,7 @@ public class LoginService {
 		String inputPw = employee.getEmpPassword();
 		
 		// 입력받은 id로 조회한 정보
-		employee = employeeManagementMapper.selectEmployeeInfoById(empNo);
+		employee = employeeManagementMapper.selectEmployeeInfoByEmpNo(empNo);
 		
 		//조회된 정보가 있을때
 		if(employee != null ) {
