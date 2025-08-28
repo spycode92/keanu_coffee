@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
+import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
 import com.itwillbs.keanu_coffee.admin.service.OrganizationService;
 import com.itwillbs.keanu_coffee.admin.service.SupplyContractService;
@@ -40,9 +40,9 @@ public class SupplyContractController {
     // 공급계약
     @GetMapping("/getContractList")
     @ResponseBody
-    public List<SupplierProductContractDTO> getContractList() {
+    public List<SupplierDTO> getContractList() {
 		//공급계약 리스트 가져오기
-		List<SupplierProductContractDTO> supplyContractList = supplyContractService.getsupplyContractInfo();
+		List<SupplierDTO> supplyContractList = supplyContractService.getsupplyContractInfo();
 
     	return supplyContractList;
     }
@@ -50,7 +50,7 @@ public class SupplyContractController {
     //공급계약등록
     @PostMapping("/addContract")
     @ResponseBody
-    public SupplierProductContractDTO addContract(SupplierProductContractDTO supplyContract) {
+    public SupplierDTO addContract(SupplierDTO supplyContract) {
     	
     	boolean result = supplyContractService.addContract(supplyContract);
     	
@@ -60,16 +60,16 @@ public class SupplyContractController {
     // 공급계약상세정보
     @GetMapping("/getContractDetail")
     @ResponseBody
-    public SupplierProductContractDTO getContractDetail(SupplierProductContractDTO supplyContract) {
-    	SupplierProductContractDTO contractDetail = supplyContractService.getContractDetail(supplyContract);
+    public SupplierDTO getContractDetail(SupplierDTO supplyContract) {
+    	SupplierDTO contractDetail = supplyContractService.getContractDetail(supplyContract);
     	return contractDetail;
     }
     
     //공급계약수정
     @PostMapping("/updateContractDetail")
     @ResponseBody
-    public SupplierProductContractDTO updateContractDetail(@RequestBody SupplierProductContractDTO contract) {
-    	SupplierProductContractDTO saved = supplyContractService.updateContractDetail(contract);
+    public SupplierDTO updateContractDetail(@RequestBody SupplierDTO contract) {
+    	SupplierDTO saved = supplyContractService.updateContractDetail(contract);
     	
     	return contract;
     }
@@ -77,7 +77,7 @@ public class SupplyContractController {
     //공급계약삭제
     @PostMapping("/deleteContractDetail")
     @ResponseBody
-    public ResponseEntity<Map<String,String>> deleteContractDetail(@RequestBody SupplierProductContractDTO contract) {
+    public ResponseEntity<Map<String,String>> deleteContractDetail(@RequestBody SupplierDTO contract) {
     	boolean result = supplyContractService.deleteContractDetail(contract);
     	Map<String,String> response = new HashMap<>();
         if (result) {

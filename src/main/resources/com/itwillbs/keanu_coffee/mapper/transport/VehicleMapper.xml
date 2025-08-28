@@ -171,3 +171,5 @@
 			vehicle_idx = #{vehicleIdx}
 	</update>
 </mapper>
+
+

@@ -38,7 +38,15 @@ public class EmployeeManagementService {
 	//직원목록선택
 	public List<EmployeeInfoDTO> getEmployeeList(
 			int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod) {
-		return employeeManagementMapper.selectEmployeeList(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
+		
+		
+		List<EmployeeInfoDTO> List = employeeManagementMapper.selectEmployeeList(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
+		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println(List);
+		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+		return List;
 	}
 	
 	// 직원 목록 갯수
@@ -46,14 +54,12 @@ public class EmployeeManagementService {
 		return employeeManagementMapper.countEmployee(searchType, searchKeyword );
 	}
 
-	// 직원추가시 부서,팀,직책 정보 불러오기
+	// 직원추가모달 부서,팀,직책 정보 불러오기
 	public List<Map<String, Object>> getOrgData() {
 		return organizationMapper.getOrgData();
 	}
 	
-	
-	
-	//직원정보 DB입력로직
+	//직원추가 로직
 	@Transactional
 	public int inputEmployeeInfo(EmployeeInfoDTO employee) throws IOException {
 		// 첫 비밀번호 1234 
@@ -63,29 +69,12 @@ public class EmployeeManagementService {
 		
 		//empId, empPassword DTO 주입
 		employee.setEmpNo(empNo);
-		employee.setEmpId(empNo);
 		employee.setEmpPassword(empPassword);
 		// 정보 입력 후 empIdx 받아오기
 		int inputCount = employeeManagementMapper.insertEmployeeInfo(employee);
 		
-		List<FileDTO> fileList = FileUtils.uploadFile(employee, session);
-		
-		if(!fileList.isEmpty()) {
-			fileMapper.insertFiles(fileList); // 새이미지저장
-		}
-		
 		return inputCount;
 	}
-	
-	//직원아이디 사용해서 직원정보 선택
-	public EmployeeInfoDTO getEmployeeInfo(EmployeeInfoDTO employee) {
-		String empId = employee.getEmpId();
-		return employee;
-//		return employeeManagementMapper.selectEmployeeInfo(empId);
-	}
-	
-	
-	
 	
 	
 	// empId 생성 메서드
@@ -108,52 +97,38 @@ public class EmployeeManagementService {
 	public EmployeeInfoDTO getOneEmployeeInfoByEmpIdx(Integer empIdx) {
 		return employeeManagementMapper.selectOneEmployeeInfoByEmpIdx(empIdx);
 	}
+	
 	// 회원정보 업데이트 
 	@Transactional
 	public int modifyEmployeeInfo(EmployeeInfoDTO employee) throws IllegalStateException, IOException {
-		Integer empIdx = employee.getEmpIdx();
+		Integer empIdx = (Integer)session.getAttribute("empIdx");
 		EmployeeInfoDTO OgEmployee = employeeManagementMapper.selectOneEmployeeInfoByEmpIdx(empIdx);
+		
 		// 새로 받은 비밀번호가 존재한다면 암호화
 		if(employee.getEmpPassword() != null && !employee.getEmpPassword().trim().isEmpty()) {
 			String encodedPassword = passwordEncoder.encode(employee.getEmpPassword());
 			employee.setEmpPassword(encodedPassword);
 		}
+		
 		// 이메일 전화번호 비밀번호 저장
 		int updateCount = employeeManagementMapper.updateEmployeeInfo(employee);
 		
-		// 입력받은 프로필 사진이 있을때
-		if(employee.getFiles() != null && employee.getFiles().length > 0) {
-			
-			// 기존 저장된 프로필사진이존재 한다면 파일을 지우고
-			if(session.getAttribute("sFIdx") != null) {
-				//기존 파일 정보
-				FileDTO file = fileMapper.getFileWithTargetTable("employee_info", empIdx);
-				
-				FileUtils.deleteFile(file, session);
-				// 새로 등록하는 파일 업로드
-				List<FileDTO> fileList = FileUtils.uploadFile(employee, session);
-				// 파일DB 업로드
-				if(!fileList.isEmpty()) {
-					for(FileDTO files : fileList) {
-						System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-						System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-						System.out.println(files);
-						System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-						System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-					}
-				}
-			}
-		} else {// 입력된 사진이 없을때
-			
-			// 기존 저장된 프로필사진이존재 한다면 파일을 삭제
-			if(session.getAttribute("sFIdx") != null) {
-				//기존 파일 정보
-				FileDTO file = fileMapper.getFileWithTargetTable("employee_info", empIdx);
-				FileUtils.deleteFile(file, session);
-				fileMapper.deleteFile(file.getIdx());
-				session.removeAttribute("sFId");
-			}
-		}
+		
+		
+		return updateCount;
+	}
+	
+	// 관리자가 직원정보 업데이트
+	public void updateEmployeeInfo(EmployeeInfoDTO employee) {
+		employeeManagementMapper.updateEmployeeInfo(employee);
+	}
+	
+	//직원 비밀번호 초기화(1234)
+	public int resetPw(EmployeeInfoDTO employee) {
+		String empPassword = passwordEncoder.encode("1234");
+		employee.setEmpPassword(empPassword);
+		
+		int updateCount = employeeManagementMapper.updateEmployeeInfo(employee);
 		
 		return updateCount;
 	}

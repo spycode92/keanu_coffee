@@ -11,12 +11,14 @@
 
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="${pageContext.request.contextPath}/resources/js/admin/employee_management.js"></script>
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 <jsp:include page="/WEB-INF/views/admin/employee_modal/add_employee.jsp"></jsp:include> 
 <jsp:include page="/WEB-INF/views/admin/employee_modal/detail_employee.jsp"></jsp:include> 
+<jsp:include page="/WEB-INF/views/admin/employee_modal/modify_employee.jsp"></jsp:include> 
 <section class="content">
 	<h4>직원 관리</h4>
 	<div style="display: flex; align-items: center; gap: 8px; width: 35%">
@@ -36,27 +38,38 @@
 		
 		<table class="table table-striped table-bordered" >
 			<tr>
-				<th data-key="emp_name" onclick="allineTable(this)">이름↕</th>
+				<th data-key="e.emp_name" onclick="allineTable(this)">이름↕</th>
 				<th >성별</th>
-				<th data-key="emp_no" onclick="allineTable(this)">사번↕</th>
-				<th>아이디</th>
-				<th data-key="department_name" onclick="allineTable(this)">부서명↕</th>
-				<th data-key="role_name" onclick="allineTable(this)">직급↕</th>
+				<th data-key="e.emp_no" onclick="allineTable(this)">사번↕</th>
+				<th data-key="c.common_code_name" onclick="allineTable(this)">부서↕</th>
+				<th data-key="t.team_name" onclick="allineTable(this)">팀명↕</th>
+				<th data-key="r.role_name" onclick="allineTable(this)">직급↕</th>
 				<th>번호</th>
 				<th>이메일</th>
-				<th>입사일↕</th>
+				<th data-key="e.hire_date" onclick="allineTable(this)">입사일↕</th>
+				<th data-key="e.emp_status" onclick="allineTable(this)">상태↕</th>
 			</tr>
 			<c:forEach var="employee" items="${employeeList }">
 				<tr class="employee-row" data-emp-idx="${employee.empIdx}">
 					<td>${employee.empName }</td>
 					<td>${employee.empGender }</td>
 					<td>${employee.empNo }</td>
-					<td>${employee.empId }</td>
-					<td>${employee.departmentName }</td>
-					<td>${employee.roleName }</td>
+					<td>
+						${empty employee.commonCode.commonCodeName ?
+							 '미배정' : employee.commonCode.commonCodeName }
+					</td>
+					<td>
+						${empty employee.team.teamName ?
+							'미배정' : employee.team.teamName }
+					</td>
+					<td>
+						${empty employee.role.roleName ?
+							'미배정' : employee.role.roleName }
+					</td>
 					<td>${employee.empPhone }</td>
 					<td>${employee.empEmail }</td>
 					<td>${employee.hireDate }</td>
+					<td>${employee.empStatus }</td>
 				</tr>
 			</c:forEach>
 			

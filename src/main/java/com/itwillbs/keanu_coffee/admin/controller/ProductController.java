@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
+import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
 import com.itwillbs.keanu_coffee.admin.service.OrganizationService;
 import com.itwillbs.keanu_coffee.admin.service.ProductService;
@@ -39,30 +39,30 @@ public class ProductController {
 	//카테고리목록조회
     @GetMapping("/categories")
     @ResponseBody
-    public List<SupplierProductContractDTO> getCategories() {
+    public List<SupplierDTO> getCategories() {
         // DB에서 카테고리 정보를 Map 리스트로 반환
-    	List<SupplierProductContractDTO> categoryList = productService.getAllCategoriesAsMap();
+    	List<SupplierDTO> categoryList = productService.getAllCategoriesAsMap();
         return categoryList; 
     }
     
     //카테고리추가
     @PostMapping("/addCategory")
     @ResponseBody
-    public void addCategory(@RequestBody SupplierProductContractDTO category) {
+    public void addCategory(@RequestBody SupplierDTO category) {
     	productService.addCategoryFromMap(category);
     }
     
     //카테고리 수정
     @PutMapping("/modifyCategory")
     @ResponseBody
-    public void modifyCategory(@RequestBody SupplierProductContractDTO category) {
+    public void modifyCategory(@RequestBody SupplierDTO category) {
     	productService.modifyCategory(category);
     }
     
     //카테고리 삭제
     @DeleteMapping("/removeCategory")
     @ResponseBody
-    public ResponseEntity<?> removeCategory(@RequestBody SupplierProductContractDTO category) {
+    public ResponseEntity<?> removeCategory(@RequestBody SupplierDTO category) {
         Integer idx = category.getIdx();
         // 서비스에서: 이 카테고리를 참조하는 상품이 있는지 체크
         boolean removed = productService.removeCategoryIfUnused(idx);
@@ -79,7 +79,7 @@ public class ProductController {
 	//상품등록
     @PostMapping("/addProduct")
     @ResponseBody
-    public ResponseEntity<String> addProduct(@ModelAttribute SupplierProductContractDTO product) throws IOException {
+    public ResponseEntity<String> addProduct(@ModelAttribute SupplierDTO product) throws IOException {
     	Boolean result = productService.addProduct(product);
     	if(result) {
     		return ResponseEntity.ok().header("Content-Type", "text/plain; charset=UTF-8")
@@ -92,7 +92,7 @@ public class ProductController {
     //상품목록,필터링
     @GetMapping("/getProductList")
     @ResponseBody
-    public List<SupplierProductContractDTO> getProductList(
+    public List<SupplierDTO> getProductList(
     	    @RequestParam(value = "categoryIdx", required = false) Long categoryIdx,
     	    @RequestParam(value = "categoryIdxList", required = false) List<Long> categoryIdxList
     	) {
@@ -113,7 +113,7 @@ public class ProductController {
     //상품상세정보
     @GetMapping("/getProductDetail")
     @ResponseBody
-    public SupplierProductContractDTO getProductDetail(SupplierProductContractDTO product) {
+    public SupplierDTO getProductDetail(SupplierDTO product) {
     	product = productService.getProductDetail(product);
     	
     	return product;
@@ -122,7 +122,7 @@ public class ProductController {
     //상품수정
     @PostMapping("/modifyProduct")
     @ResponseBody
-    public ResponseEntity<String> modifyProduct(@ModelAttribute SupplierProductContractDTO product) throws IOException {
+    public ResponseEntity<String> modifyProduct(@ModelAttribute SupplierDTO product) throws IOException {
     	System.out.println(product);
     	Boolean result = productService.modifyProduct(product);
     	if(result) {

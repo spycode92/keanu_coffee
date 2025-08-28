@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class EmployeeManagementController {
 	private final EmployeeManagementService employeeManagementService;
 	
-	//관리자페이지 회원추가폼으로 이동
+	//직원관리페이지
 	@GetMapping("")
 	public String employeeManagement(Model model, @RequestParam(defaultValue = "1") int pageNum, 
 			@RequestParam(defaultValue = "") String searchType,
@@ -78,17 +78,30 @@ public class EmployeeManagementController {
 		return "/admin/employee_management";
 	}
 	
-	// 직원 정보 1명 불러오기 with idx
+	// 자기정보 불러오기
 	@GetMapping("/getOneEmployeeInfo")
 	@ResponseBody
 	public EmployeeInfoDTO getOneEmployeeInfo(HttpSession session) {
 		EmployeeInfoDTO employee = new EmployeeInfoDTO();
-		employee.setEmpIdx((int)session.getAttribute("sIdx"));
+		
+		employee.setEmpIdx((int)session.getAttribute("empIdx"));
 		employee = employeeManagementService.getOneEmployeeInfoByEmpIdx(employee.getEmpIdx());
 		
 		return employee;
 	}
 	
+	//개인정보 변경로직
+	@PostMapping("/modifyEmployeeInfo")
+	public String modifyEmployeeInfo(EmployeeInfoDTO employee, HttpServletRequest request, HttpSession session) throws IllegalStateException, IOException {
+		int updateCount = employeeManagementService.modifyEmployeeInfo(employee);
+		String refererUrl = request.getHeader("Referer");
+				
+		if (refererUrl != null && !refererUrl.isEmpty()) {
+	        return "redirect:" + refererUrl;
+	    } else {
+	        return "redirect:/";  // 기본 홈페이지로
+	    }
+	}
 	
 	//직원추가 모달창 부서,팀,직책 정보 불러오기
 	@GetMapping("/getOrgData")
@@ -96,16 +109,12 @@ public class EmployeeManagementController {
 	public List<Map<String, Object>> getOrgData() {
 		//부서별 팀.직책 데이터 구성
 		List<Map<String, Object>> orgDataList = employeeManagementService.getOrgData();
-		System.out.println(orgDataList);
 		return orgDataList;
 	}
 	
-		
-	
-	//관리자페이지 회원추가 로직
+	//직원추가 모달창 직원추가 로직
 	@PostMapping("/addEmployee")
 	public String addEmployeeForm(EmployeeInfoDTO employee, Model model) throws IOException {
-		
 		int inputCount = employeeManagementService.inputEmployeeInfo(employee);
 		if (inputCount == 0) {
 			model.addAttribute("msg", "추가실패");
@@ -116,24 +125,40 @@ public class EmployeeManagementController {
 //		return "";
 	}
 	
-	//직원 개인정보 변경로직
-	@PostMapping("/modifyEmployeeInfo")
-	public String modifyEmployeeInfo(EmployeeInfoDTO employee, HttpServletRequest request, HttpSession session) throws IllegalStateException, IOException {
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println(employee);
-		System.out.println(employee.getFiles()[0]);
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		int updateCount = employeeManagementService.modifyEmployeeInfo(employee);
-		String refererUrl = request.getHeader("Referer");
-				
-		if (refererUrl != null && !refererUrl.isEmpty()) {
-	        return "redirect:" + refererUrl;
-	    } else {
-	        return "redirect:/";  // 기본 홈페이지로
-	    }
+	//직원 정보 조회
+	@GetMapping("/getEmployeeDetailByIdx")
+	@ResponseBody
+	public EmployeeInfoDTO getEmployeeDetailByIdx(EmployeeInfoDTO employee) {
+		
+		employee = employeeManagementService.getOneEmployeeInfoByEmpIdx(employee.getEmpIdx());
+		
+		return employee;
 	}
+	
+	// 직원 정보 수정
+	@PostMapping("/updateEmployee")
+	public String updateEmployee(EmployeeInfoDTO employee) {
+		employeeManagementService.updateEmployeeInfo(employee);
+		
+		return "redirect:/admin/employeeManagement"; 
+	}
+	
+	// 직원 비밀번호 초기화(1234)
+	@PostMapping("/resetPw")
+	@ResponseBody
+	public Map<String, Object> resetPw(EmployeeInfoDTO employee) {
+		// AJAX결과 리턴 객체 생성
+		Map<String, Object> result = new HashMap<>();
+		
+		int updateCount = employeeManagementService.resetPw(employee);
+		
+		result.put("success", updateCount > 0);
+		
+		return 	result;
+
+	}
+	
+
 	
 	
 	

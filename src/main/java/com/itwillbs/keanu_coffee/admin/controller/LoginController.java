@@ -33,9 +33,7 @@ public class LoginController {
 			model.addAttribute("targetURL", "/");
 			return "/commons/result_process";
 		}
-		
 		//임시 세션만료시간 1일
-		session.setAttribute("empNo", employee.getEmpNo());
 		session.setMaxInactiveInterval(60 * 60 * 24);
 		
 		return "redirect:/main";
