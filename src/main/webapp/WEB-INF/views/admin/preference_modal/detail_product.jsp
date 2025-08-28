@@ -21,7 +21,7 @@
                     <!-- 이미지 영역 -->
                     <div style="flex: 1; text-align: center;">
                         <img id="detailProductImagePreview"
-                             src="/file/thumbnail/0"
+                             src=""
                              alt="상품 이미지"
                              style="max-width:100%; border:1px solid #eee; margin-bottom:0.5rem;">
                         <a id="detailProductImageDownload"
@@ -62,7 +62,7 @@
 
 	                        <div class="field">
 			                    <label class="form-label">박스 호수</label>
-			                    <select name="productVolume" class="form-control" required>
+			                    <select id="detailProductVolume" name="productVolume" class="form-control" required>
 			                    	<option value="3">3호</option>
 			                    	<option value="4">4호</option>
 			                    	<option value="5">5호</option>
@@ -88,23 +88,26 @@
 	                        </div>
 	
                    		</div>
-	                        <div class="field">
-	                            <label class="form-label">설명</label>
-	                            <textarea id="detailNote"
-	                                      name="note"
-	                                      class="form-control"
-	                                      rows="3"
-	                                      disabled></textarea>
-	                        </div>
+                        <div class="field">
+                            <label class="form-label">설명</label>
+                            <textarea id="detailNote"
+                                      name="note"
+                                      class="form-control"
+                                      rows="3"
+                                      disabled></textarea>
+                        </div>
+                        <div class="field">
+                            <label class="form-label" >상태</label>
+                            <select id="detailProductStatus" name="status" class="form-control" required>
+		                    	<option value="활성">활성</option>
+		                    	<option value="비활성">비활성</option>
+		                    	<option value="삭제">삭제</option>
+		                    </select>
+                        </div>
                 	</div>
             	</div>
            	</div>
             <div class="modal-foot">
-                <button type="button"
-                        id="btnDeleteProduct"
-                        class="btn btn-danger me-auto">
-                    삭제
-                </button>
                 <button type="button"
                         class="btn btn-secondary btn-cancel-edit"
                         style="display: none;">
@@ -114,7 +117,7 @@
                         class="btn btn-primary btn-edit">
                     수정
                 </button>
-                <button type="submit"
+                <button type="button"
                         class="btn btn-primary btn-save"
                         style="display: none;">
                     저장

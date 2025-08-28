@@ -177,7 +177,6 @@ public class ProductController {
     @PostMapping("/modifyProduct")
     @ResponseBody
     public ResponseEntity<String> modifyProduct(@ModelAttribute ProductDTO product) throws IOException {
-    	System.out.println(product);
     	Boolean result = productService.modifyProduct(product);
     	if(result) {
     		return ResponseEntity.ok("상품정보가 수정되었습니다.");

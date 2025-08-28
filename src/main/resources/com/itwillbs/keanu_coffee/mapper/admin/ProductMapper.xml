@@ -196,8 +196,8 @@
 		<result property="productWeight" column="product_weight" />
 		<result property="productVolume" column="product_volume" />
 		<result property="productFrom" column="product_from" />
-		<result property="status" column="product_status" /> <!-- as product_status -->
-		<result property="note" column="product_note" /> <!-- as product_note -->
+		<result property="status" column="status" /> <!-- as product_status -->
+		<result property="note" column="note" /> <!-- as product_note -->
 		<association property="commonCode" resultMap="commonCodeResultMap" />
 		<association property="file" resultMap="FileResultMap" />
 	</resultMap>
@@ -212,6 +212,7 @@
 		    p.product_volume,
 		    p.product_from,
 		    p.note,
+		    p.status,
 		    f.file_idx
 		  FROM PRODUCT p
 		  LEFT JOIN COMMON_CODE c ON p.category_idx = c.common_code_idx
@@ -226,13 +227,11 @@
 			product_name = #{productName}
 	        , category_idx = #{categoryIdx}
 	        , product_weight = #{productWeight}
-	        , product_width = #{productWidth}
-	        , product_length = #{productLength}
-	        , product_height = #{productHeight}
 	        , product_volume = #{productVolume}
 	        , product_from = #{productFrom}
 	        , note = #{note}
-		WHERE idx = #{productIdx}
+	        , status = #{status}
+		WHERE product_idx = #{productIdx}
 	</update>
 	<!-- 상품상태변경 -->
 	<update id="updateProductStatus">

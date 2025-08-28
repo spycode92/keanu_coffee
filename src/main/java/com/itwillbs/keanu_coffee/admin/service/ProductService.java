@@ -94,9 +94,9 @@ public class ProductService {
 	
 	//상품정보수정
 	@Transactional
-	public Boolean modifyProduct(SupplierDTO product) throws IOException {
+	public Boolean modifyProduct(ProductDTO product) throws IOException {
 		// 현재 product에 들어있는  파일 저장
-		product.setIdx(product.getProductIdx());
+		product.setProductIdx(product.getProductIdx());
 		List<FileDTO> fileList = FileUtils.uploadFile(product, session);
 		// 현재 product에 들어있는 product_idx를 이용해서 저장된 파일 정보 불러오기
 		FileDTO file = fileMapper.getFileWithTargetTable("product", product.getProductIdx());
@@ -107,7 +107,7 @@ public class ProductService {
 	            FileUtils.deleteFile(file, session);
 	            // 새로 업로드한 파일로 DB 업데이트
 				for(FileDTO files : fileList) {
-					fileMapper.updateFiles(files, file.getIdx());
+					fileMapper.updateFiles(files, file.getFileIdx());
 				}
 	        } else { // 기존 파일이 없었으면 새 파일 정보 삽입
 	            fileMapper.insertFiles(fileList);

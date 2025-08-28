@@ -303,7 +303,8 @@ $(function () {
 	            $('#detailProductVolume').val(product.productVolume);
 	            $('#detailProductFrom').val(product.productFrom);
 	            $('#detailNote').val(product.note);
-	
+	            $('#detailProductStatus').val(product.status);
+				console.log(product);
 	            // 이미지(썸네일/다운로드)
 	            if (product.file.fileIdx) {
 	                $('#detailProductImagePreview')
@@ -355,19 +356,16 @@ $(function () {
 	        data: formData,
 	        processData: false,
 	        contentType: false,
-	        success: function(res) {
-	            Swal.fire('성공', '상품이 정상적으로 저장되었습니다.', 'success');
-			    const productIdx = $('#productDetailForm [name=productIdx]').val();
-			    if (productIdx) {
-			        // 모달 닫기
-			        const detailModal = document.getElementById('productDetailModal');
-            		ModalManager.closeModal(detailModal);
-			        // 약간의 delay 후 다시 열고 최신 상세정보 요청
-			        setTimeout(function() {
-						initProductDetailModal(productIdx);
-                		ModalManager.openModal(detailModal);
-			        }, 1000); // 0.5초 (필요에 따라 조절)
-			    }
+	        success: function(result) {
+				console.log(result);
+	            Swal.fire('성공', '상품이 정상적으로 저장되었습니다.', 'success').then(()=>{
+				        // 모달 닫기
+//				        const detailModal = document.getElementById('productDetailModal');
+//	            		ModalManager.closeModal(detailModal);
+				        // 새로고침
+						window.location.reload();
+				        
+				});
 	        },
 	        error: function() {
 	            Swal.fire('실패', '저장 중 오류가 발생했습니다.', 'error');

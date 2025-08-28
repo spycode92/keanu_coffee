@@ -34,8 +34,8 @@ public interface ProductMapper {
 	int insertProduct(ProductDTO product);
 	//상품상세정보
 	ProductDTO selectProductByProductIdx(Integer productIdx);
-
-	int updateProduct(SupplierDTO product);
+	// 상품정보 수정
+	int updateProduct(ProductDTO product);
 
 	int updateProductStatus(@Param("productIdx") Integer productIdx, @Param("status")String status);
 
