@@ -4,7 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper">
 	<!-- 등록계약리스트 -->
-	<select id="selectSupplyContractsInfo" resultType="SupplierProductContractDTO">
+	<select id="selectSupplyContractsInfo" resultType="SupplyContractDTO">
 		SELECT *
 		FROM V_SUPPLIER_PRODUCT_CONTRACT_SUMMARY
 		where status &lt;&gt; '삭제'
@@ -37,7 +37,7 @@
 	    )
 	</insert>
 	<!-- 계약상세 -->
-	<select id="selectContractDetail" resultType="SupplierProductContractDTO">
+	<select id="selectContractDetail" resultType="SupplyContractDTO">
 		SELECT
 		    spc.idx AS contractIdx,
 		    spc.contract_price AS contractPrice,
@@ -64,7 +64,7 @@
 		WHERE spc.idx = #{idx}
 	</select>
 	<!-- 계약수정 -->
-	<update id="updateContractDetail" parameterType="SupplierProductContractDTO">
+	<update id="updateContractDetail" parameterType="SupplyContractDTO">
 		UPDATE SUPPLIER_PRODUCT_CONTRACT
 	    SET
 	        contract_price = #{contractPrice},

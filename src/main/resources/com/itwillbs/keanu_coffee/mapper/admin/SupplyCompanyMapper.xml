@@ -25,8 +25,6 @@
 		<result property="productFrom" column="product_from" />
 		<result property="status" column="product_status" /> <!-- as product_status -->
 		<result property="note" column="product_note" /> <!-- as product_note -->
-		<result property="createdAt" column="product_created_at" /> <!-- as product_created_at -->
-		<result property="updatedAt" column="product_updated_at" /> <!-- as product_updated_at -->
 	</resultMap>
 	
 	<!--  공급계약(SUPPLIER_PRODUCT_CONTRACT) 테이블 ResultMap -->
@@ -41,13 +39,13 @@
 		<result property="maxOrderQuantity" column="maxOrder_quantity" />
 		<result property="status" column="contract_status" /> <!-- as contract_status -->
 		<result property="note" column="contract_note" /> <!-- as contract_note -->
-		<result property="createdAt" column="contract_created_at" /> <!-- as contract_created_at -->
-		<result property="updatedAt" column="contract_updated_at" /> <!-- as contract_updated_at -->
+<!-- 		<result property="createdAt" column="created_at" /> as contract_created_at -->
+<!-- 		<result property="updatedAt" column="updated_at" /> as contract_updated_at -->
 	</resultMap>
 	
 	
 	<!-- 공통코드(COMMON_CODE) 테이블 ResultMap -->
-	<resultMap id="commonCodeResultMap" type="commonCodeDTO">
+	<resultMap id="commonCodeResultMap" type="CommonCodeDTO">
 		<id property="commonCodeIdx" column="common_code_idx" /> 
 		<result property="groupCode" column="group_code" />
 		<result property="commonCode" column="common_code" />
@@ -58,15 +56,15 @@
 	<!-- 첨부파일(FILE) 테이블 ResultMap -->
 	<resultMap id="FileResultMap" type="FileDTO">
 		<id property="fileIdx" column="fileIdx" /> 
-		<result property="targetTable" column="targetTable" />
-		<result property="targetTableIdx" column="targetTableIdx" />
-		<result property="originalFileName" column="originalFileName" />
-		<result property="realFileName" column="realFileName" />
-		<result property="subDir" column="subDir" />
-		<result property="fileSize" column="fileSize" />
-		<result property="contentType" column="contentType" />
-		<result property="createdAt" column="createdAt" />
-		<result property="updatedAt" column="updatedAt" />
+		<result property="targetTable" column="target_table" />
+		<result property="targetTableIdx" column="target_table_idx" />
+		<result property="originalFileName" column="original_file_name" />
+		<result property="realFileName" column="real_file_name" />
+		<result property="subDir" column="sub_dir" />
+		<result property="fileSize" column="file_size" />
+		<result property="contentType" column="content_type" />
+<!-- 		<result property="createdAt" column="created_at" /> -->
+<!-- 		<result property="updatedAt" column="updated_at" /> -->
 	</resultMap>
 
 
