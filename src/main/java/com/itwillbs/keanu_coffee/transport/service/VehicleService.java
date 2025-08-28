@@ -44,5 +44,15 @@ public class VehicleService {
 		return vehicleMapper.updateStatus(idx, status);
 	}
 
+	// 배정 가능한 차량 목록
+	public List<VehicleDTO> getAvailableList(String status) {
+		return vehicleMapper.selectAvailableList(status);
+	}
+
+	// 기사 배정
+	public int modifyDrvier(Integer vehicleIdx, Integer empIdx, String isAssign) {
+		return vehicleMapper.updateDriver(vehicleIdx, empIdx, isAssign);
+	}
+
 
 }
