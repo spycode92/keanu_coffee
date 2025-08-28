@@ -9,6 +9,8 @@ import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
 @Mapper
 public interface InventoryMapper {
 
+	int[] selectWarehouseInfo();
+
 //	List<InventoryDTO> selectInventoryThatNeedsToMoveFromInbound();
 //
 //	List<InventoryDTO> selectInventoryThatNeedsToMoveToOutbound();

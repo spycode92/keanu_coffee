@@ -44,7 +44,10 @@ public class InventoryController {
 		return "inventory/update_inventory";
 	}
 	@GetMapping("/updateWarehouse")
-	public String updateWarehouse() {
+	public String updateWarehouse(Model model) {
+		int[] warehouseInfo = inventoryService.getWarehouseInfo();
+		model.addAttribute("warehouseInfo", warehouseInfo);
+
 		
 		return "inventory/update_warehouse";
 	}
@@ -60,6 +63,7 @@ public class InventoryController {
 	}
 	@GetMapping("/inventoryToMove")
 	public String inventoryToMove(Model model) {
+		// when page loads it fills up with inventory items that need to be moved from pallet zone to picking zone
 //		List<InventoryDTO> inboundDTO = inventoryService.getInventoryThatNeedsToMoveFromInbound();
 //		List<InventoryDTO> outboundDTO = inventoryService.getInventoryThatNeedsToMoveToOutbound();
 //		

@@ -17,8 +17,13 @@ public class WarehouseSlottingLogicController {
 		this.wslService = wslService;
 	}
 
+// pallet zone default sizes (does not include unusable space):
+// rack size - depth: 120cm height 600cm width: ? -   One rack is 1 pallet deep many pallets wide and 4 pallets tall
+// bay size - depth: 120cm height 600cm width: 120 -   One bay is 1 pallet deep 1 pallets wide and 4 pallets tall
+// level size - depth: 120cm height 150cm width: 120 -   One level is 1 pallet deep 1 pallet wide and 1 pallet tall
+	
 
-//	bay size 40cm deep 150cm tall
+//
 	
 //	lastMonthInventoryTurnoverRate
 //		- product order table item quantity ordered each month
