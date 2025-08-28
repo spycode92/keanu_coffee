@@ -3,7 +3,7 @@
 
 <!-- 상품 상세/수정 모달 -->
 <div id="productDetailModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="productDetailModalLabel" tabindex="-1">
-    <div class="modal-card lg">
+    <div class="modal-card md">
         <form id="productDetailForm" enctype="multipart/form-data">
             <div class="modal-head">
                 <h5 id="productDetailModalLabel">상품 상세/수정</h5>
@@ -39,9 +39,9 @@
                                    class="form-control .custom-file-input"
                                    disabled>
                         </div>
-                    </div>
+               	   </div>
 
-                    <!-- 상세정보 폼 -->
+	                    <!-- 상세정보 폼 -->
                     <div style="flex: 2;">
                         <div class="field mb-2">
                             <label class="form-label">상품명</label>
@@ -50,94 +50,55 @@
                                    name="productName"
                                    class="form-control"
                                    disabled>
-                        </div>
+						</div>
+	
+	                    <div>
+		                    <select name="categoryIdx" id="detailProductCategory" class="form-control categories" required>
+		                        <option value="">선택하세요</option>
+		                    </select>
+	                	</div>
+	
+                       	<div class="field mb-2" style="display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem;">
 
-                        <div class="field mb-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div>
-                                <label class="form-label">대분류</label>
-                                <select id="detailUpperCategorySelect"
-                                        name="parentCategoryIdx"
-                                        class="form-control"
-                                        disabled>
-                                    <option value="">대분류 선택</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="form-label">소분류</label>
-                                <select id="detailLowerCategorySelect"
-                                        name="categoryIdx"
-                                        class="form-control"
-                                        disabled>
-                                    <option value="">소분류 선택</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="field mb-2" style="display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem;">
-                            <div>
-                                <label class="form-label">가로 (cm)</label>
-                                <input type="number"
-                                       id="detailProductWidth"
-                                       name="productWidth"
-                                       class="form-control"
-                                       disabled>
-                            </div>
-                            <div>
-                                <label class="form-label">세로 (cm)</label>
-                                <input type="number"
-                                       id="detailProductLength"
-                                       name="productLength"
-                                       class="form-control"
-                                       disabled>
-                            </div>
-                            <div>
-                                <label class="form-label">높이 (cm)</label>
-                                <input type="number"
-                                       id="detailProductHeight"
-                                       name="productHeight"
-                                       class="form-control"
-                                       disabled>
-                            </div>
-                        </div>
-
-                        <div class="field mb-2">
-                            <label class="form-label">부피 (cm³)</label>
-                            <input type="text"
-                                   id="detailProductVolume"
-                                   name="productVolume"
-                                   class="form-control"
-                                   readonly>
-                        </div>
-
-                        <div class="field mb-2">
-                            <label class="form-label">무게 (kg)</label>
-                            <input type="number"
-                                   id="detailProductWeight"
-                                   name="productWeight"
-                                   class="form-control"
-                                   disabled>
-                        </div>
-
-                        <div class="field mb-2">
-                            <label class="form-label">원산지</label>
-                            <input type="text"
-                                   id="detailProductFrom"
-                                   name="productFrom"
-                                   class="form-control"
-                                   disabled>
-                        </div>
-
-                        <div class="field">
-                            <label class="form-label">설명</label>
-                            <textarea id="detailNote"
-                                      name="note"
-                                      class="form-control"
-                                      rows="3"
-                                      disabled></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
+	                        <div class="field">
+			                    <label class="form-label">박스 호수</label>
+			                    <select name="productVolume" class="form-control" required>
+			                    	<option value="3">3호</option>
+			                    	<option value="4">4호</option>
+			                    	<option value="5">5호</option>
+			                    </select>
+			                </div>
+	
+	                        <div class="field mb-2">
+	                            <label class="form-label">무게 (kg)</label>
+	                            <input type="number"
+	                                   id="detailProductWeight"
+	                                   name="productWeight"
+	                                   class="form-control"
+	                                   disabled>
+	                        </div>
+	
+	                        <div class="field mb-2">
+	                            <label class="form-label">원산지</label>
+	                            <input type="text"
+	                                   id="detailProductFrom"
+	                                   name="productFrom"
+	                                   class="form-control"
+	                                   disabled>
+	                        </div>
+	
+                   		</div>
+	                        <div class="field">
+	                            <label class="form-label">설명</label>
+	                            <textarea id="detailNote"
+	                                      name="note"
+	                                      class="form-control"
+	                                      rows="3"
+	                                      disabled></textarea>
+	                        </div>
+                	</div>
+            	</div>
+           	</div>
             <div class="modal-foot">
                 <button type="button"
                         id="btnDeleteProduct"
@@ -159,6 +120,6 @@
                     저장
                 </button>
             </div>
-        </form>
-    </div>
+       	</form>
+   	</div>
 </div>

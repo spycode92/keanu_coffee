@@ -36,6 +36,7 @@ public class ProductDTO implements FileUploadHelpper {
     private Timestamp updatedAt;
     
     private CommonCodeDTO commonCode;
+    private FileDTO file;
     
     // 파일업로드
 	@JsonIgnore
