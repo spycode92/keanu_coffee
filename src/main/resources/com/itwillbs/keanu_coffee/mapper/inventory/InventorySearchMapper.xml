@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.inventory.mapper.InventorySearchMapper">
+
+	<select id="selectReceiptProductList" resultType="map">
+	   SELECT receipt_product_idx, supplier_idx, product_idx,
+	          lot_number, manufacture_date, expiration_date,
+	          quantity, received_at
+	   FROM RECEIPT_PRODUCT
+	   ORDER BY receipt_product_idx DESC
+	</select>
+
+</mapper>

@@ -68,7 +68,7 @@
         align-items: end;
     }
 
-    /* ✅ 재고상태 / 출고여부 영역 */
+    /* 재고상태 / 출고여부 영역 */
     .filters-3 {
         display: grid;
         grid-template-columns: repeat(2, 1fr) auto; /* 두 박스 동일폭 + FIFO 버튼 auto */
@@ -171,7 +171,6 @@
                     <option value="expireDesc">유통기한 늦은 순</option>
                 </select>
             </div>
-            <!-- ✅ 수량 정렬 추가 -->
             <div class="interval">
                 <label class="form-label">수량 정렬</label>
                 <select id="qtySort" class="form-control">
@@ -240,7 +239,20 @@
 	                    <th>출고 여부</th>
 	                </tr>
 	            </thead>
-	            <tbody id="tbodyRealtime"></tbody>
+	            <tbody id="tbodyRealtime">
+                    <!-- ✅ 수정: 여기서 Mock 데이터 삭제하고 DB 데이터 출력 -->
+                    <c:forEach var="item" items="${inventoryList}">
+					    <tr>
+					        <td>${item.receipt_product_idx}</td>
+					        <td>${item.product_idx}</td>
+					        <td>${item.lot_number}</td>
+					        <td>${item.quantity}</td>
+					        <td>${item.manufacture_date}</td>
+					        <td>${item.expiration_date}</td>
+					        <td>${item.received_at}</td>
+					    </tr>
+					</c:forEach>
+                </tbody>
 	        </table>
 	    </div>
 	</div>
@@ -333,34 +345,6 @@
     <!-- ========================= /LOT 상세 모달 ========================= -->
 
     <script>
-        /* ====================== Mock 데이터 ====================== */
-        const realtimeData = [
-            { loc:'A-01', name:'바닐라 시럽', code:'SYR-001', qty:42, unit:'BOX', locType:'Picking', manDate:'2025-02-20', expDate:'2025-09-03', lotNo:'LOT-SYR-001-20250220-01' },
-            { loc:'A-02', name:'카라멜 시럽', code:'SYR-002', qty:6, unit:'BOX', locType:'Picking', manDate:'2025-01-15', expDate:'2025-08-05', lotNo:'LOT-SYR-002-20250115-01' },
-            { loc:'B-01', name:'원두(하우스블렌드)', code:'BEAN-001', qty:5, unit:'BOX', locType:'Pallet', manDate:'2024-12-01', expDate:'2025-08-01', lotNo:'LOT-BEAN-001-20241201-01' },
-            { loc:'C-01', name:'종이컵 12oz', code:'CUP-012', qty:30, unit:'BOX', locType:'Picking', manDate:null, expDate:null, lotNo:'LOT-CUP-012-2025001' },
-            { loc:'C-02', name:'플라스틱 빨대', code:'STD-001', qty:90, unit:'BOX', locType:'Picking', manDate:null, expDate:null, lotNo:'LOT-STD-001-2025001' },
-            { loc:'C-03', name:'아이스컵 16oz', code:'CUP-016', qty:180, unit:'BOX', locType:'Picking', manDate:null, expDate:null, lotNo:'LOT-CUP-016-20260110-01' }
-        ];
-
-        const inboundByLot = {
-            'LOT-SYR-001-20250220-01': { itemCode:'SYR-001', lotNo:'LOT-SYR-001-20250220-01', mfgDate:'2025-02-20', expDate:'2025-09-03', unit:'BOX', supplier:'케아누식품' },
-            'LOT-SYR-002-20250115-01': { itemCode:'SYR-002', lotNo:'LOT-SYR-002-20250115-01', mfgDate:'2025-01-15', expDate:'2025-08-05', unit:'BOX', supplier:'케아누식품' },
-            'LOT-BEAN-001-20241201-01': { itemCode:'BEAN-001', lotNo:'LOT-BEAN-001-20241201-01', mfgDate:'2024-12-01', expDate:'2025-08-01', unit:'BOX', supplier:'부산로스터리' },
-            'LOT-CUP-012-2025001':     { itemCode:'CUP-012', lotNo:'LOT-CUP-012-2025001', mfgDate:null, expDate:null, unit:'BOX', supplier:'패키지코리아' },
-            'LOT-STD-001-2025001':     { itemCode:'STD-001', lotNo:'LOT-STD-001-2025001', mfgDate:null, expDate:null, unit:'BOX', supplier:'패키지코리아' },
-            'LOT-CUP-016-20260110-01': { itemCode:'CUP-016', lotNo:'LOT-CUP-016-20260110-01', mfgDate:null, expDate:null, unit:'BOX', supplier:'패키지코리아' }
-        };
-
-        const locationsByLot = {
-            'LOT-SYR-001-20250220-01': [{ loc:'A-01', qty:42 }, { loc:'A-02', qty:6 }],
-            'LOT-SYR-002-20250115-01': [{ loc:'A-02', qty:6 }],
-            'LOT-BEAN-001-20241201-01': [{ loc:'B-01', qty:5 }],
-            'LOT-CUP-012-2025001':     [{ loc:'C-01', qty:30 }],
-            'LOT-STD-001-2025001':     [{ loc:'C-02', qty:90 }],
-            'LOT-CUP-016-20260110-01': [{ loc:'C-01', qty:20 }, { loc:'C-03', qty:180 }]
-        };
-
         /* ====================== 유틸 ====================== */
         function toDateOrNull(s){
             if (s === null || s === undefined) return null;
@@ -400,125 +384,6 @@
             const ddayHtml = '<span class="dday-badge '+ddayClass+'">'+ddText+'</span>';
             return { status, labelHtml, ddayHtml, d };
         }
-
-        /* ====================== 테이블 렌더 ====================== */
-        function renderTable(opts = {}){
-		    const tbody = document.getElementById('tbodyRealtime');
-		    tbody.innerHTML = '';
-		
-		    const showAll = !!opts.showAll;
-		    const kwLoc = showAll ? '' : $('#locSearch').val().trim().toLowerCase();
-		    const kwProd = showAll ? '' : $('#prodSearch').val().trim().toLowerCase();
-		    const type = showAll ? '' : $('#locType').val();
-		
-		    const mfgEnd   = toDateOrNull($('#mfgEnd').val());
-		    const expStart = toDateOrNull($('#expStart').val());
-		
-		    const threshold = FIXED_THRESHOLD;
-		    const statusFilter = $('#statusFilter').val() || 'ALL';
-		    const shipFilter   = $('#shipFilter').val() || 'ALL';   // 출고 여부 필터
-		    const sortOption = opts.sortExpAsc ? 'expireAsc' : ($('#sortOption').val() || '');
-		    const qtySort    = $('#qtySort').val() || '';          // ✅ 수량 정렬 추가
-		
-		    let data = realtimeData.filter(r=>{
-		        const ok1 = !kwLoc || r.loc.toLowerCase().includes(kwLoc);
-		        const ok2 = !kwProd || r.name.toLowerCase().includes(kwProd) || r.code.toLowerCase().includes(kwProd);
-		        const ok3 = !type || r.locType === type;
-		
-		        const mfg = toDateOrNull(r.manDate);
-		        const okMfgEnd   = !mfgEnd   || (mfg && mfg <= mfgEnd);
-		
-		        const exp = toDateOrNull(r.expDate);
-		        const okExpStart = !expStart || (exp && exp >= expStart);
-		
-		        // ================= 상태 계산 =================
-		        let currentStatus = r.status || '';
-		        if(currentStatus !== 'DISPOSED'){  
-		            const result = makeStatusAndDday(r.expDate, threshold);
-		            currentStatus = result.status; // OK / WARN / EXPIRED
-		        }
-		        const okStatus = (statusFilter === 'ALL') || (currentStatus === statusFilter);
-		
-		        // ================= 출고 여부 판정 =================
-		        let shippable = true;
-		        if(currentStatus === 'EXPIRED' || currentStatus === 'DISPOSED'){
-		            shippable = false;
-		        }
-		        const okShip = (shipFilter === 'ALL')
-		                    || (shipFilter === 'YES' && shippable)
-		                    || (shipFilter === 'NO' && !shippable);
-		
-		        return ok1 && ok2 && ok3 && okMfgEnd && okExpStart && okStatus && okShip;
-		    });
-		
-		 	// 날짜 정렬
-		    if (sortOption){
-		        data = data.slice().sort((a,b)=>{
-		            if (sortOption === 'manufactureAsc')  return new Date(a.manDate) - new Date(b.manDate);
-		            if (sortOption === 'manufactureDesc') return new Date(b.manDate) - new Date(a.manDate);
-		            if (sortOption === 'expireAsc')       return new Date(a.expDate) - new Date(b.expDate);
-		            if (sortOption === 'expireDesc')      return new Date(b.expDate) - new Date(a.expDate);
-		            return 0;
-		        });
-		    }
-			
-		 	// ✅ 수량 정렬
-	        if (qtySort){
-	            data = data.slice().sort((a,b)=>{
-	                if (qtySort === 'qtyDesc') return b.qty - a.qty;
-	                if (qtySort === 'qtyAsc')  return a.qty - b.qty;
-	                return 0;
-	            });
-	        }
-		 	
-		    let totalQty = 0;
-		    const skuSet = new Set();
-		
-		    data.forEach(r=>{
-		        let statusHtml = '';
-		        let ddayHtml = '–';
-		        let shippable = true;
-		
-		        if(r.status === 'DISPOSED'){   
-		            statusHtml = '<span class="status-label disposed">폐기</span>';
-		            shippable = false;
-		        } else {
-		            const result = makeStatusAndDday(r.expDate, threshold);
-		            statusHtml = result.labelHtml;
-		            ddayHtml   = result.ddayHtml;
-		            if(result.status === 'EXPIRED'){ 
-		                shippable = false; 
-		            }
-		        }
-		
-		        const shipHtml = shippable
-		            ? '<span class="ship-badge ship-yes">가능</span>'
-		            : '<span class="ship-badge ship-no">불가능</span>';
-		
-		        const tr = document.createElement('tr');
-		        tr.setAttribute('data-lot', r.lotNo);
-		        if (!shippable){ tr.classList.add('disabled-row'); }
-		        tr.innerHTML =
-		            '<td>'+r.loc+'</td>'+
-		            '<td>'+r.name+'</td>'+
-		            '<td>'+r.code+'</td>'+
-		            '<td>'+r.qty+'</td>'+
-		            '<td>'+r.unit+'</td>'+
-		            '<td>'+r.locType+'</td>'+
-		            '<td>'+(r.manDate ? r.manDate : '–')+'</td>'+
-		            '<td>'+(r.expDate ? r.expDate : '–')+'</td>'+
-		            '<td>'+ddayHtml+'</td>'+
-		            '<td>'+statusHtml+'</td>'+
-		            '<td>'+shipHtml+'</td>';
-		        tbody.appendChild(tr);
-		
-		        totalQty += r.qty;
-		        skuSet.add(r.code);
-		    });
-		
-		    $('#kpiSku').text(skuSet.size);
-		    $('#kpiQty').text(totalQty.toLocaleString('ko-KR'));
-		}
 
         /* ====================== 모달 ====================== */
         $('#tbodyRealtime').on('click', 'tr', function(){
@@ -587,32 +452,11 @@
             $('#btn-disposal-toggle').attr('aria-expanded','false').text('폐기 처리');
             $('#disposalPanel').addClass('hidden');
 
-            // ✅ 폼 리셋 추가 (수량/사유 초기화)
+            // 폼 리셋 추가 (수량/사유 초기화)
             $('#disposalForm')[0].reset();
 
             ModalManager.openModalById('lotModal');
         }
-
-        /* ====================== 바인딩 ====================== */
-        $(function () {
-		    $('#btnSearch').on('click', ()=>renderTable());
-		    $('#btnClear').on('click', ()=>{
-		        $('#locSearch, #prodSearch').val('');
-		        $('#locType').val('');
-		        $('#mfgEnd, #expStart').val('');
-		        $('#sortOption').val('');
-		        $('#qtySort').val('');   // ✅ 수량 정렬 초기화
-		        $('#statusFilter').val('ALL');
-		        $('#shipFilter').val('ALL');   // 출고 여부 필터 초기화
-		        renderTable(true);
-		    });
-		    $('#statusFilter, #shipFilter, #sortOption, #qtySort ,#mfgEnd, #expStart').on('change', ()=>renderTable()); // shipFilter 바인딩
-		    $('#btnSortExpAsc').on('click', ()=>{
-		        $('#sortOption').val('expireAsc');
-		        renderTable({ sortExpAsc:true });
-		    });
-		    renderTable(true);
-		});
         
         /* ====================== 폐기 패널 토글 ====================== */
 	    $('#btn-disposal-toggle').on('click', function(){
@@ -665,7 +509,7 @@
 	            if(row.qty <= 0){
 	                row.qty = 0;
 	            }
-	            // ✅ 재고가 남았어도 폐기 상태로 표시되게 강제
+	            // 재고가 남았어도 폐기 상태로 표시되게 강제
 	            row.status = 'DISPOSED';
 	        }
 
