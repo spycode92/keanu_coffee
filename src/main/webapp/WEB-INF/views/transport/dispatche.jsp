@@ -93,6 +93,7 @@ header {
             <div style="display:flex; gap:8px">
                 <button class="btn secondary" id="openRegister">+ 배차 등록</button>
                 <button onclick="location.href='/transport/mypage'">기사마이페이지</button>
+                <button onclick="location.href='/transport/region'">구역관리</button>
             </div>
         </header>
 

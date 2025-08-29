@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.transport.mapper.RegionMapper">
+	<!-- 구역 등록 -->
+	<insert id="insertRegion">
+		INSERT
+			COMMON_CODE(common_code_name, group_code, common_code, description)
+		VALUES (
+			#{regionName}, 'REGION', #{regionName}, #{regionName}
+		)
+	</insert>
+	
+	<!-- 구역 리스트 -->
+	<select id="selectRegionList" resultType="com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO">
+		SELECT 
+			common_code_idx
+			, common_code_name
+		FROM
+			COMMON_CODE
+		WHERE
+			group_code = 'REGION'
+	</select>
+</mapper>
