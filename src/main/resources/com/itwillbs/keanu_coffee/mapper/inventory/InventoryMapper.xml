@@ -34,6 +34,17 @@
 <!-- 			? -->
 <!-- 	</select> -->
 
+		<select id="selectWarehouseInfo" resultType="com.itwillbs.keanu_coffee.inventory.dto.WarehouseInfoDTO">
+			SELECT
+				COUNT(DISTINCT rack)
+				, COUNT(DISTINCT bay)
+				, COUNT(DISTINCT SUBSTRING(level_position, 1, 1))
+				, COUNT(DISTINCT SUBSTRING(level_position, 2, 1))    <!--  this will only work if all levels have the same number of positions -->
+			FROM 
+				WAREHOUSE_LOCATION		
+		</select>
+
+
 
 
 </mapper>

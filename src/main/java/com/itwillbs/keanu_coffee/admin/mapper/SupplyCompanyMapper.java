@@ -13,7 +13,12 @@ import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 @Mapper
 public interface SupplyCompanyMapper {
 	//공급업체 리스트
-	List<SupplierDTO> selectSuppliersInfo();
+	List<SupplierDTO> selectSuppliersInfo(
+		@Param("startRow") int startRow, @Param("listLimit") int listLimit, 
+		@Param("searchType") String searchType, @Param("searchKeyword") String searchKeyword,
+		@Param("orderKey")String orderKey, @Param("orderMethod")String orderMethod);
+	// 공급업체 리스트 수
+	int getSupplierCount(@Param("searchType")String searchType, @Param("searchKeyword")String searchKeyword);
 	// 공급업체등록
 	void insertSupplier(SupplierDTO supplierDTO);
 	//공급업체 필터링

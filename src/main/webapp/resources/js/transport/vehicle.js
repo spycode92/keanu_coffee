@@ -315,4 +315,3 @@ $(document).ready(function () {
 	$('#saveEdit').on('click', saveEdit);
 });
 
-

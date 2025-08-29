@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
+import com.itwillbs.keanu_coffee.inventory.dto.WarehouseInfoDTO;
 import com.itwillbs.keanu_coffee.inventory.mapper.InventoryMapper;
 
 @Service
@@ -16,6 +17,13 @@ public class InventoryService {
 	public InventoryService(InventoryMapper inventoryMapper) {
 		super();
 		this.inventoryMapper = inventoryMapper;
+	}
+
+
+
+	public WarehouseInfoDTO getWarehouseInfo() {
+		
+		return inventoryMapper.selectWarehouseInfo();
 	}
 
 

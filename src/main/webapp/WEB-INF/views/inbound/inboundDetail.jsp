@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -76,6 +79,7 @@
 		}
 	</style>
 </head>
+ 
 <body>
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 
@@ -84,7 +88,6 @@
 		<div class="d-flex justify-content-between align-items-center mb-3">
 			<div>
 				<h1 class="card-title">입고 상세</h1>
-				<div class="text-muted" style="font-size:0.95rem;">입고번호: <strong>IN-20250811-001</strong></div>
 			</div>
 			<div class="page-actions">
 				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
@@ -98,59 +101,80 @@
 		<div class="card mb-3">
 			<div class="card-header d-flex justify-content-between align-items-center">
 				<div class="card-title">기본 정보</div>
-				<div class="text-muted">상태: <span class="badge badge-pending">대기</span></div>
+				<div class="text-muted">상태: <span class="badge badge-pending">-</span></div>
+			</div>
+			
+			<!-- ===== 바코드 표시 컨테이너 (페이지에 한 번만) ===== -->
+			<div id="barcodeContainer" style="display:none; margin:12px 0; align-items:center; gap:12px;">
+			    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+			        <img id="barcodeImg" alt="barcode image" style="height:120px; border:1px solid var(--border); padding:6px; background:white;" />
+			        <div style="display:flex; flex-direction:column; gap:6px;">
+			            <a id="barcodeDownload" href="#" download>PNG 다운로드</a>
+			            <div style="font-size:0.9rem;color:var(--muted-foreground);">형식: CODE128</div>
+			        </div>
+			        <div style="margin-left:auto">
+			            <button id="btnHideBarcode" class="btn btn-sm btn-secondary" type="button">닫기</button>
+			        </div>
+			    </div>
 			</div>
 
 			<div class="kv-grid">
 				<div class="kv-item">
 					<div class="kv-label">입고번호</div>
-					<div class="kv-value">IN-20250811-001</div>
+					<div class="kv-value" style="display:flex; align-items:center; gap:.5rem;">
+				        <a id="inboundLink"
+				           class="inbound-link"
+				           data-code="IN-20250811-001"
+				           title="입고번호 바코드 보기 (클릭: 인라인, Ctrl+클릭: 새탭)">
+				           -
+				        </a>
+				    </div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고일자</div>
-					<div class="kv-value">2025-08-11</div>
+					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">창고</div>
-					<div class="kv-value">중앙창고</div>
+					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고구분</div>
-					<div class="kv-value">구매입고</div>
+					<div class="kv-value">-</div>
 				</div>
 
 				<div class="kv-item">
 					<div class="kv-label">공급업체</div>
-					<div class="kv-value">에이스상사 (1234567890)</div>
+					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">담당자</div>
-					<div class="kv-value">김담당</div>
+					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">발주번호(PO)</div>
-					<div class="kv-value">PO-20250801-001</div>
+					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고위치</div>
-					<div class="kv-value">A-01-03</div>
+					<div class="kv-value">-</div>
 				</div>
 
 				<div class="kv-item">
 					<div class="kv-label">총 품목 수</div>
-					<div class="kv-value">4</div>
+					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">총 수량</div>
-					<div class="kv-value">540</div>
+					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">총 금액</div>
-					<div class="kv-value">₩ 1,230,000</div>
+					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">비고</div>
-					<div class="kv-value">부분입고 — 검수대기</div>
+					<div class="kv-value">-</div>
 				</div>
 			</div>
 		</div>
@@ -183,7 +207,7 @@
 		<div class="card mb-3">
 			<div class="card-header d-flex justify-content-between align-items-center">
 				<div class="card-title">품목 내역</div>
-				<div class="muted">총 4건</div>
+				<div class="muted">-</div>
 			</div>
 
 			<div class="table-responsive">
@@ -195,67 +219,90 @@
 							<th style="width:80px;">수량</th>
 							<th style="width:100px;">단위</th>
 							<th style="width:120px;">단가</th>
-							<th style="width:140px;" class="right">공급가액</th>
-							<th style="width:120px;" class="right">부가세</th>
-							<th style="width:140px;" class="right">총액</th>
+							<th style="width:140px;">공급가액</th>
+							<th style="width:120px;">부가세</th>
+							<th style="width:140px;">총액</th>
 							<th style="width:120px;">비고</th>
 						</tr>
 					</thead>
+	<!-- ==============================================================================================================리스트 존========= -->
 					<tbody>
-						<tr>
-							<td>1</td>
-							<td>아라비카 원두 1kg / 로스팅 A</td>
-							<td class="right">200</td>
-							<td>KG</td>
-							<td class="right">₩ 3,000</td>
-							<td class="right">₩ 600,000</td>
-							<td class="right">₩ 60,000</td>
-							<td class="right">₩ 660,000</td>
-							<td>부분입고</td>
-						</tr>
-						<tr>
-							<td>2</td>
-							<td>종이컵 250ml / 1000pcs</td>
-							<td class="right">50</td>
-							<td>BOX</td>
-							<td class="right">₩ 6,000</td>
-							<td class="right">₩ 300,000</td>
-							<td class="right">₩ 30,000</td>
-							<td class="right">₩ 330,000</td>
-							<td>-</td>
-						</tr>
-						<tr>
-							<td>3</td>
-							<td>설탕 5kg / 백</td>
-							<td class="right">100</td>
-							<td>EA</td>
-							<td class="right">₩ 1,500</td>
-							<td class="right">₩ 150,000</td>
-							<td class="right">₩ 15,000</td>
-							<td class="right">₩ 165,000</td>
-							<td>-</td>
-						</tr>
-						<tr>
-							<td>4</td>
-							<td>시럽 1L / 바닐라</td>
-							<td class="right">190</td>
-							<td>EA</td>
-							<td class="right">₩ 5,000</td>
-							<td class="right">₩ 950,000</td>
-							<td class="right">₩ 95,000</td>
-							<td class="right">₩ 1,045,000</td>
-							<td>검수요청</td>
-						</tr>
+						<c:choose>
+							<c:when test="${not empty product and not empty orderItems}">
+								<c:forEach var="prod" items="${product}" varStatus="vs">
+									<tr>
+										<c:set var="item" value="${itemMap[prod.productIdx]}" />	
+										<c:set var="amount" value="${item.unitPrice * item.quantity}" />
+							            <c:set var="tax" value="${amount * 0.1}" />
+							            <c:set var="total" value="${amount + tax}" />
+										
+										<!-- No. -->
+										<td>
+											<c:out value="${vs.index + 1}" />
+										</td>
+										
+										<!-- 상품명 자리(현재 -) -->
+										<td>
+											<c:out value="${prod.productName}" />
+										</td>       
+										  
+										<!-- 수량 -->
+										               
+										<td>
+											<fmt:formatNumber value="${item.quantity}" pattern="#개,##0" />
+										</td>         
+										 
+										<!-- 단위 -->
+										<td>
+											<fmt:formatNumber value="${prod.productVolume}" pattern="#호"/>
+										</td>                                   
+										
+										<!-- 단가 -->
+										<td>
+											<fmt:formatNumber value="${item.unitPrice}" pattern="₩ #,##0" />
+										</td>                     
+										
+										<!-- 금액 -->
+										<td>
+											<fmt:formatNumber value="${amount}" pattern="₩ #,##0" />
+										</td>                     
+										
+										<!-- 세액 -->
+										<td>
+											<fmt:formatNumber value="${tax}" pattern="₩ #,##0" />
+										</td>                     
+										
+										<!-- 합계 -->
+										<td>
+											<fmt:formatNumber value="${total}" pattern="₩ #,##0" />
+										</td>                     
+										
+										<!-- 상태 -->
+										<td>
+											-
+										</td>                                   
+										
+									</tr>
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								<tr>
+									<td colspan="9" class="text-center">product 리스트가 비어있습니다.</td>
+								</tr>
+							</c:otherwise>
+						</c:choose>
 					</tbody>
 					<tfoot>
 						<tr>
-							<td colspan="5" class="right">합계</td>
-							<td class="right">₩ 2,000,000</td>
-							<td class="right">₩ 200,000</td>
-							<td class="right">₩ 2,200,000</td>
+							<td colspan="4"></td>
+							<td>합계</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
 							<td></td>
 						</tr>
 					</tfoot>
+	<!-- ==============================================================================================================리스트 존========= -->
 				</table>
 			</div>
 		</div>
@@ -325,5 +372,7 @@
 			e.preventDefault(); alert("입고확정 처리(모의)");
 		});
 	</script>
+	
+
 </body>
 </html>

@@ -59,6 +59,14 @@
                            name="supplierAddress2"
                            readonly>
                 </div>
+                <div class="field">
+                	<label class="form-label">상태</label>
+                	<select id="detailSupplierStatus" name="status" class="form-control" disabled>
+                    	<option value="활성">활성</option>
+                    	<option value="비활성">비활성</option>
+                    	<option value="삭제">삭제</option>
+                    </select>
+                </div>
             </div>
             <div class="modal-foot">
                 <button type="button"

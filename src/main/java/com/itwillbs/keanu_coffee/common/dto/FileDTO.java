@@ -1,6 +1,7 @@
 package com.itwillbs.keanu_coffee.common.dto;
 
-import com.google.protobuf.Timestamp;
+
+import java.sql.Timestamp;
 
 import lombok.Getter;
 import lombok.Setter;

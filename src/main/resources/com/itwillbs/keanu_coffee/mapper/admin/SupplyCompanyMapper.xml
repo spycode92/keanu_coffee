@@ -39,8 +39,8 @@
 		<result property="maxOrderQuantity" column="maxOrder_quantity" />
 		<result property="status" column="contract_status" /> <!-- as contract_status -->
 		<result property="note" column="contract_note" /> <!-- as contract_note -->
-<!-- 		<result property="createdAt" column="created_at" /> as contract_created_at -->
-<!-- 		<result property="updatedAt" column="updated_at" /> as contract_updated_at -->
+		<result property="createdAt" column="contract_created_at" /> 
+ 		<result property="updatedAt" column="contract_updated_at" /> 
 	</resultMap>
 	
 	
@@ -63,18 +63,11 @@
 		<result property="subDir" column="sub_dir" />
 		<result property="fileSize" column="file_size" />
 		<result property="contentType" column="content_type" />
-<!-- 		<result property="createdAt" column="created_at" /> -->
-<!-- 		<result property="updatedAt" column="updated_at" /> -->
+		<result property="createdAt" column="file_created_at" />
+		<result property="updatedAt" column="file_updated_at" />
 	</resultMap>
-
-
-
-
-
-
-
-
-
+	
+	<!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
 	<!-- 공급업체리스트 -->
 	<select id="selectSuppliersInfo" resultType="SupplierDTO">
 		SELECT 
@@ -85,11 +78,37 @@
 		    s.supplier_zipcode,
 		    s.supplier_address1,
 		    s.supplier_address2,
-		    s.supplier_status,
+		    s.status
 		FROM 
 		    SUPPLIER s
-		ORDER BY 
-		    s.supplier_idx;
+		<where>
+			<if test="searchType != '' and searchType != null">
+				status = #{searchType} 
+			</if>
+			<if test="searchKeyword != '' and searchKeyword != null">
+				AND supplier_name LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</where>
+		<if test="orderKey != '' and orderkey != null">
+			ORDER BY ${orderKey} ${orderMethod}			
+		</if>
+		LIMIT
+			#{startRow}
+			, #{listLimit}
+	</select>
+	
+	<!-- 공급업체 목록 수 -->
+	<select id="getSupplierCount" resultType="int">
+		SELECT COUNT(*)
+		FROM SUPPLIER
+		<where>
+			<if test="searchType != '' and searchType != null">
+				status = #{searchType} 
+			</if>
+			<if test="searchKeyword != '' and searchKeyword != null">
+				AND supplier_name LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</where>
 	</select>
 	
 	<!-- 공급업체등록 -->
@@ -109,26 +128,7 @@
 			, #{supplierAddress1}
 			, #{supplierAddress2})
 	</insert>
-	<!-- 공급업체필터링 -->
-	<select id="selectSupplierByStatus" resultType="SupplierDTO">
-		SELECT * FROM SUPPLIER
-    	WHERE status = #{dbStatus}
-	</select>
-	
-	<!-- 공급업체의 활성화된 계약 갯수 -->
-	<select id="countActiveContractsBySupplier" resultType="Integer" parameterType="Integer">
-		SELECT COUNT(*)
-		FROM SUPPLIER_PRODUCT_CONTRACT
-		WHERE supplier_idx = #{supplierIdx}
-		AND status = '활성'
-	</select>
-	
-	<!-- 공급업체 삭제 -->
-	<delete id="deleteSupplierByIdx" parameterType="Integer">
-		DELETE FROM SUPPLIER
-		WHERE supplier_idx = #{supplierIdx}
-	</delete>
-	
+
 	<!-- 공급업체상세정보 -->
 	<select id="selectSupplierInfo" resultType="SupplierDTO">
 		SELECT *
@@ -146,8 +146,8 @@
 			, supplier_zipcode = #{supplierZipcode}
 			, supplier_address1 = #{supplierAddress1}
 		    , supplier_address2 = #{supplierAddress2}
-		    , supplier_status = #{supplierStatus}
-		WHERE supplier_idx = #{idx}
+		    , status = #{status}
+		WHERE supplier_idx = #{supplierIdx}
 	</update>
 	
 </mapper>

@@ -10,6 +10,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -45,6 +46,11 @@ public class FileController {
 		// => 파라미터 : BoardFileDTO   리턴타입 : 
 		Map<String, Object> map = FileUtils.getFileResource(fileDTO, session);
 		
+		// 4. 리소스 맵이 null인 경우
+        if (map == null) {
+            return ResponseEntity.notFound().build();
+        }
+		
 		Resource resource = (Resource)map.get("resource");
 		ContentDisposition contentDisposition = (ContentDisposition)map.get("contentDisposition");
 		
@@ -71,9 +77,27 @@ public class FileController {
         if (filePath == null) {
             return ResponseEntity.notFound().build();
         }
+        
+        // 4. 실제 파일 존재 여부 및 접근 가능성 체크
+        File file = new File(filePath);
+        if (!file.exists()) {
+            System.err.println("파일이 존재하지 않습니다: " + filePath);
+            return ResponseEntity.notFound().build();
+        }
+        
+        if (!file.canRead()) {
+            System.err.println("파일 읽기 권한이 없습니다: " + filePath);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        
+        if (!file.isFile()) {
+            System.err.println("디렉토리이거나 올바른 파일이 아닙니다: " + filePath);
+            return ResponseEntity.badRequest().build();
+        }
 	    
 	    // 3. 썸네일 생성(메모리에)
 	    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	    
 	    Thumbnails.of(new File(filePath))
 	            .size(width, height)        // 원하는 썸네일 크기(가로x세로)
 	            .outputFormat("jpg")        // 확장자(필요에 따라 png 등)

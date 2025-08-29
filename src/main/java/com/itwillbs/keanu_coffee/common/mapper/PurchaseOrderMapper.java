@@ -11,4 +11,6 @@ public interface PurchaseOrderMapper {
 
 	List<PurchaseOrderDTO> orderDetail();
 
+	List<PurchaseOrderDTO> getOrderDetailByOrderIdx(int orderIdx);
+
 }
