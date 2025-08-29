@@ -13,6 +13,7 @@ import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyCompanyMapper;
+import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.utils.FileUtils;
@@ -25,6 +26,7 @@ public class SupplyCompanyService {
 	
 	private final SupplyCompanyMapper supplyCompanyMapper;
 	private final EmployeeManagementMapper employeeManagementMapper;
+	private final SupplyContractMapper supplyContractMapper;
 	private final HttpSession session;
 	private final FileMapper fileMapper;
 	
@@ -78,7 +80,15 @@ public class SupplyCompanyService {
 	
 	//공급업체 정보변경
 	public int modifySupplier(SupplierDTO supplier) {
+		if(supplier.getStatus().equals("삭제")) {
+			int contractCount = supplyContractMapper.selectContractWithSupplierIdx(supplier.getSupplierIdx());
+			if(contractCount > 0) {return 0;}
+		}
 		return supplyCompanyMapper.updateSupplier(supplier);
+	}
+	// 공급업체 목록조회
+	public List<SupplierDTO> getSupplierList() {
+		return supplyCompanyMapper.selectAllSupplier();
 	}
 	
 	

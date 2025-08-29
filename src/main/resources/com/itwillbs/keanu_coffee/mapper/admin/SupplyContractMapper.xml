@@ -3,12 +3,160 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper">
+	<!-- resultMap -->
+	<!-- resultMap 정의 -->
+	<!--  공급업체(SUPPLIER) 테이블 ResultMap -->
+	<resultMap id="supplierResultMap" type="SupplierDTO">
+		<id property="supplierIdx" column="supplier_idx" />
+		<result property="supplierName" column="supplier_name" />
+		<result property="supplierManager" column="supplier_manager" />
+		<result property="supplierManagerPhone" column="supplier_manager_phone" />
+		<result property="supplierZipcode" column="supplier_zipcode" />
+		<result property="supplierAddress1" column="supplier_address1" />
+		<result property="supplierAddress2" column="supplier_address2" />
+		<result property="status" column="supplier_status" />
+	</resultMap>
+	
+	<!--  상품(PRODUCT) 테이블 ResultMap -->
+	<resultMap id="productResultMap" type="ProductDTO">
+		<id property="productIdx" column="product_idx" />
+		<result property="productName" column="product_name" />
+		<result property="productWeight" column="product_weight" />
+		<result property="productVolume" column="product_volume" />
+		<result property="productFrom" column="product_from" />
+		<result property="status" column="product_status" /> <!-- as product_status -->
+		<result property="note" column="product_note" /> <!-- as product_note -->
+	</resultMap>
+	
+	<!--  공급계약(SUPPLIER_PRODUCT_CONTRACT) 테이블 ResultMap -->
+	<resultMap id="contractResultMap" type="SupplyContractDTO">
+		<id property="supplyContractIdx" column="supplyContract_idx" />
+		<result property="supplierIdx" column="supplier_idx" />
+		<result property="productIdx" column="product_idx" />
+		<result property="contractPrice" column="contract_price" />
+		<result property="contractStart" column="contract_start" />
+		<result property="contractEnd" column="contract_end" />
+		<result property="minOrderQuantity" column="minOrder_quantity" />
+		<result property="maxOrderQuantity" column="maxOrder_quantity" />
+		<result property="status" column="contract_status" /> <!-- as contract_status -->
+		<result property="note" column="contract_note" /> <!-- as contract_note -->
+		<result property="createdAt" column="contract_created_at" /> 
+ 		<result property="updatedAt" column="contract_updated_at" /> 
+	</resultMap>
+	
+	
+	<!-- 공통코드(COMMON_CODE) 테이블 ResultMap -->
+	<resultMap id="commonCodeResultMap" type="CommonCodeDTO">
+		<id property="commonCodeIdx" column="common_code_idx" /> 
+		<result property="groupCode" column="group_code" />
+		<result property="commonCode" column="common_code" />
+		<result property="commonCodeName" column="category_name" />
+		<result property="description" column="description" />
+	</resultMap>
+	
+	<!-- 첨부파일(FILE) 테이블 ResultMap -->
+	<resultMap id="FileResultMap" type="FileDTO">
+		<id property="fileIdx" column="file_idx" /> 
+		<result property="targetTable" column="target_table" />
+		<result property="targetTableIdx" column="target_table_idx" />
+		<result property="originalFileName" column="original_file_name" />
+		<result property="realFileName" column="real_file_name" />
+		<result property="subDir" column="sub_dir" />
+		<result property="fileSize" column="file_size" />
+		<result property="contentType" column="content_type" />
+	</resultMap>
+	
+	<!--  ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
 	<!-- 등록계약리스트 -->
-	<select id="selectSupplyContractsInfo" resultType="SupplyContractDTO">
-		SELECT *
-		FROM V_SUPPLIER_PRODUCT_CONTRACT_SUMMARY
-		where status &lt;&gt; '삭제'
+	<!--  공급계약(SUPPLIER_PRODUCT_CONTRACT) 테이블 ResultMap -->
+	<resultMap id="contractFullInfoResultMap" type="SupplyContractDTO">
+		<id property="supplyContractIdx" column="supply_contract_idx" />
+		<result property="contractPrice" column="contract_price" />
+		<result property="contractStart" column="contract_start" />
+		<result property="contractEnd" column="contract_end" />
+		<result property="minOrderQuantity" column="min_order_quantity" />
+		<result property="maxOrderQuantity" column="max_order_quantity" />
+		<result property="status" column="status" /> <!-- as contract_status -->
+		<result property="note" column="note" /> <!-- as contract_note -->
+		<result property="createdAt" column="created_at" /> 
+ 		<result property="updatedAt" column="updated_at" />
+ 		<association property="supplier" resultMap="supplierResultMap" />
+ 		<association property="product" resultMap="productResultMap" />
+ 		<association property="file" resultMap="FileResultMap" />
+ 		<association property="commonCode" resultMap="commonCodeResultMap" />
+	</resultMap>
+		
+	
+	<select id="selectSupplyContractsInfo" resultMap="contractFullInfoResultMap">
+		SELECT
+			 spc.supply_contract_idx
+			 , spc.contract_price
+			 , spc.contract_start
+			 , spc.contract_end
+			 , spc.min_order_quantity
+			 , spc.max_order_quantity
+			 , spc.status
+			 , spc.note
+			 , s.supplier_idx
+			 , s.supplier_name
+			 , s.supplier_manager
+			 , s.supplier_manager_phone
+			 , s.status as supplier_status
+			 , p.product_idx
+			 , p.product_name
+			 , p.product_volume
+			 , p.product_from
+			 , c.common_code_name as category_name
+			 , p.status as product_status
+			 , f.file_idx
+		FROM SUPPLIER_PRODUCT_CONTRACT spc
+		LEFT JOIN SUPPLIER s
+			on spc.supplier_idx = s.supplier_idx
+		LEFT JOIN PRODUCT p
+			on spc.product_idx = p.product_idx
+		LEFT JOIN FILE f
+			on f.target_table = 'product' AND f.target_table_idx = p.product_idx
+		LEFT JOIN COMMON_CODE c
+			on c.common_code_idx = p.category_idx
+		<where>
+		<if test="searchType != ''">
+			${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		<if	test="filterStatus != ''">
+			AND spc.status = #{filterStatus}
+		</if>
+		</where>
+		<if test="orderKey != ''">
+			ORDER BY ${orderKey} ${orderMethod}			
+		</if>
+		LIMIT
+			#{startRow}
+			, #{listLimit}
 	</select>
+	
+	<!-- 계약목록 갯수 -->
+	<select id="countContractList" resultType="int">
+		SELECT count(*)
+		FROM SUPPLIER_PRODUCT_CONTRACT spc
+		LEFT JOIN SUPPLIER s
+			on spc.supplier_idx = s.supplier_idx
+		LEFT JOIN PRODUCT p
+			on spc.product_idx = p.product_idx
+		LEFT JOIN FILE f
+			on f.target_table = 'product' AND f.target_table_idx = p.product_idx
+		LEFT JOIN COMMON_CODE c
+			on c.common_code_idx = p.category_idx
+		<where>
+		<if test="searchType != ''">
+			${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		<if	test="filterStatus != ''">
+			AND spc.status = #{filterStatus}
+		</if>
+		</where>
+	</select>
+	
+	
 	<!-- 계약등록 -->
 	<insert id="insertContract">
 		INSERT INTO SUPPLIER_PRODUCT_CONTRACT
@@ -36,33 +184,42 @@
 	        #{note}
 	    )
 	</insert>
+	
 	<!-- 계약상세 -->
-	<select id="selectContractDetail" resultType="SupplyContractDTO">
+	<select id="selectContractDetail" resultMap="contractFullInfoResultMap">
 		SELECT
-		    spc.idx AS contractIdx,
-		    spc.contract_price AS contractPrice,
-		    spc.contract_start AS contractStart,
-		    spc.contract_end AS contractEnd,
-		    spc.status AS status,
-		    spc.note AS contractNote,
-		    spc.min_order_quantity As minOrderQuantity,
-		    spc.max_order_quantity As maxOrderQuantity,
-		    spc.note ,
-		    s.idx AS supplierIdx,
-		    s.supplier_name AS supplierName,
-		    p.idx AS productIdx,
-		    p.product_name AS productName,
-		    f.idx AS fileIdx
-		FROM
-		    SUPPLIER_PRODUCT_CONTRACT AS spc
-		LEFT JOIN
-		    SUPPLIER AS s ON spc.supplier_idx = s.idx
-		LEFT JOIN
-		    PRODUCT AS p ON spc.product_idx = p.idx
-		LEFT JOIN
-		    FILE AS f ON f.target_table = 'product' AND f.target_table_idx = p.idx
-		WHERE spc.idx = #{idx}
+			 spc.supply_contract_idx
+			 , spc.contract_price
+			 , spc.contract_start
+			 , spc.contract_end
+			 , spc.min_order_quantity
+			 , spc.max_order_quantity
+			 , spc.status
+			 , spc.note
+			 , s.supplier_idx
+			 , s.supplier_name
+			 , s.supplier_manager
+			 , s.supplier_manager_phone
+			 , s.status as supplier_status
+			 , p.product_idx
+			 , p.product_name
+			 , p.product_volume
+			 , p.product_from
+			 , c.common_code_name as category_name
+			 , p.status as product_status
+			 , f.file_idx
+		FROM SUPPLIER_PRODUCT_CONTRACT spc
+		LEFT JOIN SUPPLIER s
+			on spc.supplier_idx = s.supplier_idx
+		LEFT JOIN PRODUCT p
+			on spc.product_idx = p.product_idx
+		LEFT JOIN FILE f
+			on f.target_table = 'product' AND f.target_table_idx = p.product_idx
+		LEFT JOIN COMMON_CODE c
+			on c.common_code_idx = p.category_idx
+		WHERE spc.supply_contract_idx = #{supplyContractIdx}
 	</select>
+	
 	<!-- 계약수정 -->
 	<update id="updateContractDetail" parameterType="SupplyContractDTO">
 		UPDATE SUPPLIER_PRODUCT_CONTRACT
@@ -74,13 +231,23 @@
 	        max_order_quantity = #{maxOrderQuantity},
 	        status = #{status},
 	        note = #{note}
-	    WHERE idx = #{idx}
+	    WHERE supply_contract_idx = #{supplyContractIdx}
 	</update>
-	<!-- 계약삭제 -->
-	<update id="deleteContractDetail">
-		UPDATE SUPPLIER_PRODUCT_CONTRACT
-		SET
-			status = #{status}
-		WHERE idx = #{idx}
-	</update>
+	
+	
+	<!-- 상품idx로 계약검색 -->
+	<select id="selectContractWithproductIdx" resultType="int">
+		count(*)
+		FROM SUPPLIER_PRODUCT_CONTRACT
+		WHERE product_idx = #{productIdx}
+			AND status != '삭제'
+	</select>
+	
+	<!-- 공급처idx로 계약검색 -->
+	<select id="selectContractWithSupplierIdx" resultType="int">
+		count(*)
+		FROM SUPPLIER_PRODUCT_CONTRACT
+		WHERE product_idx = #{supplierIdx}
+			AND status != '삭제'
+	</select>
 </mapper>

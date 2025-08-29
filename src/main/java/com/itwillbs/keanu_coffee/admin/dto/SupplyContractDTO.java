@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.utils.FileUtils.FileUploadHelpper;
 
@@ -25,7 +26,12 @@ public class SupplyContractDTO {
     private Integer minOrderQuantity;
     private Integer maxOrderQuantity;
     private String status; // ENUM('계약중', '대기', '계약만료', '취소')
-
+    
+    private CommonCodeDTO commonCode;
+    private ProductDTO product;
+    private SupplierDTO supplier;
+    private FileDTO file;
+    
 	// 공통
     private String note;
     private Timestamp createdAt;

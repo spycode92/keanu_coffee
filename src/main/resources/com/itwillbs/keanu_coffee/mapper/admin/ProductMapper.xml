@@ -242,4 +242,13 @@
 			idx = #{productIdx}
 	</update>
 	
+	<!-- 상품 목록 선택 -->
+	<select id="selectAllProduct" resultType="productDTO">
+		SELECT 
+			product_idx
+			, product_name
+		FROM PRODUCT
+		ORDER BY product_name
+	</select>
+	
 </mapper>

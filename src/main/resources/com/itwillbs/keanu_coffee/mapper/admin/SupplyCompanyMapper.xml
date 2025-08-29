@@ -150,4 +150,13 @@
 		WHERE supplier_idx = #{supplierIdx}
 	</update>
 	
+	<!-- 공급업체 목록 조회 -->
+	<select id="selectAllSupplier" resultType="SupplierDTO">
+		SELECT
+			supplier_idx
+			, supplier_name
+			FROM SUPPLIER
+			ORDER BY supplier_name
+	</select>
+	
 </mapper>
