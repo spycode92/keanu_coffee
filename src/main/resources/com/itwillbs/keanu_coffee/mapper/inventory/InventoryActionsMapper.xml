@@ -5,21 +5,17 @@
 <mapper namespace="com.itwillbs.keanu_coffee.inventory.mapper.InventoryActionsMapper">
 	
 	<insert id="insertWarehouse" >
-	
-		<foreach collection="locationList" item="item" separator=";">
 			INSERT INTO 
-				WAREHOUSE_LOCATIONS (rack, bay, level_position, width, depth, height)
+				WAREHOUSE_LOCATION (location_name, rack, bay, level_position, width, depth, height)
 			VALUES (
-	            #{item.rack},
-	            #{item.bay},
-	            #{item.levelPosition},
-	            #{item.width},
-	            #{item.depth},
-	            #{item.height}
-
-			)
-		</foreach>
-		
+				#{locationName},
+	            #{rack},
+	            #{bay},
+	            #{levelPosition},
+	            #{width},
+	            #{depth},
+	            #{height}
+			)	
 	</insert>
 
 

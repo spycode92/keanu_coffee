@@ -59,7 +59,7 @@ public class InventoryActionsController {
 		char[] lowerLetters = new char[26];
 		
 		for (int i = 0; i < 26; i++) {
-			lowerLetters[i] = (char) ('a' + i); // lowercase letters
+			lowerLetters[i] = (char)('a' + i); // lowercase letters
 		}
 		
 //		create a list of locations to be inserted into DB
@@ -72,7 +72,9 @@ public class InventoryActionsController {
 				for(int k = 0; k < levels; k++) {
 					char levelLetter = lowerLetters[k];  // creates a letter for each level
 					for(int l = 1; l < positions; l++) {
-						locationList.add(new CreateWarehouseDTO(rack, bay,(levelLetter + String.valueOf(l)), width, height, depth));
+						String locationName = rack + "-" + bay + "-" + (levelLetter + String.valueOf(l)); 
+						locationList.add(new CreateWarehouseDTO(locationName, rack, bay, (levelLetter + String.valueOf(l)), width, height, depth));
+				
 //						CreateWarehouseDTO createWarehouseDTO = new CreateWarehouseDTO();
 //						createWarehouseDTO.setRack(rack);
 //						createWarehouseDTO.setBay(bay);
@@ -91,11 +93,14 @@ public class InventoryActionsController {
 				}
 			}
 		}
+		for (int i = 0; i < locationList.size(); i++) {
+			
+			inventoryActionsService.registWarehouse(locationList.get(i));
+		}
 		
-
-		inventoryActionsService.registWarehouse(locationList);
 		
-		return "/inventory/updateWarehouse";
+		
+		return "inventory/update_warehouse";
 	}
 	
 	
