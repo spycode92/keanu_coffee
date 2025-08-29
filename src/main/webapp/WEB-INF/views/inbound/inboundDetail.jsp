@@ -96,36 +96,62 @@
 				<button id="btnConfirm" class="btn btn-primary btn-sm">입고확정</button>
 			</div>
 		</div>
-
+	<!-- ========== 계산 블록: totalQty 초기화/누적  ===================================================================================== -->
+		<c:set var="totalQty" value="0" scope="page" />
+		
+		<c:if test="${not empty product}">
+			<c:forEach var="prod" items="${product}">
+				<c:set var="item" value="${itemMap[prod.productIdx]}" />
+		
+				<c:choose>
+					<c:when test="${not empty item and item.quantity != null}">
+			       		<!-- quantity가 숫자형(또는 숫자 문자열)인 경우 누적 -->
+			        	<c:set var="totalQty" value="${totalQty + item.quantity}" scope="page" />
+			      	</c:when>
+					<c:otherwise>
+						-
+					</c:otherwise>
+				</c:choose>
+			</c:forEach>
+		</c:if>
+		
+	<!-- ========== 계산 블록: grandTotal 초기화/누적 ===== -->
+		<c:set var="grandTotal" value="0" scope="page" />
+		
+		<c:if test="${not empty product and not empty orderItems}">
+			<c:forEach var="prod" items="${product}">
+				<c:set var="item" value="${itemMap[prod.productIdx]}" />
+		
+			    <c:choose>
+			      <c:when test="${not empty item}">
+			        <c:set var="unitPrice" value="${item.unitPrice}" />
+			        <c:set var="quantity" value="${item.quantity}" />
+			      </c:when>
+			      <c:otherwise>
+			        <c:set var="unitPrice" value="0" />
+			        <c:set var="quantity" value="0" />
+			      </c:otherwise>
+			    </c:choose>
+		
+			    <c:set var="amount" value="${unitPrice * quantity}" />
+			    <c:set var="tax" value="${amount * 0.1}" />
+			    <c:set var="total" value="${amount + tax}" />
+				<c:set var="grandTotal" value="${grandTotal + total}" scope="page" />
+			</c:forEach>
+		</c:if>
+	<!-- ========== 계산 블록 끝 ========================================================================================================= -->
+		
 		<!-- 상단 기본정보 카드 -->
 		<div class="card mb-3">
 			<div class="card-header d-flex justify-content-between align-items-center">
 				<div class="card-title">기본 정보</div>
 				<div class="text-muted">상태: <span class="badge badge-pending">-</span></div>
 			</div>
-			
-			<!-- ===== 바코드 표시 컨테이너 (페이지에 한 번만) ===== -->
-			<div id="barcodeContainer" style="display:none; margin:12px 0; align-items:center; gap:12px;">
-			    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-			        <img id="barcodeImg" alt="barcode image" style="height:120px; border:1px solid var(--border); padding:6px; background:white;" />
-			        <div style="display:flex; flex-direction:column; gap:6px;">
-			            <a id="barcodeDownload" href="#" download>PNG 다운로드</a>
-			            <div style="font-size:0.9rem;color:var(--muted-foreground);">형식: CODE128</div>
-			        </div>
-			        <div style="margin-left:auto">
-			            <button id="btnHideBarcode" class="btn btn-sm btn-secondary" type="button">닫기</button>
-			        </div>
-			    </div>
-			</div>
-
 			<div class="kv-grid">
 				<div class="kv-item">
 					<div class="kv-label">입고번호</div>
 					<div class="kv-value" style="display:flex; align-items:center; gap:.5rem;">
-				        <a id="inboundLink"
-				           class="inbound-link"
-				           data-code="IN-20250811-001"
-				           title="입고번호 바코드 보기 (클릭: 인라인, Ctrl+클릭: 새탭)">
+				        <a id="inboundLink" class="inbound-link">
 				           -
 				        </a>
 				    </div>
@@ -135,7 +161,7 @@
 					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
-					<div class="kv-label">창고</div>
+					<div class="kv-label">LOT번호</div>
 					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
@@ -145,7 +171,7 @@
 
 				<div class="kv-item">
 					<div class="kv-label">공급업체</div>
-					<div class="kv-value">-</div>
+					<div class="kv-value"><c:out value="${supplierName }"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">담당자</div>
@@ -153,7 +179,7 @@
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">발주번호(PO)</div>
-					<div class="kv-value">-</div>
+					<div class="kv-value"><c:out value="${orderItems[0].orderNumber}" /></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고위치</div>
@@ -162,15 +188,15 @@
 
 				<div class="kv-item">
 					<div class="kv-label">총 품목 수</div>
-					<div class="kv-value">-</div>
+					<div class="kv-value"><c:out value="${fn:length(product)}" /></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">총 수량</div>
-					<div class="kv-value">-</div>
+					<div class="kv-value"><fmt:formatNumber value="${totalQty}" pattern="#,##0" /></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">총 금액</div>
-					<div class="kv-value">-</div>
+					<div class="kv-value"> <fmt:formatNumber value="${grandTotal}" pattern="₩ #,##0" /></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">비고</div>
@@ -247,7 +273,6 @@
 										</td>       
 										  
 										<!-- 수량 -->
-										               
 										<td>
 											<fmt:formatNumber value="${item.quantity}" pattern="#개,##0" />
 										</td>         
@@ -281,7 +306,6 @@
 										<td>
 											-
 										</td>                                   
-										
 									</tr>
 								</c:forEach>
 							</c:when>
@@ -298,7 +322,7 @@
 							<td>합계</td>
 							<td>-</td>
 							<td>-</td>
-							<td>-</td>
+							<td> <fmt:formatNumber value="${grandTotal}" pattern="₩ #,##0" /></td>
 							<td></td>
 						</tr>
 					</tfoot>

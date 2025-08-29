@@ -47,7 +47,19 @@
 
 	</select>
 	
+	<!-- 사원명검색 -->
+	<select id="getInboundStaffNameList" parameterType="java.util.List" resultType="com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO">
+		SELECT 	emp_name
+		FROM	EMPLOYEE_INFO
+		WHERE	department_idx = 2 AND role_idx = 2
+	</select>
 	
+	<!--  -->
+	<select id="getSupplierName">
+		SELECT	supplier_name
+		FROM	SUPPLIER
+		WHERE	supplier_idx = #{supplierIdx }
+	</select>
 	
 	
 </mapper>

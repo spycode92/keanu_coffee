@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderDTO;
 import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderItemDTO;
 import com.itwillbs.keanu_coffee.common.service.PurchaseOrderService;
+import com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO;
 import com.itwillbs.keanu_coffee.inbound.service.InboundService;
 
 import lombok.RequiredArgsConstructor;
@@ -42,8 +45,8 @@ public class InboundController {
 	public String showInboundManagement(Model model) {
 		// 발주 테이블 확인
 		List<PurchaseOrderDTO> OrderDetailList = purchaseOrderService.orderDetail();
-//		System.out.println(">>>>>>>>>>>>>>>>> DEBUG : " + OrderDetailList);
 		model.addAttribute("orderList", OrderDetailList);
+		
 		return "/inbound/inboundManagement";
 	}
 	
@@ -67,8 +70,9 @@ public class InboundController {
 		// 3) orderIdx로 조회
 		List<PurchaseOrderDTO> orderItems = inboundService.getOrderDetailByOrderIdx(orderIdx);
 		model.addAttribute("orderItems", orderItems);
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> - " + orderItems);
 		
-		// orderItems 내부의 PurchaseOrderItemDTO 를 펼쳐서 productIdx -> item 맵 생성
+		// 4) orderItems 내부의 PurchaseOrderItemDTO 를 펼쳐서 productIdx -> item 맵 생성
 	    Map<Integer, PurchaseOrderItemDTO> itemMap = orderItems.stream()
 	        .filter(o -> o.getItems() != null)                             // items null 체크
 	        .flatMap(o -> o.getItems().stream())                           // PurchaseOrderItemDTO 스트림으로 변환
@@ -78,9 +82,28 @@ public class InboundController {
 	            (existing, replacement) -> existing,                       // 충돌 시 기존 유지
 	            LinkedHashMap::new                                         // 순서 유지
 	        ));
-
 	    model.addAttribute("itemMap", itemMap);
 		
+	    // 5) 담당자 가능 인원 조회
+//	    List<EmployeeInfoDTO> inboundStaffNameList = inboundService.getInboundStaffNameList();
+//	    model.addAttribute("staffList", inboundStaffNameList);
+	    
+	    // 6) 회사명 조회
+	    int supplierIdx = orderItems.get(0).getSupplierIdx();
+	    String supplierName = inboundService.getSupplierName(supplierIdx);
+	    model.addAttribute("supplierName", supplierName);
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
 		return "/inbound/inboundDetail";
 	}
 	

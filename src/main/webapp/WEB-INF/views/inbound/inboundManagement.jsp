@@ -203,7 +203,7 @@
 					<thead>
 						<tr>
 							<th style="width:36px;"><input type="checkbox" class="select-all" /></th>
-							<th>입고번호</th>
+							<th>발주번호</th>
 							<th>입고일자</th>
 							<th>공급업체</th>
 							<th>창고</th>
@@ -250,7 +250,7 @@
 									<td>-</td>
 															
 									<!-- 공급업체 -->
-									<td>-</td>
+									<td><c:out value="${order.supplierIdx }"/></td>
 															
 									<!-- 창고 -->
 									<td>-</td>

@@ -73,6 +73,8 @@
 		WHERE o.order_idx = #{orderIdx}
 		ORDER BY o.order_date DESC
 	</select>
+	
+	
 
 
 </mapper>
