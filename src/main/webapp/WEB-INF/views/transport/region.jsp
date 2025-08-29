@@ -18,7 +18,7 @@
 <script
 	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script
-	src="${pageContext.request.contextPath}/resources/js/transport/vehicle.js"
+	src="${pageContext.request.contextPath}/resources/js/transport/region.js"
 	defer></script>
 <style type="text/css">
 /* 컨테이너 */
@@ -57,23 +57,35 @@ margin-top: 0.5rem;
 
 .region-card input,
 .region-card select,
-.region-card button {
-width:100%; padding:0.5rem; margin-top:0.25rem; margin-bottom:0.75rem;
-border:1px solid var(--border); border-radius: var(--radius);
+.region-card .btn {
+	width:100%; 
+	padding:0.5rem; 
+	margin-top:0.25rem; 
+	margin-bottom:0.75rem;
+	border:1px solid var(--border); 
+	border-radius: var(--radius);
 }
 
 
-.region-card button {
-background: var(--primary);
-color: var(--primary-foreground);
-font-weight: var(--font-weight-medium);
-cursor: pointer;
+.region-card .btn {
+	background: var(--primary);
+	color: var(--primary-foreground);
+	font-weight: var(--font-weight-medium);
+	cursor: pointer;
 }
-.region-card button:hover { opacity:0.9; }
+
+.region-card button:hover { 
+	opacity:0.9; 
+}
 
 
 /* 테이블 */
-.region-card table { width:100%; border-collapse: collapse; margin-top:1rem; }
+.region-card table { 
+	width:100%; 
+	border-collapse: collapse; 
+	margin-top:1rem; 
+}
+
 .region-card table th,
 .region-card table td { border:1px solid var(--border); padding:0.5rem; text-align:center; }
 .region-card table th { background: var(--muted); }
@@ -82,10 +94,65 @@ cursor: pointer;
 /* 리스트 드래그 */
 #franchiseList { list-style:none; padding:0; margin:1rem 0; }
 #franchiseList li {
-background: var(--accent);
-color: var(--foreground);
-padding:0.6rem 0.8rem;
-#franchiseList li.dragging { opacity:0.5; background: var(--secondary); }
+	background: var(--accent);
+	color: var(--foreground);
+	padding:0.6rem 0.8rem;
+}
+#franchiseList li.dragging { 
+	opacity:0.5; 
+	background: var(--secondary); 
+}
+
+.region-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card);
+  padding: 6px 10px;
+  margin-bottom: 8px;
+}
+
+.region-name {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.region-name:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(86, 95, 254, 0.2);
+}
+
+.region-actions {
+  display: flex;
+  gap: 6px;
+  margin-left: 8px;
+  margin-bottom: 9px;
+}
+
+.icon-btn {
+  background: #f5f5f5;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  padding: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.icon-btn.edit:hover {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.icon-btn.delete:hover {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+}
 </style>
 </head>
 <body>
@@ -107,21 +174,27 @@ padding:0.6rem 0.8rem;
 				<form action="/transport/region/add"  method="POST" id="regionForm">
 					<label>구역 이름</label> 
 					<input type="text" id="regionName" name="regionName" placeholder="예: 1구역">
-					<button type="submit">구역 추가</button>
+					<button type="submit" class="btn">구역 추가</button>
 				</form>
 				<h3>구역 목록</h3>
-				<ul id="regionList">
+				<div id="regionList">
 					<c:choose>
 						<c:when test="${empty regionList}">
 							<div>등록된 구역이 없습니다.</div>
 						</c:when>
 						<c:otherwise>
 							<c:forEach var="region" items="${regionList}">
-								<li>${region.commonCodeName}</li>
+								<div class="region-item" >
+									<input class="region-name" value="${region.commonCodeName}"/>
+								  	<div class="region-actions">
+								    	<button type="button" class="icon-btn edit" onclick="editRegion('${region.commonCodeIdx}', '${region.commonCodeName}')">✎</button>
+								    	<button type="button" class="icon-btn delete" onclick="deleteRegion('${region.commonCodeIdx}')">🗑</button>
+								  	</div>
+								</div>
 							</c:forEach>
 						</c:otherwise>
 					</c:choose>
-				</ul>
+				</div>
 			</div>
 
 			<!-- 2. 행정구역 매핑 -->
