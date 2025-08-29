@@ -23,10 +23,7 @@ public class ProductDTO implements FileUploadHelpper {
 	private Integer productIdx;
 	private String productName;
 	private BigDecimal productWeight;
-    private BigDecimal productWidth;
-    private BigDecimal productLength;
-    private BigDecimal productHeight;
-    private BigDecimal productVolume;
+    private int productVolume;
     private String productFrom;
     private String status; // Enum 활성 비활성 삭제
     
@@ -36,6 +33,7 @@ public class ProductDTO implements FileUploadHelpper {
     private Timestamp updatedAt;
     
     private CommonCodeDTO commonCode;
+    private FileDTO file;
     
     // 파일업로드
 	@JsonIgnore

@@ -101,11 +101,11 @@
 			LEFT JOIN TEAM t ON e.team_idx = t.team_idx
 			LEFT JOIN ROLE r ON e.role_idx = r.role_idx
 			<if test="searchType != ''">
-			WHERE
-				${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
+				WHERE
+					${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
 			</if>
 			<if test="orderKey != ''">
-			ORDER BY ${orderKey} ${orderMethod}			
+				ORDER BY ${orderKey} ${orderMethod}			
 			</if>
 		LIMIT
 			#{startRow}

@@ -8,36 +8,34 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
+import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
+import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 
 @Mapper
 public interface ProductMapper {
-	//등록된상품리스트
-	List<SupplierDTO> selectProductsInfo();
+	//상품목록
+	List<ProductDTO> selectAllProductList(@Param("startRow") int startRow, @Param("listLimit") int listLimit, 
+			@Param("searchType") String searchType, @Param("searchKeyword") String searchKeyword,
+			@Param("orderKey")String orderKey, @Param("orderMethod")String orderMethod, @Param("filterCategoryIdx")String filterCategoryIdx);
+	//상품목록 수
+	int countProductList(@Param("searchType")String searchType, @Param("searchKeyword")String searchKeyword, @Param("filterCategoryIdx")String filterCategoryIdx);
 	//카테고리목록
-	List<SupplierDTO> selectAllCategoriesAsMap();
+	List<ProductDTO> selectAllCategoriesAsMap();
 	//카테고리추가
-	void insertCategory(SupplierDTO category);
+	void insertCategory(String categoryName);
 	// 카테고리수정
-	void updateCategory(SupplierDTO category);
+	void updateCategory(CommonCodeDTO category);
 	//카테고리에 제품이있나 확인
-	int countProductByCategoryIdx(Integer idx);
-	//카테고리에 자식카테고리가있나확인
-	int countCategoryByCategoryIdx(Integer idx);
+	int countProductByCategoryIdx(Integer commonCodeIdx);
 	// 카테고리삭제
 	void deleteCategory(Integer idx);
 	//상품등록
-	int insertProduct(SupplierDTO product);
-	//상품목록
-	List<SupplierDTO> selectAllProductList();
-	//상품목록 - 필터대분류
-	List<SupplierDTO> selectProductByCategoryIdxList(List<Long> categoryIdxList);
-	// 상품목록 - 필터소분류
-	List<SupplierDTO> selectProductsByCategoryIdx(Long categoryIdx);
+	int insertProduct(ProductDTO product);
 	//상품상세정보
-	SupplierDTO selectProductByProductIdx(Integer productIdx);
-
-	int updateProduct(SupplierDTO product);
+	ProductDTO selectProductByProductIdx(Integer productIdx);
+	// 상품정보 수정
+	int updateProduct(ProductDTO product);
 
 	int updateProductStatus(@Param("productIdx") Integer productIdx, @Param("status")String status);
 

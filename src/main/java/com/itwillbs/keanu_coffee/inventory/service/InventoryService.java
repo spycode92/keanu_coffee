@@ -20,6 +20,13 @@ public class InventoryService {
 
 
 
+	public int[] getWarehouseInfo() {
+		
+		return inventoryMapper.selectWarehouseInfo();
+	}
+
+
+
 //	public List<InventoryDTO> getInventoryThatNeedsToMoveFromInbound() {
 //		// TODO Auto-generated method stub
 //		return inventoryMapper.selectInventoryThatNeedsToMoveFromInbound();
