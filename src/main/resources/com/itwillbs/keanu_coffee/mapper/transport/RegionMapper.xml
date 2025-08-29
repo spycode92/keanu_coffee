@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.transport.mapper.RegionMapper">
+	<!-- 구역 등록 -->
+	<insert id="insertRegion">
+		INSERT
+			COMMON_CODE(common_code_name, group_code, common_code, description)
+		VALUES (
+			#{regionName}, 'REGION', #{regionName}, #{regionName}
+		)
+	</insert>
+	
+	<!-- 구역 리스트 -->
+	<select id="selectRegionList" resultType="com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO">
+		SELECT 
+			common_code_idx
+			, common_code_name
+		FROM
+			COMMON_CODE
+		WHERE
+			group_code = 'REGION'
+	</select>
+	
+	<!-- 구역 이름 수정 -->
+	<update id="updateRegion">
+		UPDATE
+			COMMON_CODE
+		SET
+			common_code_name = #{commonCodeName}
+			, common_code = #{commonCodeName}
+			, description = #{commonCodeName}
+		WHERE
+			common_code_idx = #{commonCodeIdx}
+			
+	</update>
+	
+	<!-- 구역 삭제 -->
+	<delete id="deleteRegion">
+		DELETE FROM
+			COMMON_CODE
+		WHERE
+			common_code_idx = #{commonCodeIdx}
+	</delete>
+	
+	<!-- 구역이름 중복 검사 -->
+	<select id="countRegionName" resultType="int">
+		SELECT
+			 COUNT(*)
+		FROM 
+			COMMON_CODE
+		WHERE
+			group_code = 'REGION'
+		AND
+			common_code_name LIKE CONCAT('%', #{regionName}, '%')
+	</select>
+</mapper>
