@@ -247,7 +247,11 @@ $(function() {
 				});
 	        },
 	        error: function() {
-	            Swal.fire('수정 실패', '서버 오류가 발생했습니다.', 'error');
+	            Swal.fire({
+					title: '실패',
+					html: '잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오.',
+					icon: 'error'
+				});
 	        }
 	    });
 	});

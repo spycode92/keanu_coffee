@@ -11,7 +11,7 @@ $(function () {
 			<option value="${category.commonCodeIdx}">${category.commonCodeName}</option>`
 			);
 		})
-	})
+	});
 	
 	// 상위 카테고리 리스트 불러오기 및 셀렉트박스 렌더링
     function loadCategoryList() {
@@ -368,7 +368,11 @@ $(function () {
 				});
 	        },
 	        error: function() {
-	            Swal.fire('실패', '저장 중 오류가 발생했습니다.', 'error');
+	            Swal.fire({
+					title: '실패',
+				  	html: '잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오.',
+				  	icon: 'error'
+				});
 	        }
 	    });
 	});

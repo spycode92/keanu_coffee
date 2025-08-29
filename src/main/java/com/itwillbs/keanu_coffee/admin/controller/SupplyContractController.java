@@ -47,14 +47,16 @@ public class SupplyContractController {
 			@RequestParam(defaultValue = "") String searchType,
 			@RequestParam(defaultValue = "") String searchKeyword,
 			@RequestParam(defaultValue ="") String orderKey,
-			@RequestParam(defaultValue ="") String orderMethod) {
+			@RequestParam(defaultValue ="") String orderMethod,
+			@RequestParam(defaultValue ="") String filterStatus) {
 		model.addAttribute("pageNum",pageNum);
 		model.addAttribute("searchType",searchType);
 		model.addAttribute("searchKeyword",searchKeyword);
-		model.addAttribute("sortKey",orderKey);
-		model.addAttribute("sortMethod",orderMethod);
+		model.addAttribute("orderKey",orderKey);
+		model.addAttribute("orderMethod",orderMethod);
+		model.addAttribute("filterStatus",filterStatus);
 		int listLimit = 10;
-		int contractListCount = supplyContractService.getContractListCount(searchType, searchKeyword);
+		int contractListCount = supplyContractService.getContractListCount(searchType, searchKeyword, filterStatus);
 		
 		if (contractListCount > 0) {
 			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, contractListCount, pageNum, 3);
@@ -68,7 +70,7 @@ public class SupplyContractController {
 			model.addAttribute("pageInfo", pageInfoDTO);
 		
 			List<SupplyContractDTO> supplyContractList = supplyContractService.getsupplyContractInfo(
-					pageInfoDTO.getStartRow(), listLimit, searchType, searchKeyword, orderKey,orderMethod);
+					pageInfoDTO.getStartRow(), listLimit, searchType, searchKeyword, orderKey, orderMethod, filterStatus);
 			model.addAttribute("supplyCotractList", supplyContractList);
 		}
 		
@@ -77,14 +79,14 @@ public class SupplyContractController {
 		return "/admin/system_preference/supply_contract_management";
 	}
 	
-    @GetMapping("/getContractList")
-    @ResponseBody
-    public List<SupplyContractDTO> getContractList() {
-		//공급계약 리스트 가져오기
-		List<SupplyContractDTO> supplyContractList = supplyContractService.getsupplyContractInfo();
-
-    	return supplyContractList;
-    }
+//    @GetMapping("/getContractList")
+//    @ResponseBody
+//    public List<SupplyContractDTO> getContractList() {
+//		//공급계약 리스트 가져오기
+//		List<SupplyContractDTO> supplyContractList = supplyContractService.getsupplyContractInfo();
+//
+//    	return supplyContractList;
+//    }
     
     //공급계약등록
     @PostMapping("/addContract")

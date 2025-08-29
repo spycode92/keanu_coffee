@@ -30,13 +30,13 @@ public class SupplyContractService {
 	
 	//공급계약리스트
 	public List<SupplyContractDTO> getsupplyContractInfo(
-			int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod) {
-		return supplyContractMapper.selectSupplyContractsInfo(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
+			int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod, String filterStatus) {
+		return supplyContractMapper.selectSupplyContractsInfo(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod, filterStatus);
 	}
 	
 	// 계약목록 수
-	public int getContractListCount(String searchType, String searchKeyword) {
-		return supplyContractMapper.countContractList(searchType, searchKeyword);
+	public int getContractListCount(String searchType, String searchKeyword, String filterStatus) {
+		return supplyContractMapper.countContractList(searchType, searchKeyword, filterStatus);
 	}
 	
 	//계약등록
