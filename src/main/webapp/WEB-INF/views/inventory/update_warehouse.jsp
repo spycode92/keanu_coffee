@@ -39,19 +39,19 @@
 	  <table>
 	    <tr>
 	      <td><label  class="form-label" for="racks">랙 수</label></td>
-	      <td><input class="form-control" type="number" id="racks" name="racks" min="0" value="${warehouseInfo[0]}" required></td>
+	      <td><input class="form-control" type="number" id="racks" name="racks" min="0" value="${warehouseInfo.rackCount}" required></td>
 	    </tr>
 	    <tr>
 	      <td><label  class="form-label" for="bays">랙당 베이 수</label></td>
-	      <td><input class="form-control" type="number" id="bays" name="bays" min="0" value="${warehouseInfo[1]" required></td>
+	      <td><input class="form-control" type="number" id="bays" name="bays" min="0" value="${warehouseInfo.bayCount}" required></td>
 	    </tr>
 	    <tr>
 	      <td><label class="form-label" for="levels">베이당 레벨 수</label></td>
-	      <td><input class="form-control" type="number" id="levels" name="levels" value="${warehouseInfo[2]" min="0" required></td>
+	      <td><input class="form-control" type="number" id="levels" name="levels" value="${warehouseInfo.levelCount}" min="0" required></td>
 	    </tr>
 	    <tr>
 	      <td><label class="form-label" for="positions">이 레벨의 이 만의 위치 수</label></td>
-	      <td><input class="form-control" type="number" id="positions" name="positions" value="${warehouseInfo[3]" min="0" required></td>
+	      <td><input class="form-control" type="number" id="positions" name="positions" value="${warehouseInfo.positionCount}" min="0" required></td>
 	    </tr>
 		<h3 class="card-header">한 레벨의 크기</h3>
 	    <tr>  

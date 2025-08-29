@@ -34,7 +34,7 @@
 <!-- 			? -->
 <!-- 	</select> -->
 
-		<select id="selectWarehouseInfo" resultType="int[]">
+		<select id="selectWarehouseInfo" resultType="com.itwillbs.keanu_coffee.inventory.dto.WarehouseInfoDTO">
 			SELECT
 				COUNT(DISTINCT rack)
 				, COUNT(DISTINCT bay)

@@ -6,17 +6,17 @@
 	
 	<insert id="insertWarehouse" >
 	
-		<foreach collection="locationList" item="item">
+		<foreach collection="locationList" item="item" separator=";">
 			INSERT INTO 
-				WAREHOUSE_LOCATIONS (location_name, rack, bay, level_position, width, depth, height)
+				WAREHOUSE_LOCATIONS (rack, bay, level_position, width, depth, height)
 			VALUES (
-				#{item}
-				, SUBSTRING(#{item}, 1, 1)
-				, SUBSTRING(#{item}, 3, 1)
-				, SUBSTRING(#{item}, 5, 2)
-				, #{width}
-				, #{depth}
-				, #{height}
+	            #{item.rack},
+	            #{item.bay},
+	            #{item.levelPosition},
+	            #{item.width},
+	            #{item.depth},
+	            #{item.height}
+
 			)
 		</foreach>
 		

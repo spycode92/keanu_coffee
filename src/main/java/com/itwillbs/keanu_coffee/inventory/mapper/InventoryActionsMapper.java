@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.itwillbs.keanu_coffee.inventory.dto.CreateWarehouseDTO;
+
 @Mapper
 public interface InventoryActionsMapper {
 
-	String insertWarehouse(List<String> locationList, int width, int depth, int height);
+	String insertWarehouse(List<CreateWarehouseDTO> locationList);
 
 }
