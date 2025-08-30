@@ -72,6 +72,11 @@ public class FranchiseService {
 		return updateCount;
 	}
 
+	// 등록된 구역이 있는지 확인
+	public boolean countFranchiseByRegion(Integer regionIdx) {
+		return franchiseMapper.countFranchiseByRegion(regionIdx) > 0;
+	}
+
 
 
 

@@ -1,6 +1,9 @@
 package com.itwillbs.keanu_coffee.transport.controller;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,15 +53,18 @@ public class RegionController {
 	}
 	
 	// 구역 삭제
-	@DeleteMapping("/region/delete")
-	@ResponseBody
-	public String deleteRegion(@RequestBody CommonCodeDTO request, RedirectAttributes redirectAttributes) {
+	@PostMapping("/region/delete")
+	public ResponseEntity<?> deleteRegion(@RequestBody CommonCodeDTO request) {
 		try {
 			regionService.removeRegion(request.getCommonCodeIdx());
+			return ResponseEntity.ok("구역이 삭제되었습니다.");
+		} catch (IllegalStateException e) {
+			return ResponseEntity.badRequest().
+					contentType(MediaType.valueOf("application/json; charset=UTF-8"))
+					.body(e.getMessage());
 		} catch (Exception e) {
-			redirectAttributes.addFlashAttribute("msg", "구역 삭제 중 오류가 발생했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("구역 삭제 중 오류가 발생했습니다.");
 		}
-		
-		return "redirect:/transport/region";
 	}
 }

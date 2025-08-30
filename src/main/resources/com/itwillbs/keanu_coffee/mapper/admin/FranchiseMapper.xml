@@ -143,6 +143,16 @@
 	WHERE franchise_idx = #{franchiseIdx}
 	</update>
 	
+	<!-- 등록된 구역이 있는지 확인 -->
+	<select id="countFranchiseByRegion" resultType="int">
+    	SELECT 
+			COUNT(*)
+		FROM
+			FRANCHISE
+		WHERE
+			region_idx = #{regionIdx}
+	</select>
+	
 </mapper>
 
 
