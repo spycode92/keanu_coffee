@@ -27,7 +27,6 @@
  				<select name="searchType">
 					<option <c:if test="${searchType eq '이름' }">selected</c:if>> 이름</option>
 					<option <c:if test="${searchType eq '사번' }">selected</c:if>>사번</option>
-					<option <c:if test="${searchType eq '아이디' }">selected</c:if>>아이디</option>
 				</select>
 				<input class="form-control" placeholder="텍스트 입력" name="searchKeyword" style="width:200px;">
 				<input type="submit" value="검색" class="btn btn-sm btn-primary">

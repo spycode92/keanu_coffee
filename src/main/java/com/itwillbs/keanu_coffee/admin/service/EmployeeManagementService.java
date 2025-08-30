@@ -65,6 +65,7 @@ public class EmployeeManagementService {
 		//empId, empPassword DTO 주입
 		employee.setEmpNo(empNo);
 		employee.setEmpPassword(empPassword);
+		System.out.println(employee);
 		// 정보 입력 후 empIdx 받아오기
 		int inputCount = employeeManagementMapper.insertEmployeeInfo(employee);
 		
