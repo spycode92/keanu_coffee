@@ -112,8 +112,10 @@
 
     <section class="content">
         <div class="container">
-            <h4 class="mb-3"><i class="fas fa-truck"></i> 공급업체 관리</h4>
-
+			<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+	            <h4 class="mb-3"><i class="fas fa-truck"></i> 공급업체 관리</h4>
+				<button id="btnAddSupplier" class="btn btn-primary">공급업체 추가</button>
+			</div>
   	        <form class="filters" aria-label="검색 및 필터">
 	            <div class="field">
 	                <select id="filterStatus" name="searchType">
@@ -124,7 +126,7 @@
 	                </select>
 	            </div>
 	            <div class="search">
-	                <input id="filterText" type="text" name="searchKeyword" placeholder="검색" />
+	                <input id="filterText" type="text" name="searchKeyword" placeholder="업체명" />
 	            </div>
 	            <div class="actions">
 	                <button class="btn" id="btnSearch">검색</button>
@@ -174,9 +176,6 @@
 							onclick="location.href='/admin/systemPreference/supplyCompany?pageNum=${pageInfo.pageNum + 1}&searchType=${param.searchType}&searchKeyword=${param.searchKeyword}'" 
 						<c:if test="${pageInfo.pageNum eq pageInfo.maxPage}">disabled</c:if>>
 					</c:if>
-				</div>
-				<div>
-					<button id="btnAddSupplier" class="btn btn-primary btn-sm">공급업체 추가</button>
 				</div>
 			</div>
         </div>

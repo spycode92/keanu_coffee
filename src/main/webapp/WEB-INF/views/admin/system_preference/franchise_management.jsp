@@ -113,7 +113,7 @@
 
     <section class="content">
         <div class="container mt-4">
-            <div class="flex-between mb-3">
+			<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
                 <h4 class="mb-0">지점 관리</h4>
                 <button id="btnAddFranchise" class="btn btn-primary">지점 추가</button>
             </div>
@@ -128,7 +128,7 @@
 			            </select>
 		            </div>
 		            <div class="search">
-		                <input id="filterText" type="text" name="searchKeyword" placeholder="검색" />
+		                <input id="filterText" type="text" name="searchKeyword" placeholder="지점명" />
 		            </div>
 		            <div class="actions">
 		                <button class="btn" id="btnSearch">검색</button>

@@ -113,7 +113,7 @@
 
     <section class="content">
         <div class="container mt-4">
-            <div class="flex-between mb-3">
+			<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
                 <h4 class="mb-0">공급계약 관리</h4>
                 <button id="btnAddContract" class="btn btn-primary">공급계약 추가</button>
             </div>

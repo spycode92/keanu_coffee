@@ -131,7 +131,7 @@
 		                </select>
 		            </div>
 		            <div class="search">
-		                <input id="filterText" type="text" name="searchKeyword" placeholder="검색" />
+		                <input id="filterText" type="text" name="searchKeyword" placeholder="상품명" />
 		            </div>
 		            <div class="actions">
 		                <button class="btn" id="btnSearch">검색</button>
