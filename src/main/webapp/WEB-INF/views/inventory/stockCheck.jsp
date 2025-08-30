@@ -12,6 +12,7 @@
 <style>
     .interval { margin: 5px !important; }
 
+
     /* 상태 라벨 */
     .status-label { display:inline-block; padding:3px 8px; border-radius:4px; font-weight:bold; font-size:0.9em; }
     .status-label.imminent { background:#fff3cd; border:1px solid #ffc107; color:#856404; }
@@ -28,6 +29,7 @@
     .ship-badge { display:inline-block; padding:2px 10px; border-radius:999px; font-weight:700; font-size:.85em; border:1px solid rgba(0,0,0,.1); }
     .ship-yes { background:#e6ffed; border-color:#16a34a; color:#166534; }
     .ship-no  { background:#e5e7eb; border-color:#9ca3af; color:#6b7280; }
+
 
     .disabled-row { background:#f3f4f6 !important; color:#6b7280 !important; }
     @media (prefers-color-scheme: dark) {
@@ -48,6 +50,7 @@
         .modal-card.lg { width: 95%; max-height: 85vh; }
     }
 
+
     /* 폐기 처리 전용 */
     #lotModal .panel-disposal {
         border:1px dashed #334155;
@@ -57,6 +60,7 @@
         color:#e2e8f0;
     }
     #lotModal .panel-disposal .form {
+
         display:flex;
         flex-direction:column;
         gap:12px;
@@ -75,6 +79,7 @@
         color:#e2e8f0;
         border-radius:10px;
         padding:10px 12px;
+
     }
     #lotModal .panel-disposal textarea.form-control {
         min-height:110px;
@@ -127,6 +132,7 @@
                 <input type="date" id="expStart" class="form-control">
             </div>
             <div class="interval">
+
                 <label class="form-label">재고 정렬 기준</label>
                 <select id="sortOption" class="form-control">
                     <option value="">전체</option>
@@ -137,6 +143,7 @@
                 </select>
             </div>
         </div>
+
 
         <!-- 임박 기준 입력칸 제거, 상태 필터만 유지 -->
         <div style="display:flex; gap:16px; align-items:center; padding:12px;">
@@ -187,7 +194,7 @@
 	        </table>
 	    </div>
 	</div>
-	
+
 	<!-- ========================= LOT 상세 모달 ========================= -->
 	<div class="modal" id="lotModal">
 	    <div class="modal-card lg">
@@ -598,6 +605,5 @@
 	        alert('폐기 처리가 완료되었습니다.');
 	    });
     </script>
-
 </body>
 </html>
