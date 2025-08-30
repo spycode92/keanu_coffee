@@ -57,6 +57,13 @@ public class AdminController {
 		
 		return "redirect:/admin/systemPreference/supplyContract";
 	}
+	
+	//지점관리
+	@GetMapping("/preference/franchise")
+	public String systemPreference_franchise() {
+		return "redirect:/admin/systemPreference/franchise";
+	}
+	
 	//로그
 	@GetMapping("/log")
 	public String workingTree() {
