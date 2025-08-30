@@ -16,6 +16,7 @@ import lombok.Data;
 public class RoleDTO {
 	
 	private Integer roleIdx;
+	private String roleCode;
 	private String roleName;
 	private Integer departmentIdx;
     

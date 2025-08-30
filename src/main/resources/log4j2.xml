@@ -82,6 +82,10 @@
 			<AppenderRef ref="console"></AppenderRef>
 		</Logger>
 		
+		<!-- 스프링 시큐리티 패키지 관련 로거 추가 -->
+		<Logger name="org.springframework.security" level="DEBUG" additivity="false">
+			<AppenderRef ref="console"></AppenderRef>
+		</Logger>
 
 	</Loggers>
 </Configuration>
