@@ -18,9 +18,6 @@ public interface VehicleMapper {
 	// 차량 추가
 	int insertVehicle(VehicleDTO vehicleDTO);
 
-	// 차량번호 중복검사
-	int countByVehicleNumber(String vehicleNumber);
-
 	// 차량 상세정보
 	VehicleDTO selectByIdx(int idx);
 
@@ -33,4 +30,12 @@ public interface VehicleMapper {
 	// 기사 배정
 	int updateDriver(@Param("vehicleIdx") Integer vehicleIdx, @Param("empIdx") Integer empIdx, @Param("isAssign") String isAssign);
 
+	// 차량 정보 수정
+	int updateVehicle(VehicleDTO vehicleDTO);
+
+	// 차량번호 중복검사(수정 시)
+	int countByVehicleNumberExceptSelf(@Param("vehicleNumber") String vehicleNumber, @Param("vehicleIdx") Integer vehicleIdx);
+	
+	// 차량번호 중복검사(등록 시)
+	int countByVehicleNumber(String vehicleNumber);
 }

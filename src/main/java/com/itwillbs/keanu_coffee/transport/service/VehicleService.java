@@ -29,11 +29,6 @@ public class VehicleService {
 		return vehicleMapper.insertVehicle(vehicleDTO) > 0;
 	}
 
-	// 차량번호 중복검사
-	public boolean isVehicleNumberDuplicate(String vehicleNumber) {
-		return vehicleMapper.countByVehicleNumber(vehicleNumber) > 0;
-	}
-
 	// 차량 상세정보
 	public VehicleDTO findByIdx(int idx) {
 		return vehicleMapper.selectByIdx(idx);
@@ -52,6 +47,21 @@ public class VehicleService {
 	// 기사 배정
 	public int modifyDrvier(Integer vehicleIdx, Integer empIdx, String isAssign) {
 		return vehicleMapper.updateDriver(vehicleIdx, empIdx, isAssign);
+	}
+
+	// 차량 정보 수정
+	public boolean modifyVehicle(VehicleDTO vehicleDTO) {
+		return vehicleMapper.updateVehicle(vehicleDTO) > 0;
+	}
+
+	// 차량번호 중복검사 (수정 시)
+	public boolean isVehicleNumberDuplicateExceptSelf(String vehicleNumber, Integer vehicleIdx) {
+		return vehicleMapper.countByVehicleNumberExceptSelf(vehicleNumber, vehicleIdx) > 0;
+	}
+	
+	// 차량번호 중복검사 (신규 등록 시)
+	public boolean isVehicleNumberDuplicate(String vehicleNumber) {
+		return vehicleMapper.countByVehicleNumber(vehicleNumber) > 0;
 	}
 
 
