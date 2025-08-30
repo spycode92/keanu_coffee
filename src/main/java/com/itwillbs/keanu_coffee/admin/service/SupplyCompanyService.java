@@ -10,9 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyCompanyMapper;
+import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.utils.FileUtils;
@@ -25,23 +26,30 @@ public class SupplyCompanyService {
 	
 	private final SupplyCompanyMapper supplyCompanyMapper;
 	private final EmployeeManagementMapper employeeManagementMapper;
+	private final SupplyContractMapper supplyContractMapper;
 	private final HttpSession session;
 	private final FileMapper fileMapper;
 	
 	//등록된공급업체리스트
-	public List<SupplierProductContractDTO> getSuppliersInfo() {
-		return supplyCompanyMapper.selectSuppliersInfo();
+	public List<SupplierDTO> getSuppliersInfo(int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod) {
+		
+		return supplyCompanyMapper.selectSuppliersInfo(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
+	}
+
+	// 공급업체목록 수
+	public int getSupplierCount(String searchType, String searchKeyword) {
+		return supplyCompanyMapper.getSupplierCount(searchType, searchKeyword);
 	}
 	
 	//공급업체등록
-	public SupplierProductContractDTO addSupplier(SupplierProductContractDTO supplierDTO) {
+	public SupplierDTO addSupplier(SupplierDTO supplierDTO) {
 		supplyCompanyMapper.insertSupplier(supplierDTO);
 		
 		return supplierDTO;
 	}
 	
 	//상태별 공급업체 필터링
-	public List<SupplierProductContractDTO> getSuppliersByStatus(String status) {
+	public List<SupplierDTO> getSuppliersByStatus(String status) {
 		 String dbStatus = null;
         if ("ACTIVE".equals(status)) {
             dbStatus = "계약중";
@@ -65,13 +73,22 @@ public class SupplyCompanyService {
 	}
 	
 	//공급업체 상세보기
-	public SupplierProductContractDTO selectSupplierByIdx(Long idx) {
+	public SupplierDTO selectSupplierByIdx(Long idx) {
 
 		return supplyCompanyMapper.selectSupplierInfo(idx);
 	}
+	
 	//공급업체 정보변경
-	public int modifySupplier(SupplierProductContractDTO supplier) {
+	public int modifySupplier(SupplierDTO supplier) {
+		if(supplier.getStatus().equals("삭제")) {
+			int contractCount = supplyContractMapper.selectContractWithSupplierIdx(supplier.getSupplierIdx());
+			if(contractCount > 0) {return 0;}
+		}
 		return supplyCompanyMapper.updateSupplier(supplier);
+	}
+	// 공급업체 목록조회
+	public List<SupplierDTO> getSupplierList() {
+		return supplyCompanyMapper.selectAllSupplier();
 	}
 	
 	

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.inbound.mapper.InboundMapper">
+	
+	<select id="searchOrderIdx" resultType="int">
+		SELECT 	order_idx
+		FROM	PURCHASE_ORDER
+		WHERE	order_number = #{orderNumber}
+	</select>
+	
+	<select id="searchProductIdx" resultType="PurchaseOrderItemDTO">
+		SELECT	product_idx
+		FROM	PURCHASE_ORDER_ITEM
+		WHERE	order_idx = #{orderIdx}	
+	</select>
+	
+	<select id="searchProductDetail" parameterType="java.util.List"
+          resultType="com.itwillbs.keanu_coffee.admin.dto.ProductDTO">
+	    
+	    <!-- 안전: 전달된 리스트가 비었거나 null이면 빈 결과를 반환 -->
+	    <if test="list == null or list.size() == 0">
+			SELECT
+		        p.product_idx,
+		        p.product_name,
+		        p.product_volume,
+		        p.product_from,
+		        p.note
+			FROM PRODUCT p
+			WHERE 1 = 0
+	    </if>
+	
+	    <if test="list != null and list.size() &gt; 0">
+			SELECT
+		        p.product_idx,
+		        p.product_name,
+		        p.product_volume,
+		        p.product_from,
+		        p.note
+			FROM PRODUCT p
+			WHERE p.product_idx IN
+			<foreach collection="list" item="item" open="(" separator="," close=")">
+				#{item.productIdx}
+			</foreach>
+		</if>
+
+	</select>
+	
+	
+	
+	
+</mapper>

@@ -49,9 +49,6 @@ public class EmployeeManagementController {
         case "사번":
             searchType = "emp_no";
             break;
-        case "아이디":
-            searchType = "emp_id";
-            break;
         default:
             searchType = ""; // 또는 기본값 설정
             break;

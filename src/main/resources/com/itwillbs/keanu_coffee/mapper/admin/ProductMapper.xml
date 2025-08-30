@@ -3,69 +3,173 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.ProductMapper">
+	<!--  상품(PRODUCT) 테이블 ResultMap -->
+	<resultMap id="productResultMap" type="ProductDTO">
+		<id property="productIdx" column="product_idx" />
+		<result property="productName" column="product_name" />
+		<result property="categoryIdx" column="category_idx" />
+		<result property="productWeight" column="product_weight" />
+		<result property="productVolume" column="product_volume" />
+		<result property="productFrom" column="product_from" />
+		<result property="status" column="product_status" /> <!-- as product_status -->
+		<result property="note" column="product_note" /> <!-- as product_note -->
+	</resultMap>
 	
+	<!--  공급계약(SUPPLIER_PRODUCT_CONTRACT) 테이블 ResultMap -->
+	<resultMap id="contractResultMap" type="SupplyContractDTO">
+		<id property="supplyContractIdx" column="supplyContract_idx" />
+		<result property="supplierIdx" column="supplier_idx" />
+		<result property="productIdx" column="product_idx" />
+		<result property="contractPrice" column="contract_price" />
+		<result property="contractStart" column="contract_start" />
+		<result property="contractEnd" column="contract_end" />
+		<result property="minOrderQuantity" column="minOrder_quantity" />
+		<result property="maxOrderQuantity" column="maxOrder_quantity" />
+		<result property="status" column="contract_status" /> <!-- as contract_status -->
+		<result property="note" column="contract_note" /> <!-- as contract_note -->
+		<result property="createdAt" column="contract_created_at" /> 
+ 		<result property="updatedAt" column="contract_updated_at" /> 
+	</resultMap>
+	
+	
+	<!-- 공통코드(COMMON_CODE) 테이블 ResultMap -->
+	<resultMap id="commonCodeResultMap" type="CommonCodeDTO">
+		<id property="commonCodeIdx" column="common_code_idx" /> 
+		<result property="groupCode" column="group_code" />
+		<result property="commonCode" column="common_code" />
+		<result property="commonCodeName" column="category_name" />
+		<result property="description" column="description" />
+	</resultMap>
+	
+	<!-- 첨부파일(FILE) 테이블 ResultMap -->
+	<resultMap id="FileResultMap" type="FileDTO">
+		<id property="fileIdx" column="file_idx" /> 
+		<result property="targetTable" column="target_table" />
+		<result property="targetTableIdx" column="target_table_idx" />
+		<result property="originalFileName" column="original_file_name" />
+		<result property="realFileName" column="real_file_name" />
+		<result property="subDir" column="sub_dir" />
+		<result property="fileSize" column="file_size" />
+		<result property="contentType" column="content_type" />
+		<result property="createdAt" column="file_created_at" />
+		<result property="updatedAt" column="file_updated_at" />
+	</resultMap>
+	
+	<!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
+	<resultMap id="productCategoryResultMap" type="ProductDTO">
+		<id property="productIdx" column="product_idx" />
+		<result property="productName" column="product_name" />
+		<result property="productWeight" column="product_weight" />
+		<result property="productVolume" column="product_volume" />
+		<result property="productFrom" column="product_from" />
+		<result property="status" column="status" /> <!-- as product_status -->
+		<result property="note" column="note" /> <!-- as product_note -->
+		<association property="commonCode"  resultMap="commonCodeResultMap"/>
+	</resultMap>
+	
+	<!-- 상품목록전체불러오기 -->
+	<select id="selectAllProductList" resultMap="productCategoryResultMap">
+		SELECT 
+			p.product_idx
+			, p.product_name
+			, p.category_idx
+			, p.product_weight
+			, p.product_volume
+			, p.product_from
+			, p.note
+			, p.status
+			, c.common_code_name as category_name
+		FROM PRODUCT p
+		LEFT JOIN
+			COMMON_CODE c
+			ON p.category_idx = c.common_code_idx
+		<where>
+			<if test="searchType != '' and searchType != null">
+				status = #{searchType} 
+			</if>
+			<if test="filterCategoryIdx != '' and filterCategoryIdx != null">
+				AND category_idx = #{filterCategoryIdx}
+			</if>
+			<if test="searchKeyword != '' and searchKeyword != null">
+				AND supplier_name LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</where>
+		<if test="orderKey != '' and orderkey != null">
+			ORDER BY ${orderKey} ${orderMethod}			
+		</if>
+		LIMIT
+			#{startRow}
+			, #{listLimit}
+	</select>
+	
+	<!-- 상품 목록 갯수 -->
+	<select id="countProductList" resultType="int">
+		SELECT COUNT(*)
+		FROM PRODUCT
+		<where>
+			<if test="searchType != '' and searchType != null">
+				status = #{searchType} 
+			</if>
+			<if test="filterCategoryIdx != '' and filterCategoryIdx != null">
+				AND category_idx = #{filterCategoryIdx}
+			</if>
+			<if test="searchKeyword != '' and searchKeyword != null">
+				AND supplier_name LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</where>
+	</select>
+	
+	<!-- 카테고리 전체 불러오기 -->
+	<select id="selectAllCategoriesAsMap" resultType="commonCodeDTO">
+		SELECT common_code_idx
+		, common_code
+		, common_code_name
+		FROM COMMON_CODE
+		WHERE group_code = 'CATEGORY'
+	</select>
+
+<!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
 	<!-- 등록된상품리스트 -->
-	<select id="selectProductsInfo" resultType="SupplierProductContractDTO">
+	<select id="selectProductsInfo" resultType="ProductDTO">
 		SELECT *
 		FROM PRODUCT
 	</select>
 	
-	<!-- 카테고리 전체 불러오기 -->
-	<resultMap id="categoryResultMap" type="SupplierProductContractDTO">
-	    <result property="idx" column="idx" />
-	    <result property="categoryName" column="categoryName" />
-	    <result property="parentCategoryIdx" column="parentCategoryIdx" />
-	    <result property="parentCategoryName" column="parentCategoryName" />
-	</resultMap>
-	<select id="selectAllCategoriesAsMap" resultMap="categoryResultMap">
-		SELECT c.idx
-		, c.category_name as categoryName
-		, c.parent_category_idx as parentCategoryIdx
-		, p.category_name as parentCategoryName
-		FROM CATEGORY c
-		LEFT JOIN CATEGORY p ON c.parent_category_idx = p.idx
-	</select>
 	<!-- 카테고리추가 -->
 	<insert id="insertCategory">
-		INSERT INTO CATEGORY
-		(category_name, parent_category_idx)
+		INSERT INTO COMMON_CODE
+		(common_code_name, common_code, group_code)
 		VALUES
-		(#{categoryName}, #{parentCategoryIdx})
+		(#{categoryName}, #{categoryName}, 'CATEGORY')
 	</insert>
 	<!-- 카테고리수정 -->
 	<update id="updateCategory">
-		UPDATE CATEGORY
-		SET category_name = #{categoryName}
-		WHERE idx = #{idx}
+		UPDATE COMMON_CODE
+		SET 
+		common_code_name = #{commonCodeName}
+		, common_code = #{commonCodeName}
+		WHERE common_code_idx = #{commonCodeIdx}
 	</update>
 	<!-- 카테고리에 제품이들어있나확인 -->
 	<select id="countProductByCategoryIdx" resultType="int">
 		SELECT count(*)
 		FROM PRODUCT
-		WHERE category_idx = #{idx}
-	</select>
-	<!-- 자식카테고리가있나확인 -->
-	<select id="countCategoryByCategoryIdx" resultType="int">
-		SELECT count(*)
-		FROM CATEGORY
-		WHERE parent_category_idx = #{idx}
+		WHERE category_idx = #{commonCodeIdx}
 	</select>
 	<!-- 카테고리삭제 -->
 	<delete id="deleteCategory">
-		DELETE FROM CATEGORY
-		WHERE idx = #{idx}
+		DELETE FROM COMMON_CODE
+		WHERE common_code_idx = #{commonCodeIdx}
 	</delete>
+	
 	<!-- 상품등록 -->
-	<insert id="insertProduct" parameterType="SupplierProductContractDTO" 
-		useGeneratedKeys="true" keyProperty="idx"> 
+	<insert id="insertProduct" parameterType="ProductDTO" 
+		useGeneratedKeys="true" keyProperty="productIdx"> 
 		INSERT INTO PRODUCT
     (
         product_name,
         category_idx,
         product_weight,
-        product_width,
-        product_length,
-        product_height,
         product_volume,
         product_from,
         note
@@ -75,74 +179,59 @@
         #{productName},
         #{categoryIdx},
         #{productWeight},
-        #{productWidth},
-        #{productLength},
-        #{productHeight},
         #{productVolume},
         #{productFrom},
         #{note}
     )
 	</insert>
-	<!-- 상품목록전체불러오기 -->
-	<select id="selectAllProductList" resultType="SupplierProductContractDTO">
-		SELECT *
-		FROM PRODUCT
-		WHERE status = 1
-	</select>
-	<!-- 상품대분류 목록불러오기 -->
-	<select id="selectProductByCategoryIdxList" resultType="SupplierProductContractDTO">
-		SELECT *
-	    FROM PRODUCT
-	    WHERE category_idx IN
-		    <foreach collection="list" item="categoryIdx" open="(" separator="," close=")">
-		        #{categoryIdx}
-		    </foreach>
-		    AND
-		    status = 1
-	</select>
-	<!-- 소븐류 상품 필터링 -->
-	<select id="selectProductsByCategoryIdx" resultType="SupplierProductContractDTO">
-	    SELECT *
-	    FROM PRODUCT
-	    WHERE category_idx = #{categoryIdx}
-	    	AND
-		    status = 1
-	</select>
+
+
+
 	<!-- 상품상세정보 -->
-	<select id="selectProductByProductIdx" resultType="SupplierProductContractDTO">
+	<!--  상품(PRODUCT) 테이블 ResultMap -->
+	<resultMap id="productCategoryFileResultMap" type="ProductDTO">
+		<id property="productIdx" column="product_idx" />
+		<result property="productName" column="product_name" />
+		<result property="categoryIdx" column="category_idx" />
+		<result property="productWeight" column="product_weight" />
+		<result property="productVolume" column="product_volume" />
+		<result property="productFrom" column="product_from" />
+		<result property="status" column="status" /> <!-- as product_status -->
+		<result property="note" column="note" /> <!-- as product_note -->
+		<association property="commonCode" resultMap="commonCodeResultMap" />
+		<association property="file" resultMap="FileResultMap" />
+	</resultMap>
+		
+	<select id="selectProductByProductIdx" resultMap="productCategoryFileResultMap">
 		SELECT 
-		    p.idx AS productIdx,
-		    p.product_name AS productName,
-		    c.idx AS categoryIdx,
-		    c.category_name AS categoryName,
-		    pc.idx AS parentCategoryIdx,
-		    pc.category_name AS parentCategoryName,
-		    p.product_weight AS productWeight,
-		    p.product_width AS productWidth,
-		    p.product_length AS productLength,
-		    p.product_height AS productHeight,
-		    p.product_volume AS productVolume,
-		    p.product_from AS productFrom,
-		    p.note
+		    p.product_idx,
+		    p.product_name, 
+		    p.category_idx, 
+		    c.common_code_name, 
+		    p.product_weight,
+		    p.product_volume,
+		    p.product_from,
+		    p.note,
+		    p.status,
+		    f.file_idx
 		  FROM PRODUCT p
-		  LEFT JOIN CATEGORY c ON p.category_idx = c.idx
-		  LEFT JOIN CATEGORY pc ON c.parent_category_idx = pc.idx
-		  WHERE p.idx = #{productIdx}
+		  LEFT JOIN COMMON_CODE c ON p.category_idx = c.common_code_idx
+		  LEFT JOIN FILE f ON f.target_table = 'product' and f.target_table_idx = p.product_idx
+		  WHERE p.product_idx = #{productIdx}
 	</select>
+	
 	<!-- 상품정보수정 -->
-	<update id="updateProduct" parameterType="SupplierProductContractDTO">
+	<update id="updateProduct" parameterType="ProductDTO">
 		UPDATE PRODUCT
 		SET 
 			product_name = #{productName}
 	        , category_idx = #{categoryIdx}
 	        , product_weight = #{productWeight}
-	        , product_width = #{productWidth}
-	        , product_length = #{productLength}
-	        , product_height = #{productHeight}
 	        , product_volume = #{productVolume}
 	        , product_from = #{productFrom}
 	        , note = #{note}
-		WHERE idx = #{productIdx}
+	        , status = #{status}
+		WHERE product_idx = #{productIdx}
 	</update>
 	<!-- 상품상태변경 -->
 	<update id="updateProductStatus">
@@ -152,5 +241,14 @@
 		WHERE
 			idx = #{productIdx}
 	</update>
+	
+	<!-- 상품 목록 선택 -->
+	<select id="selectAllProduct" resultType="productDTO">
+		SELECT 
+			product_idx
+			, product_name
+		FROM PRODUCT
+		ORDER BY product_name
+	</select>
 	
 </mapper>

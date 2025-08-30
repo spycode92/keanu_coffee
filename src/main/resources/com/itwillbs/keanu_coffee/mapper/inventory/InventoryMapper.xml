@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.inventory.mapper.InventoryMapper">
+
+<!-- 	<select id="selectInventoryThatNeedsToMoveFromInbound" resultType="com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO"> -->
+<!-- 		SELECT  -->
+<!-- 			iw.lot_number -->
+<!-- 			, p.product_name -->
+<!-- 			, 'inbound' AS location_idx -->
+<!-- 			, iw.quantity -->
+<!-- 		FROM -->
+<!-- 			INBOUND_WAITING iw -->
+<!-- 		LEFT JOIN PRODUCT p -->
+<!-- 		ON p.product_idx = iw.product_idx -->
+<!-- 		WHERE -->
+<!-- 			iw.status = '완료' -->
+<!-- 	</select> -->
+	
+<!-- 	<select id="selectInventoryThatNeedsToMoveToOutbound" resultType="com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO" >	 -->
+<!-- 		SELECT  -->
+<!-- 			i.lot_number -->
+<!-- 			, p.product_name -->
+<!-- 			, i.location_idx -->
+<!-- 			, c.quantity -->
+<!-- 		FROM -->
+<!-- 			INVENTORY i -->
+<!-- 		LEFT JOIN PRODUCT p -->
+<!-- 		ON p.product_idx = i.product_idx -->
+<!-- 		LEFT JOIN ? c -->
+<!-- 		ON c.lot_number = i.lot_number -->
+<!-- 		WHERE -->
+<!-- 			? -->
+<!-- 	</select> -->
+
+		<select id="selectWarehouseInfo" resultType="com.itwillbs.keanu_coffee.inventory.dto.WarehouseInfoDTO">
+			SELECT
+				COUNT(DISTINCT rack)
+				, COUNT(DISTINCT bay)
+				, COUNT(DISTINCT SUBSTRING(level_position, 1, 1))
+				, COUNT(DISTINCT SUBSTRING(level_position, 2, 1))    <!--  this will only work if all levels have the same number of positions -->
+			FROM 
+				WAREHOUSE_LOCATION		
+		</select>
+
+
+
+
+</mapper>

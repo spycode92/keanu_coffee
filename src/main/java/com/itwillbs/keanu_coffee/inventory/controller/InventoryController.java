@@ -1,16 +1,27 @@
 package com.itwillbs.keanu_coffee.inventory.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
+import com.itwillbs.keanu_coffee.inventory.dto.WarehouseInfoDTO;
 import com.itwillbs.keanu_coffee.inventory.service.InventoryService;
 
 @Controller
 @RequestMapping("/inventory")
 public class InventoryController {
-//	private final InventoryService inventoryService;
+	private final InventoryService inventoryService;
+	
+	
+	public InventoryController(InventoryService inventoryService) {
+		this.inventoryService = inventoryService;
+	}
+
 	// 재고현황 페이지 - 대시보드
 	@GetMapping("")
 	public String inventoryDashboard() {
@@ -33,23 +44,37 @@ public class InventoryController {
 		
 		return "inventory/update_inventory";
 	}
+	
 	@GetMapping("/updateWarehouse")
-	public String updateWarehouse() {
+	public String updateWarehouse(Model model) {
+		WarehouseInfoDTO warehouseInfo = inventoryService.getWarehouseInfo();
+		model.addAttribute("warehouseInfo", warehouseInfo);
+
 		
 		return "inventory/update_warehouse";
 	}
+	
 	@GetMapping("/moveInventory")
 	public String moveInventory() {
 		
 		return "inventory/move_inventory";
 	}
+	
 	@GetMapping("/updatedInventory")
 	public String updatedInventory() {
 		
 		return "inventory/updated_inventory_table";
 	}
+	
 	@GetMapping("/inventoryToMove")
-	public String inventoryToMove() {
+	public String inventoryToMove(Model model) {
+		// when page loads it fills up with inventory items that need to be moved from pallet zone to picking zone
+//		List<InventoryDTO> inboundDTO = inventoryService.getInventoryThatNeedsToMoveFromInbound();
+//		List<InventoryDTO> outboundDTO = inventoryService.getInventoryThatNeedsToMoveToOutbound();
+//		
+//		model.addAttribute("inventoryToMove", inboundDTO);
+//		model.addAttribute("inventoryToMove", outboundDTO);
+		
 		
 		return "inventory/inventory_to_move";
 	}

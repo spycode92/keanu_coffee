@@ -2,44 +2,153 @@
 
 let originalContractData = {};
 let currentContractIdx = 0;
+let allSupplierList = [];
+let allProductList = [];
 
 $(function(){
-    // 공급계약 목록 로드
-    function loadSupplierProductContracts() {
-        $.ajax({
-            url: '/admin/systemPreference/supplyContract/getContractList',
-            type: 'GET',
-            dataType: 'json',
-            success: function(contractList) {
-                renderContractList(contractList);
-            },
-            error: function() {
-                Swal.fire('오류', '공급계약 목록을 불러오는 데 실패했습니다.', 'error');
-            }
-        });
-    }
+	//공급상품 셀렉트박스 목록채우기
+	loadProductlist().then(() =>{
+		$("")
+		$(".productSelectList").html('<option value="">상품</option>');
+		$(allProductList).each(function(index, product){
+			$('.productSelectList').append(`
+			<option value="${product.productIdx}">${product.productName}</option>`
+			);
+		});
+	});
+	// 공급업체 셀렉트박스 목록채우기
+	loadSupplierlist().then(() =>{
+		$("")
+		$(".supplierSelectList").html('<option value="">공급업체</option>');
+		$(allSupplierList).each(function(index, supplier){
+			$('.supplierSelectList').append(`
+			<option value="${supplier.supplierIdx}">${supplier.supplierName}</option>`
+			);
+		});
+	});
+	
+	// 상품검색 모달열기
+	$("#contractAddForm").on('click', '.searchProduct', function() {
+		const searchProductModal = document.getElementById('searchProduct');
+		$("#productSearch").val('');
+		ModalManager.openModal(searchProductModal);
+	});
+	
+	//상품 검색 모달 검색창입력이벤트
+	$("#productSearch").on('input', '' , function() {
+        var inputVal = $(this).val().trim();
+        var filtered = [];
 
-    function renderContractList(list) {
-        const $tbody = $('#contractTable tbody');
-        $tbody.empty();
-        if (!list.length) {
-            $tbody.append('<tr><td colspan="999">등록된 공급계약이 없습니다.</td></tr>');
+        // 입력값이 없으면 결과 비우기
+        if (inputVal === '') {
+            $("#searchProductList").empty();
             return;
         }
-        list.forEach(function(contract) {
-            $tbody.append(`
-                <tr data-contract-idx="${contract.contractIdx}">
-                    <td>${contract.supplierName}</td>
-                    <td>${contract.productName}</td>
-                    <td>${contract.contractPrice}</td>
-                    <td>${formatDateFromMillis(contract.contractStart)} ~ ${formatDateFromMillis(contract.contractEnd)}</td>
-                    <td>${contract.status}</td>
-                    <td><button type="button" class="btn btn-sm btn-info btn-detail-contract">상세보기</button></td>
-                </tr>
-            `);
-        });
-    }
 
+        // 포함되는 productName 필터링
+        filtered = allProductList.filter(function(item) {
+            return item.productName.indexOf(inputVal) !== -1;
+        });
+
+        // 상품검색결과 표시용 HTML 생성
+        var html = '';
+        if (filtered.length > 0) {
+            filtered.forEach(function(item) {
+                html += '<tr data-productidx="' + item.productIdx + '">'
+						+ '<td>' + item.productName + '</td>' 
+						+ '</tr>';
+            });
+        } else {
+            html = '<div>검색 결과가 없습니다.</div>';
+        }
+
+        $("#searchProductList").html(html);
+    });
+
+	// 상품 검색해서 나온 목록선택 이벤트 
+	$("#searchProductList").on('click', 'tr', function() {
+	    // 클릭된 <tr> 요소
+	    var productIdx = $(this).data('productidx');  // data-supplieridx 값 가져오기
+	    var productName = $(this).find('td').text();  // 해당 행의 공급업체 이름 가져오기
+
+	    $("#addContractProductSelect").val(productIdx);
+	    
+	    // 검색 결과 영역 비우기
+	    $("#searchProductList").empty();
+		const searchProductModal = document.getElementById('searchProduct');
+		ModalManager.closeModal(searchProductModal);
+	});
+	
+	// 공급처검색 모달열기
+	$("#contractAddForm").on('click', '.searchSupplier', function() {
+		const searchSupplierModal = document.getElementById('searchSupplier');
+		$("#supplierSearch").val('');
+		ModalManager.openModal(searchSupplierModal);
+	});
+	//공급처 검색 모달 검색창입력이벤트
+	$("#supplierSearch").on('input', '' , function() {
+        var inputVal = $(this).val().trim();
+        var filtered = [];
+
+        // 입력값이 없으면 결과 비우기
+        if (inputVal === '') {
+            $("#searchSupplierList").empty();
+            return;
+        }
+
+        // 포함되는 supplierName 필터링 (대소문자 구분 없이 하려면 toLowerCase 사용)
+        filtered = allSupplierList.filter(function(item) {
+            return item.supplierName.indexOf(inputVal) !== -1;
+        });
+
+        // 공급처검색결과 표시용 HTML 생성
+        var html = '';
+        if (filtered.length > 0) {
+            filtered.forEach(function(item) {
+                html += '<tr data-supplieridx="' + item.supplierIdx + '">'
+						+ '<td>' + item.supplierName + '</td>' 
+						+ '</tr>';
+            });
+        } else {
+            html = '<div>검색 결과가 없습니다.</div>';
+        }
+
+        $("#searchSupplierList").html(html);
+    });
+
+	// 공급처 검색해서 나온 목록선택 이벤트 
+	$("#searchSupplierList").on('click', 'tr', function() {
+	    // 클릭된 <tr> 요소
+	    var supplierIdx = $(this).data('supplieridx');  // data-supplieridx 값 가져오기
+	    var supplierName = $(this).find('td').text();  // 해당 행의 공급업체 이름 가져오기
+	
+	    console.log("선택된 공급업체 idx:", supplierIdx);
+	    console.log("선택된 공급업체 이름:", supplierName);
+	
+	    // 원하는 동작 추가 예:
+	    // 예를 들면, input 박스에 선택된 공급업체 이름 넣기
+	    $("#addContractSupplierSelect").val(supplierIdx);
+	    
+	    // 검색 결과 영역 비우기 (필요 시)
+	    $("#searchSupplierList").empty();
+
+		const searchSupplierModal = document.getElementById('searchSupplier');
+		ModalManager.closeModal(searchSupplierModal);
+		
+	});
+	
+	// 시작일을 변경하면 종료일의 최소 날짜(min)를 시작일로 설정
+	$("#contractStart").on('change', function() {
+	    $("#contractEnd").attr('min', this.value);
+	});
+	
+	// 종료일을 변경하면 시작일의 최대 날짜(max)를 종료일로 설정
+	$("#contractEnd").on('change', function() {
+	    $("#contractStart").attr('max', this.value);
+	});
+	
+	
+	//밀리초 날짜변환
     function formatDateFromMillis(millis) {
         if (!millis) return '';
         const date = new Date(Number(millis));
@@ -49,46 +158,39 @@ $(function(){
         return `${yyyy}-${mm}-${dd}`;
     }
 
-    function loadProductOptions(selectedProductIdx) {
-        $.ajax({
+	// 상품목록 불러오기
+    function loadProductlist() {
+       return $.ajax({
             url: '/admin/systemPreference/product/getProductList',
             type: 'GET',
             dataType: 'json',
             success: function(productList) {
-                const $select = $('#productSelect');
-                $select.empty().append('<option value="">선택하세요</option>');
-                productList.forEach(function(product) {
-                    $select.append(
-                        `<option value="${product.idx}" ${selectedProductIdx == product.idx ? 'selected' : ''}>${product.productName}</option>`
-                    );
-                });
+				allProductList = productList;
             },
             error: function() {
-                Swal.fire('오류', '상품 목록을 불러오는 데 실패했습니다.', 'error');
+                Swal.fire('상품목록 불러오기 실패!', '', 'error');
             }
         });
     }
 
-    function loadSupplierOptions(selectedSupplierIdx) {
-        $.ajax({
+	//공급업체 목록 불러오기
+    function loadSupplierlist() {
+        return $.ajax({
             url: '/admin/systemPreference/supplyCompany/suppliers',
             type: 'GET',
             dataType: 'json',
             success: function(supplierList) {
-                const $select = $('#supplierSelect');
-                $select.empty().append('<option value="">선택하세요</option>');
-                supplierList.forEach(function(supplier) {
-                    $select.append(
-                        `<option value="${supplier.idx}" ${selectedSupplierIdx == supplier.idx ? 'selected' : ''}>${supplier.supplierName}</option>`
-                    );
-                });
+				allSupplierList = supplierList;
             },
             error: function() {
-                Swal.fire('오류', '공급업체 목록을 불러오는 데 실패했습니다.', 'error');
+                Swal.fire('공급처목록 불러오기 실패!', '', 'error');
             }
         });
     }
 
+	
+
+	//상세보기모달열기
     function openContractDetailModal(contractIdx) {
         currentContractIdx = contractIdx;
         const detailModal = document.getElementById('contractDetailModal');
@@ -107,12 +209,13 @@ $(function(){
         $.ajax({
             url: '/admin/systemPreference/supplyContract/getContractDetail',
             type: 'GET',
-            data: { idx: contractIdx },
+            data: { supplyContractIdx: contractIdx },
             dataType: 'json',
             success: function(data) {
                 if (!data) return;
-                $('#detailSupplier').val(data.supplierName);
-                $('#detailProduct').val(data.productName);
+				console.log(data);
+                $('#detailSupplier').val(data.supplier.supplierName);
+                $('#detailProduct').val(data.product.productName);
                 $('#detailContractPrice').val(data.contractPrice);
                 $('#detailContractStart').val(formatDateFromMillis(data.contractStart));
                 $('#detailContractEnd').val(formatDateFromMillis(data.contractEnd));
@@ -121,13 +224,13 @@ $(function(){
                 $('#detailStatus').val(data.status);
                 $('#contractDetailNote').val(data.note);
                 let imgSrc = '/images/no-image.png';
-                if (data.fileIdx) imgSrc = '/file/thumbnail/' + data.fileIdx + '?_=' + Date.now();
-                else if (data.productIdx) imgSrc = '/images/products/' + data.productIdx + '.jpg';
+                if (data.file) imgSrc = '/file/thumbnail/' + data.file.fileIdx + '?_=' + Date.now();
+                else if (data.product.productIdx) imgSrc = '/resources/images/default_product.jpg';
                 $('#contractDetailProductImagePreview').attr('src', imgSrc);
                 originalContractData = {
                     contractPrice: data.contractPrice,
-                    contractStart: data.contractStart,
-                    contractEnd: data.contractEnd,
+                    contractStart: formatDateFromMillis(data.contractStart),
+                    contractEnd: formatDateFromMillis(data.contractEnd),
                     minOrderQuantity: data.minOrderQuantity,
                     maxOrderQuantity: data.maxOrderQuantity,
                     status: data.status,
@@ -144,8 +247,6 @@ $(function(){
 
     // 추가 모달 열기
     $(document).on('click', '#btnAddContract', function() {
-        loadProductOptions();
-        loadSupplierOptions();
         $('#contractAddForm')[0].reset();
         const addModal = document.getElementById('contractAddModal');
         ModalManager.openModal(addModal);
@@ -164,10 +265,11 @@ $(function(){
             type: 'POST',
             data: formData,
             success: function() {
-                Swal.fire('등록 완료', '공급계약이 정상 등록되었습니다.', 'success');
-                const addModal = document.getElementById('contractAddModal');
-                ModalManager.closeModal(addModal);
-                loadSupplierProductContracts();
+                Swal.fire('등록 완료', '공급계약이 정상 등록되었습니다.', 'success').then(()=>{
+	                const addModal = document.getElementById('contractAddModal');
+	                ModalManager.closeModal(addModal);
+	                window.location.reload();
+				});
             },
             error: function(xhr) {
                 let msg = '등록 중 오류가 발생했습니다.';
@@ -178,9 +280,10 @@ $(function(){
     });
 
     // 상세보기 열기
-    $('#contractTable').on('click', '.btn-detail-contract', function() {
-        const idx = $(this).closest('tr').data('contract-idx');
-        openContractDetailModal(idx);
+    $('#contractTable').on('click', 'tr', function() {
+        const contractIdx = $(this).closest('tr').data('contract-idx');
+		console.log(contractIdx);
+        openContractDetailModal(contractIdx);
     });
 
     // 수정
@@ -219,7 +322,7 @@ $(function(){
             maxOrderQuantity: $('#detailMaxOrderQuantity').val(),
             status: $('#detailStatus').val(),
             note: $('#contractDetailNote').val(),
-            idx: currentContractIdx
+            supplyContractIdx: currentContractIdx
         };
         if (!dataToSave.contractPrice || !dataToSave.contractStart || !dataToSave.contractEnd) {
             Swal.fire('경고', '필수 입력 항목을 모두 입력하세요.', 'warning');
@@ -231,12 +334,13 @@ $(function(){
             contentType: 'application/json',
             data: JSON.stringify(dataToSave),
             success: function() {
-                Swal.fire('성공', '계약 정보가 저장되었습니다.', 'success');
-                const detailModal = document.getElementById('contractDetailModal');
-                ModalManager.closeModal(detailModal);
-                setTimeout(function() {
-                    openContractDetailModal(currentContractIdx);
-                }, 500);
+                Swal.fire('성공', '계약 정보가 저장되었습니다.', 'success').then(()=>{
+	                const detailModal = document.getElementById('contractDetailModal');
+	                ModalManager.closeModal(detailModal);
+	                setTimeout(function() {
+	                    openContractDetailModal(currentContractIdx);
+	                }, 500);
+				});
             },
             error: function() {
                 Swal.fire('오류', '저장 중 오류가 발생했습니다.', 'error');
@@ -281,5 +385,4 @@ $(function(){
         ModalManager.closeModal(modal);
     });
 
-    loadSupplierProductContracts();
 });

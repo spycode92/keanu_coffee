@@ -16,22 +16,19 @@
             </div>
             <div class="modal-body" >
                 <div class="field" >
-                    <div style="flex:1; min-width:150px;">
-                        <label class="form-label">공급업체</label>
-                        <select id="supplierSelect" name="supplierIdx" class="form-select" required>
-                            <option value="">선택하세요</option>
+                    <div style=" display:flex; gap:1rem; min-width:150px;">
+                        <button class="btn btn-primary searchSupplier" >공급업체검색</button>
+                        <select id="addContractSupplierSelect" name="supplierIdx" class="form-select supplierSelectList" required>
                         </select>
-                    </div>
-                    <div style="flex:1; min-width:150px;">
-                        <label class="form-label">상품</label>
-                        <select id="productSelect" name="productIdx" class="form-select" required>
+                        <button class="btn btn-primary searchProduct" >상품검색</button>
+                        <select id="addContractProductSelect" name="productIdx" class="form-select productSelectList"  required>
                             <option value="">선택하세요</option>
                         </select>
                     </div>
                 </div>
                 <div class="field mb-3">
-                    <label class="form-label">계약 단가</label>
-                    <input type="number" id="contractPrice" name="contractPrice" class="form-control" min="0" required>
+                    <label class="form-label">계약 단가(원)</label>
+                    <input type="number" id="contractPrice" name="contractPrice" class="form-control" min="0" max="2147483647" required>
                 </div>
                 <div class="field mb-3" style="display:flex; gap:1rem;">
                     <div style="flex:1">
@@ -44,19 +41,20 @@
                     </div>
                 </div>
                 <div class="field mb-3">
-                    <label class="form-label">최소 주문 수량</label>
-                    <input type="number" id="minOrderQuantity" name="minOrderQuantity" class="form-control" min="0">
+                    <label class="form-label">최소 주문 수량(BOX)</label>
+                    <input type="number" id="minOrderQuantity" name="minOrderQuantity" class="form-control" min="0" max="2147483647" required>
                 </div>
                 <div class="field mb-3">
-                    <label class="form-label">최대 주문 수량</label>
-                    <input type="number" id="maxOrderQuantity" name="maxOrderQuantity" class="form-control" min="0">
+                    <label class="form-label">최대 주문 수량(BOX)</label>
+                    <input type="number" id="maxOrderQuantity" name="maxOrderQuantity" class="form-control" min="0" max="2147483647" required>
                 </div>
                 <div class="field mb-3">
                     <label class="form-label">상태</label>
                     <select id="statusSelect" name="status" class="form-select" required>
-                        <option value="1">활성</option>
-                        <option value="2">비활성</option>
-                        <option value="3">대기</option>
+                        <option value="활성">활성</option>
+                        <option value="비활성">비활성</option>
+                        <option value="취소">취소</option>
+                        <option value="삭제">삭제</option>
                     </select>
                 </div>
                 <div class="field mb-3">
@@ -77,5 +75,58 @@
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- 공급처검색 모달 -->
+<div id="searchSupplier" class="modal" aria-hidden="true" role="dialog" aria-labelledby="contractAddLabel" tabindex="-1">
+    <div class="modal-card sm">
+		<div class="modal-head" >
+        	<h5 id="supplierSearchLabel">공급업체검색</h5>
+       	    <button type="button"
+                       class="modal-close-btn"
+                       aria-label="닫기"
+                       onclick="ModalManager.closeModal(document.getElementById('searchSupplier'))">
+                   &times;
+            </button>
+        </div>
+        <div class="modal-body" >
+            <div class="field" >
+                <div style=" display:flex; gap:1rem; min-width:150px;">
+	                <input type="text" id="supplierSearch">
+                </div>
+            </div>
+            <div class="field">
+            	<table id="searchSupplierList">
+            	
+            	</table>
+            </div>
+		</div>
+    </div>
+</div>
+<!-- 상품검색 모달 -->
+<div id="searchProduct" class="modal" aria-hidden="true" role="dialog" aria-labelledby="contractAddLabel" tabindex="-1">
+    <div class="modal-card sm">
+		<div class="modal-head" >
+        	<h5 id="productSearchLabel">상품검색</h5>
+       	    <button type="button"
+                       class="modal-close-btn"
+                       aria-label="닫기"
+                       onclick="ModalManager.closeModal(document.getElementById('searchProduct'))">
+                   &times;
+            </button>
+        </div>
+        <div class="modal-body" >
+            <div class="field" >
+                <div style=" display:flex; gap:1rem; min-width:150px;">
+	                <input type="text" id="productSearch">
+                </div>
+            </div>
+            <div class="field">
+            	<table id="searchProductList">
+            	
+            	</table>
+            </div>
+		</div>
     </div>
 </div>

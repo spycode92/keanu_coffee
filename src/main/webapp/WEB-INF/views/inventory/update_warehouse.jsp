@@ -34,40 +34,46 @@
 	<h1>창고 위치 치수 변경</h1>
 	
 	
-	<form class="card" action="/update-structure" method="post">
-		<h3 class="card-header">기본 창고 구조 업데이트</h3>
+	<form class="card" method="post">
+		<h3 class="card-header">창고 생선이나 수정</h3>
 	  <table>
 	    <tr>
-	      <td><label  class="form-label" for="warehouse">창고 이름 또는 ID</label></td>
-	      <td><input  class="form-control" type="text" id="warehouse" name="warehouse" required></td>
+	      <td><label  class="form-label" for="racks">랙 수</label></td>
+	      <td><input class="form-control" type="number" id="racks" name="racks" min="0" value="${warehouseInfo.rackCount}" required></td>
 	    </tr>
 	    <tr>
-	      <td><label  class="form-label" for="rack">랙 수</label></td>
-	      <td><input class="form-control" type="number" id="rack" name="rack" min="0" required></td>
+	      <td><label  class="form-label" for="bays">랙당 베이 수</label></td>
+	      <td><input class="form-control" type="number" id="bays" name="bays" min="0" value="${warehouseInfo.bayCount}" required></td>
 	    </tr>
 	    <tr>
-	      <td><label  class="form-label" for="bay">랙당 베이 수</label></td>
-	      <td><input class="form-control" type="number" id="bay" name="bay" min="0" required></td>
+	      <td><label class="form-label" for="levels">베이당 레벨 수</label></td>
+	      <td><input class="form-control" type="number" id="levels" name="levels" value="${warehouseInfo.levelCount}" min="0" required></td>
 	    </tr>
 	    <tr>
-	      <td><label class="form-label" for="level">베이당 레벨 수</label></td>
-	      <td><input class="form-control" type="number" id="level" name="level" min="0" required></td>
+	      <td><label class="form-label" for="positions">이 레벨의 이 만의 위치 수</label></td>
+	      <td><input class="form-control" type="number" id="positions" name="positions" value="${warehouseInfo.positionCount}" min="0" required></td>
 	    </tr>
-	    <tr>
-	      <td><label  class="form-label" for="boxes">레벨 위치당 소형 박스 수</label></td>
-	      <td><input class="form-control" type="number" id="boxes" name="boxes" min="0" required></td>
+		<h3 class="card-header">한 레벨의 크기</h3>
+	    <tr>  
+	      <td><label class="form-label" for="width">바닥 가로길이(cm)</label></td>
+	      <td><input class="form-control" type="number" id="width" name="width"  min="0" required></td>
+	     </tr> 
+	     <tr>
+	      <td><label class="form-label" for="depth">바닥 세로길이(cm)</label></td>
+	      <td><input class="form-control" type="number" id="depth" name="depth" min="0" required></td>
+	   </tr> 
+	   <tr>  
+	      <td><label class="form-label" for="height">높이(cm)</label></td>
+	      <td><input class="form-control" type="number" id="height" name="height"  min="0" required></td>
 	    </tr>
-	    <tr>
-	      <td><label  class="form-label" for="zone">피킹 존 수</label></td>
-	      <td><input class="form-control" type="number" id="zone" name="zone" min="0" required></td>
-	    </tr>
-	    <tr>
-	      <td><label  class="form-label" for="reason">업데이트 사유</label></td>
-	      <td><textarea class="form-control" id="reason" name="reason" rows="4" cols="40" required></textarea></td>
-	    </tr>
+<!-- 	    <tr> -->
+<!-- 	      <td><label  class="form-label" for="reason">업데이트 사유</label></td> -->
+<!-- 	      <td><textarea class="form-control" id="reason" name="reason" rows="4" cols="40" ></textarea></td> -->
+<!-- 	    </tr> -->
 	    <tr>
 	      <td colspan="2" style="text-align: center;"><br>
-	        <button class="btn btn-primary"  type="submit">구조 업데이트</button>
+	        <button class="btn btn-primary"  type="submit" formaction="/inventoryAction/create-warehouse">창고 생선</button>
+	        <button class="btn btn-primary"  type="submit" formaction="/inventoryAction/edit-warehouse">수정</button>
 	      </td>
 	    </tr>
 	  </table>

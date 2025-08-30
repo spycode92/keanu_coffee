@@ -319,10 +319,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	//직원추가버튼클릭시 직원추가모달 열기
     btnOpen.addEventListener('click', () => {
 		const modal = document.getElementById('addEmployeeModal');
-		modal.querySelectorAll('input').forEach(input => input.value = '');
-    	modal.querySelectorAll('select').forEach(select => select.value = '');
-    	modal.querySelectorAll('textarea').forEach(textarea => textarea.value = '');
-		
+		const form = modal.querySelector('#addEmployeeForm');
+    	form.reset();
 
 		ModalManager.openModal(modal);
 		//부서,팀,직책 정보 함수

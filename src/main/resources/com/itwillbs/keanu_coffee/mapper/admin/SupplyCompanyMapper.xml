@@ -3,33 +3,116 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.SupplyCompanyMapper">
-
+	<!-- resultMap 정의 -->
+	<!--  공급업체(SUPPLIER) 테이블 ResultMap -->
+	<resultMap id="supplierResultMap" type="SupplierDTO">
+		<id property="supplierIdx" column="supplier_idx" />
+		<result property="supplierName" column="supplier_name" />
+		<result property="supplierManager" column="supplier_manager" />
+		<result property="supplierManagerPhone" column="supplier_manager_phone" />
+		<result property="supplierZipcode" column="supplier_zipcode" />
+		<result property="supplierAddress1" column="supplier_address1" />
+		<result property="supplierAddress2" column="supplier_address2" />
+		<result property="status" column="status" />
+	</resultMap>
+	
+	<!--  상품(PRODUCT) 테이블 ResultMap -->
+	<resultMap id="productResultMap" type="ProductDTO">
+		<id property="productIdx" column="product_idx" />
+		<result property="productName" column="product_name" />
+		<result property="productWeight" column="product_weight" />
+		<result property="productVolume" column="product_volume" />
+		<result property="productFrom" column="product_from" />
+		<result property="status" column="product_status" /> <!-- as product_status -->
+		<result property="note" column="product_note" /> <!-- as product_note -->
+	</resultMap>
+	
+	<!--  공급계약(SUPPLIER_PRODUCT_CONTRACT) 테이블 ResultMap -->
+	<resultMap id="contractResultMap" type="SupplyContractDTO">
+		<id property="supplyContractIdx" column="supplyContract_idx" />
+		<result property="supplierIdx" column="supplier_idx" />
+		<result property="productIdx" column="product_idx" />
+		<result property="contractPrice" column="contract_price" />
+		<result property="contractStart" column="contract_start" />
+		<result property="contractEnd" column="contract_end" />
+		<result property="minOrderQuantity" column="minOrder_quantity" />
+		<result property="maxOrderQuantity" column="maxOrder_quantity" />
+		<result property="status" column="contract_status" /> <!-- as contract_status -->
+		<result property="note" column="contract_note" /> <!-- as contract_note -->
+		<result property="createdAt" column="contract_created_at" /> 
+ 		<result property="updatedAt" column="contract_updated_at" /> 
+	</resultMap>
+	
+	
+	<!-- 공통코드(COMMON_CODE) 테이블 ResultMap -->
+	<resultMap id="commonCodeResultMap" type="CommonCodeDTO">
+		<id property="commonCodeIdx" column="common_code_idx" /> 
+		<result property="groupCode" column="group_code" />
+		<result property="commonCode" column="common_code" />
+		<result property="commonCodeName" column="common_code_name" />
+		<result property="description" column="description" />
+	</resultMap>
+	
+	<!-- 첨부파일(FILE) 테이블 ResultMap -->
+	<resultMap id="FileResultMap" type="FileDTO">
+		<id property="fileIdx" column="fileIdx" /> 
+		<result property="targetTable" column="target_table" />
+		<result property="targetTableIdx" column="target_table_idx" />
+		<result property="originalFileName" column="original_file_name" />
+		<result property="realFileName" column="real_file_name" />
+		<result property="subDir" column="sub_dir" />
+		<result property="fileSize" column="file_size" />
+		<result property="contentType" column="content_type" />
+		<result property="createdAt" column="file_created_at" />
+		<result property="updatedAt" column="file_updated_at" />
+	</resultMap>
+	
+	<!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
 	<!-- 공급업체리스트 -->
-	<select id="selectSuppliersInfo" resultType="SupplierProductContractDTO">
+	<select id="selectSuppliersInfo" resultType="SupplierDTO">
 		SELECT 
-		    s.idx,
+		    s.supplier_idx,
 		    s.supplier_name,
 		    s.supplier_manager,
 		    s.supplier_manager_phone,
 		    s.supplier_zipcode,
 		    s.supplier_address1,
 		    s.supplier_address2,
-		    -- 계약이 존재하면 1, 아니면 0
-		    CASE WHEN COUNT(spc.idx) > 0 THEN 1 ELSE 0 END AS hasContract
+		    s.status
 		FROM 
 		    SUPPLIER s
-		LEFT JOIN 
-		    SUPPLIER_PRODUCT_CONTRACT spc
-		    ON s.idx = spc.supplier_idx
-		    AND spc.status = '활성'
-		GROUP BY 
-		    s.idx
-		ORDER BY 
-		    s.idx;
+		<where>
+			<if test="searchType != '' and searchType != null">
+				status = #{searchType} 
+			</if>
+			<if test="searchKeyword != '' and searchKeyword != null">
+				AND supplier_name LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</where>
+		<if test="orderKey != '' and orderkey != null">
+			ORDER BY ${orderKey} ${orderMethod}			
+		</if>
+		LIMIT
+			#{startRow}
+			, #{listLimit}
+	</select>
+	
+	<!-- 공급업체 목록 수 -->
+	<select id="getSupplierCount" resultType="int">
+		SELECT COUNT(*)
+		FROM SUPPLIER
+		<where>
+			<if test="searchType != '' and searchType != null">
+				status = #{searchType} 
+			</if>
+			<if test="searchKeyword != '' and searchKeyword != null">
+				AND supplier_name LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</where>
 	</select>
 	
 	<!-- 공급업체등록 -->
-	<insert id="insertSupplier" parameterType="SupplierProductContractDTO" useGeneratedKeys="true" keyProperty="idx">
+	<insert id="insertSupplier" parameterType="SupplierDTO" useGeneratedKeys="true" keyProperty="supplierIdx">
 		INSERT INTO SUPPLIER
 			(supplier_name
 			, supplier_manager
@@ -45,30 +128,12 @@
 			, #{supplierAddress1}
 			, #{supplierAddress2})
 	</insert>
-	<!-- 공급업체필터링 -->
-	<select id="selectSupplierByStatus" resultType="SupplierProductContractDTO">
-		SELECT * FROM SUPPLIER
-    	WHERE status = #{dbStatus}
-	</select>
-	<!-- 공급업체의 활성화된 계약 갯수 -->
-	<select id="countActiveContractsBySupplier" resultType="int" parameterType="long">
-		SELECT COUNT(*)
-		FROM SUPPLIER_PRODUCT_CONTRACT
-		WHERE supplier_idx = #{supplierIdx}
-		AND status = '활성'
-	</select>
-	
-	<!-- 공급업체 삭제 -->
-	<delete id="deleteSupplierByIdx" parameterType="long">
-		DELETE FROM SUPPLIER
-		WHERE idx = #{supplierIdx}
-	</delete>
-	
+
 	<!-- 공급업체상세정보 -->
-	<select id="selectSupplierInfo" resultType="SupplierProductContractDTO">
+	<select id="selectSupplierInfo" resultType="SupplierDTO">
 		SELECT *
 		FROM SUPPLIER
-		WHERE idx = #{idx}
+		WHERE supplier_idx = #{idx}
 	</select>
 	
 	<!-- 공급업체정보수정 -->
@@ -81,7 +146,17 @@
 			, supplier_zipcode = #{supplierZipcode}
 			, supplier_address1 = #{supplierAddress1}
 		    , supplier_address2 = #{supplierAddress2}
-		WHERE idx = #{idx}
+		    , status = #{status}
+		WHERE supplier_idx = #{supplierIdx}
 	</update>
+	
+	<!-- 공급업체 목록 조회 -->
+	<select id="selectAllSupplier" resultType="SupplierDTO">
+		SELECT
+			supplier_idx
+			, supplier_name
+			FROM SUPPLIER
+			ORDER BY supplier_name
+	</select>
 	
 </mapper>

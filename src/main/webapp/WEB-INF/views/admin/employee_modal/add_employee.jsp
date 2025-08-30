@@ -29,8 +29,8 @@
 				        <div class="field">
 				            <label class="form-label">성별</label>
 				            <div class="seg-radio" style="display:flex; gap:1rem;">
-				                <label><input type="radio" name="empGender" value="남자" checked required> 남자</label>
-				                <label><input type="radio" name="empGender" value="여자"> 여자</label>
+				                <label><input type="radio" name="empGender" id="male" value="남자" checked required> 남자</label>
+				                <label><input type="radio" name="empGender" id="female" value="여자"> 여자</label>
 				            </div>
 				        </div>
 				    </div>
