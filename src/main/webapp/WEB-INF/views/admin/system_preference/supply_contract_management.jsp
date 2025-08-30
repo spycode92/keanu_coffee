@@ -130,8 +130,8 @@
 		            </div>
 		    		<div class="field">
 			    		<select name="searchType" class="form-control" >
-							<option value="s.supplier_name" <c:if test="${searchType eq '공급업체' }">selected</c:if>>공급업체 </option>
-							<option value="p.product_name" <c:if test="${searchType eq '상품명' }">selected</c:if>>상품명</option>
+							<option value="s.supplier_name" <c:if test="${searchType eq 's.supplier_name' }">selected</c:if>>공급업체 </option>
+							<option value="p.product_name" <c:if test="${searchType eq 'p.product_name' }">selected</c:if>>상품명</option>
 			            </select>
 		            </div>
 		            <div class="search">
