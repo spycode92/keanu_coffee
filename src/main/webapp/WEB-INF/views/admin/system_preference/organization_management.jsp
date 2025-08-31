@@ -41,19 +41,23 @@
                 <div class="card h-100">
                     <div class="card-header">
                         <span>부서 리스트</span>
-                        <button type="button" id="btnAddDepartment" class="btn btn-sm btn-primary">+</button>
+                        <sec:authorize access="hasAnyAuthority('ADMIN_SYSTEM')">
+                        	<button type="button" id="btnAddDepartment" class="btn btn-sm btn-primary">+</button>
+                        </sec:authorize>
                     </div>
                     <ul id="departmentList" class="list-group">
                         <c:forEach items="${departmentList}" var="department">
                             <li class="list-group-item department-item"
                                 data-departmentidx="${department.departmentIdx}">
                                 <span class="department-name">${department.departmentName}</span>
-                                <div>
-                                    <button type="button"
-                                            class="btn btn-sm btn-secondary btn-edit-department">✎</button>
-                                    <button type="button"
-                                            class="btn btn-sm btn-destructive btn-delete-department">−</button>
-                                </div>
+                                <sec:authorize access="hasAnyAuthority('ADMIN_SYSTEM')">
+	                                <div>
+	                                    <button type="button"
+	                                            class="btn btn-sm btn-secondary btn-edit-department">✎</button>
+	                                    <button type="button"
+	                                            class="btn btn-sm btn-destructive btn-delete-department">−</button>
+	                                </div>
+	                            </sec:authorize>
                             </li>
                         </c:forEach>
                     </ul>
@@ -82,7 +86,9 @@
                 <div class="card h-100">
                     <div class="card-header">
                         <span>권한 리스트</span>
-                        <button type="button" id="btnAddAutho" class="btn btn-sm btn-primary" >+</button>
+                        <sec:authorize access="hasAnyAuthority('ADMIN_SYSTEM')">
+                        	<button type="button" id="btnAddAutho" class="btn btn-sm btn-primary" >+</button>
+                        </sec:authorize>
                         <button type="button" id="btnSaveAutho" class="btn btn-sm btn-primary" disabled >저장</button>
                     </div>
                     <ul id="authoList" class="list-group">

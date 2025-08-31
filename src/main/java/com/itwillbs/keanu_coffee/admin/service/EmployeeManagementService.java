@@ -10,6 +10,7 @@ import java.util.Random;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,6 @@ public class EmployeeManagementService {
 	@Transactional(readOnly = true)
 	public List<EmployeeInfoDTO> getEmployeeList(
 			int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod) {
-		
 		
 		List<EmployeeInfoDTO> List = employeeManagementMapper.selectEmployeeList(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
 		return List;
