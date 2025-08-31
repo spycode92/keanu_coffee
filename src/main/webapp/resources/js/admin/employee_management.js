@@ -343,10 +343,12 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
 	const DetailmodifyBtn = document.getElementById('DetailmodifyBtn');
+	
 	DetailmodifyBtn.addEventListener('click', () => {
 		editEmployee(selectEmpIdx);
 		
 	});
+	
 	const form = document.getElementById('modifyEmployeeForm');
 	form.querySelector('select[name="departmentIdx"]').addEventListener('change', onModifyDeptChange);
 	//수정모달 핸드폰 번호입력제약사항
@@ -401,8 +403,6 @@ document.addEventListener("DOMContentLoaded", function() {
 				Swal.fire('비밀번호 초기화 실패', '', 'error');
 				throw err;
 			});
-		
-	
 	});
 	
 	//직원추가모달 핸드폰번호 검사

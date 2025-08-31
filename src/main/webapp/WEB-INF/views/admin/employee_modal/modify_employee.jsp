@@ -8,7 +8,6 @@
               enctype="multipart/form-data"
               id="modifyEmployeeForm"
               class="modal-form">
-        <input type="hidden" id="modifyEmpIdx" name="empIdx"value="">
             <div class="modal-head">
                 <h5 id="modifyEmployeeModalLabel">직원 정보수정</h5>
                 <button type="button"
@@ -19,6 +18,7 @@
                 </button>
             </div>
             <div class="modal-body">
+		        <input type="hidden" id="modifyEmpIdx" name="empIdx" value="">
 			    <!-- 오른쪽: 이름/성별 -->
 			    <div style="flex:1; display:flex; flex-direction: column; gap:1rem;">
 			        <div class="field">

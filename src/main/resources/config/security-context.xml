@@ -30,6 +30,13 @@
 	<http auto-config="true">
 		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/main" access="isAuthenticated()" />
+		<intercept-url pattern="/admin/**" access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')" />
+		<intercept-url pattern="/inbound/**" access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')" />
+		<intercept-url pattern="/outbound/**" access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')" />
+		<intercept-url pattern="/inventory/**" access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')" />
+		<intercept-url pattern="/inventoryAction/**" access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')" />
+		<intercept-url pattern="/transport/**" access="hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')" />
+		
 		<!-- 로그인설정 -->
 		<form-login
 			login-page="/"
@@ -38,6 +45,11 @@
 			password-parameter="empPassword"
 			default-target-url="/main"
 		/>
+		
+		<logout logout-url="/logoutForSecurity"
+			logout-success-url="/?logout"
+			invalidate-session="true" 
+        	delete-cookies="JSESSIONID"/>
 		
 	</http>
 

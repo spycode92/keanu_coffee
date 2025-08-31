@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -146,7 +147,8 @@ public class EmployeeManagementController {
 	// 직원 비밀번호 초기화(1234)
 	@PostMapping("/resetPw")
 	@ResponseBody
-	public Map<String, Object> resetPw(EmployeeInfoDTO employee) {
+	public Map<String, Object> resetPw(@RequestBody EmployeeInfoDTO employee) {
+		System.out.println(employee);
 		// AJAX결과 리턴 객체 생성
 		Map<String, Object> result = new HashMap<>();
 		

@@ -16,7 +16,9 @@
 			<div id="employeeInfo" class="profile-popover" role="menu" aria-hidden="true" >
 				<span class="top-user">${sessionScope.sName }</span>
 				<span class="changeInfo"><button type="button" class="btn btn-link" data-modal-target="change-info-modal"> 정보 변경</button></span>
-				<span class="logout" ><button type="button" class="btn btn-secondary" data-action="logout">로그아웃</button></span>
+				<span class="logout" >
+					<button type="button" class="btn btn-secondary" data-action="logout">로그아웃</button>
+				</span>
 				<div class="darkmode-wrapper" style="color: #e0e5e6;">
 					<span class="darkmode-label">다크모드 :</span>
 					<button id="dark-mode-toggle" class="toggle-switch" aria-label="다크모드" style="text-align: right;"></button><br>	
@@ -32,7 +34,7 @@
   <!-- 사이드바 -->
 	<aside id="sidebar" class="sidebar">
 		<ul>
-		
+			<sec:authorize access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')">
 			<li>
 				<a href="/admin"><span>관리자페이지</span></a>
 <!-- 				<a href=""><span>물류부서관리</span></a> -->
@@ -47,7 +49,8 @@
 					<li><a href="/admin/preference/franchise">지점관리</a></li>
 				</ul>
 			</li>
-		
+			</sec:authorize>
+			<sec:authorize access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')">
 			<li>
 				<a href="/inbound/main"><span>입고 관리</span></a>
 				<ul class="submenu">
@@ -59,6 +62,8 @@
 			        <li><a href="/inbound/inboundRegister">입고요청</a></li>
 			    </ul>
 			</li>
+			</sec:authorize>
+			<sec:authorize access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')">
 			<li>
 				<a href="/outbound"><span>출고 관리</span></a>
 				<ul class="submenu">
@@ -71,6 +76,8 @@
 			        <li><a href="/outbound/outboundPicking">출고피킹</a></li>
 			    </ul>
 			</li>
+			</sec:authorize>
+			<sec:authorize access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')">
 			<li>
 				<a href="/inventory"><span>재고 현황</span></a>
 			    <ul class="submenu">
@@ -86,10 +93,9 @@
               <li><a href="/inventory/locationType">로케이션 지정</a></li>
               <li><a href="/inventory/stockCheck">재고 조회/검수</a></li>
 			  </ul>
-
-
-
 			</li>
+			</sec:authorize>
+			<sec:authorize access="hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')">
 			<li>
 				<a href="/transport"><span>운송관리</span></a>
 				<ul class="submenu">
@@ -98,6 +104,7 @@
 					<li><a href="/transport/dispatches">배차관리</a></li>
 				</ul>
 			</li>
+			</sec:authorize>
 			<li>
 				<a href="/settings"><span>시스템 설정</span></a>
 			</li>
