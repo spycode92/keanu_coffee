@@ -201,7 +201,8 @@ function ajaxGet(url, params = {}) {
     method: 'GET',
     data: params,
     dataType: 'json',
-    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+//    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+    contentType: 'application/json; charset=UTF-8', 
     beforeSend(xhr) {
       if (token && header) xhr.setRequestHeader(header, token);
     }
@@ -219,9 +220,10 @@ function ajaxPost(url, data = {}) {
   return $.ajax({
     url,
     method: 'POST',
-    data,
+    data: JSON.stringify(data),
     dataType: 'json',
-    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+//    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+    contentType: 'application/json; charset=UTF-8', 
     beforeSend(xhr) {
       if (token && header) xhr.setRequestHeader(header, token);
     }

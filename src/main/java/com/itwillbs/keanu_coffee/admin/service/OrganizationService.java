@@ -16,6 +16,7 @@ import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.dto.TeamDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
+import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.utils.FileUtils;
@@ -136,6 +137,38 @@ public class OrganizationService {
 		int affectedRows = organizationMapper.updateRole(idx, roleName);
 		
 		return  affectedRows == 1;
-	}	
+	}
+	
+	//권한목록 가져오기
+	public List<CommonCodeDTO> getAuthorityList() {
+		return organizationMapper.selectAuthorityList();
+	}
+	
+	//직책별 권한정보 가져오기
+	public List<Map<String, Object>> getAuthrityInfo(Integer roleIdx) {
+		return organizationMapper.selectAuthorityInfo(roleIdx);
+	}
+	//직책별 권한 업데이트
+	@Transactional
+	public void modifyRoleAutho(Map<String, Object> data) {
+		Integer roleIdx = (Integer) data.get("roleIdx");
+	    List<Integer> addedAuthorities = (List<Integer>) data.get("addedAuthorities");
+	    List<Integer> removedAuthorities = (List<Integer>) data.get("removedAuthorities");
+	    try {
+            if (!removedAuthorities.isEmpty()) {
+                organizationMapper.deleteAuthorities(roleIdx, removedAuthorities);
+            }
+            
+            if (!addedAuthorities.isEmpty()) {
+            	organizationMapper.insertAuthorities(roleIdx, addedAuthorities);
+            }
+            // 성공시 모든 변경사항 커밋
+        } catch (Exception e) {
+            // 실패시 모든 변경사항 롤백
+            throw new RuntimeException("권한 수정 실패: " + e.getMessage(), e);
+        }
+		
+	}
+
 	
 }

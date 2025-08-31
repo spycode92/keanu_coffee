@@ -551,9 +551,6 @@ $(function () {
 	        data: { departmentIdx: departmentIdx },
 	        dataType: 'json',
 	        success: function(data) {
-				console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
-				console.log(data);
-				console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
 	            // 팀 목록 표시
 	            if (Array.isArray(data.teams) && data.teams.length > 0) {
 	                data.teams.forEach(function(team) {
@@ -589,6 +586,195 @@ $(function () {
 	        }
 	    });
 	}
+	
+	let selectedRoleIdx = null;
+	let originalAuthorities = new Set(); // 초기 권한 상태
+	let currentAuthorities = new Set();  // 현재 권한 상태
+    // 직책 선택시 이벤트
+    $(document).on('click', '.role-item', function () {
+		//권한목록 보이기
+		checkBox.show();
+		$('#btnSaveAutho').hide();
+        $('.role-item').removeClass('active');
+        $(this).addClass('active');
+        selectedRoleIdx = $(this).data('roleidx');
+		
+        loadRolesAutho(selectedRoleIdx);
+		$('#btnSaveAutho').prop('disabled', true);
+    });
 
+	//직책이가진권한불러오기
+	function loadRolesAutho(roleIdx) {
+	    if (!roleIdx) return;
+		ajaxGet('/admin/systemPreference/dept/getAutho',{ roleIdx: roleIdx }, )
+	    	.then(function(data) {
+				//체크박스상태초기화
+				document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+                	cb.checked = false;
+				});
+	            // 직책이 가진 권한 체크박스 표시
+	            if (Array.isArray(data) && data.length > 0) {
+					document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+					    cb.checked = false;
+					});
+	                data.forEach(function(autho) {
+						const checkbox = document.querySelector(`input[type="checkbox"][value="${autho.autho_idx}"]`);
+	                   	if (checkbox) {
+					        checkbox.checked = true;
+					    }
+	                });
+	            } else {
+	                Swal.fire({
+		                title: '경고',
+						html: '부여된 권한이 없습니다.',
+            		});
+	            }
+				//원래 가지고있던 권한정보 저장
+				saveOriginalState();
+	        });
+	}
+	
+	// 직책별 권한 상태 저장
+	function saveOriginalState() {
+	    originalAuthorities.clear();
+	    currentAuthorities.clear();
 
+		$(checkBox).filter(':checked').each(function(){
+			const value = $(this).val();
+			originalAuthorities.add(value);
+			currentAuthorities.add(value);
+		})
+		console.log('직급의 초기 권한:', Array.from(originalAuthorities));
+	}
+	
+	// 현재 체크박스 상태 저장
+    function updateCurrentState() {
+        currentAuthorities.clear();
+        
+        checkBox.filter(':checked').each(function() {
+            currentAuthorities.add($(this).val());
+        });
+    }
+
+	// Set 비교 함수
+    function setsEqual(set1, set2) {
+        if (set1.size !== set2.size) return false;
+        for (let item of set1) {
+            if (!set2.has(item)) return false;
+        }
+        return true;
+    }
+
+	// 직책 상태 변경사항 분석
+    function getChangeDetails() {
+        const addedAuthorities = [...currentAuthorities].filter(x => !originalAuthorities.has(x));
+        const removedAuthorities = [...originalAuthorities].filter(x => !currentAuthorities.has(x));
+        
+        return {
+            roleIdx: selectedRoleIdx,
+            added: addedAuthorities,        // DB에 INSERT할 권한들
+            removed: removedAuthorities,    // DB에서 DELETE할 권한들
+            hasChanges: addedAuthorities.length > 0 || removedAuthorities.length > 0,
+            currentAll: Array.from(currentAuthorities)  // 현재 전체 권한 목록
+        };
+    }
+
+	// 저장 버튼 상태 업데이트
+    function updateSaveButton() {
+        const hasChanges = !setsEqual(originalAuthorities, currentAuthorities);
+        const saveButton = $('#btnSaveAutho');
+        
+        if (hasChanges) {
+            saveButton.show();
+            saveButton.prop('disabled', false);
+            saveButton.text('변경사항 저장');
+            saveButton.removeClass('btn-secondary').addClass('btn-primary');
+            
+        } else {
+            saveButton.prop('disabled', true);
+            saveButton.text('변경사항 없음');
+            saveButton.removeClass('btn-primary').addClass('btn-secondary');
+            
+            console.log('변경사항 없음');
+        }
+    }
+	
+	
+	
+	//직책의 권한리스트 변경이벤트
+	$('#authoList').on('change','input[type="checkbox"]',function(){
+		const checkbox = $(this);
+        const value = checkbox.val();
+        const isChecked = checkbox.is(':checked');
+
+		console.log(`권한 ${value} 상태 변경: ${isChecked ? '체크됨' : '해제됨'}`);
+		// 현재 상태 업데이트
+        updateCurrentState();
+        // 저장 버튼 상태 업데이트
+        updateSaveButton();
+	});
+	
+	
+	//직책의 권한 변경 후 저장버튼
+	$('#btnSaveAutho').on('click','',function(){
+		const changes = getChangeDetails();
+		
+		if (!changes.hasChanges) {
+            Swal.fire({
+                title: '경고',
+				html: '변경된 권한이없습니다.',
+				icon: 'error'
+            });
+            return;
+        }
+
+		console.log('저장할 데이터:');
+        console.log('선택된 직책 ID:', selectedRoleIdx);
+        console.log('추가된 권한:', changes.added);
+        console.log('제거된 권한:', changes.removed);
+        console.log('현재 전체 권한:', Array.from(currentAuthorities));
+		//DB저장 로직 함수 호출(roleIdx, 현재선택된권한모록)
+		saveRoleAuthorities(changes);
+	});
+	
+	//ROLE_AUTHO 테이블 저장함수
+	function saveRoleAuthorities(changes) {
+	    const saveData = {
+	        roleIdx: changes.roleIdx,
+	        addedAuthorities: changes.added,     // INSERT할 권한들
+	        removedAuthorities: changes.removed  // DELETE할 권한들
+    	};
+
+		ajaxPost('/admin/systemPreference/dept/saveRoleAutho', saveData)
+		.then(function(response) {
+            console.log('서버 응답', response);
+			Swal.fire({
+                title: '성공',
+				html: '권한이 변경되었습니다.',
+				icon: 'success'
+            });
+			
+			originalAuthorities = new Set(currentAuthorities);
+            updateSaveButton();
+		})
+        .catch(function(error) {
+//            Swal.fire({
+//                title: '경고',
+//				html: '권한 변경에 실패하였습니다.',
+//				icon: 'error'
+//            });
+			console.error('Promise reject:', error);
+            console.error('저장 실패:', error);
+        });
+	}
+	
+	
+	
+	
+	
+	//체크박스객체 숨기기
+	const checkBox = $('#authoList').find('input[type="checkbox"]');
+	checkBox.hide();
+	$('#btnSaveAutho').hide();
+	console.log(selectedRoleIdx);
 });

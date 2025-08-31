@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -103,8 +104,7 @@
     <script src="/resources/js/common/common.js"></script>
     <script src="/resources/js/admin/system_preferences/franchise_manage.js"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    
-
+   	<sec:csrfMetaTags />
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/inc/top.jsp" />
