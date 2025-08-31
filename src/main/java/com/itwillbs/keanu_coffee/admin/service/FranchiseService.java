@@ -77,6 +77,16 @@ public class FranchiseService {
 		return franchiseMapper.countFranchiseByRegion(regionIdx) > 0;
 	}
 
+	// bcode로 프랜차이점 찾기
+	public List<FranchiseDTO> findByBcode(String bcode) {
+		return franchiseMapper.selectBecode(bcode);
+	}
+
+	// 구역 정보 추가
+	public void updateRegionIdx(Integer franchiseIdx, Integer regionIdx) {
+		franchiseMapper.updateRegionIdx(franchiseIdx, regionIdx);
+	}
+
 
 
 

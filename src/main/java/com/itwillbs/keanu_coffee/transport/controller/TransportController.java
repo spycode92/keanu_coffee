@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
+import com.itwillbs.keanu_coffee.transport.dto.AdministrativeRegionDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO;
 import com.itwillbs.keanu_coffee.transport.dto.VehicleDTO;
 import com.itwillbs.keanu_coffee.transport.service.DriverService;
@@ -108,7 +109,10 @@ public class TransportController {
 	// 구역관리 페이지
 	@GetMapping("/region")
 	public String region(Model model) {
+		// 구역 리스트
 		List<CommonCodeDTO> regionList = regionService.getRegionList();
+		
+		
 		
 		if (regionList == null) {
 			model.addAttribute("msg", "지역 정보를 불러올 수 없습니다.");
