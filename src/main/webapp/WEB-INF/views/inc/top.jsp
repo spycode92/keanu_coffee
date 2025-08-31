@@ -34,7 +34,7 @@
   <!-- 사이드바 -->
 	<aside id="sidebar" class="sidebar">
 		<ul>
-			<sec:authorize access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')">
+<%-- 			<sec:authorize access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')"> --%>
 			<li>
 				<a href="/admin"><span>관리자페이지</span></a>
 <!-- 				<a href=""><span>물류부서관리</span></a> -->
@@ -49,7 +49,7 @@
 					<li><a href="/admin/preference/franchise">지점관리</a></li>
 				</ul>
 			</li>
-			</sec:authorize>
+<%-- 			</sec:authorize> --%>
 			<sec:authorize access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')">
 			<li>
 				<a href="/inbound/main"><span>입고 관리</span></a>
