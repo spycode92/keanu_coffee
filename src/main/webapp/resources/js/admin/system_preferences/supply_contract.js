@@ -27,11 +27,21 @@ $(function(){
 		});
 	});
 	
-	// 상품검색 모달열기
-	$("#contractAddForm").on('click', '.searchProduct', function() {
+	// 상품검색 모달열기 계약추가모달
+	$("#contractAddForm").on('click', '.searchProduct', function(e) {
+		e.preventDefault();
 		const searchProductModal = document.getElementById('searchProduct');
 		$("#productSearch").val('');
 		ModalManager.openModal(searchProductModal);
+	});
+	
+	// 상품검색 모달열기 계약상세모달
+	$("#contractDetailForm").on('click', '.searchProduct', function(e) {
+		e.preventDefault();
+		const searchProductModal = document.getElementById('searchProduct');
+		$("#productSearch").val('');
+		ModalManager.openModal(searchProductModal);
+debugger;
 	});
 	
 	//상품 검색 모달 검색창입력이벤트
@@ -72,6 +82,7 @@ $(function(){
 	    var productName = $(this).find('td').text();  // 해당 행의 공급업체 이름 가져오기
 
 	    $("#addContractProductSelect").val(productIdx);
+	    $("#detailContractProductSelect").val(productIdx);
 	    
 	    // 검색 결과 영역 비우기
 	    $("#searchProductList").empty();
@@ -80,7 +91,16 @@ $(function(){
 	});
 	
 	// 공급처검색 모달열기
-	$("#contractAddForm").on('click', '.searchSupplier', function() {
+	$("#contractAddForm").on('click', '.searchSupplier', function(e) {
+		e.preventDefault();
+		const searchSupplierModal = document.getElementById('searchSupplier');
+		$("#supplierSearch").val('');
+		ModalManager.openModal(searchSupplierModal);
+	});
+	
+	// 공급처검색 모달열기
+	$("#contractDetailForm").on('click', '.searchSupplier', function(e) {
+		e.preventDefault();
 		const searchSupplierModal = document.getElementById('searchSupplier');
 		$("#supplierSearch").val('');
 		ModalManager.openModal(searchSupplierModal);
@@ -128,6 +148,7 @@ $(function(){
 	    // 원하는 동작 추가 예:
 	    // 예를 들면, input 박스에 선택된 공급업체 이름 넣기
 	    $("#addContractSupplierSelect").val(supplierIdx);
+	    $("#detailContractSupplierSelect").val(supplierIdx);
 	    
 	    // 검색 결과 영역 비우기 (필요 시)
 	    $("#searchSupplierList").empty();
@@ -197,9 +218,9 @@ $(function(){
         ModalManager.openModal(detailModal);
 
         $('#contractDetailForm input, #contractDetailForm textarea').prop('readonly', true);
-        $('#detailStatus').prop('disabled', true);
+        $('#detailStatus, #detailContractSupplierSelect, #detailContractProductSelect').prop('disabled', true);
         $('#btnEditContractDetail, #btnDeleteContractDetail').show();
-        $('#btnSaveContractDetail, #btnCancelEditDetail').hide();
+        $('#btnSaveContractDetail, #btnCancelEditDetail, #detailContractSupplierSearch, #detailContractProductSearch').hide();
 
         // 초기 데이터 비우기
         $('#detailSupplier, #detailProduct, #detailContractPrice, #detailContractStart, #detailContractEnd, #detailMinOrderQuantity, #detailMaxOrderQuantity, #contractDetailNote').val('');
@@ -214,8 +235,8 @@ $(function(){
             success: function(data) {
                 if (!data) return;
 				console.log(data);
-                $('#detailSupplier').val(data.supplier.supplierName);
-                $('#detailProduct').val(data.product.productName);
+                $('#detailContractSupplierSelect').val(data.supplier.supplierIdx);
+                $('#detailContractProductSelect').val(data.product.productIdx);
                 $('#detailContractPrice').val(data.contractPrice);
                 $('#detailContractStart').val(formatDateFromMillis(data.contractStart));
                 $('#detailContractEnd').val(formatDateFromMillis(data.contractEnd));
@@ -289,8 +310,9 @@ $(function(){
     // 수정
     $('#btnEditContractDetail').on('click', function() {
         $('#detailContractPrice, #detailContractStart, #detailContractEnd, #detailMinOrderQuantity, #detailMaxOrderQuantity, #contractDetailNote').prop('readonly', false);
-        $('#detailStatus').prop('disabled', false);
-        $('#btnSaveContractDetail, #btnCancelEditDetail').show();
+        $('#detailContractSupplierSelect, #detailContractProductSelect' ).prop('disabled', false);
+		$('#detailStatus').prop('disabled', false);
+        $('#btnSaveContractDetail, #btnCancelEditDetail, #detailContractProductSearch, #detailContractSupplierSearch').show();
         $('#btnEditContractDetail, #btnDeleteContractDetail').hide();
         $('#detailContractPrice, #detailMinOrderQuantity, #detailMaxOrderQuantity').off('input').on('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
@@ -307,14 +329,17 @@ $(function(){
         $('#detailStatus').val(originalContractData.status);
         $('#contractDetailNote').val(originalContractData.note);
         $('#detailContractPrice, #detailContractStart, #detailContractEnd, #detailMinOrderQuantity, #detailMaxOrderQuantity, #contractDetailNote').prop('readonly', true);
-        $('#detailStatus').prop('disabled', true);
-        $('#btnSaveContractDetail, #btnCancelEditDetail').hide();
+        $('#detailContractSupplierSelect, #detailContractProductSelect' ).prop('disabled', true);
+		$('#detailStatus').prop('disabled', true);
+        $('#btnSaveContractDetail, #btnCancelEditDetail, #detailContractProductSearch, #detailContractSupplierSearch').hide();
         $('#btnEditContractDetail, #btnDeleteContractDetail').show();
     });
 
     // 저장
     $('#btnSaveContractDetail').on('click', function() {
         const dataToSave = {
+			supplierIdx:$('#detailContractSupplierSelect').val(),
+			productIdx:$('#detailContractProductSelect').val(),
             contractPrice: $('#detailContractPrice').val(),
             contractStart: $('#detailContractStart').val(),
             contractEnd: $('#detailContractEnd').val(),

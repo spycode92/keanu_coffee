@@ -224,6 +224,8 @@
 	<update id="updateContractDetail" parameterType="SupplyContractDTO">
 		UPDATE SUPPLIER_PRODUCT_CONTRACT
 	    SET
+	    	supplier_idx = #{supplierIdx},
+	    	product_idx = #{productIdx},
 	        contract_price = #{contractPrice},
 	        contract_start = #{contractStart},
 	        contract_end = #{contractEnd},

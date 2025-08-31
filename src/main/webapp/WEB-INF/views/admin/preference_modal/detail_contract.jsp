@@ -28,12 +28,14 @@
                     <!-- 오른쪽: 주요 정보 -->
                     <div style="flex:2;">
                         <div class="field mb-2">
-                            <label class="form-label">공급업체</label>
-                            <input type="text" id="detailSupplier" class="form-control" readonly>
-                        </div>
-                        <div class="field mb-2">
-                            <label class="form-label">상품</label>
-                            <input type="text" id="detailProduct" class="form-control" readonly>
+		                    <div style=" display:flex; gap:1rem; min-width:150px;">
+		                        <button id="detailContractSupplierSearch" class="btn btn-primary searchSupplier" >공급업체검색</button>
+		                        <button id="detailContractProductSearch" class="btn btn-primary searchProduct" >상품검색</button>
+		                    </div>
+		                        <select id="detailContractSupplierSelect" name="supplierIdx" class="form-select supplierSelectList" required disabled>
+		                        </select>
+		                        <select id="detailContractProductSelect" name="productIdx" class="form-select productSelectList"  required disabled>
+		                        </select>
                         </div>
                         <div class="field mb-2">
                             <label class="form-label">계약 단가</label>
