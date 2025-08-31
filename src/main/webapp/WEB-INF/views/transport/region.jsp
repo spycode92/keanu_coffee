@@ -8,6 +8,7 @@
 <title>운송관리대시보드</title>
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" ></script>
 <link
 	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
 	rel="stylesheet">
@@ -19,6 +20,12 @@
 	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script
 	src="${pageContext.request.contextPath}/resources/js/transport/region.js"
+	defer></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/transport/administrativeRegion.js"
+	defer></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/transport/route.js"
 	defer></script>
 <style type="text/css">
 /* 컨테이너 */
@@ -243,9 +250,20 @@ margin-top: 0.5rem;
 				<label>구역 선택</label> 
 				<select id="routeRegionSelect">
 					<option value="" selected disabled>구역을 선택하세요</option>
+					<c:forEach var="region" items="${regionList}">
+						<option value="${region.commonCodeName}" data-idx="${region.commonCodeIdx} }">${region.commonCodeName}</option>
+					</c:forEach>
 				</select>
-				<ul id="franchiseList"></ul>
-				<button id="saveRouteBtn" disabled>순서 저장</button>
+				<table id="franchiseTable">
+					<thead>
+						<tr>
+							<th>지점명</th>
+							<th>순서</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<button id="saveRouteBtn" >순서 저장</button>
 			</div>
 		</div>
 	</section>

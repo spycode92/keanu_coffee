@@ -19,7 +19,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.transport.dto.AdministrativeRegionDTO;
 import com.itwillbs.keanu_coffee.transport.dto.MappingDTO;
+import com.itwillbs.keanu_coffee.transport.dto.RegionFranchiseRouteDTO;
 import com.itwillbs.keanu_coffee.transport.service.RegionService;
+import com.itwillbs.keanu_coffee.transport.service.RouteService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RegionController {
 	private final RegionService regionService;
+	private final RouteService routeService;
 	
 	// 구역 등록
 	@PostMapping("/region/add")
@@ -125,6 +128,27 @@ public class RegionController {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("매핑 삭제 중 오류 발생: " + e.getMessage());
+		}
+	}
+	
+	// 행정구역별 지점 순서 리스트
+	@GetMapping("/franchise/route")
+	@ResponseBody
+	public List<RegionFranchiseRouteDTO> franchiseRoute() {
+		return routeService.getFranchiseRouteList();
+	}
+	
+	// 지점 배송 순서 변경
+	@PostMapping("/franchise/reorder")
+	@ResponseBody
+	public ResponseEntity<?> reorderRoutes(@RequestBody List<RegionFranchiseRouteDTO> franchiseOrders) {
+		try {
+			routeService.reorderRoutes(franchiseOrders);
+			 return ResponseEntity.ok("순서 저장 완료");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("순서 변경 중 오류 발생: " + e.getMessage());
 		}
 	}
 }

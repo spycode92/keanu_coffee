@@ -94,6 +94,8 @@
 			ADMINISTRATIVE_REGION ad
 		ON
 			ram.bcode = ad.bcode
+		ORDER BY
+			c.common_code
 	</select>
 	
 	<!-- 행정구역 삭제 -->

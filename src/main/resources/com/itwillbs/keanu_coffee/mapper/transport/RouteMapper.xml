@@ -31,4 +31,34 @@
 		AND 
 			franchise_idx = #{franchiseIdx}
 	</delete>
+	
+	<!-- 구역별 지점 배송 순서 -->
+	<select id="selectFranchiseRoute" resultType="com.itwillbs.keanu_coffee.transport.dto.RegionFranchiseRouteDTO">
+		SELECT 
+			f.franchise_name, c.common_code_name, r.delivery_sequence, f.franchise_idx
+		FROM
+			FRANCHISE f
+		JOIN
+			COMMON_CODE c
+		ON 
+			c.common_code_idx = f.region_idx
+		JOIN
+			ROUTE r
+		ON
+			f.franchise_idx = r.franchise_idx
+		ORDER BY
+			c.common_code_name , delivery_sequence			
+	</select>
+	
+	<!-- 배송 순서 변경 -->
+	<update id="updateSequence">
+		UPDATE
+			ROUTE
+		SET
+			delivery_sequence = #{deliverySequence}
+		WHERE
+			region_idx = #{regionIdx}
+		AND
+			franchise_idx = #{franchiseIdx}
+	</update>
 </mapper>

@@ -13,9 +13,11 @@ import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 import com.itwillbs.keanu_coffee.transport.dto.AdministrativeRegionDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO;
+import com.itwillbs.keanu_coffee.transport.dto.RegionFranchiseRouteDTO;
 import com.itwillbs.keanu_coffee.transport.dto.VehicleDTO;
 import com.itwillbs.keanu_coffee.transport.service.DriverService;
 import com.itwillbs.keanu_coffee.transport.service.RegionService;
+import com.itwillbs.keanu_coffee.transport.service.RouteService;
 import com.itwillbs.keanu_coffee.transport.service.VehicleService;
 
 import lombok.RequiredArgsConstructor;
@@ -111,8 +113,6 @@ public class TransportController {
 	public String region(Model model) {
 		// 구역 리스트
 		List<CommonCodeDTO> regionList = regionService.getRegionList();
-		
-		
 		
 		if (regionList == null) {
 			model.addAttribute("msg", "지역 정보를 불러올 수 없습니다.");
