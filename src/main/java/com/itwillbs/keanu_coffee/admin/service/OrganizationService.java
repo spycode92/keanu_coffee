@@ -194,6 +194,21 @@ public class OrganizationService {
 		result.put("msg", "권한이 삭제되었습니다.");
 		return result;
 	}
+	
+	//권한 추가
+	public Map<String, String> addAutho(Map<String, Object> data) {
+		Map<String, String> result = new HashMap<>();
+		String authoCode = (String)data.get("authoCode");
+		String authoName = (String)data.get("authoName");
+		int insertCount = organizationMapper.insertAutho(authoCode, authoName);
+		if(insertCount > 0) {
+			result.put("result", "success");
+			result.put("msg", "권한이 추가되었습니다.");
+		}
+		result.put("result", "fail");
+		result.put("msg", "권한 추가에 실패하였습니다.");
+		return result;
+	}
 
 	
 }

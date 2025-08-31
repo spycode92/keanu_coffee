@@ -197,7 +197,7 @@ public class OrganizationController {
 
 	}
 	
-	//직책 이름 변경
+	//권한 이름 변경
 	@PostMapping("/modifyAutho")
 	@ResponseBody
 	public ResponseEntity<Map<String,String>> modifyAuthoName(@RequestBody Map<String, Object> data){
@@ -216,7 +216,7 @@ public class OrganizationController {
 		return ResponseEntity.ok(result);
 	}
 	
-	//직책 제거
+	//권한 제거
 	@PostMapping("/removeAutho/{authoIdx}")
 	@ResponseBody
 	public ResponseEntity<Map<String,String>> removeAuthoName(@PathVariable Integer authoIdx){
@@ -225,8 +225,19 @@ public class OrganizationController {
 		result = organizationService.removeAuthoName(authoIdx);
 
 		return ResponseEntity.ok(result);
-		
 	}
+	
+	//권한 추가
+	@PostMapping("/addAutho")
+	@ResponseBody
+	public ResponseEntity<Map<String,String>> addAutho(@RequestBody Map<String, Object> data){
+		
+		Map<String, String> result = new HashMap<>();
+		result = organizationService.addAutho(data);
+
+		return ResponseEntity.ok(result);
+	}
+	
 	
 
 }

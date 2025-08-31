@@ -569,8 +569,8 @@ $(function () {
 
 	//직책이가진권한불러오기
 	function loadRolesAutho(roleIdx) {
-	    if (!roleIdx) return;
-		ajaxGet('/admin/systemPreference/dept/getAutho',{ roleIdx: roleIdx }, )
+	    if(!roleIdx) return
+		ajaxGet('/admin/systemPreference/dept/getAutho',{ roleIdx: roleIdx } )
 	    	.then(function(data) {
 				//체크박스상태초기화
 				document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
@@ -585,7 +585,7 @@ $(function () {
 						const checkbox = document.querySelector(`input[type="checkbox"][value="${autho.autho_idx}"]`);
 	                   	if (checkbox) {
 					        checkbox.checked = true;
-					    }
+					    };
 	                });
 	            } else {
 	                Swal.fire({
@@ -795,7 +795,7 @@ $(function () {
 	    })
 		.then((result) => {
 		    if (result.isConfirmed) {
-				ajaxPost(`/admin/systemPreference/dept/removeAutho/${authoIdx}`	)
+				ajaxPost(`/admin/systemPreference/dept/removeAutho/${authoIdx}`)
 				.then((data)=>{
 					Swal.fire({
 			            title: data.result,
@@ -803,7 +803,7 @@ $(function () {
 						icon: 'success'
 					}).then(()=>{
 						window.location.reload();
-					})
+					});
 					
 				}).catch(()=>{
 					Swal.fire({
@@ -812,8 +812,85 @@ $(function () {
 						icon: 'error'
 		            });	
 				});
-			}
+			};
 		});
+	});
+	
+	$('#btnAddAutho').on('click','',function(){
+		Swal.fire({
+        title: '새 권한 추가',
+        html: `
+            <input id="swal-authoCode" class="swal2-input" placeholder="권한 코드 (영문+숫자+_)">
+            <input id="swal-authoName" class="swal2-input" placeholder="권한명 (한글+영문+숫자)">
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: '추가',
+        cancelButtonText: '취소',
+        preConfirm: () => {
+            const authoCode = document.getElementById('swal-authoCode').value.trim();
+            const authoName = document.getElementById('swal-authoName').value.trim();
+
+            // ① 기본 유효성 검사
+            if (!authoCode || !authoName) {
+                Swal.showValidationMessage('모든 필드를 입력해주세요');
+                return false;
+            }
+
+            // ② 권한 코드 유효성 검사 (영어+숫자+특수문자+_)
+            const codePattern = /^[a-zA-Z0-9_]+$/;
+            if (!codePattern.test(authoCode)) {
+                Swal.showValidationMessage('권한 코드는 영문, 숫자, _만 허용됩니다');
+                return false;
+            }
+
+            // ③ 권한명 유효성 검사 (한글+영어+숫자)
+            const namePattern = /^[\uAC00-\uD7A3a-zA-Z0-9]+$/;
+            if (!namePattern.test(authoName)) {
+                Swal.showValidationMessage('권한명은 한글, 영문, 숫자만 허용됩니다');
+                return false;
+            }
+
+            // ④ 검증 통과 시 객체로 반환
+            return {
+                authoCode: authoCode,
+                authoName: authoName
+            };
+        }})
+		.then((result) => {
+	        if (result.isConfirmed && result.value) {
+	            const { authoCode, authoName } = result.value;
+	            
+	            console.log('입력된 권한 코드:', authoCode);
+	            console.log('입력된 권한명:', authoName);
+	            
+	            // 여기서 AJAX 호출로 권한 추가
+	            ajaxPost('/admin/systemPreference/dept/addAutho', 
+					{authoCode: authoCode
+	                , authoName: authoName }
+				)
+	            .then((response) => {
+	                Swal.fire({
+	                    icon: 'success',
+	                    title: '성공!',
+	                    text: '권한이 추가되었습니다.',
+	                    confirmButtonText: '확인'
+	                }).then(() => {
+	                    
+	                    window.location.reload();
+	                });
+	            })
+	            .catch((error) => {
+	                Swal.fire({
+	                    icon: 'error',
+	                    title: '실패',
+	                    text: '권한 추가에 실패했습니다.',
+	                    confirmButtonText: '확인'
+	                });
+	                console.error('권한 추가 실패:', error);
+	            });
+	        }
+	    });
 	});
 	
 	

@@ -74,5 +74,7 @@ public interface OrganizationMapper {
 	int countRoleAutho(Integer authoIdx);
 	// 권한 삭제
 	void deleteAutho(Integer authoIdx);
+	// 권한 추가
+	int insertAutho(@Param("authoCode")String authoCode, @Param("authoName")String authoName);
 	
 }

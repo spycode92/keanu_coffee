@@ -163,5 +163,11 @@
 		WHERE common_code_idx = #{authoIdx}
 	</delete>
 	
+	<!-- 권한 추가 -->
+	<insert id="insertAutho" >
+		INSERT INTO COMMON_CODE(group_code, common_code, common_code_name)
+		VALUES ('AUTHORITY', #{authoCode}, #{authoName})
+	</insert>
+	
 	
 </mapper> 
