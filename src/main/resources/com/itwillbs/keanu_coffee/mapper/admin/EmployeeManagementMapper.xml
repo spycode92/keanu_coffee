@@ -229,6 +229,7 @@
 	<!-- 시큐리티에서사용할 정보조회 -->
 	<resultMap id="employeeDetailResultMap" type="com.itwillbs.keanu_coffee.common.security.EmployeeDetail">
 		<id property="empNo" column="emp_no" />
+		<result property="empIdx" column="emp_idx" />
 		<result property="empName" column="emp_name" />
 		<result property="empPassword" column="emp_password" />
 		<result property="empStatus" column="emp_status"/>
@@ -239,6 +240,7 @@
 	<select id="selectEmployeeDetailByEmpNo" resultMap="employeeDetailResultMap">
 		SELECT
 			e.emp_no
+			, e.emp_idx
 			, e.emp_password
 			, e.emp_name
 			, e.emp_status

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!-- 정보변경 모달창 -->
 <div id="change-info-modal" class="modal">
     <div class="modal-card sm">
@@ -9,8 +11,9 @@
         </div>
         
         <div class="modal-body modal-form">
-            <form id="changeInfoForm" action="/admin/employeeManagement/modifyEmployeeInfo" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="empIdx" value="${empIdx}"> 
+            <form id="changeInfoForm" action="/admin/employeeManagement/modifyEmployeeInfo" method="post" >
+                 <sec:csrfInput/>
+                <input type="hidden" name="empIdx" value="<sec:authentication property="principal.empIdx"/>">
                 <!-- 사원 ID -->
                 <div class="field">
                     <label for="top_empNo">사번</label>

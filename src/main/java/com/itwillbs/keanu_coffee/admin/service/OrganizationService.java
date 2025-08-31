@@ -35,17 +35,20 @@ public class OrganizationService {
 	
 	
 	//부서 전체 목록 받아오기
+	@Transactional(readOnly = true)
 	public List<DepartmentDTO> getDepartInfo() {
 		return organizationMapper.getDepartmentInfo();
 	}
 	
 	//해당 부서의 팀 목록 받아오기
+	@Transactional(readOnly = true)
 	public List<TeamDTO> getTeamsByDepartmentIdx(int departmentIdx) {
 
 		return organizationMapper.getTeamsInfoByDepartmentIdx(departmentIdx);
 	}
 	
 	//해당 부서의 직책목록 받아오기
+	@Transactional(readOnly = true)
 	public List<RoleDTO> getRolesByDepartmentIdx(int departmentIdx) {
 		return organizationMapper.getRolesInfoByDepartmentIdx(departmentIdx);
 	}
@@ -141,11 +144,13 @@ public class OrganizationService {
 	}
 	
 	//권한목록 가져오기
+	@Transactional(readOnly = true)
 	public List<CommonCodeDTO> getAuthorityList() {
 		return organizationMapper.selectAuthorityList();
 	}
 	
 	//직책별 권한정보 가져오기
+	@Transactional(readOnly = true)
 	public List<Map<String, Object>> getAuthrityInfo(Integer roleIdx) {
 		return organizationMapper.selectAuthorityInfo(roleIdx);
 	}

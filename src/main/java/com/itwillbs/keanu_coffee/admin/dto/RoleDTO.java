@@ -1,5 +1,6 @@
 package com.itwillbs.keanu_coffee.admin.dto;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
@@ -13,7 +14,7 @@ import com.itwillbs.keanu_coffee.common.utils.FileUtils.FileUploadHelpper;
 import lombok.Data;
 
 @Data
-public class RoleDTO {
+public class RoleDTO implements Serializable {
 	
 	private Integer roleIdx;
 	private String roleCode;

@@ -111,7 +111,7 @@ public class ProductController {
     }
     
     //카테고리 수정
-    @PutMapping("/modifyCategory")
+    @PostMapping("/modifyCategory")
     @ResponseBody
     public ResponseEntity<Map<String,String>> modifyCategory(@RequestBody CommonCodeDTO category) {
     	System.out.println(category);
@@ -133,7 +133,7 @@ public class ProductController {
     }
     
     //카테고리 삭제
-    @DeleteMapping("/removeCategory")
+    @PostMapping("/removeCategory")
     @ResponseBody
     public ResponseEntity<?> removeCategory(@RequestBody CommonCodeDTO category) {
         Integer commonCodeIdx = category.getCommonCodeIdx();
@@ -186,7 +186,7 @@ public class ProductController {
     }
 	
     //상품삭제
-    @DeleteMapping("/removeProduct")
+    @PostMapping("/removeProduct")
     public ResponseEntity<String> removeProduct(@RequestBody Map<String, Object> request) {
     	
     	Object idxObj = request.get("productIdx");

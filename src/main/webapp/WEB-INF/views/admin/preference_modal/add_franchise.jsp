@@ -1,9 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <div id="addFranchiseModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="supplierModalLabel" tabindex="-1">
     <div class="modal-card md">
         <form id="addFranchiseForm">
+        	<sec:csrfInput/>
             <div class="modal-head">
                 <h5 id="addFranchiseLabel">지점 등록</h5>
                 <button type="button"

@@ -16,10 +16,10 @@ import lombok.Setter;
 import lombok.ToString;
 @ToString
 @Getter
-@Setter
 public class EmployeeDetail implements UserDetails {
 	
 	private String empNo;
+	private Integer empIdx;
 	private String empPassword;
 	private String empName;
 	private String empStatus;

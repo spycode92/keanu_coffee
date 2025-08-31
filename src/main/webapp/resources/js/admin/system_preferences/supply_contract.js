@@ -328,23 +328,18 @@ $(function(){
             Swal.fire('경고', '필수 입력 항목을 모두 입력하세요.', 'warning');
             return;
         }
-        $.ajax({
-            url: '/admin/systemPreference/supplyContract/updateContractDetail',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(dataToSave),
-            success: function() {
-                Swal.fire('성공', '계약 정보가 저장되었습니다.', 'success').then(()=>{
-	                const detailModal = document.getElementById('contractDetailModal');
-	                ModalManager.closeModal(detailModal);
-	                setTimeout(function() {
-	                    openContractDetailModal(currentContractIdx);
-	                }, 500);
-				});
-            },
-            error: function() {
-                Swal.fire('오류', '저장 중 오류가 발생했습니다.', 'error');
-            }
+        ajaxPost('/admin/systemPreference/supplyContract/updateContractDetail',
+			dataToSave
+		).then(function() {
+            Swal.fire('성공', '계약 정보가 저장되었습니다.', 'success').then(()=>{
+                const detailModal = document.getElementById('contractDetailModal');
+                ModalManager.closeModal(detailModal);
+                setTimeout(function() {
+                    openContractDetailModal(currentContractIdx);
+                }, 500);
+			});
+        }).catch(function() {
+            Swal.fire('오류', '저장 중 오류가 발생했습니다.', 'error');
         });
     });
 
@@ -359,20 +354,15 @@ $(function(){
         }).then((result) => {
             if (result.isConfirmed) {
                 const dataToDelete = { idx: currentContractIdx, status: '삭제' };
-                $.ajax({
-                    url: '/admin/systemPreference/supplyContract/deleteContractDetail',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(dataToDelete),
-                    success: function() {
+                ajaxPost('/admin/systemPreference/supplyContract/deleteContractDetail',
+                    dataToDelete
+				).then(function() {
                         Swal.fire('삭제 완료', '계약 정보가 삭제되었습니다.', 'success');
                         const detailModal = document.getElementById('contractDetailModal');
                         ModalManager.closeModal(detailModal);
                         loadSupplierProductContracts();
-                    },
-                    error: function() {
+                    }).catch(function() {
                         Swal.fire('오류', '삭제 중 오류가 발생했습니다.', 'error');
-                    }
                 });
             }
         });

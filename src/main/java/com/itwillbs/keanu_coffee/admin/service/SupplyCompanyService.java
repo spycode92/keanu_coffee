@@ -31,12 +31,14 @@ public class SupplyCompanyService {
 	private final FileMapper fileMapper;
 	
 	//등록된공급업체리스트
+	@Transactional(readOnly = true)
 	public List<SupplierDTO> getSuppliersInfo(int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod) {
 		
 		return supplyCompanyMapper.selectSuppliersInfo(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
 	}
 
 	// 공급업체목록 수
+	@Transactional(readOnly = true)
 	public int getSupplierCount(String searchType, String searchKeyword) {
 		return supplyCompanyMapper.getSupplierCount(searchType, searchKeyword);
 	}
@@ -49,6 +51,7 @@ public class SupplyCompanyService {
 	}
 	
 	//상태별 공급업체 필터링
+	@Transactional(readOnly = true)
 	public List<SupplierDTO> getSuppliersByStatus(String status) {
 		 String dbStatus = null;
         if ("ACTIVE".equals(status)) {
@@ -73,6 +76,7 @@ public class SupplyCompanyService {
 	}
 	
 	//공급업체 상세보기
+	@Transactional(readOnly = true)
 	public SupplierDTO selectSupplierByIdx(Long idx) {
 
 		return supplyCompanyMapper.selectSupplierInfo(idx);
@@ -87,6 +91,7 @@ public class SupplyCompanyService {
 		return supplyCompanyMapper.updateSupplier(supplier);
 	}
 	// 공급업체 목록조회
+	@Transactional(readOnly = true)
 	public List<SupplierDTO> getSupplierList() {
 		return supplyCompanyMapper.selectAllSupplier();
 	}

@@ -22,6 +22,7 @@ public class LoginService {
 	private final BCryptPasswordEncoder passwordEncoder;
 	@Autowired
 	HttpSession session;
+	
 	public boolean checkPassword(EmployeeInfoDTO employee) {
 		
 		// 입력받은 id, 비밀번호

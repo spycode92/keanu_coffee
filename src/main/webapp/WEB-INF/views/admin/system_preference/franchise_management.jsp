@@ -143,6 +143,7 @@
                             <th>지점명</th>
                             <th>지점장</th>
                             <th>지점번호</th>
+                            <th>상태</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -152,6 +153,7 @@
                         		<td>${franchise.franchiseName }</td>
                         		<td>${franchise.franchiseManagerName }</td>
                         		<td>${franchise.franchisePhone }</td>
+                        		<td>${franchise.status }</td>
                         	</tr>
                         </c:forEach>
                     </tbody>
