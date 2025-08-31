@@ -68,5 +68,11 @@ public interface OrganizationMapper {
 	void deleteAuthorities(@Param("roleIdx") Integer roleIdx, @Param("removedAuthorities")List<Integer> removedAuthorities);
 	// 직책별 권한정보 추가
 	void insertAuthorities(@Param("roleIdx")Integer roleIdx, @Param("addedAuthorities")List<Integer> addedAuthorities);
+	//권한이름수정
+	int updateAuthoName(@Param("authoIdx")Integer authoIdx, @Param("authoName")String authoName);
+	//권한을 가진 직책수 확인
+	int countRoleAutho(Integer authoIdx);
+	// 권한 삭제
+	void deleteAutho(Integer authoIdx);
 	
 }

@@ -197,5 +197,36 @@ public class OrganizationController {
 
 	}
 	
+	//직책 이름 변경
+	@PostMapping("/modifyAutho")
+	@ResponseBody
+	public ResponseEntity<Map<String,String>> modifyAuthoName(@RequestBody Map<String, Object> data){
+		
+		Map<String, String> result = new HashMap<>();
+		Boolean modifyResult = organizationService.modifyAuthoName(data);
+		if(modifyResult) {
+			result.put("result", "success");
+			result.put("msg", "직책이름 변경 완료");
+			
+			return ResponseEntity.ok(result);
+		}
+		result.put("result", "fail");
+		result.put("msg", "직책이름 변경 실패");
+		
+		return ResponseEntity.ok(result);
+	}
+	
+	//직책 제거
+	@PostMapping("/removeAutho/{authoIdx}")
+	@ResponseBody
+	public ResponseEntity<Map<String,String>> removeAuthoName(@PathVariable Integer authoIdx){
+		
+		Map<String, String> result = new HashMap<>();
+		result = organizationService.removeAuthoName(authoIdx);
+
+		return ResponseEntity.ok(result);
+		
+	}
+	
 
 }

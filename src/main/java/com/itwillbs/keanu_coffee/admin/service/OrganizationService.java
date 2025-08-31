@@ -1,6 +1,7 @@
 package com.itwillbs.keanu_coffee.admin.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -169,6 +170,43 @@ public class OrganizationService {
         }
 		
 	}
+	//권한이름수정
+	public Boolean modifyAuthoName(Map<String, Object> data) {
+		Integer authoIdx = (Integer)data.get("authoIdx");
+		String authoName = (String)data.get("authoName");
+		int updateCount = organizationMapper.updateAuthoName(authoIdx, authoName);
+		return updateCount > 0;
+	}
+
+	//권한삭제
+	public Map<String, String> removeAuthoName(Integer authoIdx) {
+		Map<String, String> result = new HashMap<>();
+		int exitsRoleAuthoCount = organizationMapper.countRoleAutho(authoIdx);
+		// 삭제할 권한이 직책에 부여되어 있다면
+		if (exitsRoleAuthoCount > 0) {
+			result.put("result", "fail");
+			result.put("msg", "권한이 부여된 직책이 있습니다.");
+			return result;
+		}
+		//삭제할 권한이 직책에 부여되지 않았을 경우 삭제
+		organizationMapper.deleteAutho(authoIdx);
+		result.put("result", "success");
+		result.put("msg", "권한이 삭제되었습니다.");
+		return result;
+	}
 
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -90,10 +90,12 @@
                         <c:forEach var="autho" items="${authorityList }">
 	                        <li class="list-group-item d-flex justify-content-between align-items-center autho-item" data-authoidx="${autho.commonCodeIdx}">
 	                        	<input type="checkbox" value="${autho.commonCodeIdx }" name="commonCodeName">
-   	                            <span>${autho.commonCodeName}</span>
+   	                            <span >${autho.commonCodeName}</span>
 								<div>
-									<button type="button" class="btn btn-sm btn-secondary btn-edit-autho">✎</button> 
-	                            	<button type="button" class="btn btn-sm btn-danger btn-delete-autho">−</button>
+									<button type="button"  class="btn btn-sm btn-secondary btn-edit-autho"
+										data-authoidx="${autho.commonCodeIdx}" data-authoname="${autho.commonCodeName }">✎</button> 
+	                            	<button type="button"  class="btn btn-sm btn-danger btn-delete-autho" 
+	                            		data-authoidx="${autho.commonCodeIdx}" data-authoname="${autho.commonCodeName }">−</button>
 								</div>
 	                        </li>
                         </c:forEach>

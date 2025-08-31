@@ -141,5 +141,27 @@
 	    </foreach>
 	</insert>
 	
+	<!-- 권한 이름 수정 -->
+	<update id="updateAuthoName">
+		UPDATE COMMON_CODE
+		SET
+			common_code_name = #{authoName}
+		WHERE
+			common_code_idx = #{authoIdx} 
+	</update>
+	
+	<!-- 권한을 가진 직책수 확인 -->
+	<select id="countRoleAutho" parameterType="int" resultType="int">
+		SELECT count(*)
+		FROM ROLE_AUTHO
+		WHERE autho_idx = #{authoIdx}
+	</select>
+	
+	<!-- 권한을 삭제 -->
+	<delete id="deleteAutho" parameterType="int">
+		DELETE FROM COMMON_CODE
+		WHERE common_code_idx = #{authoIdx}
+	</delete>
+	
 	
 </mapper> 
