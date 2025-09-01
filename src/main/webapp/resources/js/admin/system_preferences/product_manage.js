@@ -328,10 +328,8 @@ $(function () {
 	    ajaxPostWithFile( '/admin/systemPreference/product/modifyProduct',
 			'#productDetailForm'
 		).then(function(result) {
-			console.log(result);
             Swal.fire('성공', '상품이 정상적으로 저장되었습니다.', 'success').then(()=>{
 					window.location.reload();
-			        
 			});
         }).catch( function() {
             Swal.fire({

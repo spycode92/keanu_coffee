@@ -33,7 +33,7 @@ public class FileUtils {
 //	private static String uploadPath = "/usr/local/tomcat/upload"; // 서버 업로드용
 	private static String uploadPath = "/resources/upload"; // 로컬 작업용
 	
-	private static Path absolutePath = Paths.get(uploadPath).toAbsolutePath().normalize();
+//	private static Path absolutePath = Paths.get(uploadPath).toAbsolutePath().normalize();
 	
 	
 	// 서브디렉토리 생성
@@ -48,7 +48,10 @@ public class FileUtils {
 		String subDir = localDateNow.format(dtf);
 
 		path += "/" + subDir;
-
+		System.out.println("path : " + path);
+		
+		Path absolutePath = Paths.get(path).toAbsolutePath().normalize();
+		
 		try {
 			Files.createDirectories(absolutePath);
 		} catch (IOException e) {
@@ -74,6 +77,7 @@ public class FileUtils {
 		// 프로젝트 상의 가상의 업로드 경로를 사용할 경우 추가 작업
 //		String realPath = uploadPath; // 서버 업로드용
 		String realPath = session.getServletContext().getRealPath(uploadPath); // 로컬작업용
+		System.out.println("realPath : " + realPath);
 		
 		subDir = FileUtils.createDirectories(realPath);
 		
