@@ -89,6 +89,7 @@
 			, null
 			, current_timestamp
 			, null
+			, #{volume}
 		)
 	</insert>
 	
