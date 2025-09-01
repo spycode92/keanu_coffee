@@ -90,11 +90,15 @@ $(document).on('change', 'input[name="vehiclePick"]', function() {
 	}).then((result) => {
 		// 배정 버튼 클릭 시 차량 테이블에 운전자 등록
 	  if (result.isConfirmed) {
+		const { token, header } = getCsrf();
 		$.ajax({
 			url: MODIFY_DRIVER_INFO_URL,
 			type: 'POST',
 			contentType: 'application/json; charset=utf-8',
 			data: JSON.stringify({ vehicleIdx: vehicleIdx, empIdx: empIdx, isAssign: false }),
+			beforeSend(xhr) {
+     			if (token && header) xhr.setRequestHeader(header, token);
+    		},
 			success: function(res) {
 				$("#vehicleTableWrap").hide();
           		$("#vehicleDiv .vehicle-empty-text").html(`
@@ -123,11 +127,15 @@ function onVehicleAssignBtn() {
 	  denyButtonText: `취소`
 	}).then((result) => {
 	  if (result.isConfirmed) {
+		const { token, header } = getCsrf();
 		$.ajax({
 			url: MODIFY_DRIVER_INFO_URL,
 			type: 'POST',
 			contentType: 'application/json; charset=utf-8',
 			data: JSON.stringify({ vehicleIdx: vehicleIdx, empIdx: empIdx, isAssign: true }),
+			beforeSend(xhr) {
+     			if (token && header) xhr.setRequestHeader(header, token);
+    		},
 			success: function() {
 		    // UI 업데이트: vehicleDiv 숨기고 vehicleEmpty 보여주기
 		    $("#vehicleDiv").hide();

@@ -271,10 +271,14 @@ function collectSelectedVehicleIdx() {
 
 // 서버 상태변경 요청
 function requestBulkUpdateStatus(idxArray, status) {
+	const { token, header } = getCsrf();
 	return $.ajax({
      url: MODIFY_VEHICLE_STATUS_URL,
      method: 'POST',
      contentType: 'application/json',
+     beforeSend(xhr) {
+     	if (token && header) xhr.setRequestHeader(header, token);
+     },
      data: JSON.stringify({
 		idx : idxArray,
 		status

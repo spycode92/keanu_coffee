@@ -1,10 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>운송관리대시보드</title>
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -179,6 +182,7 @@ margin-top: 0.5rem;
 			<div class="region-card">
 				<h2>구역 추가</h2>
 				<form action="/transport/region/add"  method="POST" id="regionForm">
+					<sec:csrfInput/>
 					<label>구역 이름</label> 
 					<input type="text" id="regionName" name="regionName" placeholder="예: 1구역">
 					<button type="submit" class="btn">구역 추가</button>
