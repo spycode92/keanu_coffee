@@ -33,16 +33,19 @@ public class ProductService {
 	private final FileMapper fileMapper;
 	
 	//상품전체목록
+	@Transactional(readOnly = true)
 	public List<ProductDTO> getProductList(int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod, String filterCategoryIdx) {
 		return productMapper.selectAllProductList(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod, filterCategoryIdx);
 	}
 	
 	//상품 리스트 갯수
+	@Transactional(readOnly = true)
 	public int getProductCount(String searchType, String searchKeyword, String filterCategoryIdx) {
 		return productMapper.countProductList(searchType, searchKeyword, filterCategoryIdx);
 	}
 	
 	// 카테고리 전체목록
+	@Transactional(readOnly = true)
 	public List<ProductDTO> getAllCategoriesAsMap() {
 		return productMapper.selectAllCategoriesAsMap();
 	}
@@ -87,6 +90,7 @@ public class ProductService {
 	}
 	
 	//상품상세정보
+	@Transactional(readOnly = true)
 	public ProductDTO getProductDetail(ProductDTO product) {
 		// 상품정보불러오기
 		product = productMapper.selectProductByProductIdx(product.getProductIdx());
@@ -136,6 +140,7 @@ public class ProductService {
 	}
 	
 	// 상품 목록 가져오기
+	@Transactional(readOnly = true)
 	public List<ProductDTO> getAllProductList() {
 		return productMapper.selectAllProduct();
 	}

@@ -16,6 +16,8 @@
 	    <org.springframework-version>5.3.39</org.springframework-version>
 	    <org.aspectj-version>1.6.10</org.aspectj-version>
 	    <log4j2-version>2.25.0</log4j2-version>
+	    <!-- 스프링 시큐리티 버전 -->
+		<spring-security-version>5.8.16</spring-security-version>
 	</properties>
 	
 	<repositories>
@@ -102,6 +104,20 @@
 	        <artifactId>jackson-annotations</artifactId>
 	        <version>2.13.2</version>
 	    </dependency>
+	    <!-- Gson 추가 -->
+   		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <version>20250517</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <version>2.13.1</version>
+		</dependency>
 	
 		<!-- 썸네일레이터 라이브러리 -->
 	    <dependency>
@@ -282,6 +298,27 @@
 		    <groupId>com.google.zxing</groupId>
 		    <artifactId>javase</artifactId>
 		    <version>3.5.3</version>
+		</dependency>
+		<!-- 스프링시큐리티라이브러리 -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-web</artifactId>
+		    <version>${spring-security-version}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-config</artifactId>
+		    <version>${spring-security-version}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-taglibs -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-taglibs</artifactId>
+		    <version>${spring-security-version}</version>
 		</dependency>
 	</dependencies>
 	

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.Gson;
 import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
@@ -89,7 +90,7 @@ public class SupplyCompanyController {
 	}
 	
 	// 공급업체삭제
-	@DeleteMapping("/removeSupplier")
+	@PostMapping("/removeSupplier")
 	@ResponseBody
 	public ResponseEntity<?> removeSupplier(@RequestBody Map<String, Long> param) {
 	    Long idx = param.get("idx");
@@ -109,15 +110,15 @@ public class SupplyCompanyController {
 	}
 	
 	//공급업체정보수정
-	@PutMapping("/modifySupplier")
+	@PostMapping("/modifySupplier")
 	@ResponseBody
 	public String modifySupplier(@RequestBody SupplierDTO supplier) {
 		
 	    int updateCount = supplyCompanyService.modifySupplier(supplier);
 	    if (updateCount > 0) {
-	        return "success";
+	        return new Gson().toJson("success");
 	    } else {
-	        return "fail";
+	        return new Gson().toJson("fail");
 	    }
 	}
 	

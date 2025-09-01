@@ -224,6 +224,8 @@
 	<update id="updateContractDetail" parameterType="SupplyContractDTO">
 		UPDATE SUPPLIER_PRODUCT_CONTRACT
 	    SET
+	    	supplier_idx = #{supplierIdx},
+	    	product_idx = #{productIdx},
 	        contract_price = #{contractPrice},
 	        contract_start = #{contractStart},
 	        contract_end = #{contractEnd},
@@ -237,7 +239,7 @@
 	
 	<!-- 상품idx로 계약검색 -->
 	<select id="selectContractWithproductIdx" resultType="int">
-		count(*)
+		SELECT count(*)
 		FROM SUPPLIER_PRODUCT_CONTRACT
 		WHERE product_idx = #{productIdx}
 			AND status != '삭제'
@@ -245,7 +247,7 @@
 	
 	<!-- 공급처idx로 계약검색 -->
 	<select id="selectContractWithSupplierIdx" resultType="int">
-		count(*)
+		SELECT count(*)
 		FROM SUPPLIER_PRODUCT_CONTRACT
 		WHERE product_idx = #{supplierIdx}
 			AND status != '삭제'

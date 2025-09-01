@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -97,7 +99,8 @@
 	    min-width:32px; height:32px; padding:0 10px; font-size:.9rem;
 	}
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   	<sec:csrfMetaTags/>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="/resources/css/common/common.css" rel="stylesheet" />
     <script src="/resources/js/common/common.js"></script>

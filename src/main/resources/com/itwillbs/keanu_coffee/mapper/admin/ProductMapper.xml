@@ -239,7 +239,7 @@
 		SET
 			status = #{status}
 		WHERE
-			idx = #{productIdx}
+			product_idx = #{productIdx}
 	</update>
 	
 	<!-- 상품 목록 선택 -->

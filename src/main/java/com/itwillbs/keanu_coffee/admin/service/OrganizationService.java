@@ -1,6 +1,7 @@
 package com.itwillbs.keanu_coffee.admin.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.dto.TeamDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
+import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.utils.FileUtils;
@@ -33,17 +35,20 @@ public class OrganizationService {
 	
 	
 	//부서 전체 목록 받아오기
+	@Transactional(readOnly = true)
 	public List<DepartmentDTO> getDepartInfo() {
 		return organizationMapper.getDepartmentInfo();
 	}
 	
 	//해당 부서의 팀 목록 받아오기
+	@Transactional(readOnly = true)
 	public List<TeamDTO> getTeamsByDepartmentIdx(int departmentIdx) {
 
 		return organizationMapper.getTeamsInfoByDepartmentIdx(departmentIdx);
 	}
 	
 	//해당 부서의 직책목록 받아오기
+	@Transactional(readOnly = true)
 	public List<RoleDTO> getRolesByDepartmentIdx(int departmentIdx) {
 		return organizationMapper.getRolesInfoByDepartmentIdx(departmentIdx);
 	}
@@ -136,6 +141,92 @@ public class OrganizationService {
 		int affectedRows = organizationMapper.updateRole(idx, roleName);
 		
 		return  affectedRows == 1;
-	}	
+	}
+	
+	//권한목록 가져오기
+	@Transactional(readOnly = true)
+	public List<CommonCodeDTO> getAuthorityList() {
+		return organizationMapper.selectAuthorityList();
+	}
+	
+	//직책별 권한정보 가져오기
+	@Transactional(readOnly = true)
+	public List<Map<String, Object>> getAuthrityInfo(Integer roleIdx) {
+		return organizationMapper.selectAuthorityInfo(roleIdx);
+	}
+	//직책별 권한 업데이트
+	@Transactional
+	public void modifyRoleAutho(Map<String, Object> data) {
+		Integer roleIdx = (Integer) data.get("roleIdx");
+	    List<Integer> addedAuthorities = (List<Integer>) data.get("addedAuthorities");
+	    List<Integer> removedAuthorities = (List<Integer>) data.get("removedAuthorities");
+	    try {
+            if (!removedAuthorities.isEmpty()) {
+                organizationMapper.deleteAuthorities(roleIdx, removedAuthorities);
+            }
+            
+            if (!addedAuthorities.isEmpty()) {
+            	organizationMapper.insertAuthorities(roleIdx, addedAuthorities);
+            }
+            // 성공시 모든 변경사항 커밋
+        } catch (Exception e) {
+            // 실패시 모든 변경사항 롤백
+            throw new RuntimeException("권한 수정 실패: " + e.getMessage(), e);
+        }
+		
+	}
+	//권한이름수정
+	public Boolean modifyAuthoName(Map<String, Object> data) {
+		Integer authoIdx = (Integer)data.get("authoIdx");
+		String authoName = (String)data.get("authoName");
+		int updateCount = organizationMapper.updateAuthoName(authoIdx, authoName);
+		return updateCount > 0;
+	}
+
+	//권한삭제
+	public Map<String, String> removeAuthoName(Integer authoIdx) {
+		Map<String, String> result = new HashMap<>();
+		int exitsRoleAuthoCount = organizationMapper.countRoleAutho(authoIdx);
+		// 삭제할 권한이 직책에 부여되어 있다면
+		if (exitsRoleAuthoCount > 0) {
+			result.put("result", "fail");
+			result.put("msg", "권한이 부여된 직책이 있습니다.");
+			return result;
+		}
+		//삭제할 권한이 직책에 부여되지 않았을 경우 삭제
+		organizationMapper.deleteAutho(authoIdx);
+		result.put("result", "success");
+		result.put("msg", "권한이 삭제되었습니다.");
+		return result;
+	}
+	
+	//권한 추가
+	public Map<String, String> addAutho(Map<String, Object> data) {
+		Map<String, String> result = new HashMap<>();
+		String authoCode = (String)data.get("authoCode");
+		String authoName = (String)data.get("authoName");
+		int insertCount = organizationMapper.insertAutho(authoCode, authoName);
+		if(insertCount > 0) {
+			result.put("result", "success");
+			result.put("msg", "권한이 추가되었습니다.");
+		}
+		result.put("result", "fail");
+		result.put("msg", "권한 추가에 실패하였습니다.");
+		return result;
+	}
+
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

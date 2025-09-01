@@ -226,8 +226,60 @@
 		WHERE department_idx = #{departmentIdx}
 	</update>
 	
+	<!-- 시큐리티에서사용할 정보조회 -->
+	<resultMap id="employeeDetailResultMap" type="com.itwillbs.keanu_coffee.common.security.EmployeeDetail">
+		<id property="empNo" column="emp_no" />
+		<result property="empIdx" column="emp_idx" />
+		<result property="empName" column="emp_name" />
+		<result property="empPassword" column="emp_password" />
+		<result property="empStatus" column="emp_status"/>
+		<association property="role" resultMap="roleResultMap"/>
+		<collection property="commonCodes" resultMap="commonCodeResultMap"/>
+	</resultMap>
+	
+	<select id="selectEmployeeDetailByEmpNo" resultMap="employeeDetailResultMap">
+		SELECT
+			e.emp_no
+			, e.emp_idx
+			, e.emp_password
+			, e.emp_name
+			, e.emp_status
+			, r.role_name
+			, r.role_idx
+			, c.common_code
+			FROM
+				EMPLOYEE_INFO e
+			LEFT JOIN ROLE r
+				ON e.role_idx = r.role_idx
+			LEFT JOIN ROLE_AUTHO ra
+				ON e.role_idx = ra.role_idx
+			LEFT JOIN COMMON_CODE c
+				ON c.common_code_idx = ra.autho_idx
+			WHERE
+				e.emp_no = #{empNo} 
+	</select>
+	
 
 	
 	
 	
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

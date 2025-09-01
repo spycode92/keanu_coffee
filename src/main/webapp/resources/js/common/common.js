@@ -201,7 +201,8 @@ function ajaxGet(url, params = {}) {
     method: 'GET',
     data: params,
     dataType: 'json',
-    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+//    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+    contentType: 'application/json; charset=UTF-8', 
     beforeSend(xhr) {
       if (token && header) xhr.setRequestHeader(header, token);
     }
@@ -219,13 +220,46 @@ function ajaxPost(url, data = {}) {
   return $.ajax({
     url,
     method: 'POST',
-    data,
+    data: JSON.stringify(data),
     dataType: 'json',
-    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+//    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+    contentType: 'application/json; charset=UTF-8', 
     beforeSend(xhr) {
       if (token && header) xhr.setRequestHeader(header, token);
     }
   }).promise();
+}
+
+//파일전송용 ajax함수
+// ajaxPostWithFile('/admin/sys', '#formId').then().catch()
+function ajaxPostWithFile(url, formId, additionalFiles = null) {
+	const { token, header } = getCsrf();
+  
+	// 지정된 폼으로 FormData 생성
+	const form = document.querySelector(formId);
+	const formData = new FormData(form);  // ⭐ 여기서 폼 지정!
+
+	// 추가 파일이 있으면 추가
+	if (additionalFiles) {
+		if (additionalFiles instanceof FileList) {
+			for (let i = 0; i < additionalFiles.length; i++) {
+				formData.append("files", additionalFiles[i]);
+			}
+		} else {
+			formData.append("file", additionalFiles);
+		}
+	}
+ 
+	return $.ajax({
+		url,
+		method: 'POST',
+		data: formData,
+		contentType: false,
+		processData: false,
+		  	beforeSend(xhr) {
+		    	if (token && header) xhr.setRequestHeader(header, token);
+			}
+	}).promise();
 }
 
 // 알림 메시지 관리
@@ -321,19 +355,29 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('[data-action="logout"]').forEach(function(btn) {
         btn.addEventListener('click', function() {
             if (confirm('정말 로그아웃하시겠습니까?')) {
-                // 실제 로그아웃 요청 전송
-                window.location.href = '/logout';
+				ajaxPost('/logoutForSecurity').then(()=>{
+					window.location.href = '/?t=' + Date.now();
+				})
+				.catch((error) => {
+	                console.error('로그아웃 실패:', error);
+	                // 실패해도 페이지 이동 (세션 만료 등의 경우)
+	                window.location.href = '/';
+	            });
             }
         });
     });
 
 	// 정보변경 버튼 클릭 처리
-	document.querySelectorAll('[data-modal-target]').forEach(btn => {  
-	    btn.addEventListener('click', async() => {  
+	document.querySelectorAll('[data-modal-target]').forEach(btn => {
+	    btn.addEventListener('click', async () => {
 			try { 
 		        const modalId = btn.getAttribute('data-modal-target');
 		        ModalManager.openModalById(modalId);
-
+				
+				$('#changeInfoForm')[0].reset();
+				$('#passwordStrengthMsg').empty();
+				$('#passwordMatchMsg').empty();
+				
 				await loadCurrentUserInfo();
 	            captureOriginalData();
 	            switchMode(false);
@@ -346,20 +390,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	// 정보변경 버튼 클릭시 최신 정보 불러오기 
 	function loadCurrentUserInfo() {
 	    return ajaxGet('/admin/employeeManagement/getOneEmployeeInfo')
-	        	.then(function(data) {
-		            if (data) {
-	//					console.log(data)
-		                updateUserInfoModal(data);
-		                return data;
-		            } else {
-		                console.error('사용자 정보를 받아오지 못했습니다.');
-		                return null;
-		            }
-		        })
-		        .catch(function(err) {
-		            console.error('사용자 정보 로드 중 오류:', err);
-		            return null;
-		        });
+        	.then(function(data) {
+	            if (data) {
+	                updateUserInfoModal(data);
+	                return data;
+	            } else {
+	                console.error('사용자 정보를 받아오지 못했습니다.');
+	                return null;
+	            }
+	        })
+	        .catch(function(err) {
+	            console.error('사용자 정보 로드 중 오류:', err);
+	            return null;
+	        });
 	}
 	
 	// 모달 필드 업데이트 함수 (실제 데이터 구조에 맞춤)
@@ -368,7 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		    	    
 	    if (empNoInput && data.empNo) empNoInput.value = data.empNo;
 	    if (empNameInput && data.empName) empNameInput.value = data.empName;
-	    if (empDepartmentInput && data.commonCode) empDepartmentInuput.value = data.commonCode.commonCodeName;
+	    if (empDepartmentInput && data.commonCode) empDepartmentInput.value = data.commonCode.commonCodeName;
 	    if (empTeamInput && data.team) empTeamInput.value = data.team.teamName;
 	    if (empRoleInput && data.role) empRoleInput.value = data.role.roleName;
 
@@ -379,7 +422,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		    // 날짜가 유효하면 로케일 포맷으로 표시
 		    hireDateInput.value = isNaN(date.getTime()) ? '' : date.toLocaleDateString();		
 		}
-		    
 	    console.log('모달 정보 업데이트 완료:', data);
 	}
 	
@@ -602,23 +644,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         return true;
     }
-
-    
-    // 모달 열 때 초기 상태 저장
-//    document.querySelectorAll('[data-modal-target="change-info-modal"]').forEach(btn => {
-//        btn.addEventListener('click', function() {
-//            captureOriginalData();
-//            switchMode(false);
-//        });
-//    });
-
+ 
     // 수정/취소 토글
     updateBtn.addEventListener('click', function() {
         const editing = updateBtn.textContent === '수정';
         if (editing) {
             switchMode(true);
+			$('#passwordStrengthMsg').empty();
+			$('#passwordMatchMsg').empty();
         } else {
-            restoreOriginalData();
+			restoreOriginalData();
             switchMode(false);
         }
     });

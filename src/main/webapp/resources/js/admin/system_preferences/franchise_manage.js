@@ -85,23 +85,17 @@ $(function() {
 	        return;
 	    }
 	
-	    $.ajax({
-	        url: '/admin/systemPreference/franchise/addFranchise', 
-	        type: 'POST',
-	        contentType: 'application/json',
-	        data: JSON.stringify(franchiseData),
-			dataType: 'json',
-	        success: function(newfranchise) {
-	            const modal = document.getElementById('addFranchiseModal');
-				ModalManager.closeModal(modal);
+	    ajaxPost('/admin/systemPreference/franchise/addFranchise', 
+			franchiseData
+		).then(function(newfranchise) {
+            const modal = document.getElementById('addFranchiseModal');
+			ModalManager.closeModal(modal);
 
-	            Swal.fire('지점이 등록되었습니다.', '', 'success').then(() => {
-            		window.location.reload();
-				});
-	        },
-	        error: function() {
-	            Swal.fire('등록 실패', '서버 오류이나 중복 등록 등 확인 필요.', 'error');
-	        }
+            Swal.fire('지점이 등록되었습니다.', '', 'success').then(() => {
+        		window.location.reload();
+			});
+        }).catch(function() {
+            Swal.fire('등록 실패', '서버 오류이나 중복 등록 등 확인 필요.', 'error');
 	    });
 	});
 	
@@ -233,27 +227,20 @@ $(function() {
 				
 		};
 	
-	    $.ajax({
-	        url: '/admin/systemPreference/franchise/modifyFranchise',
-	        type: 'PUT',
-	        contentType: 'application/json',
-	        data: JSON.stringify(updateData),
-	        success: function(reslult) {
-				console.log(reslult);
-	            Swal.fire('수정 완료', '', 'success').then( () => {
-	            setReadonlyMode();
-//	            const detailModal = document.getElementById('franchiseDetailModal');
-//				ModalManager.closeModal(detailModal);
-				location.href = '/admin/systemPreference/franchise'
-				});
-	        },
-	        error: function() {
-	            Swal.fire({
-					title: '실패',
-					html: '잠시후 다시시도 하십시오.',
-					icon: 'error'
-				});
-	        }
+	    ajaxPost('/admin/systemPreference/franchise/modifyFranchise',
+			updateData
+		).then(function(reslult) {
+			console.log(reslult);
+            Swal.fire('수정 완료', '', 'success').then( () => {
+            setReadonlyMode();
+			location.href = '/admin/systemPreference/franchise'
+			});
+        }).catch(function() {
+            Swal.fire({
+				title: '실패',
+				html: '잠시후 다시시도 하십시오.',
+				icon: 'error'
+			});
 	    });
 	});
 

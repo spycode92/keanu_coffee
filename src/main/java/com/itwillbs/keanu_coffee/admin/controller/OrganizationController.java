@@ -29,6 +29,7 @@ import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.dto.TeamDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
 import com.itwillbs.keanu_coffee.admin.service.OrganizationService;
+import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,6 +43,11 @@ public class OrganizationController {
 	public String systemPreference(Model model) {
 		// 부서리스트 가져오기
 		List<DepartmentDTO> departmentList = organizationService.getDepartInfo();
+		
+		//권한정보 가져오기
+		List<CommonCodeDTO> authorityList = organizationService.getAuthorityList();
+		
+		model.addAttribute("authorityList", authorityList);
 		model.addAttribute("departmentList", departmentList);
 		
 		return "/admin/system_preference/organization_management";
@@ -169,6 +175,69 @@ public class OrganizationController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
+	
+	//직책에부여된 권한정보가져오기
+	@GetMapping("/getAutho")
+	public ResponseEntity<List<Map<String, Object>>> getRolesAutho(@RequestParam Integer roleIdx){
+		List<Map<String, Object>> authority = organizationService.getAuthrityInfo(roleIdx);
+		 System.out.println("authority size: " + (authority != null ? authority.size() : "null")); // 결과 확인
+		
+		return ResponseEntity.ok(authority);
+	}
+	
+	//직책에 변경된 권한 정보 저장하기
+	@PostMapping("/saveRoleAutho")
+	@ResponseBody
+	public ResponseEntity<Map<String,String>> modifyRoleAutho(@RequestBody Map<String, Object> data){
+       organizationService.modifyRoleAutho(data);
+       Map<String, String> result = new HashMap<>();
+       result.put("result", "success");
+       result.put("msg", "권한정보 변경 완료");
+       return ResponseEntity.ok(result);
+
+	}
+	
+	//권한 이름 변경
+	@PostMapping("/modifyAutho")
+	@ResponseBody
+	public ResponseEntity<Map<String,String>> modifyAuthoName(@RequestBody Map<String, Object> data){
+		
+		Map<String, String> result = new HashMap<>();
+		Boolean modifyResult = organizationService.modifyAuthoName(data);
+		if(modifyResult) {
+			result.put("result", "success");
+			result.put("msg", "직책이름 변경 완료");
+			
+			return ResponseEntity.ok(result);
+		}
+		result.put("result", "fail");
+		result.put("msg", "직책이름 변경 실패");
+		
+		return ResponseEntity.ok(result);
+	}
+	
+	//권한 제거
+	@PostMapping("/removeAutho/{authoIdx}")
+	@ResponseBody
+	public ResponseEntity<Map<String,String>> removeAuthoName(@PathVariable Integer authoIdx){
+		
+		Map<String, String> result = new HashMap<>();
+		result = organizationService.removeAuthoName(authoIdx);
+
+		return ResponseEntity.ok(result);
+	}
+	
+	//권한 추가
+	@PostMapping("/addAutho")
+	@ResponseBody
+	public ResponseEntity<Map<String,String>> addAutho(@RequestBody Map<String, Object> data){
+		
+		Map<String, String> result = new HashMap<>();
+		result = organizationService.addAutho(data);
+
+		return ResponseEntity.ok(result);
+	}
+	
 	
 
 }

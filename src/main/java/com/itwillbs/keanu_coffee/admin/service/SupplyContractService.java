@@ -29,12 +29,14 @@ public class SupplyContractService {
 	private final FileMapper fileMapper;
 	
 	//공급계약리스트
+	@Transactional(readOnly = true)
 	public List<SupplyContractDTO> getsupplyContractInfo(
 			int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod, String filterStatus) {
 		return supplyContractMapper.selectSupplyContractsInfo(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod, filterStatus);
 	}
 	
 	// 계약목록 수
+	@Transactional(readOnly = true)
 	public int getContractListCount(String searchType, String searchKeyword, String filterStatus) {
 		return supplyContractMapper.countContractList(searchType, searchKeyword, filterStatus);
 	}
@@ -44,7 +46,9 @@ public class SupplyContractService {
 		int insertCount = supplyContractMapper.insertContract(supplyContract);
 		return insertCount > 0;
 	}
+	
 	//계약상세
+	@Transactional(readOnly = true)
 	public SupplyContractDTO getContractDetail(SupplyContractDTO supplyContract) {
 		
 		return supplyContractMapper.selectContractDetail(supplyContract);
