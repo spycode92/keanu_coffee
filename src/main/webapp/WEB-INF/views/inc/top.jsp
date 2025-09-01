@@ -1,7 +1,29 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<c:if test="${not empty accessDeniedMessage }">
+	<script type="text/javascript">
+		Swal.fire({
+		    icon: 'error',
+		    title: '경고',
+		    text: "${accessDeniedMessage}",
+		    confirmButtonText: '확인'
+		});
+	</script>
+	<% session.removeAttribute("accessDeniedMessage");%>
+</c:if>
+<c:if test="${not empty msg}">
+	<script type="text/javascript">
+		Swal.fire({
+	        icon: '${icon}',
+	        title: '${title}',
+	        text: '${msg}',
+	        confirmButtonText: '확인'
+	    });
+	</script>
+</c:if>
 <nav class="top-nav">
 	<jsp:include page="/WEB-INF/views/inc/change_info.jsp"></jsp:include> 
 	<button id="sidebar-toggle" class="sidebar-toggle">&#9776;</button>
