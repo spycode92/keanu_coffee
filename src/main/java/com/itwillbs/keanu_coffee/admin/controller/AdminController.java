@@ -30,6 +30,7 @@ public class AdminController {
 	//직원관리
 	@GetMapping("/employeeManage")
 	public String employeeManagement(RedirectAttributes redirectAttributes) {
+		System.out.println("시작됐다~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		return "redirect:/admin/employeeManagement";
 	}
 	//조직관리
