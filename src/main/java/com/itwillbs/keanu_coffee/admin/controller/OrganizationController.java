@@ -141,39 +141,57 @@ public class OrganizationController {
 	}
 	
 	//부서이름수정
-	@PutMapping("/modifyDepartment")
+	@PostMapping("/modifyDepartment")
 	@ResponseBody
-	public ResponseEntity<Void> modifyDepartment(@RequestBody DepartmentDTO dto) {
+	public ResponseEntity<Map<String, Object>> modifyDepartment(@RequestBody DepartmentDTO dto) {
 	    boolean success = organizationService.modifyDepartmentName(dto.getDepartmentIdx(), dto.getDepartmentName());
+	    Map<String, Object> response = new HashMap<>();
 	    if (success) {
-	        return ResponseEntity.ok().build();
+	    	response.put("success", true);
+	        response.put("message", "부서명이 성공적으로 수정되었습니다.");
+	        response.put("data", dto);
+	        return ResponseEntity.ok(response);
 	    } else {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    	response.put("success", false);
+	        response.put("message", "부서명 수정에 실패했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 	    }
 	}
 	
 	//팀이름수정
-	@PutMapping("/modifyTeam")
+	@PostMapping("/modifyTeam")
 	@ResponseBody
-	public ResponseEntity<Void> modifyTeam(@RequestBody TeamDTO teamDTO) {
+	public ResponseEntity<Map<String, Object>> modifyTeam(@RequestBody TeamDTO teamDTO) {
 		boolean success = organizationService.modifyTeamName(teamDTO.getTeamIdx(), teamDTO.getTeamName());
-		if (success) {
-			return ResponseEntity.ok().build();
-		} else {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
+		Map<String, Object> response = new HashMap<>();
+	    if (success) {
+	    	response.put("success", true);
+	        response.put("message", "팀이름 수정에 성공하였습니다.");
+	        response.put("data", teamDTO);
+	        return ResponseEntity.ok(response);
+	    } else {
+	    	response.put("success", false);
+	        response.put("message", "팀이름 수정에 실패했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	    }
 	}
 	
-	//팀이름수정
-	@PutMapping("/modifyRole")
+	//직책이름수정
+	@PostMapping("/modifyRole")
 	@ResponseBody
-	public ResponseEntity<Void> modifyRole(@RequestBody RoleDTO roleDTO) {
+	public ResponseEntity<Map<String, Object>> modifyRole(@RequestBody RoleDTO roleDTO) {
 		boolean success = organizationService.modifyRoleName(roleDTO.getRoleIdx(), roleDTO.getRoleName());
-		if (success) {
-			return ResponseEntity.ok().build();
-		} else {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
+		Map<String, Object> response = new HashMap<>();
+	    if (success) {
+	    	response.put("success", true);
+	        response.put("message", "직책이름 수정에 성공하였습니다.");
+	        response.put("data", roleDTO);
+	        return ResponseEntity.ok(response);
+	    } else {
+	    	response.put("success", false);
+	        response.put("message", "직책이름 수정에 실패했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	    }
 	}
 	
 	//직책에부여된 권한정보가져오기

@@ -23,14 +23,13 @@ public class AdminController {
 	
 	//관리자페이지 메인
 	@GetMapping("")
-	public String adminMain(HttpSession session, Model model, Authentication authentication) {
+	public String adminMain() {
 		
 		return "/admin/admin_main";
 	}
 	//직원관리
 	@GetMapping("/employeeManage")
-	public String employeeManagement(RedirectAttributes redirectAttributes) {
-		System.out.println("시작됐다~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+	public String employeeManagement() {
 		return "redirect:/admin/employeeManagement";
 	}
 	//조직관리
