@@ -8,7 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.itwillbs.keanu_coffee.common.dto.SweetAlertIcon;
+import com.itwillbs.keanu_coffee.common.utils.MakeAlert;
 import com.mysql.cj.x.protobuf.MysqlxSession.AuthenticateContinue;
 
 import lombok.RequiredArgsConstructor;
@@ -32,8 +35,8 @@ public class AdminController {
 	}
 	//직원관리
 	@GetMapping("/employeeManage")
-	public String employeeManagement() {
-		
+	public String employeeManagement(RedirectAttributes redirectAttributes) {
+		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "알림", "이미 로그인 되어 있습니다.");
 		return "redirect:/admin/employeeManagement";
 	}
 	//조직관리
