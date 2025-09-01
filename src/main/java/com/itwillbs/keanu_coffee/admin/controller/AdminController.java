@@ -24,19 +24,12 @@ public class AdminController {
 	//관리자페이지 메인
 	@GetMapping("")
 	public String adminMain(HttpSession session, Model model, Authentication authentication) {
-		String id = authentication.getName();
-		if(!id.equals("admin")) {
-			model.addAttribute("msg", "권한이 없습니다.");
-			model.addAttribute("targetURL", "/"); 
-			return "/commons/result_process";
-		}
 		
 		return "/admin/admin_main";
 	}
 	//직원관리
 	@GetMapping("/employeeManage")
 	public String employeeManagement(RedirectAttributes redirectAttributes) {
-		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "알림", "이미 로그인 되어 있습니다.");
 		return "redirect:/admin/employeeManagement";
 	}
 	//조직관리
