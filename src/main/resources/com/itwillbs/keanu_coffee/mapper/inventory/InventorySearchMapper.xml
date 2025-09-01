@@ -3,13 +3,48 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.inventory.mapper.InventorySearchMapper">
-
+	
+	<!-- 재고 개수 (페이징용 총 행 수) -->
+	<select id="selectInventoryCount" resultType="int">
+	    SELECT COUNT(*)
+	    FROM RECEIPT_PRODUCT r
+	    JOIN PRODUCT p ON r.product_idx = p.product_idx
+	    LEFT JOIN INVENTORY i ON r.receipt_product_idx = i.receipt_product_idx
+	    LEFT JOIN WAREHOUSE_LOCATION w ON i.location_idx = w.location_idx
+	    <where>
+	        <if test="searchType != null and searchType != '' 
+	                  and searchKeyword != null and searchKeyword != ''">
+	            ${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
+	        </if>
+	    </where>
+	</select>
+	
+	<!-- 재고 리스트(입고완료 데이터) 조회 + 페이징 + 검색 -->
 	<select id="selectReceiptProductList" resultType="map">
-	   SELECT receipt_product_idx, supplier_idx, product_idx,
-	          lot_number, manufacture_date, expiration_date,
-	          quantity, received_at
-	   FROM RECEIPT_PRODUCT
-	   ORDER BY receipt_product_idx DESC
+	    SELECT 
+	        r.receipt_product_idx,
+	        r.lot_number,
+	        r.manufacture_date,
+	        r.expiration_date,
+	        r.received_at,
+	        r.quantity AS received_quantity,   -- 입고된 수량
+	        p.product_idx,
+	        p.product_name,                    -- 상품명 (PRODUCT 조인)
+	        i.quantity AS current_quantity,    -- 현재 재고 수량 (INVENTORY)
+	        w.location_name,                   -- 로케이션명
+	        w.location_type                    -- 로케이션 유형 (팔레트존/피킹존 등)
+	    FROM RECEIPT_PRODUCT r
+	    JOIN PRODUCT p ON r.product_idx = p.product_idx
+	    LEFT JOIN INVENTORY i ON r.receipt_product_idx = i.receipt_product_idx
+	    LEFT JOIN WAREHOUSE_LOCATION w ON i.location_idx = w.location_idx
+	    <where>
+	        <if test="searchType != null and searchType != '' 
+	                  and searchKeyword != null and searchKeyword != ''">
+	            ${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
+	        </if>
+	    </where>
+	    ORDER BY r.receipt_product_idx DESC
+	    LIMIT #{startRow}, #{listLimit}
 	</select>
 
 </mapper>

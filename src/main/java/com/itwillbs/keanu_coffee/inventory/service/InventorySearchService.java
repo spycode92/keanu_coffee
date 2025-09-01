@@ -14,11 +14,15 @@ import lombok.RequiredArgsConstructor;
 public class InventorySearchService {
 	private final InventorySearchMapper inventorySearchMapper;
 	
-	// 재고 리스트(입고완료 데이터) 조회
-	public List<Map<String, Object>> getReceiptProductList() {
-		return inventorySearchMapper.selectReceiptProductList();
-	}
-	
-	
-	
+	// 전체 데이터 개수
+    public int getInventoryCount(String searchType, String searchKeyword) {
+        return inventorySearchMapper.selectInventoryCount(searchType, searchKeyword);
+    }
+
+    // 페이징 데이터 조회
+    public List<Map<String, Object>> getReceiptProductList(int startRow, int listLimit,
+                                                           String searchType, String searchKeyword) {
+        return inventorySearchMapper.selectReceiptProductList(startRow, listLimit, searchType, searchKeyword);
+    }
+    
 }

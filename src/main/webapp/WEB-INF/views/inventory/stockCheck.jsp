@@ -138,13 +138,13 @@
                 <input class="form-control" id="locSearch" placeholder="예: A-01">
             </div>
             <div class="interval">
-                <label class="form-label">로케이션 유형</label>
-                <select class="form-control" id="locType">
-                    <option value="">전체</option>
-                    <option value="Picking">Picking</option>
-                    <option value="Pallet">Pallet</option>
-                </select>
-            </div>
+			    <label class="form-label">로케이션 유형</label>
+			    <select class="form-control" id="locType" name="locationType">
+			        <option value="">전체</option>
+			        <option value="1">Pallet</option>
+			        <option value="2">Picking</option>
+			    </select>
+			</div>
             <div style="display:flex; align-items:flex-end; gap:8px;">
                 <button class="btn btn-primary" id="btnSearch">조회</button>
                 <button class="btn btn-secondary" id="btnClear">초기화</button>
@@ -240,22 +240,69 @@
 	                </tr>
 	            </thead>
 	            <tbody id="tbodyRealtime">
-                    <!-- ✅ 수정: 여기서 Mock 데이터 삭제하고 DB 데이터 출력 -->
-                    <c:forEach var="item" items="${inventoryList}">
-					    <tr>
-					        <td>${item.receipt_product_idx}</td>
-					        <td>${item.product_idx}</td>
-					        <td>${item.lot_number}</td>
-					        <td>${item.quantity}</td>
-					        <td>${item.manufacture_date}</td>
-					        <td>${item.expiration_date}</td>
-					        <td>${item.received_at}</td>
-					    </tr>
-					</c:forEach>
-                </tbody>
+				    <c:forEach var="item" items="${inventoryList}">
+				        <tr>
+				            <td>${item.location_name}</td>
+				            <td>${item.product_name}</td>
+				            <td>${item.product_idx}</td>
+				            <td>${item.received_quantity}</td>
+				            <td>BOX</td>
+				            <td>
+				                <c:choose>
+				                    <c:when test="${item.location_type == 1}">Pallet</c:when>
+				                    <c:when test="${item.location_type == 2}">Picking</c:when>
+				                    <c:otherwise>미지정</c:otherwise>
+				                </c:choose>
+				            </td>
+				            <td>${item.manufacture_date}</td>
+				            <td>${item.expiration_date}</td>
+				
+				            <!-- ✅ 여기 빈칸 두고 data-exp에 날짜 저장 -->
+				            <td class="dday-cell" data-exp="${item.expiration_date}"></td>
+				            <td class="status-cell" data-exp="${item.expiration_date}"></td>
+				
+				            <td>
+				                <c:choose>
+				                    <c:when test="${item.received_quantity > 0}">
+				                        <span class="ship-badge ship-yes">가능</span>
+				                    </c:when>
+				                    <c:otherwise>
+				                        <span class="ship-badge ship-no">불가능</span>
+				                    </c:otherwise>
+				                </c:choose>
+				            </td>
+				        </tr>
+				    </c:forEach>
+				</tbody>
 	        </table>
 	    </div>
-	</div>
+	    
+	    <!-- ✅ 페이징 -->
+		<div class="pagination" style="text-align:center; margin:20px 0;">
+		    <!-- 처음 / 이전 -->
+		    <c:if test="${pageInfo.pageNum > 1}">
+		        <a href="?pageNum=1" class="btn btn-secondary">« 처음</a>
+		        <a href="?pageNum=${pageInfo.pageNum - 1}" class="btn btn-secondary">‹ 이전</a>
+		    </c:if>
+		
+		    <!-- 페이지 번호 -->
+		    <c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
+		        <c:choose>
+		            <c:when test="${i == pageInfo.pageNum}">
+		                <span class="btn btn-primary">${i}</span>
+		            </c:when>
+		            <c:otherwise>
+		                <a href="?pageNum=${i}" class="btn btn-secondary">${i}</a>
+		            </c:otherwise>
+		        </c:choose>
+		    </c:forEach>
+		
+		    <!-- 다음 / 끝 -->
+		    <c:if test="${pageInfo.pageNum < pageInfo.maxPage}">
+		        <a href="?pageNum=${pageInfo.pageNum + 1}" class="btn btn-secondary">다음 ›</a>
+		        <a href="?pageNum=${pageInfo.maxPage}" class="btn btn-secondary">끝 »</a>
+		    </c:if>
+		</div>
 	
 	<!-- ========================= LOT 상세 모달 ========================= -->
 	<div class="modal" id="lotModal">
@@ -345,120 +392,137 @@
     <!-- ========================= /LOT 상세 모달 ========================= -->
 
     <script>
-        /* ====================== 유틸 ====================== */
-        function toDateOrNull(s){
-            if (s === null || s === undefined) return null;
-            const t = String(s).trim();
-            if (!t) return null;
-            const d = new Date(t + 'T00:00:00');
-            return isNaN(d.getTime()) ? null : d;
-        }
-        function diffDaysFromToday(dateStr){
-            const d = toDateOrNull(dateStr);
-            if (!d) return null;
-            const today = new Date();
-            const base = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-            return Math.ceil((d.getTime() - base.getTime()) / (1000*60*60*24));
-        }
-        function formatDday(d){
-            if (d === null || d === undefined) return '–';
-            if (d < 0) return 'D+' + Math.abs(d);
-            if (d === 0) return 'D-day';
-            return 'D-' + d;
-        }
-
-        /* 고정 임박 기준값 */
-        const FIXED_THRESHOLD = 7;
-
-        function makeStatusAndDday(expDate, threshold){
-            const d = diffDaysFromToday(expDate);
-            if (d === null){
-                return { status:'OK', labelHtml:'<span class="status-label normal">정상</span>', ddayHtml:'<span class="dday-badge">–</span>', d:null };
-            }
-            let status = 'OK';
-            let labelHtml = '<span class="status-label normal">정상</span>';
-            const ddText = formatDday(d);
-            let ddayClass = '';
-            if (d < 0){ status='EXPIRED'; labelHtml='<span class="status-label expired">만료</span>'; ddayClass='dday-danger'; }
-            else if (d === 0 || d <= threshold){ status='WARN'; labelHtml='<span class="status-label imminent">임박</span>'; ddayClass='dday-warn'; }
-            const ddayHtml = '<span class="dday-badge '+ddayClass+'">'+ddText+'</span>';
-            return { status, labelHtml, ddayHtml, d };
-        }
-
-        /* ====================== 모달 ====================== */
-        $('#tbodyRealtime').on('click', 'tr', function(){
-            const lotNo = $(this).data('lot');
-            if (!lotNo) return;
-            openLotModal(lotNo);
-        });
-
-        function openLotModal(lotNo){
-            const mi = inboundByLot[lotNo] || {};
-            const locs = locationsByLot[lotNo] || [];
-            const unit = mi.unit || 'BOX';
-            const row = realtimeData.find(x => x.lotNo === lotNo);
-			
-         	// 상세값 세팅
-            $('#miName').text(row?.name || '–');
-            $('#miItem').text(mi.itemCode || '–');
-            $('#miLot').text(mi.lotNo || lotNo || '–');
-            $('#miMfg').text(mi.mfgDate ? mi.mfgDate : '–');
-            $('#miExp').text(mi.expDate ? mi.expDate : '–');
-            $('#miUnit').text(unit);
-            $('#miSupplier').text(mi.supplier || '–');
-			
-            // D-Day & 재고상태 추가
-            const threshold = FIXED_THRESHOLD;   // 모달에서도 고정값
-            const { labelHtml, ddayHtml } = makeStatusAndDday(mi.expDate, threshold);
-            $('#miDday').html(ddayHtml);
-            $('#miStatus').html(labelHtml);
-			
-            // 로케이션 분포
-            const $box = $('#locList').empty();
-            let sum = 0;
-            if (locs.length === 0){
-                $box.append('<div class="logline"><div class="logleft">데이터 없음</div><div class="logright">-</div></div>');
-            } else {
-                locs.forEach(x=>{
-                    sum += Number(x.qty)||0;
-                    $box.append(
-                        '<div class="logline">'+
-                            '<div class="logleft">'+x.loc+'</div>'+
-                            '<div class="logright"><b>'+x.qty+' '+unit+'</b></div>'+
-                        '</div>'
-                    );
-                });
-                $box.append(
-                    '<div class="logline">'+
-                        '<div class="logleft"><b>합계</b></div>'+
-                        '<div class="logright"><b>'+sum+' '+unit+'</b></div>'+
-                    '</div>'
-                );
-            }
-            
-         	// 현재고 표시
-            $('#miCurrent').text(sum+' '+unit);
-			
-         // 폐기 패널 초기화
-            $('#df-lotNumber').val(lotNo);
-            $('#df-productCode').val($('#miItem').text().trim() || '');
-            const $firstRow = $('#locList .logline .logleft').first();
-            const firstLoc = ($firstRow.text() || '').trim();
-            $('#df-locationCode').val(firstLoc && firstLoc!=='데이터 없음' ? firstLoc : '');
-            const unitTxt = $('#miUnit').text().trim() || 'BOX';
-            $('#df-currentQtyText').text(sum.toLocaleString('ko-KR'));
-            $('#df-unitText').text(unitTxt);
-
-            $('#btn-disposal-toggle').attr('aria-expanded','false').text('폐기 처리');
-            $('#disposalPanel').addClass('hidden');
-
-            // 폼 리셋 추가 (수량/사유 초기화)
-            $('#disposalForm')[0].reset();
-
-            ModalManager.openModalById('lotModal');
-        }
-        
-        /* ====================== 폐기 패널 토글 ====================== */
+	    /* ====================== 유틸 ====================== */
+	    function toDateOrNull(s){
+	        if (s === null || s === undefined) return null;
+	        const t = String(s).trim();
+	        if (!t) return null;
+	        const d = new Date(t + 'T00:00:00');
+	        return isNaN(d.getTime()) ? null : d;
+	    }
+	    function diffDaysFromToday(dateStr){
+	        const d = toDateOrNull(dateStr);
+	        if (!d) return null;
+	        const today = new Date();
+	        const base = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	        return Math.ceil((d.getTime() - base.getTime()) / (1000*60*60*24));
+	    }
+	    function formatDday(d){
+	        if (d === null || d === undefined) return '–';
+	        if (d < 0) return 'D+' + Math.abs(d);
+	        if (d === 0) return 'D-day';
+	        return 'D-' + d;
+	    }
+	
+	    /* 고정 임박 기준값 */
+	    const FIXED_THRESHOLD = 7;
+	
+	    function makeStatusAndDday(expDate, threshold){
+	        const d = diffDaysFromToday(expDate);
+	        if (d === null){
+	            return { status:'OK', labelHtml:'<span class="status-label normal">정상</span>', ddayHtml:'<span class="dday-badge">–</span>', d:null };
+	        }
+	        let status = 'OK';
+	        let labelHtml = '<span class="status-label normal">정상</span>';
+	        const ddText = formatDday(d);
+	        let ddayClass = '';
+	        if (d < 0){ status='EXPIRED'; labelHtml='<span class="status-label expired">만료</span>'; ddayClass='dday-danger'; }
+	        else if (d === 0 || d <= threshold){ status='WARN'; labelHtml='<span class="status-label imminent">임박</span>'; ddayClass='dday-warn'; }
+	        const ddayHtml = '<span class="dday-badge '+ddayClass+'">'+ddText+'</span>';
+	        return { status, labelHtml, ddayHtml, d };
+	    }
+	
+	    /* ====================== 테이블 D-Day & 재고상태 채우기 ====================== */
+	    $(document).ready(function(){
+	        // D-Day
+	        $('.dday-cell').each(function(){
+	            const exp = $(this).data('exp');
+	            const d = diffDaysFromToday(exp);
+	            $(this).html(formatDday(d));
+	        });
+	
+	        // 재고상태
+	        $('.status-cell').each(function(){
+	            const exp = $(this).data('exp');
+	            const { labelHtml } = makeStatusAndDday(exp, FIXED_THRESHOLD);
+	            $(this).html(labelHtml);
+	        });
+	    });
+	
+	    /* ====================== 모달 ====================== */
+	    $('#tbodyRealtime').on('click', 'tr', function(){
+	        const lotNo = $(this).data('lot');
+	        if (!lotNo) return;
+	        openLotModal(lotNo);
+	    });
+	
+	    function openLotModal(lotNo){
+	        const mi = inboundByLot[lotNo] || {};
+	        const locs = locationsByLot[lotNo] || [];
+	        const unit = mi.unit || 'BOX';
+	        const row = realtimeData.find(x => x.lotNo === lotNo);
+	        
+	        // 상세값 세팅
+	        $('#miName').text(row?.name || '–');
+	        $('#miItem').text(mi.itemCode || '–');
+	        $('#miLot').text(mi.lotNo || lotNo || '–');
+	        $('#miMfg').text(mi.mfgDate ? mi.mfgDate : '–');
+	        $('#miExp').text(mi.expDate ? mi.expDate : '–');
+	        $('#miUnit').text(unit);
+	        $('#miSupplier').text(mi.supplier || '–');
+	        
+	        // D-Day & 재고상태 추가
+	        const threshold = FIXED_THRESHOLD;   // 모달에서도 고정값
+	        const { labelHtml, ddayHtml } = makeStatusAndDday(mi.expDate, threshold);
+	        $('#miDday').html(ddayHtml);
+	        $('#miStatus').html(labelHtml);
+	        
+	        // 로케이션 분포
+	        const $box = $('#locList').empty();
+	        let sum = 0;
+	        if (locs.length === 0){
+	            $box.append('<div class="logline"><div class="logleft">데이터 없음</div><div class="logright">-</div></div>');
+	        } else {
+	            locs.forEach(x=>{
+	                sum += Number(x.qty)||0;
+	                $box.append(
+	                    '<div class="logline">'+
+	                        '<div class="logleft">'+x.loc+'</div>'+
+	                        '<div class="logright"><b>'+x.qty+' '+unit+'</b></div>'+
+	                    '</div>'
+	                );
+	            });
+	            $box.append(
+	                '<div class="logline">'+
+	                    '<div class="logleft"><b>합계</b></div>'+
+	                    '<div class="logright"><b>'+sum+' '+unit+'</b></div>'+
+	                '</div>'
+	            );
+	        }
+	        
+	        // 현재고 표시
+	        $('#miCurrent').text(sum+' '+unit);
+	        
+	        // 폐기 패널 초기화
+	        $('#df-lotNumber').val(lotNo);
+	        $('#df-productCode').val($('#miItem').text().trim() || '');
+	        const $firstRow = $('#locList .logline .logleft').first();
+	        const firstLoc = ($firstRow.text() || '').trim();
+	        $('#df-locationCode').val(firstLoc && firstLoc!=='데이터 없음' ? firstLoc : '');
+	        const unitTxt = $('#miUnit').text().trim() || 'BOX';
+	        $('#df-currentQtyText').text(sum.toLocaleString('ko-KR'));
+	        $('#df-unitText').text(unitTxt);
+	
+	        $('#btn-disposal-toggle').attr('aria-expanded','false').text('폐기 처리');
+	        $('#disposalPanel').addClass('hidden');
+	
+	        // 폼 리셋 추가 (수량/사유 초기화)
+	        $('#disposalForm')[0].reset();
+	
+	        ModalManager.openModalById('lotModal');
+	    }
+	    
+	    /* ====================== 폐기 패널 토글 ====================== */
 	    $('#btn-disposal-toggle').on('click', function(){
 	        const $panel = $('#disposalPanel');
 	        const expanded = $(this).attr('aria-expanded') === 'true';
@@ -480,11 +544,11 @@
 	
 	    $('#disposalForm').on('submit', function(e){
 	        e.preventDefault(); // 기본 submit 막음 (지금은 DB 연동 전이니까)
-
+	
 	        const currentQty = parseInt($('#df-currentQtyText').text().replace(/[^0-9]/g,''), 10) || 0;
 	        const amount = parseInt($('#df-disposalAmount').val(), 10) || 0;
 	        const note = ($('#df-note').val() || '').trim();
-
+	
 	        if(amount <= 0){
 	            alert('폐기 수량은 1 이상이어야 합니다.');
 	            $('#df-disposalAmount').focus();
@@ -500,8 +564,8 @@
 	            $('#df-note').focus();
 	            return;
 	        }
-
-	     	// 상태를 폐기로 업데이트
+	
+	        // 상태를 폐기로 업데이트
 	        const lotNo = $('#df-lotNumber').val();
 	        const row = realtimeData.find(x => x.lotNo === lotNo);
 	        if(row){
@@ -512,14 +576,14 @@
 	            // 재고가 남았어도 폐기 상태로 표시되게 강제
 	            row.status = 'DISPOSED';
 	        }
-
-	     	// 모달 닫고 테이블 갱신
+	
+	        // 모달 닫고 테이블 갱신
 	        ModalManager.closeModal(document.getElementById('lotModal'));
 	        renderTable(true);
-
+	
 	        alert('폐기 처리가 완료되었습니다.');
 	    });
-    </script>
+	</script>
 
 </body>
 </html>
