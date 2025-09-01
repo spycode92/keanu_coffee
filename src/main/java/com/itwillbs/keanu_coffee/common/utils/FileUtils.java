@@ -48,12 +48,9 @@ public class FileUtils {
 		String subDir = localDateNow.format(dtf);
 
 		path += "/" + subDir;
-		System.out.println("path : " + path);
-		
-		Path absolutePath = Paths.get(path).toAbsolutePath().normalize();
 		
 		try {
-			Files.createDirectories(absolutePath);
+			Path resultPath = Files.createDirectories(Paths.get(path).toAbsolutePath().normalize());
 		} catch (IOException e) {
 			System.out.println("서브 디렉토리 생성 실패 - " + path);
 			e.printStackTrace();
@@ -76,14 +73,12 @@ public class FileUtils {
 		// --------------------------------------------------------
 		// 프로젝트 상의 가상의 업로드 경로를 사용할 경우 추가 작업
 //		String realPath = uploadPath; // 서버 업로드용
-		String realPath = session.getServletContext().getRealPath(uploadPath); // 로컬작업용
-		System.out.println("realPath : " + realPath);
+//		String realPath = session.getServletContext().getRealPath(uploadPath); // 로컬작업용[프로젝트]
 		
-		subDir = FileUtils.createDirectories(realPath);
+		subDir = FileUtils.createDirectories(uploadPath);
 		
 		// 실제 파일 업로드 공간 : 업로드 경로와 서브 디렉토리 결합
-		String destinationPath = realPath + "/" + subDir;
-
+		String destinationPath = uploadPath + "/" + subDir;
 		List<FileDTO> fileList = new ArrayList<FileDTO>(); // 파일 정보들을 저장할 List 객체 생성
 		for(MultipartFile mFile : help.getFiles()) {
 			// 파일이 존재할 경우 실제 업로드 처리 및 BoardFileDTO 객체에 정보 저장
