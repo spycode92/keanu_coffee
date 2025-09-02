@@ -24,15 +24,27 @@ public class InventorySearchController {
 	// 재고 리스트 조회 (페이징 + 검색조건 대비)
     @GetMapping("/stockCheck")
     public String getStockCheck(
-            Model model,
-            @RequestParam(defaultValue = "1") int pageNum,
-            @RequestParam(defaultValue = "") String searchType,
-            @RequestParam(defaultValue = "") String searchKeyword) {
+    		Model model,
+            @RequestParam(defaultValue = "1") int pageNum,       // 페이지 번호
+            @RequestParam(defaultValue = "") String keyword,     // 상품명/코드 검색
+            @RequestParam(defaultValue = "") String location,    // 로케이션명
+            @RequestParam(defaultValue = "전체") String locationType, // 로케이션 유형
+            @RequestParam(defaultValue = "") String mfgDate,   // 제조일자
+            @RequestParam(defaultValue = "") String expDate,   // 유통기한
+            @RequestParam(defaultValue = "전체") String stockStatus,   // 재고 상태
+            @RequestParam(defaultValue = "전체") String outboundStatus, // 출고 여부
+            @RequestParam(defaultValue = "") String sortOption,         // 날짜 정렬
+            @RequestParam(defaultValue = "") String qtySort,            // 수량 정렬  
+            @RequestParam(defaultValue = "N") String fifo        // FIFO 여부
+    ) {
 
         int listLimit = 10; // 한 페이지에 보여줄 행 개수
 
         // 총 데이터 개수 가져오기
-        int inventoryCount = inventorySearchService.getInventoryCount(searchType, searchKeyword);
+        int inventoryCount = inventorySearchService.getInventoryCount(
+                keyword, location, locationType, mfgDate, expDate,
+                stockStatus, outboundStatus
+        );
 
         if (inventoryCount > 0) {
             // 페이징 계산
@@ -42,17 +54,26 @@ public class InventorySearchController {
             List<Map<String, Object>> list = inventorySearchService.getReceiptProductList(
                     pageInfo.getStartRow(),
                     listLimit,
-                    searchType,
-                    searchKeyword
+                    keyword, location, locationType, mfgDate, expDate,
+                    stockStatus, outboundStatus, sortOption, qtySort, fifo
             );
 
             model.addAttribute("inventoryList", list);
             model.addAttribute("pageInfo", pageInfo);
         }
 
+        // 검색 조건 & 페이지 정보 JSP로 다시 전달
         model.addAttribute("pageNum", pageNum);
-        model.addAttribute("searchType", searchType);
-        model.addAttribute("searchKeyword", searchKeyword);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("location", location);
+        model.addAttribute("locationType", locationType);
+        model.addAttribute("mfgDate", mfgDate);
+        model.addAttribute("expDate", expDate);
+        model.addAttribute("stockStatus", stockStatus);
+        model.addAttribute("outboundStatus", outboundStatus);
+        model.addAttribute("sortOption", sortOption);
+        model.addAttribute("qtySort", qtySort);
+        model.addAttribute("fifo", fifo);
 
         return "inventory/stockCheck";
     }

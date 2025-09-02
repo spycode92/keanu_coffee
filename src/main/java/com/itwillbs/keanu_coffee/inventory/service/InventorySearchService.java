@@ -14,15 +14,34 @@ import lombok.RequiredArgsConstructor;
 public class InventorySearchService {
 	private final InventorySearchMapper inventorySearchMapper;
 	
-	// 전체 데이터 개수
-    public int getInventoryCount(String searchType, String searchKeyword) {
-        return inventorySearchMapper.selectInventoryCount(searchType, searchKeyword);
+	// 총 데이터 개수
+	public int getInventoryCount(
+            String keyword, String location, String locationType,
+            String mfgDate, String expDate,
+            String stockStatus, String outboundStatus
+    ) {
+        return inventorySearchMapper.selectInventoryCount(
+                keyword, location, locationType,
+                mfgDate, expDate,
+                stockStatus, outboundStatus
+        );
     }
 
-    // 페이징 데이터 조회
-    public List<Map<String, Object>> getReceiptProductList(int startRow, int listLimit,
-                                                           String searchType, String searchKeyword) {
-        return inventorySearchMapper.selectReceiptProductList(startRow, listLimit, searchType, searchKeyword);
+	 // 리스트 조회
+    public List<Map<String, Object>> getReceiptProductList(
+            int startRow, int listLimit,
+            String keyword, String location, String locationType,
+            String mfgDate, String expDate,
+            String stockStatus, String outboundStatus,
+            String sortOption, String qtySort, String fifo
+    ) {
+        return inventorySearchMapper.selectReceiptProductList(
+                startRow, listLimit,
+                keyword, location, locationType,
+                mfgDate, expDate,
+                stockStatus, outboundStatus,
+                sortOption, qtySort, fifo
+        );
     }
     
 }

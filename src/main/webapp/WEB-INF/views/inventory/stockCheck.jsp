@@ -25,7 +25,29 @@
     select.form-control {
         padding: 0 10px;
     }
-
+	
+	/* 테이블 컬럼 넓히기 & 줄바꿈 방지 */
+	#tblRealtime th:nth-child(1),   /* 로케이션 */
+	#tblRealtime td:nth-child(1),
+	#tblRealtime th:nth-child(3),   /* 상품코드 */
+	#tblRealtime td:nth-child(3),
+	#tblRealtime th:nth-child(4),   /* 수량 */
+	#tblRealtime td:nth-child(4),
+	#tblRealtime th:nth-child(6),   /* 로케이션유형 */
+	#tblRealtime td:nth-child(6),
+	#tblRealtime th:nth-child(7),   /* D-Day */
+	#tblRealtime td:nth-child(7),
+	#tblRealtime th:nth-child(8),   /* D-Day */
+	#tblRealtime td:nth-child(8),
+	#tblRealtime th:nth-child(9),   /* D-Day */
+	#tblRealtime td:nth-child(9),
+	#tblRealtime th:nth-child(10),  /* 재고상태 */
+	#tblRealtime td:nth-child(10),
+	#tblRealtime th:nth-child(11),  /* 출고여부 */
+	#tblRealtime td:nth-child(11) {
+	    min-width: 100px;   /* 원하는 폭, 100~120px 권장 */
+	    white-space: nowrap; /* 줄바꿈 방지 */
+	}
 
     /* 상태 라벨 */
     .status-label { display:inline-block; padding:3px 8px; border-radius:4px; font-weight:bold; font-size:0.9em; }
@@ -132,87 +154,91 @@
             <h3 class="card-title">실시간 재고 조회</h3>
         </div>
 
-        <!-- 검색 조건 -->
-        <div class="filters">
-            <div class="interval">
-                <label class="form-label">상품명/코드</label>
-                <input class="form-control" id="prodSearch" placeholder="예: 바닐라시럽 / SYR-001">
-            </div>
-            <div class="interval">
-                <label class="form-label">로케이션</label>
-                <input class="form-control" id="locSearch" placeholder="예: A-01">
-            </div>
-            <div class="interval">
-			    <label class="form-label">로케이션 유형</label>
-			    <select class="form-control" id="locType" name="locationType">
-			        <option value="">전체</option>
-			        <option value="1">Pallet</option>
-			        <option value="2">Picking</option>
-			    </select>
-			</div>
-            <div style="display:flex; align-items:flex-end; gap:8px;">
-                <button class="btn btn-primary" id="btnSearch">조회</button>
-                <button class="btn btn-secondary" id="btnClear">초기화</button>
-            </div>
-        </div>
+        <!-- 검색 조건 form -->
+		<form method="get" action="${pageContext.request.contextPath}/inventory/stockCheck">
+		
+		    <div class="filters">
+		        <div class="interval">
+		            <label class="form-label">상품명/코드</label>
+		            <input class="form-control" name="keyword" id="prodSearch" 
+		                   placeholder="예: 바닐라시럽 / SYR-001" value="${keyword}">
+		        </div>
+		        <div class="interval">
+		            <label class="form-label">로케이션</label>
+		            <input class="form-control" name="location" id="locSearch" 
+		                   placeholder="예: A-01" value="${location}">
+		        </div>
+		        <div class="interval">
+		            <label class="form-label">로케이션 유형</label>
+		            <select class="form-control" name="locationType" id="locType">
+		                <option value="전체" ${locationType eq '전체' ? 'selected' : ''}>전체</option>
+		                <option value="1" ${locationType eq '1' ? 'selected' : ''}>Pallet</option>
+		                <option value="2" ${locationType eq '2' ? 'selected' : ''}>Picking</option>
+		            </select>
+		        </div>
+		        <div style="display:flex; align-items:flex-end; gap:8px;">
+		            <button type="submit" class="btn btn-primary">조회</button>
+		            <button type="button" id="btnReset" class="btn btn-secondary">초기화</button>
+		        </div>
+		    </div>
 
-        <!-- 제조/유통 + 정렬 -->
-        <div class="filters-2">
-            <div class="interval">
-                <label class="form-label">제조일자</label>
-                <input type="date" id="mfgEnd" class="form-control">
-            </div>
-            <div class="interval">
-                <label class="form-label">유통기한</label>
-                <input type="date" id="expStart" class="form-control">
-            </div>
-            <div class="interval">
-                <label class="form-label">날짜 정렬</label>
-                <select id="sortOption" class="form-control">
-                    <option value="">전체</option>
-                    <option value="manufactureAsc">제조일자 빠른 순</option>
-                    <option value="manufactureDesc">제조일자 늦은 순</option>
-                    <option value="expireAsc">유통기한 빠른 순</option>
-                    <option value="expireDesc">유통기한 늦은 순</option>
-                </select>
-            </div>
-            <div class="interval">
-                <label class="form-label">수량 정렬</label>
-                <select id="qtySort" class="form-control">
-                    <option value="">전체</option>
-                    <option value="qtyDesc">수량 많은 순</option>
-                    <option value="qtyAsc">수량 적은 순</option>
-                </select>
-            </div>
-        </div>
+	        <!-- 제조/유통 + 정렬 -->
+		    <div class="filters-2">
+		        <div class="interval">
+		            <label class="form-label">제조일자</label>
+		            <input type="date" name="mfgDate" class="form-control" value="${mfgDate}">
+		        </div>
+		        <div class="interval">
+		            <label class="form-label">유통기한</label>
+		            <input type="date" name="expDate" class="form-control" value="${expDate}">
+		        </div>
+				<!-- 날짜 정렬 -->
+		        <div class="interval">
+				    <label class="form-label">날짜 정렬</label>
+				    <select name="sortOption" class="form-control">
+				        <option value="">전체</option>
+				        <option value="manufactureAsc" ${sortOption eq 'manufactureAsc' ? 'selected' : ''}>제조일자 빠른 순</option>
+				        <option value="manufactureDesc" ${sortOption eq 'manufactureDesc' ? 'selected' : ''}>제조일자 늦은 순</option>
+				        <option value="expireAsc" ${sortOption eq 'expireAsc' ? 'selected' : ''}>유통기한 빠른 순</option>
+				        <option value="expireDesc" ${sortOption eq 'expireDesc' ? 'selected' : ''}>유통기한 늦은 순</option>
+				    </select>
+				</div>
+				<!-- 수량 정렬 -->
+				<div class="interval">
+				    <label class="form-label">수량 정렬</label>
+				    <select name="qtySort" class="form-control">
+				        <option value="">전체</option>
+				        <option value="qtyDesc" ${qtySort eq 'qtyDesc' ? 'selected' : ''}>수량 많은 순</option>
+				        <option value="qtyAsc" ${qtySort eq 'qtyAsc' ? 'selected' : ''}>수량 적은 순</option>
+				    </select>
+				</div>
+		    </div>
 
-        <!-- 재고상태 -->
-        <div class="filters-2">
-            <div class="interval">
-		        <label class="form-label">재고상태</label>
-		        <select id="statusFilter" class="form-control">
-		            <option value="ALL">전체</option>
-		            <option value="WARN">임박</option>
-		            <option value="EXPIRED">만료</option>
-		            <option value="OK">정상</option>
-		            <option value="DISPOSED">폐기</option>
-		        </select>
+	        <!-- 재고상태 / 출고여부 -->
+		    <div class="filters-3">
+		        <div class="interval">
+		            <label class="form-label">재고상태</label>
+		            <select name="stockStatus" class="form-control">
+		                <option value="전체" ${stockStatus eq '전체' ? 'selected' : ''}>전체</option>
+		                <option value="WARN" ${stockStatus eq 'WARN' ? 'selected' : ''}>임박</option>
+		                <option value="EXPIRED" ${stockStatus eq 'EXPIRED' ? 'selected' : ''}>만료</option>
+		                <option value="OK" ${stockStatus eq 'OK' ? 'selected' : ''}>정상</option>
+		                <option value="DISPOSED" ${stockStatus eq 'DISPOSED' ? 'selected' : ''}>폐기</option>
+		            </select>
+		        </div>
+		        <div class="interval">
+		            <label class="form-label">출고 여부</label>
+		            <select name="outboundStatus" class="form-control">
+		                <option value="전체" ${outboundStatus eq '전체' ? 'selected' : ''}>전체</option>
+		                <option value="YES" ${outboundStatus eq 'YES' ? 'selected' : ''}>가능</option>
+		                <option value="NO" ${outboundStatus eq 'NO' ? 'selected' : ''}>불가능</option>
+		            </select>
+		        </div>
+		        <div style="display:flex; align-items:flex-end;">
+		            <button type="submit" name="fifo" value="Y" class="btn btn-outline">유통기한 오름차순(FIFO)</button>
+		        </div>
 		    </div>
-            
-            <!-- 출고 가능 여부 필터 -->
-            <div class="interval">
-		        <label class="form-label">출고 여부</label>
-		        <select id="shipFilter" class="form-control">
-		            <option value="ALL">전체</option>
-		            <option value="YES">가능</option>
-		            <option value="NO">불가능</option>
-		        </select>
-		    </div>
-            
-             <div style="display:flex; align-items:flex-end;">
-		        <button class="btn btn-outline" id="btnSortExpAsc">유통기한 오름차순(FIFO)</button>
-		    </div>
-        </div>
+		</form>
 
         <!-- KPI -->
         <div style="display:flex; gap:20px; align-items:center; padding:12px;">
@@ -250,7 +276,7 @@
 				            <td>${item.location_name}</td>
 				            <td>${item.product_name}</td>
 				            <td>${item.product_idx}</td>
-				            <td>${item.received_quantity}</td>
+				            <td>${item.current_quantity}</td>
 				            <td>BOX</td>
 				            <td>
 				                <c:choose>
@@ -588,6 +614,23 @@
 	        renderTable(true);
 	
 	        alert('폐기 처리가 완료되었습니다.');
+	    });
+	    /* ====================== 초기화 버튼 ====================== */
+	    $('#btnReset').on('click', function(){
+	        $('form')[0].reset();
+
+	        $('#prodSearch').val('');
+	        $('#locSearch').val('');
+	        $('#locType').val('전체');
+	        $('input[name="mfgFrom"]').val('');
+	        $('input[name="mfgTo"]').val('');
+	        $('input[name="expFrom"]').val('');
+	        $('input[name="expTo"]').val('');
+	        $('select[name="sortBy"]').val('');
+	        $('select[name="stockStatus"]').val('전체');
+	        $('select[name="outboundStatus"]').val('전체');
+
+	        window.location.href = "${pageContext.request.contextPath}/inventory/stockCheck?pageNum=1";
 	    });
 	</script>
 </body>

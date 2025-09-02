@@ -4,47 +4,111 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.inventory.mapper.InventorySearchMapper">
 	
-	<!-- 재고 개수 (페이징용 총 행 수) -->
+	<!-- 총 데이터 개수 -->
 	<select id="selectInventoryCount" resultType="int">
-	    SELECT COUNT(*)
-	    FROM RECEIPT_PRODUCT r
-	    JOIN PRODUCT p ON r.product_idx = p.product_idx
-	    LEFT JOIN INVENTORY i ON r.receipt_product_idx = i.receipt_product_idx
-	    LEFT JOIN WAREHOUSE_LOCATION w ON i.location_idx = w.location_idx
-	    <where>
-	        <if test="searchType != null and searchType != '' 
-	                  and searchKeyword != null and searchKeyword != ''">
-	            ${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
-	        </if>
-	    </where>
+		SELECT COUNT(1)
+		FROM RECEIPT_PRODUCT r
+		JOIN PRODUCT p 
+			ON r.product_idx = p.product_idx
+		LEFT JOIN INVENTORY i 
+			ON r.receipt_product_idx = i.receipt_product_idx
+		LEFT JOIN WAREHOUSE_LOCATION w 
+			ON i.location_idx = w.location_idx
+		<where>
+			<if test="keyword != null and keyword != ''">
+			    (p.product_name LIKE CONCAT('%', #{keyword}, '%')
+			    OR CAST(p.product_idx AS CHAR) LIKE CONCAT('%', #{keyword}, '%'))
+			</if>
+			<if test="location != null and location != ''">
+				AND w.location_name = #{location}
+			</if>
+			<if test="locationType != null and locationType != '' and locationType != '전체'">
+				AND w.location_type = #{locationType}
+			</if>
+			<if test="mfgDate != null and mfgDate != ''">
+			    AND r.manufacture_date = #{mfgDate}
+			</if>
+			<if test="expDate != null and expDate != ''">
+			    AND r.expiration_date = #{expDate}
+			</if>
+			<!-- stockStatus / outboundStatus 는 칼럼 확정 시 추가 -->
+		</where>
 	</select>
 	
-	<!-- 재고 리스트(입고완료 데이터) 조회 + 페이징 + 검색 -->
+	<!-- 리스트 조회 -->
 	<select id="selectReceiptProductList" resultType="map">
-	    SELECT 
-	        r.receipt_product_idx,
-	        r.lot_number,
-	        r.manufacture_date,
-	        r.expiration_date,
-	        r.received_at,
-	        r.quantity AS received_quantity,   -- 입고된 수량
-	        p.product_idx,
-	        p.product_name,                    -- 상품명 (PRODUCT 조인)
-	        i.quantity AS current_quantity,    -- 현재 재고 수량 (INVENTORY)
-	        w.location_name,                   -- 로케이션명
-	        w.location_type                    -- 로케이션 유형 (팔레트존/피킹존 등)
-	    FROM RECEIPT_PRODUCT r
-	    JOIN PRODUCT p ON r.product_idx = p.product_idx
-	    LEFT JOIN INVENTORY i ON r.receipt_product_idx = i.receipt_product_idx
-	    LEFT JOIN WAREHOUSE_LOCATION w ON i.location_idx = w.location_idx
-	    <where>
-	        <if test="searchType != null and searchType != '' 
-	                  and searchKeyword != null and searchKeyword != ''">
-	            ${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
-	        </if>
-	    </where>
-	    ORDER BY r.receipt_product_idx DESC
-	    LIMIT #{startRow}, #{listLimit}
+		SELECT
+			r.receipt_product_idx,
+			r.lot_number,
+			r.manufacture_date,
+			r.expiration_date,
+			r.received_at,
+			r.quantity AS received_quantity,
+			p.product_idx,
+			p.product_name,
+			i.quantity AS current_quantity,
+			w.location_name,
+			w.location_type
+		FROM RECEIPT_PRODUCT r
+		JOIN PRODUCT p 
+			ON r.product_idx = p.product_idx
+		LEFT JOIN INVENTORY i 
+			ON r.receipt_product_idx = i.receipt_product_idx
+		LEFT JOIN WAREHOUSE_LOCATION w 
+			ON i.location_idx = w.location_idx
+		<where>
+			<if test="keyword != null and keyword != ''">
+			    (p.product_name LIKE CONCAT('%', #{keyword}, '%')
+			    OR CAST(p.product_idx AS CHAR) LIKE CONCAT('%', #{keyword}, '%'))
+			</if>
+			<if test="location != null and location != ''">
+				AND w.location_name = #{location}
+			</if>
+			<if test="locationType != null and locationType != '' and locationType != '전체'">
+				AND w.location_type = #{locationType}
+			</if>
+			<if test="mfgDate != null and mfgDate != ''">
+			    AND r.manufacture_date = #{mfgDate}
+			</if>
+			<if test="expDate != null and expDate != ''">
+			    AND r.expiration_date = #{expDate}
+			</if>
+		</where>
+
+		<!-- 정렬 -->
+		<choose>
+		    <!-- FIFO 우선 -->
+		    <when test="fifo != null and fifo.equals('Y')">
+		        ORDER BY r.expiration_date ASC
+		    </when>
+		
+		    <!-- 날짜 정렬 -->
+		    <when test="sortOption == 'manufactureAsc'">
+		        ORDER BY r.manufacture_date ASC
+		    </when>
+		    <when test="sortOption == 'manufactureDesc'">
+		        ORDER BY r.manufacture_date DESC
+		    </when>
+		    <when test="sortOption == 'expireAsc'">
+		        ORDER BY r.expiration_date ASC
+		    </when>
+		    <when test="sortOption == 'expireDesc'">
+		        ORDER BY r.expiration_date DESC
+		    </when>
+		
+		    <!-- 수량 정렬 -->
+		    <when test="qtySort == 'qtyDesc'">
+		        ORDER BY COALESCE(i.quantity, 0) DESC
+		    </when>
+		    <when test="qtySort == 'qtyAsc'">
+		        ORDER BY COALESCE(i.quantity, 0) ASC
+		    </when>
+		    <otherwise>
+		        ORDER BY r.received_at DESC
+		    </otherwise>
+		</choose>
+
+		LIMIT #{startRow}, #{listLimit}
 	</select>
 
 </mapper>
