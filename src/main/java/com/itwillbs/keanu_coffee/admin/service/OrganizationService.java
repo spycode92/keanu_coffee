@@ -17,6 +17,8 @@ import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.dto.TeamDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
+import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
@@ -54,6 +56,7 @@ public class OrganizationService {
 	}
 	
 	//부서추가
+	@SystemLog(target = SystemLogTarget.COMMON_CODE)
 	public DepartmentDTO addDepartment(DepartmentDTO departTeamRoleDTO) {
 		organizationMapper.insertDepartment(departTeamRoleDTO);
 		return departTeamRoleDTO;
@@ -73,7 +76,8 @@ public class OrganizationService {
 	
 	//부서삭제
 	@Transactional
-	public boolean removeDepartmentByIdx(Integer departmentIdx) {
+	@SystemLog(target = SystemLogTarget.COMMON_CODE)
+	public boolean removeDepartmentByIdx(Integer departmentIdx, String departmentName) {
 		// 해당 부서의 팀,직책 모두 NULL처리
 		employeeManagementMapper.updateDeptTeamRoleToNull(departmentIdx);
 		
@@ -124,6 +128,7 @@ public class OrganizationService {
 	}
 	
 	//부서 이름수정
+	@SystemLog(target = SystemLogTarget.COMMON_CODE)
 	public boolean modifyDepartmentName(int idx, String departmentName) {
 		int affectedRows = organizationMapper.updateDepartment(idx, departmentName);
 		
@@ -213,6 +218,11 @@ public class OrganizationService {
 		result.put("result", "fail");
 		result.put("msg", "권한 추가에 실패하였습니다.");
 		return result;
+	}
+	//부서 정보 가져오기
+	public CommonCodeDTO selectDept(Integer departmentIdx) {
+		
+		return organizationMapper.selectDept(departmentIdx);
 	}
 
 	

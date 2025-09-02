@@ -76,5 +76,7 @@ public interface OrganizationMapper {
 	void deleteAutho(Integer authoIdx);
 	// 권한 추가
 	int insertAutho(@Param("authoCode")String authoCode, @Param("authoName")String authoName);
+	// 부서 이름 조회
+	CommonCodeDTO selectDept(Integer departmentIdx);
 	
 }

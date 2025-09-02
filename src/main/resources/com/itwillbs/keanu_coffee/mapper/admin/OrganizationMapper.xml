@@ -39,7 +39,7 @@
 		VALUES(#{roleName}, #{departmentIdx})
 	</insert>
 	<!-- 직책삭제하기 -->
-	<delete id="deleteRole" parameterType="Integer" > 
+	<delete id="deleteRole" parameterType="roleDTO" > 
 		DELETE FROM ROLE
 		where role_idx = #{roleIdx}
 	</delete>
@@ -168,6 +168,18 @@
 		INSERT INTO COMMON_CODE(group_code, common_code, common_code_name)
 		VALUES ('AUTHORITY', #{authoCode}, #{authoName})
 	</insert>
+	
+	<!-- 부서조회 -->
+	<resultMap id="commonCodeResultMap" type="CommonCodeDTO">
+	    <result property="commonCodeIdx" column="common_code_idx"/>
+	    <result property="commonCodeName" column="common_code_name"/>
+	</resultMap>
+	<select id="selectDept" resultMap="commonCodeResultMap" flushCache="true">
+		SELECT 
+			common_code_idx, common_code_name
+		FROM COMMON_CODE
+		WHERE common_code_idx = #{departmentIdx}
+	</select>
 	
 	
 </mapper> 

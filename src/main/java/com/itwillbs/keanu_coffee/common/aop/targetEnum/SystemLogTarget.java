@@ -4,4 +4,5 @@ public enum SystemLogTarget {
 	EMPLOYEE_INFO
 	, FRANCHISE
 	, SUPPLIER
+	, COMMON_CODE
 }

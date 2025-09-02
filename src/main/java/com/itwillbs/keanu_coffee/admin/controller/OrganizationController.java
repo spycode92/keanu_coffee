@@ -101,24 +101,32 @@ public class OrganizationController {
 	}
 	
 	//부서삭제
-	@DeleteMapping("/removeDepartment")
+	@PostMapping("/removeDepartment")
 	@ResponseBody
-	public ResponseEntity<Void> removeDepartment(@RequestBody Map<String, Integer> data) {
+	public ResponseEntity<Map<String, Object>> removeDepartment(@RequestBody Map<String, Integer> data) {
 		Integer departmentIdx = data.get("departmentIdx");
-		boolean deleted = organizationService.removeDepartmentByIdx(departmentIdx);
+		CommonCodeDTO commonCodeDTO = organizationService.selectDept(departmentIdx);
+		boolean deleted = organizationService.removeDepartmentByIdx(departmentIdx, commonCodeDTO.getCommonCodeName());
+		
+		Map<String, Object> response = new HashMap<>();
 		
 		if (deleted) {
-			return ResponseEntity.ok().build();
+			response.put("success", true);
+	        response.put("message", "부서가 성공적으로 삭제되었습니다.");
+	        return ResponseEntity.ok(response);
 		} else {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			response.put("success", false);
+	        response.put("message", "부서 삭제에 실패했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 	}
 	
 	//팀삭제
-	@DeleteMapping("/removeTeam")
+	@PostMapping("/removeTeam")
 	@ResponseBody
 	public ResponseEntity<Void> deleteTeam(@RequestBody Map<String, Integer> data) {
 		Integer teamIdx = data.get("teamIdx");
+		
 	    boolean deleted = organizationService.deleteTeamByIdx(teamIdx);
 	    if (deleted) {
 	        return ResponseEntity.ok().build();
@@ -128,7 +136,7 @@ public class OrganizationController {
 	}
 	
 	//직책삭제
-	@DeleteMapping("/removeRole")
+	@PostMapping("/removeRole")
 	@ResponseBody
 	public ResponseEntity<Void> deleteRole(@RequestBody Map<String, Integer> data) {
 		Integer roleIdx = data.get("roleIdx");

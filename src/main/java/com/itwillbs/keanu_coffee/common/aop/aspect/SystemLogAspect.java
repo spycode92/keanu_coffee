@@ -1,6 +1,8 @@
 package com.itwillbs.keanu_coffee.common.aop.aspect;
 
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Map;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -13,11 +15,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.dto.FranchiseDTO;
+import com.itwillbs.keanu_coffee.admin.dto.RoleDTO;
+import com.itwillbs.keanu_coffee.admin.dto.TeamDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
+import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
 import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
 import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
+import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.mapper.LogMapper;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.TimeUtils;
@@ -32,6 +39,7 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 public class SystemLogAspect {
 	private final EmployeeManagementMapper employeeManagementMapper;
+	private final OrganizationMapper organizationMapper;
 	private final LogMapper logmapper;
 	
 //	@Around("@annotation(com.itwillbs.keanu_coffee.common.aop.annotation.Insert)")
@@ -70,6 +78,12 @@ public class SystemLogAspect {
 	        slog.setElapsedTime(elapsedTime);
 
 	        Object[] args = pjp.getArgs();
+	        
+	        for(int i = 0; i< args.length; i++) {
+	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ ");
+	        	System.out.println("인덱스["+ i + "] :" + args[i]);
+	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ ");
+	        }
 
 	        String methodName = pjp.getSignature().getName();
 	        //여기부터 시작
@@ -81,11 +95,11 @@ public class SystemLogAspect {
 
 	            if (errorMessage == null) {
 	                slog.setLogMessage(
-                		slog.getSection() + ">" + slog.getSubSection() + "에서"  + employee.getEmpNo() + employee.getEmpName() + " 직원추가 완료"
+                		slog.getSection() + ">" + slog.getSubSection() + "에서"  + employee.getEmpNo() + " "  + employee.getEmpName() + " 직원추가 완료"
 	                );
 	            } else {
 	                slog.setLogMessage(
-                		slog.getSection() + ">" + slog.getSubSection() + "에서"  + employee.getEmpNo() + employee.getEmpName() + " 직원추가 중 오류 발생: " + errorMessage
+                		slog.getSection() + ">" + slog.getSubSection() + "에서"  + employee.getEmpNo() + " " + employee.getEmpName() + " 직원추가 중 오류 발생: " + errorMessage
 	                );
 	            }
 	        }
@@ -98,11 +112,11 @@ public class SystemLogAspect {
 	            slog.setTargetIdx(employee.getEmpIdx());
 	            if (errorMessage == null) {
 	                slog.setLogMessage(
-                		slog.getSection() + ">" + slog.getSubSection() + "에서" + employee.getEmpName() + " 직원정보 수정 완료"
+                		slog.getSection() + ">" + slog.getSubSection() + "에서" + employee.getEmpNo() + " " + employee.getEmpName() + " 직원정보 수정 완료"
 	                );
 	            } else {
 	                slog.setLogMessage(
-                		slog.getSection() + ">" + slog.getSubSection() + "에서" + employee.getEmpNo() + employee.getEmpName() + " 직원정보 수정 중 오류 발생: " + errorMessage
+                		slog.getSection() + ">" + slog.getSubSection() + "에서" + employee.getEmpNo() + " " + employee.getEmpName() + " 직원정보 수정 중 오류 발생: " + errorMessage
 	                );
 	            }
 	        }
@@ -116,11 +130,11 @@ public class SystemLogAspect {
 				slog.setTargetIdx(employee.getEmpIdx());
 				if (errorMessage == null) {
 					slog.setLogMessage(
-							slog.getSection() + ">" + slog.getSubSection() + "에서"  + employee.getEmpNo() + employee.getEmpName() + " 직원비밀번호 초기화 완료"
+							slog.getSection() + ">" + slog.getSubSection() + "에서"  + employee.getEmpNo() + " " + employee.getEmpName() + " 직원비밀번호 초기화 완료"
 							);
 				} else {
 					slog.setLogMessage(
-							slog.getSection() + ">" + slog.getSubSection() + "에서" + employee.getEmpNo() + employee.getEmpName() + " 직원비밀번호 초기화 중 오류 발생: " + errorMessage
+							slog.getSection() + ">" + slog.getSubSection() + "에서" + employee.getEmpNo() + " " + employee.getEmpName() + " 직원비밀번호 초기화 중 오류 발생: " + errorMessage
 							);
 				}
 			}
@@ -134,11 +148,11 @@ public class SystemLogAspect {
 	        	slog.setTargetIdx(employee.getEmpIdx());
 	        	if (errorMessage == null) {
 	        		slog.setLogMessage(
-	        				slog.getSection() + ">" + slog.getSubSection() + "에서" + employee.getEmpNo() + employee.getEmpName() + "본인정보 수정 완료"
+	        				slog.getSection() + ">" + slog.getSubSection() + "에서" + employee.getEmpNo() + " " + employee.getEmpName() + "본인정보 수정 완료"
 	        				);
 	        	} else {
 	        		slog.setLogMessage(
-	        				slog.getSection() + ">" + slog.getSubSection() + "에서" + employee.getEmpNo() + employee.getEmpName() + "본인정보 수정 중 오류 발생: " + errorMessage
+	        				slog.getSection() + ">" + slog.getSubSection() + "에서" + employee.getEmpNo() + " " + employee.getEmpName() + "본인정보 수정 중 오류 발생: " + errorMessage
 	        				);
 	        	}
 	        }
@@ -151,11 +165,11 @@ public class SystemLogAspect {
 				slog.setTargetIdx(franchise.getFranchiseIdx());
 				if (errorMessage == null) {
 					slog.setLogMessage(
-						slog.getSection() + ">" + slog.getSubSection() + franchise.getFranchiseName() + " 지점 추가 완료"
+						slog.getSection() + ">" + slog.getSubSection() + " " + franchise.getFranchiseName() + " 지점 추가 완료"
 					);
 				} else {
 					slog.setLogMessage(
-						slog.getSection() + ">" + slog.getSubSection() + franchise.getFranchiseName() + " 지점 추가 중 오류 발생: " + errorMessage
+						slog.getSection() + ">" + slog.getSubSection() + " " + franchise.getFranchiseName() + " 지점 추가 중 오류 발생: " + errorMessage
 					);
 				}
 	        }
@@ -168,14 +182,65 @@ public class SystemLogAspect {
 				slog.setTargetIdx(franchise.getFranchiseIdx());
 				if (errorMessage == null) {
 					slog.setLogMessage(
-						slog.getSection() + ">" + slog.getSubSection() + franchise.getFranchiseName() + " 지점정보 수정 완료"
+						slog.getSection() + ">" + slog.getSubSection() + " " + franchise.getFranchiseName() + " 지점정보 수정 완료"
 					);
 				} else {
 					slog.setLogMessage(
-						slog.getSection() + ">" + slog.getSubSection() + franchise.getFranchiseName() + " 지점정보 수정 중 오류 발생: " + errorMessage
+						slog.getSection() + ">" + slog.getSubSection() + " " + franchise.getFranchiseName() + " 지점정보 수정 중 오류 발생: " + errorMessage
 					);
 				}
 			}
+	        
+	        //조직관리 - 부서추가 로그기록
+	        if ("addDepartment".equals(methodName)) {
+	        	DepartmentDTO department = (DepartmentDTO) args[0];
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("조직관리");
+	        	slog.setTargetIdx(department.getDepartmentIdx());
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + department.getDepartmentName() + " 부서 추가 완료"
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + department.getDepartmentName() + " 부서 추가 중 오류 발생: " + errorMessage
+	        				);
+	        	}
+	        }
+	        
+	        //조직관리 - 부서삭제 로그기록
+	        if ("removeDepartmentByIdx".equals(methodName)) {
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("조직관리");
+	        	slog.setTargetIdx((Integer)args[0]); // args[0] : departmentIdx args[1] : departmentName
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + (String)args[1] + " 부서 삭제 완료"
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + (String)args[1] + " 부서 삭제 중 오류 발생: " + errorMessage
+	        				);
+	        	}
+	        }
+	        
+	        //조직관리 - 부서이름 수정 로그기록
+	        if ("modifyDepartmentName".equals(methodName)) {
+	        	Integer departmentIdx = (Integer)args[0];
+	        	String departmentName = (String)args[1];
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("조직관리");
+	        	slog.setTargetIdx(departmentIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + departmentName + " 부서 이름 수정 완료"
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + departmentName + " 부서 이름 수정 중 오류 발생: " + errorMessage
+	        				);
+	        	}
+	        }
 	        
 	        
 	        logmapper.insertSystemLog(slog);

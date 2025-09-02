@@ -18,6 +18,7 @@ $(function () {
         $('#btnAddTeam').prop('disabled', false);
         $('#roleList').empty();
         $('#btnAddRole').prop('disabled', false);
+		checkBox.hide();
     });
 
     // 부서 추가
