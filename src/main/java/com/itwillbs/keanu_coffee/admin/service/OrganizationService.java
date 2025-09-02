@@ -63,6 +63,7 @@ public class OrganizationService {
 	}
 	
 	//팀 추가
+	@SystemLog(target = SystemLogTarget.TEAM)
 	public TeamDTO addTeam(TeamDTO teamdto) {
 		organizationMapper.insertTeam(teamdto);
 		return teamdto;
@@ -104,7 +105,8 @@ public class OrganizationService {
 	
 	// 팀 삭제
 	@Transactional
-	public boolean deleteTeamByIdx(Integer teamIdx) {
+	@SystemLog(target = SystemLogTarget.TEAM)
+	public boolean deleteTeamByIdx(Integer teamIdx, String teamName) {
 		// 직원정보 테이블의 팀 널로 바꾸기
 		employeeManagementMapper.updateTeamToNull(teamIdx);
 		
@@ -136,11 +138,13 @@ public class OrganizationService {
 	}
 
 	//팀이름수정
+	@SystemLog(target = SystemLogTarget.TEAM)
 	public boolean modifyTeamName(int idx, String teamName) {
 		int affectedRows = organizationMapper.updateTeam(idx, teamName);
 		
 		return  affectedRows == 1;
 	}
+	
 	// 직책이름 수정
 	public boolean modifyRoleName(int idx, String roleName) {
 		int affectedRows = organizationMapper.updateRole(idx, roleName);
@@ -223,6 +227,10 @@ public class OrganizationService {
 	public CommonCodeDTO selectDept(Integer departmentIdx) {
 		
 		return organizationMapper.selectDept(departmentIdx);
+	}
+	//팀 정보 가져오기
+	public TeamDTO selectTeam(Integer teamIdx) {
+		return organizationMapper.selectTeam(teamIdx);
 	}
 
 	

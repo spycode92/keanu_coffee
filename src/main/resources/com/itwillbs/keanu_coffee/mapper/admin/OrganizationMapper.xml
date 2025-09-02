@@ -181,5 +181,12 @@
 		WHERE common_code_idx = #{departmentIdx}
 	</select>
 	
+	<!-- 팀정보조회 -->
+	<select id="selectTeam" resultType="TeamDTO">	
+		SELECT team_idx, team_name
+		FROM TEAM
+		WHERE team_idx = #{teamIdx}
+	</select>
+	
 	
 </mapper> 

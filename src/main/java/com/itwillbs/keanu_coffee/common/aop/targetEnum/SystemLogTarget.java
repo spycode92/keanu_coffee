@@ -5,4 +5,6 @@ public enum SystemLogTarget {
 	, FRANCHISE
 	, SUPPLIER
 	, COMMON_CODE
+	, TEAM
+	, ROLE
 }

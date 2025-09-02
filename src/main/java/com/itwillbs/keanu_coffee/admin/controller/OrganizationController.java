@@ -124,27 +124,42 @@ public class OrganizationController {
 	//팀삭제
 	@PostMapping("/removeTeam")
 	@ResponseBody
-	public ResponseEntity<Void> deleteTeam(@RequestBody Map<String, Integer> data) {
+	public ResponseEntity<Map<String, Object>> deleteTeam(@RequestBody Map<String, Integer> data) {
 		Integer teamIdx = data.get("teamIdx");
+		TeamDTO team = organizationService.selectTeam(teamIdx);
 		
-	    boolean deleted = organizationService.deleteTeamByIdx(teamIdx);
+	    boolean deleted = organizationService.deleteTeamByIdx(teamIdx, team.getTeamName());
+	    
+	    Map<String, Object> response = new HashMap<>();
+	    
 	    if (deleted) {
-	        return ResponseEntity.ok().build();
-	    } else {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	    }
+			response.put("success", true);
+	        response.put("message", "팀이 성공적으로 삭제되었습니다.");
+	        return ResponseEntity.ok(response);
+		} else {
+			response.put("success", false);
+	        response.put("message", "팀 삭제에 실패했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
 	}
 	
 	//직책삭제
 	@PostMapping("/removeRole")
 	@ResponseBody
-	public ResponseEntity<Void> deleteRole(@RequestBody Map<String, Integer> data) {
+	public ResponseEntity<Map<String, Object>> deleteRole(@RequestBody Map<String, Integer> data) {
 		Integer roleIdx = data.get("roleIdx");
 		boolean deleted = organizationService.deleteRoleByIdx(roleIdx);
-		if (deleted) {
-			return ResponseEntity.ok().build();
+
+	    Map<String, Object> response = new HashMap<>();
+	    
+	    if (deleted) {
+			response.put("success", true);
+	        response.put("message", "직책이 성공적으로 삭제되었습니다.");
+	        return ResponseEntity.ok(response);
 		} else {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			response.put("success", false);
+	        response.put("message", "직책 삭제에 실패했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 	}
 	

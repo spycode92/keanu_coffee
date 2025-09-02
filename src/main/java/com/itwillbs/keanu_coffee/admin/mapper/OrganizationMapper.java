@@ -78,5 +78,7 @@ public interface OrganizationMapper {
 	int insertAutho(@Param("authoCode")String authoCode, @Param("authoName")String authoName);
 	// 부서 이름 조회
 	CommonCodeDTO selectDept(Integer departmentIdx);
+	//팀 이름 조회
+	TeamDTO selectTeam(Integer teamIdx);
 	
 }
