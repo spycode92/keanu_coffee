@@ -9,6 +9,7 @@ import java.util.Random;
 
 import javax.servlet.http.HttpSession;
 
+import org.aspectj.lang.annotation.Around;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
+import com.itwillbs.keanu_coffee.common.aop.annotation.Insert;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
@@ -61,7 +63,8 @@ public class EmployeeManagementService {
 	
 	//직원추가 로직
 	@Transactional
-	public int inputEmployeeInfo(EmployeeInfoDTO employee) throws IOException {
+	@Insert
+	public int insertEmployeeInfo(EmployeeInfoDTO employee) throws IOException {
 		// 첫 비밀번호 1234 
 		String empPassword = passwordEncoder.encode("1234");
 		// empId생성
@@ -70,7 +73,7 @@ public class EmployeeManagementService {
 		//empId, empPassword DTO 주입
 		employee.setEmpNo(empNo);
 		employee.setEmpPassword(empPassword);
-		System.out.println(employee);
+
 		// 정보 입력 후 empIdx 받아오기
 		int inputCount = employeeManagementMapper.insertEmployeeInfo(employee);
 		

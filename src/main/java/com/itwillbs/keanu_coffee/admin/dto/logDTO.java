@@ -16,7 +16,8 @@ import lombok.Data;
 public class logDTO {
 	private Integer empNo;
 	private String empName;
-	private Integer departmentIdx;
+	private String departmentName;
+	
     
     private List<CommonCodeDTO> commonCodeList;
 }

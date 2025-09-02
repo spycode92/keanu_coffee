@@ -45,8 +45,8 @@ public class EmployeeManagementController {
 		model.addAttribute("pageNum",pageNum);
 		model.addAttribute("searchType",searchType);
 		model.addAttribute("searchKeyword",searchKeyword);
-		model.addAttribute("sortKey",orderKey);
-		model.addAttribute("sortMethod",orderMethod);
+		model.addAttribute("orderKey",orderKey);
+		model.addAttribute("orderMethod",orderMethod);
 		
 		switch (searchType) {
         case "이름":
@@ -119,7 +119,7 @@ public class EmployeeManagementController {
 	//직원추가 모달창 직원추가 로직
 	@PostMapping("/addEmployee")
 	public String addEmployeeForm(EmployeeInfoDTO employee, Model model, RedirectAttributes redirectAttributes) throws IOException {
-		int inputCount = employeeManagementService.inputEmployeeInfo(employee);
+		int inputCount = employeeManagementService.insertEmployeeInfo(employee);
 		if (inputCount == 0) {
 			MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.ERROR, "실패", "직원추가실패");
 		}
@@ -139,8 +139,9 @@ public class EmployeeManagementController {
 	
 	// 직원 정보 수정
 	@PostMapping("/updateEmployee")
-	public String updateEmployee(EmployeeInfoDTO employee) {
+	public String updateEmployee(EmployeeInfoDTO employee, RedirectAttributes redirectAttributes) {
 		employeeManagementService.updateEmployeeInfo(employee);
+		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "성공","직원 정보 수정 완료");
 		
 		return "redirect:/admin/employeeManagement"; 
 	}
