@@ -14,6 +14,7 @@ import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.ProductMapper;
+import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
@@ -27,20 +28,24 @@ public class ProductService {
 	
 	private final ProductMapper productMapper;
 	private final EmployeeManagementMapper employeeManagementMapper;
+	private final SupplyContractMapper supplyContractMapper;
 	private final HttpSession session;
 	private final FileMapper fileMapper;
 	
 	//상품전체목록
+	@Transactional(readOnly = true)
 	public List<ProductDTO> getProductList(int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod, String filterCategoryIdx) {
 		return productMapper.selectAllProductList(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod, filterCategoryIdx);
 	}
 	
 	//상품 리스트 갯수
+	@Transactional(readOnly = true)
 	public int getProductCount(String searchType, String searchKeyword, String filterCategoryIdx) {
 		return productMapper.countProductList(searchType, searchKeyword, filterCategoryIdx);
 	}
 	
 	// 카테고리 전체목록
+	@Transactional(readOnly = true)
 	public List<ProductDTO> getAllCategoriesAsMap() {
 		return productMapper.selectAllCategoriesAsMap();
 	}
@@ -85,6 +90,7 @@ public class ProductService {
 	}
 	
 	//상품상세정보
+	@Transactional(readOnly = true)
 	public ProductDTO getProductDetail(ProductDTO product) {
 		// 상품정보불러오기
 		product = productMapper.selectProductByProductIdx(product.getProductIdx());
@@ -95,11 +101,19 @@ public class ProductService {
 	//상품정보수정
 	@Transactional
 	public Boolean modifyProduct(ProductDTO product) throws IOException {
+		//상태를 삭제로 변경할때 
+		if(product.getStatus().equals("삭제")){
+			int productWithContract = supplyContractMapper.selectContractWithproductIdx(product.getProductIdx());
+			if(productWithContract > 0 ) { return false;}
+		}
+		
 		// 현재 product에 들어있는  파일 저장
 		product.setProductIdx(product.getProductIdx());
 		List<FileDTO> fileList = FileUtils.uploadFile(product, session);
+		
 		// 현재 product에 들어있는 product_idx를 이용해서 저장된 파일 정보 불러오기
 		FileDTO file = fileMapper.getFileWithTargetTable("product", product.getProductIdx());
+		
 		// 새로 업로드한 파일이 있을 경우에만
 	    if (!fileList.isEmpty()) {
 	        if (file != null) {   // 기존 파일이 존재하면
@@ -113,7 +127,7 @@ public class ProductService {
 	            fileMapper.insertFiles(fileList);
 	        }
 	    }
-	
+	    
 		int updateCount = productMapper.updateProduct(product);
 		
 		return updateCount > 0;
@@ -123,6 +137,12 @@ public class ProductService {
 	public boolean changeProductStatus(Integer productIdx, String status) {
 		int updateCount = productMapper.updateProductStatus(productIdx, status);
 		return updateCount > 0;
+	}
+	
+	// 상품 목록 가져오기
+	@Transactional(readOnly = true)
+	public List<ProductDTO> getAllProductList() {
+		return productMapper.selectAllProduct();
 	}
 
 	

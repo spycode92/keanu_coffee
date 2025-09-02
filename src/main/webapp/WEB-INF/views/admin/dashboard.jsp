@@ -1,10 +1,13 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Keanu Coffee - 총괄 대시보드</title>
+    <sec:csrfMetaTags/>
     <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>

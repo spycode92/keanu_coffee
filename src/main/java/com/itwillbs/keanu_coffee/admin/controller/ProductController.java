@@ -51,8 +51,8 @@ public class ProductController {
 		model.addAttribute("pageNum",pageNum);
 		model.addAttribute("searchType",searchType);
 		model.addAttribute("searchKeyword",searchKeyword);
-		model.addAttribute("sortKey",orderKey);
-		model.addAttribute("sortMethod",orderMethod);
+		model.addAttribute("orderKey",orderKey);
+		model.addAttribute("orderMethod",orderMethod);
 		model.addAttribute("filterCategoryIdx",filterCategoryIdx);
 		//한페이지보여줄수
 		int listLimit = 10;
@@ -111,7 +111,7 @@ public class ProductController {
     }
     
     //카테고리 수정
-    @PutMapping("/modifyCategory")
+    @PostMapping("/modifyCategory")
     @ResponseBody
     public ResponseEntity<Map<String,String>> modifyCategory(@RequestBody CommonCodeDTO category) {
     	System.out.println(category);
@@ -133,7 +133,7 @@ public class ProductController {
     }
     
     //카테고리 삭제
-    @DeleteMapping("/removeCategory")
+    @PostMapping("/removeCategory")
     @ResponseBody
     public ResponseEntity<?> removeCategory(@RequestBody CommonCodeDTO category) {
         Integer commonCodeIdx = category.getCommonCodeIdx();
@@ -182,11 +182,11 @@ public class ProductController {
     		return ResponseEntity.ok("상품정보가 수정되었습니다.");
     	}
     	
-    	return ResponseEntity.ok("상품정보 수정에 실패하였습니다.");
+    	return ResponseEntity.ok("상품정보 수정에 실패하였습니다. 등록된 계약이 있는지 확인하십시오.");
     }
 	
     //상품삭제
-    @DeleteMapping("/removeProduct")
+    @PostMapping("/removeProduct")
     public ResponseEntity<String> removeProduct(@RequestBody Map<String, Object> request) {
     	
     	Object idxObj = request.get("productIdx");
@@ -209,6 +209,15 @@ public class ProductController {
         } else {
             return ResponseEntity.status(500).body("상품 삭제 처리에 실패했습니다.");
         }
+    }
+    
+    @GetMapping("/getProductList")
+    @ResponseBody
+    public List<ProductDTO> getProduct(){
+    	
+    	List<ProductDTO> productList = productService.getAllProductList();
+    	
+    	return productList; 
     }
     
 	

@@ -319,10 +319,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	//직원추가버튼클릭시 직원추가모달 열기
     btnOpen.addEventListener('click', () => {
 		const modal = document.getElementById('addEmployeeModal');
-		modal.querySelectorAll('input').forEach(input => input.value = '');
-    	modal.querySelectorAll('select').forEach(select => select.value = '');
-    	modal.querySelectorAll('textarea').forEach(textarea => textarea.value = '');
-		
+		const form = modal.querySelector('#addEmployeeForm');
+    	form.reset();
 
 		ModalManager.openModal(modal);
 		//부서,팀,직책 정보 함수
@@ -345,10 +343,12 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
 	const DetailmodifyBtn = document.getElementById('DetailmodifyBtn');
+	
 	DetailmodifyBtn.addEventListener('click', () => {
 		editEmployee(selectEmpIdx);
 		
 	});
+	
 	const form = document.getElementById('modifyEmployeeForm');
 	form.querySelector('select[name="departmentIdx"]').addEventListener('change', onModifyDeptChange);
 	//수정모달 핸드폰 번호입력제약사항
@@ -372,6 +372,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	
 	    e.target.value = input;
 	});
+	
 	// 수정모달 비밀번호 초기화버튼 클릭
 	document.getElementById('resetPw').addEventListener('click', function() {
 		const form = document.getElementById('modifyEmployeeForm');
@@ -402,10 +403,34 @@ document.addEventListener("DOMContentLoaded", function() {
 				Swal.fire('비밀번호 초기화 실패', '', 'error');
 				throw err;
 			});
-		
-	
 	});
-
+	
+	//직원추가모달 핸드폰번호 검사
+	$('#addEmpPhone').on('input', '', function() {
+	    let value = $(this).val().replace(/[^0-9]/g, '');
+	    
+	    if (value.length > 11) {
+	        value = value.slice(0, 11);
+	    }
+	    
+	    let formatted = '';
+	    if (value.length <= 3) {
+	        formatted = value;
+	    } else if (value.length <= 7) {
+	        formatted = value.slice(0, 3) + '-' + value.slice(3);
+	    } else {
+	        formatted = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7);
+	    }
+	    
+	    $(this).val(formatted);
+	    
+	    // 추가: 유효성 검사
+	    if (formatted.length === 13) { // 010-1234-5678 완성
+	        $(this).removeClass('is-invalid').addClass('is-valid');
+	    } else {
+	        $(this).removeClass('is-valid');
+	    }
+	});
 
 
 });

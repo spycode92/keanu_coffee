@@ -10,6 +10,7 @@
 	<typeAliases>
 		<package name="com.itwillbs.keanu_coffee.admin.dto"/>
 		<package name="com.itwillbs.keanu_coffee.common.dto"/>
+		<package name="com.itwillbs.keanu_coffee.transport.dto"/>
 	
 	</typeAliases>
 </configuration>

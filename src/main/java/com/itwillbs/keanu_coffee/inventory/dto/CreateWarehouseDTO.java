@@ -1,5 +1,6 @@
 package com.itwillbs.keanu_coffee.inventory.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,11 +9,13 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
-@NoArgsConstructor
+//@NoArgsConstructor
+@AllArgsConstructor
 public class CreateWarehouseDTO {
+	private String locationName;
     private char rack;
     private int bay;
-    private String levelPostion;
+    private String levelPosition;
     private int width;
     private int depth;
     private int height;

@@ -2,11 +2,17 @@ package com.itwillbs.keanu_coffee.admin.controller;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.itwillbs.keanu_coffee.common.dto.SweetAlertIcon;
+import com.itwillbs.keanu_coffee.common.utils.MakeAlert;
+import com.mysql.cj.x.protobuf.MysqlxSession.AuthenticateContinue;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,9 +23,9 @@ public class AdminController {
 	
 	//관리자페이지 메인
 	@GetMapping("")
-	public String adminMain(HttpSession session, Model model) {
-		
-		if(!session.getAttribute("sId").equals("admin")) {
+	public String adminMain(HttpSession session, Model model, Authentication authentication) {
+		String id = authentication.getName();
+		if(!id.equals("admin")) {
 			model.addAttribute("msg", "권한이 없습니다.");
 			model.addAttribute("targetURL", "/"); 
 			return "/commons/result_process";
@@ -29,8 +35,8 @@ public class AdminController {
 	}
 	//직원관리
 	@GetMapping("/employeeManage")
-	public String employeeManagement() {
-		
+	public String employeeManagement(RedirectAttributes redirectAttributes) {
+		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "알림", "이미 로그인 되어 있습니다.");
 		return "redirect:/admin/employeeManagement";
 	}
 	//조직관리
@@ -57,6 +63,13 @@ public class AdminController {
 		
 		return "redirect:/admin/systemPreference/supplyContract";
 	}
+	
+	//지점관리
+	@GetMapping("/preference/franchise")
+	public String systemPreference_franchise() {
+		return "redirect:/admin/systemPreference/franchise";
+	}
+	
 	//로그
 	@GetMapping("/log")
 	public String workingTree() {

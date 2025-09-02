@@ -13,6 +13,7 @@ import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyCompanyMapper;
+import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.utils.FileUtils;
@@ -25,16 +26,19 @@ public class SupplyCompanyService {
 	
 	private final SupplyCompanyMapper supplyCompanyMapper;
 	private final EmployeeManagementMapper employeeManagementMapper;
+	private final SupplyContractMapper supplyContractMapper;
 	private final HttpSession session;
 	private final FileMapper fileMapper;
 	
 	//등록된공급업체리스트
+	@Transactional(readOnly = true)
 	public List<SupplierDTO> getSuppliersInfo(int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod) {
 		
 		return supplyCompanyMapper.selectSuppliersInfo(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
 	}
 
 	// 공급업체목록 수
+	@Transactional(readOnly = true)
 	public int getSupplierCount(String searchType, String searchKeyword) {
 		return supplyCompanyMapper.getSupplierCount(searchType, searchKeyword);
 	}
@@ -47,6 +51,7 @@ public class SupplyCompanyService {
 	}
 	
 	//상태별 공급업체 필터링
+	@Transactional(readOnly = true)
 	public List<SupplierDTO> getSuppliersByStatus(String status) {
 		 String dbStatus = null;
         if ("ACTIVE".equals(status)) {
@@ -71,6 +76,7 @@ public class SupplyCompanyService {
 	}
 	
 	//공급업체 상세보기
+	@Transactional(readOnly = true)
 	public SupplierDTO selectSupplierByIdx(Long idx) {
 
 		return supplyCompanyMapper.selectSupplierInfo(idx);
@@ -78,7 +84,16 @@ public class SupplyCompanyService {
 	
 	//공급업체 정보변경
 	public int modifySupplier(SupplierDTO supplier) {
+		if(supplier.getStatus().equals("삭제")) {
+			int contractCount = supplyContractMapper.selectContractWithSupplierIdx(supplier.getSupplierIdx());
+			if(contractCount > 0) {return 0;}
+		}
 		return supplyCompanyMapper.updateSupplier(supplier);
+	}
+	// 공급업체 목록조회
+	@Transactional(readOnly = true)
+	public List<SupplierDTO> getSupplierList() {
+		return supplyCompanyMapper.selectAllSupplier();
 	}
 	
 	

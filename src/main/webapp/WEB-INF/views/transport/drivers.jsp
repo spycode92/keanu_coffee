@@ -5,6 +5,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>운송관리대시보드</title>
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

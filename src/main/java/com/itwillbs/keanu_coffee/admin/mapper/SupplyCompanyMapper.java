@@ -31,4 +31,6 @@ public interface SupplyCompanyMapper {
 	SupplierDTO selectSupplierInfo(Long idx);
 	// 공급업체 정보 수정
 	int updateSupplier(SupplierDTO supplier);
+	// 공급업체목록조회
+	List<SupplierDTO> selectAllSupplier();
 }
