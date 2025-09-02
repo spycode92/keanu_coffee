@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.keanu_coffee.admin.dto.FranchiseDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.FranchiseMapper;
+import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,6 +47,7 @@ public class FranchiseService {
 	
 	// 지점정보입력
 	@Transactional
+	@SystemLog(target = SystemLogTarget.FRANCHISE)
 	public void addFranchiseInfo(FranchiseDTO franchise) {
 		franchiseMapper.insertFranchiseInfo(franchise);
 		//행정정보등록(중복된값이없을경우에만)
@@ -58,6 +61,7 @@ public class FranchiseService {
 	}
 	//지점정보수정
 	@Transactional
+	@SystemLog(target = SystemLogTarget.FRANCHISE)
 	public int modifyFranchiseInfo(FranchiseDTO franchise) {
 		FranchiseDTO ogData = franchiseMapper.selectFranchiseDetail(franchise.getFranchiseIdx());
 		//지점 정보 수정
