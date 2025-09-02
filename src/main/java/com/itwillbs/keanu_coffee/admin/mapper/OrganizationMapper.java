@@ -80,5 +80,7 @@ public interface OrganizationMapper {
 	CommonCodeDTO selectDept(Integer departmentIdx);
 	//팀 이름 조회
 	TeamDTO selectTeam(Integer teamIdx);
+	// 직책이름 조회
+	RoleDTO selectRole(Integer roleIdx);
 	
 }

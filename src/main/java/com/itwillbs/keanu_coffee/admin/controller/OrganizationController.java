@@ -148,7 +148,8 @@ public class OrganizationController {
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> deleteRole(@RequestBody Map<String, Integer> data) {
 		Integer roleIdx = data.get("roleIdx");
-		boolean deleted = organizationService.deleteRoleByIdx(roleIdx);
+		RoleDTO role = organizationService.selectRole(roleIdx);
+		boolean deleted = organizationService.deleteRoleByIdx(roleIdx, (String)role.getRoleName());
 
 	    Map<String, Object> response = new HashMap<>();
 	    

@@ -286,12 +286,65 @@ public class SystemLogAspect {
 	        	slog.setTargetIdx(teamIdx);
 	        	if (errorMessage == null) {
 	        		slog.setLogMessage(
-	        				slog.getSection() + ">" + slog.getSubSection() + " " + teamName + " 팀 이름 수정 완료"
-        				);
+	    				slog.getSection() + ">" + slog.getSubSection() + " " + teamName + " 팀 이름 수정 완료"
+					);
 	        	} else {
 	        		slog.setLogMessage(
-	        				slog.getSection() + ">" + slog.getSubSection() + " " + teamName + " 팀 이름 수정 중 오류 발생: " + errorMessage
-        				);
+        				slog.getSection() + ">" + slog.getSubSection() + " " + teamName + " 팀 이름 수정 중 오류 발생: " + errorMessage
+    				);
+	        	}
+	        }
+	        
+	        //조직관리 - 직책추가
+	        if ("addRole".equals(methodName)) {
+	        	RoleDTO role = (RoleDTO)args[0];
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("조직관리");
+	        	slog.setTargetIdx(role.getRoleIdx());
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + role.getRoleName() + " 직책 추가 완료"
+    				);
+	        	} else {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + role.getRoleName() + " 직책 추가 중 오류 발생: " + errorMessage
+    				);
+	        	}
+	        }
+	        
+	        //조직관리 - 직책삭제
+	        if ("deleteRoleByIdx".equals(methodName)) {
+	        	Integer roleIdx = (Integer)args[0];
+	        	String roleName = (String)args[1];
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("조직관리");
+	        	slog.setTargetIdx(roleIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직책 삭제 완료"
+    				);
+	        	} else {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직책 삭제 중 오류 발생: " + errorMessage
+    				);
+	        	}
+	        }
+	        
+	        //조직관리 - 팀이름 수정
+	        if ("modifyRoleName".equals(methodName)) {
+	        	Integer roleIdx = (Integer)args[0];
+	        	String roleName = (String)args[1];
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("조직관리");
+	        	slog.setTargetIdx(roleIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직책 이름 수정 완료"
+    				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직책 이름 수정 중 오류 발생: " + errorMessage
+    				);
 	        	}
 	        }
 	        

@@ -45,7 +45,7 @@
 	</delete>
 	<!-- 직책,메뉴,권한 테이블이 가지고있는 직책 삭제 -->
 	<delete id="deleteRoleMenuAuthoByRoleIdx">
-		DELETE FROM ROLE_BOARD_AUTHO
+		DELETE FROM ROLE_AUTHO
 		where role_idx = #{roleIdx}
 	</delete>
 	<!--  팀삭제 -->
@@ -186,6 +186,13 @@
 		SELECT team_idx, team_name
 		FROM TEAM
 		WHERE team_idx = #{teamIdx}
+	</select>
+	
+	<!-- 직책조회 -->
+	<select id="selectRole" resultType="RoleDTO">
+		SELECT role_idx, role_name
+		FROM ROLE
+		where role_idx = #{roleIdx}
 	</select>
 	
 	
