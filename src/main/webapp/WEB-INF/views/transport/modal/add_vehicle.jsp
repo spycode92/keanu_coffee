@@ -12,6 +12,7 @@
 				</div>
 				<div class="modal-body">
 					<form class="form" id="createForm" action="/transport/addVehicle" method="post">
+						<input type="hidden" name="vehicleIdx" id="vehicleIdx"/>
 						<div class="row">
 							<div class="field">
 								<label>차량번호*</label> 
@@ -25,8 +26,8 @@
 						<div class="row">
 							<div class="field">
 								<label>적재량*</label>
-							  	<div class="seg-radio" role="radiogroup" aria-label="적재량">
-							    	<input id="cap-1"  type="radio" name="capacity" value="1000" required>
+							  	<div class="seg-radio" role="radiogroup" aria-label="적재량" required>
+							    	<input id="cap-1"  type="radio" name="capacity" value="1000">
 							    	<label for="cap-1">1t</label>
 							
 							    	<input id="cap-15" type="radio" name="capacity" value="1500">

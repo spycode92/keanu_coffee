@@ -8,10 +8,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
+import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -49,9 +52,6 @@ public class EmployeeManagementController {
         case "사번":
             searchType = "emp_no";
             break;
-        case "아이디":
-            searchType = "emp_id";
-            break;
         default:
             searchType = ""; // 또는 기본값 설정
             break;
@@ -81,19 +81,20 @@ public class EmployeeManagementController {
 	// 자기정보 불러오기
 	@GetMapping("/getOneEmployeeInfo")
 	@ResponseBody
-	public EmployeeInfoDTO getOneEmployeeInfo(HttpSession session) {
+	public EmployeeInfoDTO getOneEmployeeInfo(HttpSession session, Authentication authentication) {
 		EmployeeInfoDTO employee = new EmployeeInfoDTO();
+		EmployeeDetail empDetail = (EmployeeDetail)authentication.getPrincipal();
+		String empNo = authentication.getName();
+		Integer empIdx = empDetail.getEmpIdx();
 		
-		employee.setEmpIdx((int)session.getAttribute("empIdx"));
-		employee = employeeManagementService.getOneEmployeeInfoByEmpIdx(employee.getEmpIdx());
-		
+		employee = employeeManagementService.getOneEmployeeInfoByEmpIdx(empIdx);
 		return employee;
 	}
 	
 	//개인정보 변경로직
 	@PostMapping("/modifyEmployeeInfo")
-	public String modifyEmployeeInfo(EmployeeInfoDTO employee, HttpServletRequest request, HttpSession session) throws IllegalStateException, IOException {
-		int updateCount = employeeManagementService.modifyEmployeeInfo(employee);
+	public String modifyEmployeeInfo(EmployeeInfoDTO employee, HttpServletRequest request, Authentication authentication) throws IllegalStateException, IOException {
+		int updateCount = employeeManagementService.modifyEmployeeInfo(employee, authentication);
 		String refererUrl = request.getHeader("Referer");
 				
 		if (refererUrl != null && !refererUrl.isEmpty()) {
@@ -146,7 +147,8 @@ public class EmployeeManagementController {
 	// 직원 비밀번호 초기화(1234)
 	@PostMapping("/resetPw")
 	@ResponseBody
-	public Map<String, Object> resetPw(EmployeeInfoDTO employee) {
+	public Map<String, Object> resetPw(@RequestBody EmployeeInfoDTO employee) {
+		System.out.println(employee);
 		// AJAX결과 리턴 객체 생성
 		Map<String, Object> result = new HashMap<>();
 		

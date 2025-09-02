@@ -36,8 +36,10 @@ public interface ProductMapper {
 	ProductDTO selectProductByProductIdx(Integer productIdx);
 	// 상품정보 수정
 	int updateProduct(ProductDTO product);
-
+	// 상품상태 수정
 	int updateProductStatus(@Param("productIdx") Integer productIdx, @Param("status")String status);
+	// 상품리스트 선택
+	List<ProductDTO> selectAllProduct();
 
 	
 }

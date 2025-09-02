@@ -1,10 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>메인페이지</title>
+<sec:csrfMetaTags/>
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">

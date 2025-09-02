@@ -2,6 +2,7 @@ package com.itwillbs.keanu_coffee.inventory.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +20,9 @@ public class InventoryActionsService {
 	}
 
 	@Transactional
-	public String registWarehouse(List<CreateWarehouseDTO> locationList) {
+	public void registWarehouse(CreateWarehouseDTO createWarehouseDTO) {
 		
-		return inventoryActionsMapper.insertWarehouse(locationList);
+		inventoryActionsMapper.insertWarehouse(createWarehouseDTO);
 	}
 	
 }

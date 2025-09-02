@@ -282,7 +282,7 @@
                         '<th style="width:48px">체크</th>' +
                         '<th>지점명</th>' +
                         '<th>물품</th>' +
-                        '<th>갯수</th>' +
+                        '<th>개수</th>' +
                         '<th>적재량</th>' +
                     '</tr>';
                 table.appendChild(thead);
@@ -436,7 +436,7 @@
                     '<tr>' +
                         '<th>지점</th>' +
                         '<th>품목</th>' +
-                        '<th>갯수</th>' +
+                        '<th>개수</th>' +
                         '<th>적재량</th>' +
                         '<th>상태</th>' +
                     '</tr>';

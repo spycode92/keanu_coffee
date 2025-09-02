@@ -1,10 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- 상품 추가 모달 -->
 <div id="productAddModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="productAddModalLabel" tabindex="-1">
     <div class="modal-card sm">
         <form id="productAddForm" enctype="multipart/form-data">
+        	<sec:csrfInput/>
             <div class="modal-head">
                 <h5 id="productAddModalLabel">상품 추가</h5>
                 <button type="button"

@@ -8,11 +8,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
+import com.itwillbs.keanu_coffee.transport.dto.AdministrativeRegionDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO;
+import com.itwillbs.keanu_coffee.transport.dto.RegionFranchiseRouteDTO;
 import com.itwillbs.keanu_coffee.transport.dto.VehicleDTO;
 import com.itwillbs.keanu_coffee.transport.service.DriverService;
+import com.itwillbs.keanu_coffee.transport.service.RegionService;
+import com.itwillbs.keanu_coffee.transport.service.RouteService;
 import com.itwillbs.keanu_coffee.transport.service.VehicleService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class TransportController {
 	private final VehicleService vehicleService;
 	private final DriverService driverService;
+	private final RegionService regionService;
 	
 	// 운송 대시보드
 	@GetMapping("")
@@ -100,5 +106,22 @@ public class TransportController {
 	@GetMapping("/mypage")
 	public String mypage() {
 		return "/transport/mypage";
+	}
+	
+	// 구역관리 페이지
+	@GetMapping("/region")
+	public String region(Model model) {
+		// 구역 리스트
+		List<CommonCodeDTO> regionList = regionService.getRegionList();
+		
+		if (regionList == null) {
+			model.addAttribute("msg", "지역 정보를 불러올 수 없습니다.");
+			model.addAttribute("targetURL", "/region");
+			return "commons/result_process";
+		}
+		
+		model.addAttribute("regionList", regionList);
+		
+		return "/transport/region";
 	}
 }

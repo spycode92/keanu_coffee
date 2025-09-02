@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -98,6 +100,7 @@
 	    min-width:32px; height:32px; padding:0 10px; font-size:.9rem;
 	}
     </style>
+    <sec:csrfMetaTags/>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="/resources/css/common/common.css" rel="stylesheet" />
@@ -112,8 +115,10 @@
 
     <section class="content">
         <div class="container">
-            <h4 class="mb-3"><i class="fas fa-truck"></i> 공급업체 관리</h4>
-
+			<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+	            <h4 class="mb-3"><i class="fas fa-truck"></i> 공급업체 관리</h4>
+				<button id="btnAddSupplier" class="btn btn-primary">공급업체 추가</button>
+			</div>
   	        <form class="filters" aria-label="검색 및 필터">
 	            <div class="field">
 	                <select id="filterStatus" name="searchType">
@@ -124,7 +129,7 @@
 	                </select>
 	            </div>
 	            <div class="search">
-	                <input id="filterText" type="text" name="searchKeyword" placeholder="검색" />
+	                <input id="filterText" type="text" name="searchKeyword" placeholder="업체명" />
 	            </div>
 	            <div class="actions">
 	                <button class="btn" id="btnSearch">검색</button>
@@ -158,7 +163,7 @@
 				<div>
 					<c:if test="${not empty pageInfo.maxPage or pageInfo.maxPage > 0}">
 						<input type="button" value="이전" 
-							onclick="location.href='/admin/systemPreference/supplyCompany?pageNum=${pageInfo.pageNum - 1}&filter=${param.searchType}&searchKeyword=${param.searchKeyword}'" 
+							onclick="location.href='/admin/systemPreference/supplyCompany?pageNum=${pageInfo.pageNum - 1}&searchType=${param.searchType}&searchKeyword=${param.searchKeyword}'" 
 							<c:if test="${pageInfo.pageNum eq 1}">disabled</c:if>>
 						<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
 							<c:choose>
@@ -166,17 +171,14 @@
 									<strong>${i}</strong>
 								</c:when>
 								<c:otherwise>
-									<a href="/admin/systemPreference/supplyCompany?pageNum=${i}&filter=${param.searchType}&searchKeyword=${param.searchKeyword}">${i}</a>
+									<a href="/admin/systemPreference/supplyCompany?pageNum=${i}&searchType=${param.searchType}&searchKeyword=${param.searchKeyword}">${i}</a>
 								</c:otherwise>
 							</c:choose>
 						</c:forEach>
 						<input type="button" value="다음" 
-							onclick="location.href='/admin/systemPreference/supplyCompany?pageNum=${pageInfo.pageNum + 1}&filter=${param.searchType}&searchKeyword=${param.searchKeyword}'" 
+							onclick="location.href='/admin/systemPreference/supplyCompany?pageNum=${pageInfo.pageNum + 1}&searchType=${param.searchType}&searchKeyword=${param.searchKeyword}'" 
 						<c:if test="${pageInfo.pageNum eq pageInfo.maxPage}">disabled</c:if>>
 					</c:if>
-				</div>
-				<div>
-					<button id="btnAddSupplier" class="btn btn-primary btn-sm">공급업체 추가</button>
 				</div>
 			</div>
         </div>
