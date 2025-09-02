@@ -1,5 +1,6 @@
 package com.itwillbs.keanu_coffee.inbound.controller;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderDTO;
 import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderItemDTO;
+import com.itwillbs.keanu_coffee.common.dto.PurchaseWithSupplierDTO;
 import com.itwillbs.keanu_coffee.common.service.PurchaseOrderService;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO;
 import com.itwillbs.keanu_coffee.inbound.service.InboundService;
@@ -43,12 +45,23 @@ public class InboundController {
 	// 입고조회
 	@GetMapping("/management")
 	public String showInboundManagement(Model model) {
-		// 발주 테이블 확인
-		List<PurchaseOrderDTO> OrderDetailList = purchaseOrderService.orderDetail();
-		model.addAttribute("orderList", OrderDetailList);
-		
-		return "/inbound/inboundManagement";
+	    // 입고 리스트 조회
+	    List<InboundManagementDTO> orderDetailList = inboundService.inboundWaitingInfo();
+
+	    // LocalDateTime → String 포맷 처리
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+	    orderDetailList.forEach(dto -> {
+	        if (dto.getArrivalDate() != null) {
+	            dto.setArrivalDateStr(dto.getArrivalDate().format(formatter));
+	        }
+	    });
+
+	    // 모델에 전달
+	    model.addAttribute("orderList", orderDetailList);
+
+	    return "/inbound/inboundManagement";
 	}
+
 	
 	// ====================================================================================================================================
 	// 입고상세
@@ -68,12 +81,12 @@ public class InboundController {
 		model.addAttribute("product", product);
 		
 		// 3) orderIdx로 조회
-		List<PurchaseOrderDTO> orderItems = inboundService.getOrderDetailByOrderIdx(orderIdx);
+		List<PurchaseWithSupplierDTO> orderItems = inboundService.getOrderDetailByOrderIdx(orderIdx);
 		model.addAttribute("orderItems", orderItems);
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> - " + orderItems);
 		
 		// 4) orderItems 내부의 PurchaseOrderItemDTO 를 펼쳐서 productIdx -> item 맵 생성
 	    Map<Integer, PurchaseOrderItemDTO> itemMap = orderItems.stream()
+	    	.map(PurchaseWithSupplierDTO::getPurchaseOrder)  
 	        .filter(o -> o.getItems() != null)                             // items null 체크
 	        .flatMap(o -> o.getItems().stream())                           // PurchaseOrderItemDTO 스트림으로 변환
 	        .collect(Collectors.toMap(
@@ -89,11 +102,11 @@ public class InboundController {
 //	    model.addAttribute("staffList", inboundStaffNameList);
 	    
 	    // 6) 회사명 조회
-	    int supplierIdx = orderItems.get(0).getSupplierIdx();
+	    int supplierIdx = orderItems.get(0).getPurchaseOrder().getSupplierIdx();
 	    String supplierName = inboundService.getSupplierName(supplierIdx);
 	    model.addAttribute("supplierName", supplierName);
 	    
-	    
+	    // 7) 
 	    
 	    
 	    

@@ -139,37 +139,37 @@
 
 			<div class="kv-grid p-3">
 				<div class="kv-item">
-					<div class="kv-label">입고번호</div>
-					<div class="kv-value">IN-20250811-001</div>
+					<div class="kv-label">발주번호</div>
+					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고일자</div>
-					<div class="kv-value">2025-08-11</div>
+					<div class="kv-value">-</div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">입고일자</div>
+					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">공급업체</div>
-					<div class="kv-value">에이스상사 (123-45-67890)</div>
-				</div>
-				<div class="kv-item">
-					<div class="kv-label">창고 / 위치</div>
-					<div class="kv-value">중앙창고 / A-01-03</div>
+					<div class="kv-value">-</div>
 				</div>
 
 				<div class="kv-item">
 					<div class="kv-label">담당자</div>
-					<div class="kv-value">김담당</div>
+					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
-					<div class="kv-label">검수 시작</div>
-					<div class="kv-value">2025-08-11 10:12</div>
+					<div class="kv-label">로케이션</div>
+					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">문서번호</div>
-					<div class="kv-value">RQ-20250811-0001</div>
+					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">비고</div>
-					<div class="kv-value">부분입고 — 물류팀 확인 필요</div>
+					<div class="kv-value">-</div>
 				</div>
 			</div>
 		</div>

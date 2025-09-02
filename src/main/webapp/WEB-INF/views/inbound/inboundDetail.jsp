@@ -161,7 +161,7 @@
 					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
-					<div class="kv-label">LOT번호</div>
+					<div class="kv-label">발주번호</div>
 					<div class="kv-value">-</div>
 				</div>
 				<div class="kv-item">
@@ -179,7 +179,7 @@
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">발주번호(PO)</div>
-					<div class="kv-value"><c:out value="${orderItems[0].orderNumber}" /></div>
+					<div class="kv-value"><c:out value="${orderItems[0].purchaseOrder.orderNumber}" /></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고위치</div>
@@ -248,7 +248,7 @@
 							<th style="width:140px;">공급가액</th>
 							<th style="width:120px;">부가세</th>
 							<th style="width:140px;">총액</th>
-							<th style="width:120px;">비고</th>
+							<th style="width:120px;">LOT번호</th>
 						</tr>
 					</thead>
 	<!-- ==============================================================================================================리스트 존========= -->

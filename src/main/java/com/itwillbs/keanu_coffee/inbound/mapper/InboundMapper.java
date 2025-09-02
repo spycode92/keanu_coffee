@@ -8,6 +8,7 @@ import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
 import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderDTO;
 import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderItemDTO;
+import com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO;
 
 @Mapper
 public interface InboundMapper {
@@ -26,6 +27,9 @@ public interface InboundMapper {
 	
 	// 회사명 확인하기
 	String getSupplierName(int supplierIdx);
+
+	List<InboundManagementDTO> selectAllInboundWaitingInfo();
+	
 	
 
 

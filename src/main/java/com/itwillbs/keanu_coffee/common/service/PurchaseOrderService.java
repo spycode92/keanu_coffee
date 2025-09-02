@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderDTO;
+import com.itwillbs.keanu_coffee.common.dto.PurchaseWithSupplierDTO;
 import com.itwillbs.keanu_coffee.common.mapper.PurchaseOrderMapper;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO;
 
@@ -18,10 +19,9 @@ public class PurchaseOrderService {
 	
 	private final PurchaseOrderMapper purchaseOrderMapper;
 	
-	public List<PurchaseOrderDTO> orderDetail() {
+	public List<PurchaseWithSupplierDTO> orderDetail() {
 		return purchaseOrderMapper.orderDetail();
 	}
-
 
 
 	
