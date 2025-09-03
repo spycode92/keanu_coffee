@@ -75,10 +75,9 @@ public class AdminController {
 		return "redirect:/admin/dashboard";
 	}
 	
-	//
-	@GetMapping("/moveInventory")
-	public String moveInventory() {
-		return "/admin/employee_management/move_inventory";
+	@GetMapping("/sysNoti")
+	public String systemNotification() {
+		return "redirect:/admin/systemnotification";
 	}
 	
 	

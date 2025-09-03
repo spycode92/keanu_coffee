@@ -1,6 +1,6 @@
 package com.itwillbs.keanu_coffee.common.mapper;
 
-import com.itwillbs.keanu_coffee.log.dto.SystemLogDTO;
+import com.itwillbs.keanu_coffee.common.dto.SystemLogDTO;
 
 public interface LogMapper {
 

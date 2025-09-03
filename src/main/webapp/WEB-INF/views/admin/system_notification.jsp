@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자페이지 - 직원관리</title>
+<title>관리자페이지 - 시스템알림</title>
 <style type="text/css">
 /* 검색/필터 바 */
 .filters {
@@ -106,24 +106,21 @@
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="${pageContext.request.contextPath}/resources/js/admin/employee_management.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/admin/system_notification.js"></script>
 </head>
 
 <body>
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
-<jsp:include page="/WEB-INF/views/admin/employee_modal/add_employee.jsp"></jsp:include> 
-<jsp:include page="/WEB-INF/views/admin/employee_modal/detail_employee.jsp"></jsp:include> 
-<jsp:include page="/WEB-INF/views/admin/employee_modal/modify_employee.jsp"></jsp:include> 
 <section class="content">
 	<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-		<h4>직원 관리</h4>
+		<h4>시스템 알림</h4>
 		<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary" data-target="#addEmployeeModal">
 	</div>
 		<form class="filters" aria-label="검색 및 필터">
 			<div class="field">
 				<select id="filterStatus" name="searchType">
-					<option <c:if test="${searchType eq '이름' }">selected</c:if>> 이름</option>
-					<option <c:if test="${searchType eq '사번' }">selected</c:if>>사번</option>
+					<option value="emp_no" <c:if test="${searchType eq 'empNo' }">selected</c:if>>작업자</option>
+					<option value="log_message"<c:if test="${searchType eq 'log_message' }">selected</c:if>>메세지</option>
 				</select>
 			</div>
 			<div class="search">
@@ -137,74 +134,12 @@
 		
 			<table class="table table-striped table-bordered" >
 				<tr>
-					<c:if test="${param.orderKey eq e.emp_name }"></c:if>
-					<th data-key="e.emp_name" onclick="allineTable(this)">
-						이름
-						<c:choose>
-							<c:when test="${param.orderKey eq 'e.emp_name'}">
-								<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
-								<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
-							</c:when>
-							 <c:otherwise>
-								↕
-							 </c:otherwise>
-						</c:choose>
-					</th>
-					<th >성별</th>
-					<th data-key="e.emp_no" onclick="allineTable(this)">
-						사번
-						<c:choose>
-							<c:when test="${param.orderKey eq 'e.emp_no'}">
-								<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
-								<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
-							</c:when>
-							 <c:otherwise>
-								↕
-							 </c:otherwise>
-						</c:choose>
-					</th>
-					<th data-key="c.common_code_name" onclick="allineTable(this)">
-						부서
-						<c:choose>
-							<c:when test="${param.orderKey eq 'c.common_code_name'}">
-								<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
-								<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
-							</c:when>
-							 <c:otherwise>
-								↕
-							 </c:otherwise>
-						</c:choose>
-					</th>
-					<th data-key="t.team_name" onclick="allineTable(this)">
-						팀명
-						<c:choose>
-							<c:when test="${param.orderKey eq 't.team_name'}">
-								<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
-								<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
-							</c:when>
-							 <c:otherwise>
-								↕
-							 </c:otherwise>
-						</c:choose>
-					</th>
-					<th data-key="r.role_name" onclick="allineTable(this)">
-					직급
-						<c:choose>
-							<c:when test="${param.orderKey eq 'r.role_name'}">
-								<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
-								<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
-							</c:when>
-							 <c:otherwise>
-								↕
-							 </c:otherwise>
-						</c:choose>
-					</th>
+					<c:if test="${param.orderKey eq log_idx }"></c:if>
 					<th>번호</th>
-					<th>이메일</th>
-					<th data-key="e.hire_date" onclick="allineTable(this)">
-						입사일
+					<th data-key="created_at" onclick="allineTable(this)">
+						로그생성일시
 						<c:choose>
-							<c:when test="${param.orderKey eq 'e.hire_date'}">
+							<c:when test="${param.orderKey eq 'created_at'}">
 								<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
 								<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
 							</c:when>
@@ -213,10 +148,11 @@
 							 </c:otherwise>
 						</c:choose>
 					</th>
-					<th data-key="e.emp_status" onclick="allineTable(this)">
-					상태
+					<th >작업자</th>
+					<th data-key="sub_section" onclick="allineTable(this)">
+						작업영역
 						<c:choose>
-							<c:when test="${param.orderKey eq 'e.emp_status'}">
+							<c:when test="${param.orderKey eq 'sub_section'}">
 								<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
 								<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
 							</c:when>
@@ -225,28 +161,18 @@
 							 </c:otherwise>
 						</c:choose>
 					</th>
+					<th >
+						알림메세지
+					</th>
+					
 				</tr>
-				<c:forEach var="employee" items="${employeeList }">
-					<tr class="employee-row" data-emp-idx="${employee.empIdx}">
-						<td>${employee.empName }</td>
-						<td>${employee.empGender }</td>
-						<td>${employee.empNo }</td>
-						<td>
-							${empty employee.commonCode.commonCodeName ?
-								 '미배정' : employee.commonCode.commonCodeName }
-						</td>
-						<td>
-							${empty employee.team.teamName ?
-								'미배정' : employee.team.teamName }
-						</td>
-						<td>
-							${empty employee.role.roleName ?
-								'미배정' : employee.role.roleName }
-						</td>
-						<td>${employee.empPhone }</td>
-						<td>${employee.empEmail }</td>
-						<td>${employee.hireDate }</td>
-						<td>${employee.empStatus }</td>
+				<c:forEach var="notification" items="${notificationList }">
+					<tr class="employee-row" data-emp-idx="${notification.logIdx}">
+						<td>${notification.logIdx }</td>
+						<td>${notification.createdAt }</td>
+						<td>${notification.empNo }</td>
+						<td>${notification.subSection }</td>
+						<td>${notification.logMessage }</td>
 					</tr>
 				</c:forEach>
 				</table>
@@ -255,7 +181,7 @@
 					<div>
 						<c:if test="${not empty pageInfo.maxPage or pageInfo.maxPage > 0}">
 							<input type="button" value="이전" 
-								onclick="location.href='/admin/employeeManagement?pageNum=${pageInfo.pageNum - 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod=${param.orderMethod}'" 
+								onclick="location.href='/admin/systemnotification?pageNum=${pageInfo.pageNum - 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod${param.orderMethod}'" 
 								<c:if test="${pageInfo.pageNum eq 1}">disabled</c:if>>
 							
 							<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
@@ -264,13 +190,13 @@
 										<strong>${i}</strong>
 									</c:when>
 									<c:otherwise>
-										<a href="/admin/employeeManagement?pageNum=${i}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod=${param.orderMethod}">${i}</a>
+										<a href="/admin/systemnotification?pageNum=${i}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod${param.orderMethod}">${i}</a>
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
 							
 							<input type="button" value="다음" 
-								onclick="location.href='/admin/employeeManagement?pageNum=${pageInfo.pageNum + 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod=${param.orderMethod}'" 
+								onclick="location.href='/admin/systemnotification?pageNum=${pageInfo.pageNum + 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod${param.orderMethod}'" 
 							<c:if test="${pageInfo.pageNum eq pageInfo.maxPage}">disabled</c:if>>
 						</c:if>
 					</div>

@@ -29,10 +29,10 @@ import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
 import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
 import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
+import com.itwillbs.keanu_coffee.common.dto.SystemLogDTO;
 import com.itwillbs.keanu_coffee.common.mapper.LogMapper;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.TimeUtils;
-import com.itwillbs.keanu_coffee.log.dto.SystemLogDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
