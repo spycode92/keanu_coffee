@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
@@ -34,8 +35,7 @@ public class InventorySearchController {
             @RequestParam(defaultValue = "전체") String stockStatus,   // 재고 상태
             @RequestParam(defaultValue = "전체") String outboundStatus, // 출고 여부
             @RequestParam(defaultValue = "") String sortOption,         // 날짜 정렬
-            @RequestParam(defaultValue = "") String qtySort,            // 수량 정렬  
-            @RequestParam(defaultValue = "N") String fifo        // FIFO 여부
+            @RequestParam(defaultValue = "") String qtySort            // 수량 정렬  
     ) {
 
         int listLimit = 10; // 한 페이지에 보여줄 행 개수
@@ -55,7 +55,7 @@ public class InventorySearchController {
                     pageInfo.getStartRow(),
                     listLimit,
                     keyword, location, locationType, mfgDate, expDate,
-                    stockStatus, outboundStatus, sortOption, qtySort, fifo
+                    stockStatus, outboundStatus, sortOption, qtySort
             );
 
             model.addAttribute("inventoryList", list);
@@ -69,12 +69,19 @@ public class InventorySearchController {
         model.addAttribute("locationType", locationType);
         model.addAttribute("mfgDate", mfgDate);
         model.addAttribute("expDate", expDate);
-        model.addAttribute("stockStatus", stockStatus);
+        model.addAttribute("stockStatus", stockStatus); 
         model.addAttribute("outboundStatus", outboundStatus);
         model.addAttribute("sortOption", sortOption);
         model.addAttribute("qtySort", qtySort);
-        model.addAttribute("fifo", fifo);
 
         return "inventory/stockCheck";
+    }
+    
+    // 재고 상세 조회 모달창 (Ajax)
+    @GetMapping("/detail")
+    @ResponseBody
+    public Map<String, Object> getInventoryDetail(@RequestParam("idx") int receiptProductIdx) {
+        // 서비스에서 단건 조회 (상세정보 + 로케이션 분포까지 조회)
+        return inventorySearchService.getInventoryDetail(receiptProductIdx);
     }
 }

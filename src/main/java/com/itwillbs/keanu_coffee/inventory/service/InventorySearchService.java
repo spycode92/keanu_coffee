@@ -33,15 +33,21 @@ public class InventorySearchService {
             String keyword, String location, String locationType,
             String mfgDate, String expDate,
             String stockStatus, String outboundStatus,
-            String sortOption, String qtySort, String fifo
+            String sortOption, String qtySort
     ) {
         return inventorySearchMapper.selectReceiptProductList(
                 startRow, listLimit,
                 keyword, location, locationType,
                 mfgDate, expDate,
                 stockStatus, outboundStatus,
-                sortOption, qtySort, fifo
+                sortOption, qtySort
         );
     }
+    
+    // 재고 상세 조회 모달창 (Ajax)
+    public Map<String, Object> getInventoryDetail(int receiptProductIdx) {
+        return inventorySearchMapper.selectInventoryDetail(receiptProductIdx);
+    }
+    
     
 }

@@ -234,9 +234,6 @@
 		                <option value="NO" ${outboundStatus eq 'NO' ? 'selected' : ''}>불가능</option>
 		            </select>
 		        </div>
-		        <div style="display:flex; align-items:flex-end;">
-		            <button type="submit" name="fifo" value="Y" class="btn btn-outline">유통기한 오름차순(FIFO)</button>
-		        </div>
 		    </div>
 		</form>
 
@@ -272,7 +269,7 @@
 	            </thead>
 	            <tbody id="tbodyRealtime">
 				    <c:forEach var="item" items="${inventoryList}">
-				        <tr>
+						<tr data-idx="${item.receipt_product_idx}">
 				            <td>${item.location_name}</td>
 				            <td>${item.product_name}</td>
 				            <td>${item.product_idx}</td>
@@ -369,7 +366,7 @@
 	            <!-- 로케이션 분포 -->
 	            <div>
 	                <div class="card" style="padding:12px;">
-	                    <div class="card-header"><h3 class="card-title">로케이션 분포(동일 LOT)</h3></div>
+	                    <div class="card-header"><h3 class="card-title">로케이션 분포</h3></div>
 	                    <div id="locList">
 	                        <div class="logline"><div class="logleft">데이터 없음</div><div class="logright">-</div></div>
 	                    </div>
@@ -482,78 +479,48 @@
 	    });
 	
 	    /* ====================== 모달 ====================== */
-	    $('#tbodyRealtime').on('click', 'tr', function(){
-	        const lotNo = $(this).data('lot');
-	        if (!lotNo) return;
-	        openLotModal(lotNo);
-	    });
-	
-	    function openLotModal(lotNo){
-	        const mi = inboundByLot[lotNo] || {};
-	        const locs = locationsByLot[lotNo] || [];
-	        const unit = mi.unit || 'BOX';
-	        const row = realtimeData.find(x => x.lotNo === lotNo);
-	        
-	        // 상세값 세팅
-	        $('#miName').text(row?.name || '–');
-	        $('#miItem').text(mi.itemCode || '–');
-	        $('#miLot').text(mi.lotNo || lotNo || '–');
-	        $('#miMfg').text(mi.mfgDate ? mi.mfgDate : '–');
-	        $('#miExp').text(mi.expDate ? mi.expDate : '–');
-	        $('#miUnit').text(unit);
-	        $('#miSupplier').text(mi.supplier || '–');
-	        
-	        // D-Day & 재고상태 추가
-	        const threshold = FIXED_THRESHOLD;   // 모달에서도 고정값
-	        const { labelHtml, ddayHtml } = makeStatusAndDday(mi.expDate, threshold);
-	        $('#miDday').html(ddayHtml);
-	        $('#miStatus').html(labelHtml);
-	        
-	        // 로케이션 분포
-	        const $box = $('#locList').empty();
-	        let sum = 0;
-	        if (locs.length === 0){
-	            $box.append('<div class="logline"><div class="logleft">데이터 없음</div><div class="logright">-</div></div>');
-	        } else {
-	            locs.forEach(x=>{
-	                sum += Number(x.qty)||0;
-	                $box.append(
-	                    '<div class="logline">'+
-	                        '<div class="logleft">'+x.loc+'</div>'+
-	                        '<div class="logright"><b>'+x.qty+' '+unit+'</b></div>'+
-	                    '</div>'
-	                );
-	            });
-	            $box.append(
-	                '<div class="logline">'+
-	                    '<div class="logleft"><b>합계</b></div>'+
-	                    '<div class="logright"><b>'+sum+' '+unit+'</b></div>'+
-	                '</div>'
-	            );
-	        }
-	        
-	        // 현재고 표시
-	        $('#miCurrent').text(sum+' '+unit);
-	        
-	        // 폐기 패널 초기화
-	        $('#df-lotNumber').val(lotNo);
-	        $('#df-productCode').val($('#miItem').text().trim() || '');
-	        const $firstRow = $('#locList .logline .logleft').first();
-	        const firstLoc = ($firstRow.text() || '').trim();
-	        $('#df-locationCode').val(firstLoc && firstLoc!=='데이터 없음' ? firstLoc : '');
-	        const unitTxt = $('#miUnit').text().trim() || 'BOX';
-	        $('#df-currentQtyText').text(sum.toLocaleString('ko-KR'));
-	        $('#df-unitText').text(unitTxt);
-	
-	        $('#btn-disposal-toggle').attr('aria-expanded','false').text('폐기 처리');
-	        $('#disposalPanel').addClass('hidden');
-	
-	        // 폼 리셋 추가 (수량/사유 초기화)
-	        $('#disposalForm')[0].reset();
-	
-	        ModalManager.openModalById('lotModal');
-	    }
-	    
+	    $('#tbodyRealtime').on('click', 'tr', function() {
+		    const idx = $(this).data('idx');   // ✅ receipt_product_idx 가져오기
+		    if (!idx) return;
+		
+		    // Ajax로 상세 데이터 요청
+		    $.getJSON('${pageContext.request.contextPath}/inventory/detail', { idx: idx }, function(data) {
+		        // 상품 정보 채우기
+		        $('#miName').text(data.product_name || '–');
+		        $('#miItem').text(data.product_idx || '–');
+		        $('#miMfg').text(data.manufacture_date || '–');
+		        $('#miExp').text(data.expiration_date || '–');
+		        $('#miCurrent').text((data.current_quantity || 0) + ' BOX');
+		        $('#miSupplier').text(data.supplier_name || '–'); // ✅ 컬럼명 맞추기
+		
+		        // 로케이션 분포
+		        const $box = $('#locList').empty();
+		        if (data.locations && data.locations.length > 0) {
+		            let sum = 0;
+		            data.locations.forEach(loc => {
+		                sum += loc.qty;
+		                $box.append(
+		                    '<div class="logline">' +
+		                        '<div class="logleft">' + loc.location_name + '</div>' +
+		                        '<div class="logright"><b>' + loc.qty + ' BOX</b></div>' +
+		                    '</div>'
+		                );
+		            });
+		            $box.append(
+		                '<div class="logline">' +
+		                    '<div class="logleft"><b>합계</b></div>' +
+		                    '<div class="logright"><b>' + sum + ' BOX</b></div>' +
+		                '</div>'
+		            );
+		        } else {
+		            $box.append('<div class="logline"><div class="logleft">데이터 없음</div><div class="logright">-</div></div>');
+		        }
+		
+		        // 모달 열기
+		        ModalManager.openModalById('lotModal');
+		    });
+		});
+					    
 	    /* ====================== 폐기 패널 토글 ====================== */
 	    $('#btn-disposal-toggle').on('click', function(){
 	        const $panel = $('#disposalPanel');

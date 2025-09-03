@@ -32,9 +32,11 @@ public interface InventorySearchMapper {
             @Param("stockStatus") String stockStatus,
             @Param("outboundStatus") String outboundStatus,
             @Param("sortOption") String sortOption,
-            @Param("qtySort") String qtySort,
-            @Param("fifo") String fifo
+            @Param("qtySort") String qtySort
     );
+    
+    // 재고 상세 조회 모달창 (Ajax)
+    Map<String, Object> selectInventoryDetail(int receiptProductIdx);
 	
 	
 }
