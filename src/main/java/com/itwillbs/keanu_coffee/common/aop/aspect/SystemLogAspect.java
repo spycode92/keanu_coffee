@@ -18,7 +18,9 @@ import org.springframework.stereotype.Component;
 import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.dto.FranchiseDTO;
+import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
 import com.itwillbs.keanu_coffee.admin.dto.RoleDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.dto.TeamDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
@@ -452,6 +454,125 @@ public class SystemLogAspect {
 	        		slog.setLogMessage(
 	        				slog.getSection() + ">" + slog.getSubSection() + " " + authoIdx + " 권한 이름 수정 중 오류 발생: " + errorMessage
     				);
+	        	}
+	        }
+	        
+	        // 상품관리 카테고리 추가
+	        if ("addCategoryFromMap".equals(methodName)) {
+	        	CommonCodeDTO category = (CommonCodeDTO)args[0];
+	        	Integer categoryIdx = category.getCommonCodeIdx();
+	        	String categoryName = category.getCommonCodeName();
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("상품관리");
+	        	slog.setTargetIdx(categoryIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + categoryName + " 카테고리 추가 완료"
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + categoryName + " 카테고리 추가 중 오류 발생: " + errorMessage
+	        				);
+	        	}
+	        }
+	        
+	        // 상품관리 카테고리 수정
+	        if ("modifyCategory".equals(methodName)) {
+	        	CommonCodeDTO category = (CommonCodeDTO)args[0];
+	        	Integer categoryIdx = category.getCommonCodeIdx();
+	        	String categoryName = category.getCommonCodeName();
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("상품관리");
+	        	slog.setTargetIdx(categoryIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + categoryName + " 로 카테고리 수정 완료"
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + categoryName + " 로 카테고리 수정 중 오류 발생: " + errorMessage
+    				);
+	        	}
+	        }
+	        
+	        // 상품관리 카테고리 삭제
+	        if ("removeCategoryIfUnused".equals(methodName)) {
+	        	CommonCodeDTO category = (CommonCodeDTO)args[0];
+	        	Integer categoryIdx = category.getCommonCodeIdx();
+	        	String categoryName = category.getCommonCodeName();
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("상품관리");
+	        	slog.setTargetIdx(categoryIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + categoryName + " 카테고리 삭제 완료"
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + categoryName + " 카테고리 삭제 중 오류 발생: " + errorMessage
+	        				);
+	        	}
+	        }
+	        
+	        // 상품관리 상품 추가
+	        if ("addProduct".equals(methodName)) {
+	        	ProductDTO product = (ProductDTO)args[0];
+	        	Integer productIdx = product.getProductIdx();
+	        	String productName = product.getProductName();
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("상품관리");
+	        	slog.setTargetIdx(productIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + productName + " 상품 추가 완료"
+    				);
+	        	} else {
+	        		slog.setLogMessage(
+    					slog.getSection() + ">" + slog.getSubSection() + " " + productName + " 상품 추가 중 오류 발생: " + errorMessage
+    				);
+	        	}
+	        }
+	        
+	        // 상품관리 상품정보수정
+	        if ("modifyProduct".equals(methodName)) {
+	        	ProductDTO product = (ProductDTO)args[0];
+	        	Integer productIdx = product.getProductIdx();
+	        	String productName = product.getProductName();
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("상품관리");
+	        	slog.setTargetIdx(productIdx);
+	        	if (errorMessage == null) {
+	        		if (product.getStatus().equals("삭제")){
+	        			slog.setLogMessage(
+            				slog.getSection() + ">" + slog.getSubSection() + " " + productName + " 상품 삭제 완료"
+        				);
+	        		}
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + productName + " 상품정보 수정 완료"
+    				);
+	        	} else {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + productName + " 상품정보 수정 중 오류 발생: " + errorMessage
+    				);
+	        	}
+	        }
+	        
+	        // 공급업체 추가
+	        if ("addSupplier".equals(methodName)) {
+	        	SupplierDTO supplier = (SupplierDTO)args[0];
+	        	Integer supplierIdx = supplier.getSupplierIdx();
+	        	String supplierName = supplier.getSupplierName();
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("공급업체관리");
+	        	slog.setTargetIdx(supplierIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + supplierName + " 공급업체 등록 완료"
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + supplierName + " 공급업체 등록 중 오류 발생: " + errorMessage
+	        				);
 	        	}
 	        }
 	        

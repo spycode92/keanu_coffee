@@ -8,4 +8,6 @@ public enum SystemLogTarget {
 	, TEAM
 	, ROLE
 	, ROLE_AUTHO
+	, PRODUCT
+	
 }

@@ -14,6 +14,8 @@ import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyCompanyMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
+import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.utils.FileUtils;
@@ -44,6 +46,7 @@ public class SupplyCompanyService {
 	}
 	
 	//공급업체등록
+	@SystemLog(target = SystemLogTarget.SUPPLIER)
 	public SupplierDTO addSupplier(SupplierDTO supplierDTO) {
 		supplyCompanyMapper.insertSupplier(supplierDTO);
 		
@@ -88,6 +91,7 @@ public class SupplyCompanyService {
 			int contractCount = supplyContractMapper.selectContractWithSupplierIdx(supplier.getSupplierIdx());
 			if(contractCount > 0) {return 0;}
 		}
+		
 		return supplyCompanyMapper.updateSupplier(supplier);
 	}
 	// 공급업체 목록조회
