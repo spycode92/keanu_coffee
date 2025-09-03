@@ -164,9 +164,9 @@
 	</delete>
 	
 	<!-- 권한 추가 -->
-	<insert id="insertAutho" >
+	<insert id="insertAutho" useGeneratedKeys="true" keyProperty="commonCodeIdx" parameterType="CommonCodeDTO" >
 		INSERT INTO COMMON_CODE(group_code, common_code, common_code_name)
-		VALUES ('AUTHORITY', #{authoCode}, #{authoName})
+		VALUES ('AUTHORITY', #{commonCode}, #{commonCodeName})
 	</insert>
 	
 	<!-- 부서조회 -->
@@ -193,6 +193,23 @@
 		SELECT role_idx, role_name
 		FROM ROLE
 		where role_idx = #{roleIdx}
+	</select>
+	
+	<!-- 권한조회 -->
+	<select id="selectAuthoByAuthoIdx" resultType="CommonCodeDTO" parameterType="java.util.List">
+		SELECT common_code_idx, common_code, common_code_name
+		FROM COMMON_CODE
+		WHERE common_code_idx IN
+	    <foreach collection="list" item="idx" open="(" separator="," close=")">
+	        #{idx}
+	    </foreach>
+	</select>
+	
+	<!-- 권한조회 단건 -->
+	<select id="selectAuthoName" resultType="CommonCodeDTO">
+		SELECT common_code_idx, common_code_name
+		FROM COMMON_CODE
+		WHERE common_code_idx = #{commonCodeIdx}
 	</select>
 	
 	

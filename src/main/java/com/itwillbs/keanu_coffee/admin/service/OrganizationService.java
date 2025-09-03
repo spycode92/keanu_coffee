@@ -166,8 +166,10 @@ public class OrganizationService {
 	public List<Map<String, Object>> getAuthrityInfo(Integer roleIdx) {
 		return organizationMapper.selectAuthorityInfo(roleIdx);
 	}
+	
 	//직책별 권한 업데이트
 	@Transactional
+	@SystemLog(target = SystemLogTarget.ROLE_AUTHO )
 	public void modifyRoleAutho(Map<String, Object> data) {
 		Integer roleIdx = (Integer) data.get("roleIdx");
 	    List<Integer> addedAuthorities = (List<Integer>) data.get("addedAuthorities");
@@ -180,14 +182,13 @@ public class OrganizationService {
             if (!addedAuthorities.isEmpty()) {
             	organizationMapper.insertAuthorities(roleIdx, addedAuthorities);
             }
-            // 성공시 모든 변경사항 커밋
         } catch (Exception e) {
-            // 실패시 모든 변경사항 롤백
             throw new RuntimeException("권한 수정 실패: " + e.getMessage(), e);
         }
 		
 	}
 	//권한이름수정
+	@SystemLog(target = SystemLogTarget.COMMON_CODE)
 	public Boolean modifyAuthoName(Map<String, Object> data) {
 		Integer authoIdx = (Integer)data.get("authoIdx");
 		String authoName = (String)data.get("authoName");
@@ -196,8 +197,11 @@ public class OrganizationService {
 	}
 
 	//권한삭제
-	public Map<String, String> removeAuthoName(Integer authoIdx) {
+	@SystemLog(target = SystemLogTarget.COMMON_CODE)
+	public Map<String, String> removeAuthoName(CommonCodeDTO common) {
 		Map<String, String> result = new HashMap<>();
+		
+		Integer authoIdx = common.getCommonCodeIdx();
 		int exitsRoleAuthoCount = organizationMapper.countRoleAutho(authoIdx);
 		// 삭제할 권한이 직책에 부여되어 있다면
 		if (exitsRoleAuthoCount > 0) {
@@ -213,11 +217,12 @@ public class OrganizationService {
 	}
 	
 	//권한 추가
-	public Map<String, String> addAutho(Map<String, Object> data) {
+	@SystemLog(target = SystemLogTarget.COMMON_CODE)
+	public Map<String, String> addAutho(CommonCodeDTO common) {
 		Map<String, String> result = new HashMap<>();
-		String authoCode = (String)data.get("authoCode");
-		String authoName = (String)data.get("authoName");
-		int insertCount = organizationMapper.insertAutho(authoCode, authoName);
+
+		int insertCount = organizationMapper.insertAutho(common);
+		
 		if(insertCount > 0) {
 			result.put("result", "success");
 			result.put("msg", "권한이 추가되었습니다.");
@@ -235,9 +240,14 @@ public class OrganizationService {
 	public TeamDTO selectTeam(Integer teamIdx) {
 		return organizationMapper.selectTeam(teamIdx);
 	}
-
+	//직책 정보가져오기
 	public RoleDTO selectRole(Integer roleIdx) {
 		return organizationMapper.selectRole(roleIdx);
+	}
+	//권한정보가져오기
+	public CommonCodeDTO selectAuthoName(CommonCodeDTO common) {
+		// TODO Auto-generated method stub
+		return organizationMapper.selectAuthoName(common);
 	}
 
 	

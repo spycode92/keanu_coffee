@@ -7,4 +7,5 @@ public enum SystemLogTarget {
 	, COMMON_CODE
 	, TEAM
 	, ROLE
+	, ROLE_AUTHO
 }

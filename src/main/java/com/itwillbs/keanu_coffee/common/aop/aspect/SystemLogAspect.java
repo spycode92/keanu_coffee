@@ -347,7 +347,113 @@ public class SystemLogAspect {
     				);
 	        	}
 	        }
+
+	        //조직관리 - 직책에 부여한 권한수정
+	        if ("modifyRoleAutho".equals(methodName)) {
+	        	Map<String,Object> data = (Map) args[0];
+	        	//직책이름 구하기
+	    		Integer roleIdx = (Integer) data.get("roleIdx");
+	        	RoleDTO role = organizationMapper.selectRole(roleIdx);
+	        	String roleName = role.getRoleName();
+	        	//추가삭제 권한 이름 구하기
+	    		List<Integer> addAuthoritiesIdx = (List<Integer>) data.get("addedAuthorities");
+	        	List<Integer> removedAuthoritiesIdx = (List<Integer>) data.get("removedAuthorities");
+	        	// 추가권한 메세지 작성
+	        	List<CommonCodeDTO> addAuthoList = organizationMapper.selectAuthoByAuthoIdx(addAuthoritiesIdx);
+	        	StringBuilder addAuthos = new StringBuilder();
+	        	addAuthos.append("추가한 권한 : ");
+
+	        	for (int i = 0; i < addAuthoList.size(); i++) {
+	        	    CommonCodeDTO code = addAuthoList.get(i);
+	        	    addAuthos.append(code.getCommonCodeName());
+
+	        	    if (i != addAuthoList.size() - 1) {
+	        	    	addAuthos.append(" | "); // 마지막 항목 뒤에는 구분자 안 붙임
+	        	    }
+	        	}
+	        	// 제거권한 메세지작성
+	        	List<CommonCodeDTO> removeAuthoList = organizationMapper.selectAuthoByAuthoIdx(removedAuthoritiesIdx); 
+	        	StringBuilder removeAuthos = new StringBuilder();
+	        	removeAuthos.append("제거한 권한 : ");
+
+	        	for (int i = 0; i < removeAuthoList.size(); i++) {
+	        	    CommonCodeDTO code = removeAuthoList.get(i);
+	        	    removeAuthos.append(code.getCommonCodeName());
+
+	        	    if (i != removeAuthoList.size() - 1) {
+	        	    	removeAuthos.append(" | "); // 마지막 항목 뒤에는 구분자 안 붙임
+	        	    }
+	        	}
+	        	
+	        	
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("조직관리");
+	        	slog.setTargetIdx(roleIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직책 에\n" + addAuthos + ", \n" + removeAuthos 
+    				);
+	        	} else {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직책 권한 수정 중 오류 발생: " + errorMessage
+    				);
+	        	}
+	        }
 	        
+	        //조직관리 - 권한추가
+	        if ("addAutho".equals(methodName)) {
+	        	CommonCodeDTO autho = (CommonCodeDTO)args[0];
+	        	Integer authoCodeIdx = autho.getCommonCodeIdx();
+	    		String authoName = autho.getCommonCodeName();
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("조직관리");
+	        	slog.setTargetIdx(authoCodeIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + authoName + " 권한 추가 완료"
+    				);
+	        	} else {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + authoName + " 권한 추가 중 오류 발생: " + errorMessage
+    				);
+	        	}
+	        }
+	        
+	        //조직관리 - 권한삭제
+	        if ("removeAuthoName".equals(methodName)) {
+	        	CommonCodeDTO common = (CommonCodeDTO)args[0];
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("조직관리");
+	        	slog.setTargetIdx(common.getCommonCodeIdx());
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + common.getCommonCodeName() + " 권한 삭제 완료"
+    				);
+	        	} else {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + common.getCommonCodeName() + " 권한 삭제 중 오류 발생: " + errorMessage
+    				);
+	        	}
+	        }
+//	        
+	        //조직관리 - 권한 이름 수정
+	        if ("modifyAuthoName".equals(methodName)) {
+	        	Map<String, Object> data = (Map)args[0];
+	        	Integer authoIdx = (Integer)data.get("authoIdx");
+	        	String authoName = (String)data.get("authoName");
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("조직관리");
+	        	slog.setTargetIdx(authoIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + authoIdx + "번 권한 " + authoName + " 으로 권한 이름 수정 완료"
+    				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + authoIdx + " 권한 이름 수정 중 오류 발생: " + errorMessage
+    				);
+	        	}
+	        }
 	        
 	        logmapper.insertSystemLog(slog);
 	    }

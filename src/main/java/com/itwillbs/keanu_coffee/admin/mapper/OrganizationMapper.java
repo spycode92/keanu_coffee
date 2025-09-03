@@ -75,12 +75,17 @@ public interface OrganizationMapper {
 	// 권한 삭제
 	void deleteAutho(Integer authoIdx);
 	// 권한 추가
-	int insertAutho(@Param("authoCode")String authoCode, @Param("authoName")String authoName);
+	int insertAutho(CommonCodeDTO common);
 	// 부서 이름 조회
 	CommonCodeDTO selectDept(Integer departmentIdx);
 	//팀 이름 조회
 	TeamDTO selectTeam(Integer teamIdx);
 	// 직책이름 조회
 	RoleDTO selectRole(Integer roleIdx);
+	// 권한조회(권한idx로)
+	List<CommonCodeDTO> selectAuthoByAuthoIdx(List<Integer> addAuthoritiesIdx);
+	//권한정보조회(단건)
+	CommonCodeDTO selectAuthoName(CommonCodeDTO common);
+
 	
 }

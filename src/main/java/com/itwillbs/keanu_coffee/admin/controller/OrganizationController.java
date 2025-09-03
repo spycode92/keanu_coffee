@@ -264,7 +264,11 @@ public class OrganizationController {
 	public ResponseEntity<Map<String,String>> removeAuthoName(@PathVariable Integer authoIdx){
 		
 		Map<String, String> result = new HashMap<>();
-		result = organizationService.removeAuthoName(authoIdx);
+		CommonCodeDTO common = new CommonCodeDTO();
+		common.setCommonCodeIdx(authoIdx);
+		common = organizationService.selectAuthoName(common);
+		
+		result = organizationService.removeAuthoName(common);
 
 		return ResponseEntity.ok(result);
 	}
@@ -275,7 +279,13 @@ public class OrganizationController {
 	public ResponseEntity<Map<String,String>> addAutho(@RequestBody Map<String, Object> data){
 		
 		Map<String, String> result = new HashMap<>();
-		result = organizationService.addAutho(data);
+		String authoCode = (String)data.get("authoCode");
+		String authoName = (String)data.get("authoName");
+		CommonCodeDTO common = new CommonCodeDTO();
+		common.setCommonCode(authoCode);
+		common.setCommonCodeName(authoName);
+		
+		result = organizationService.addAutho(common);
 
 		return ResponseEntity.ok(result);
 	}
