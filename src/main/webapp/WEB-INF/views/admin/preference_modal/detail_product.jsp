@@ -110,14 +110,14 @@
            	</div>
             <div class="modal-foot">
                 <button type="button"
-                        class="btn btn-secondary btn-cancel-edit"
-                        style="display: none;">
-                    취소
-                </button>
-                <button type="button"
                         class="btn btn-primary btn-delete"
                         >
                     삭제
+                </button>
+                <button type="button"
+                        class="btn btn-secondary btn-cancel-edit"
+                        style="display: none;">
+                    취소
                 </button>
                 <button type="button"
                         class="btn btn-primary btn-edit">

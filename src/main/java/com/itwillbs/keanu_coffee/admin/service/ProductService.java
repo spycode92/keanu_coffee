@@ -136,16 +136,17 @@ public class ProductService {
 	}
 	
 	//상품상태 삭제로변경
+	@SystemLog(target = SystemLogTarget.PRODUCT)
 	public Boolean deleteProduct(ProductDTO product) {
 		int productWithContract = supplyContractMapper.selectContractWithproductIdx(product.getProductIdx());
 		if(productWithContract > 0 ) {
 //				return false;
-			throw new CustomBusinessException("등록된 상품이 있어 삭제할 수 없습니다.");
+			throw new CustomBusinessException("등록된 계약이 있어 삭제할 수 없습니다.");
 		}
 		int deleteProductCount = productMapper.deleteProduct(product);
 		
 		
-		return null;
+		return deleteProductCount > 0;
 	}
 	
 	// 상품 목록 가져오기

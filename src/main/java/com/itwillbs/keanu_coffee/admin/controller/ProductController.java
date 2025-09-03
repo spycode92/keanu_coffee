@@ -196,16 +196,10 @@ public class ProductController {
 	
     @PostMapping("/removeProduct")
     @ResponseBody
-    public ResponseEntity<Map<String,String>> removeProduct(@ModelAttribute ProductDTO product) throws IOException {
+    public ResponseEntity<Map<String,String>> removeProduct(@RequestBody ProductDTO product) throws IOException {
+    	product = productService.getProductDetail(product);
+    	
     	Boolean result = productService.deleteProduct(product);
-    	System.out.println(",,,,,,,,,,,,,,,,,,,,,");
-    	System.out.println(",,,,,,,,,,,,,,,,,,,,,");
-    	System.out.println(product);
-    	System.out.println(",,,,,,,,,,,,,,,,,,,,,");
-    	System.out.println(",,,,,,,,,,,,,,,,,,,,,");
-    	System.out.println(",,,,,,,,,,,,,,,,,,,,,");
-    	System.out.println(",,,,,,,,,,,,,,,,,,,,,");
-    	System.out.println(",,,,,,,,,,,,,,,,,,,,,");
     	Map<String,String> res = new HashMap();
     	
     	if(result) {

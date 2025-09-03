@@ -112,7 +112,7 @@ $(function() {
 	    });
 	});
 	
-	// 공급업체 상세보기 버튼 클릭 이벤트
+	// 공급업체 상세보기 이벤트
 	let originalSupplierData = null; //전역변수선언
 	$('.supplier-row').each(function() {
 		$(this).on('click', function(){
@@ -134,6 +134,10 @@ $(function() {
 		            $('#supplierDetailForm #detailSupplierStatus').val(data.status);
 		
 		            const detailModal = document.getElementById('supplierDetailModal');
+					detailModal.removeAttribute('aria-hidden');
+	                detailModal.removeAttribute('inert');
+	                detailModal.setAttribute('aria-modal', 'true');
+					
 					ModalManager.openModal(detailModal);
 		            setReadonlyMode();
 		        },
@@ -239,6 +243,33 @@ $(function() {
 				});
 	    });
 	});
+	
+	//공급업체삭제
+	$(document).on('click', '.btn-delete', function() {
+		const supplierIdx = $('#supplierIdx').val()
+		Swal.fire({
+	        title: '정말 삭제하시겠습니까?',
+	        icon: 'warning',
+	        showCancelButton: true,
+	        confirmButtonText: '확인',
+	        cancelButtonText: '취소'
+	    }).then((result) => {
+		    ajaxPost( '/admin/systemPreference/supplyCompany/removeSupplier',
+				{supplierIdx: supplierIdx}
+			).then(function(result) {
+	            Swal.fire('알림', result.msg , result.result).then(()=>{
+						window.location.reload();
+				});
+	        }).catch( function() {
+	            Swal.fire({
+					title: '실패',
+				  	html: '잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오.',
+				  	icon: 'error'
+				});
+		    });
+		});
+	});
+	
 
 
 	

@@ -9,5 +9,6 @@ public enum SystemLogTarget {
 	, ROLE
 	, ROLE_AUTHO
 	, PRODUCT
+	, SUPPLIER_PRODUCT_CONTRACT
 	
 }

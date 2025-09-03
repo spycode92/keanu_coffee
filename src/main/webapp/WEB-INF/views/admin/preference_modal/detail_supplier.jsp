@@ -66,11 +66,15 @@
                 	<select id="detailSupplierStatus" name="status" class="form-control" disabled>
                     	<option value="활성">활성</option>
                     	<option value="비활성">비활성</option>
-                    	<option value="삭제">삭제</option>
                     </select>
                 </div>
             </div>
             <div class="modal-foot">
+                <button type="button" 
+                        class="btn btn-primary btn-delete"
+                        >
+                    삭제
+                </button>
                 <button type="button"
                         class="btn btn-secondary btn-cancel-edit"
                         style="display:none;"
@@ -79,7 +83,7 @@
                 </button>
                 <button type="button"
                         class="btn btn-primary btn-edit"
-                        onclick="setEditMode();">
+                        >
                     수정
                 </button>
                 <button type="submit"

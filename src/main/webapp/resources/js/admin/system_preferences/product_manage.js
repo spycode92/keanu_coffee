@@ -1,5 +1,6 @@
 //전역변수선언
 let allCategories = [];
+let detailProductIdx = null;
 $(function () {
 	//dom로드후 loadCategoryList() 실행
 	// allCategories 에 카테고리 정보 입력, 검색창의 카테고리항목 채우기
@@ -257,6 +258,7 @@ $(function () {
 	        Swal.fire('오류', '상품 정보를 불러올 수 없습니다.', 'error');
 	        return;
 	    }
+		detailProductIdx = productIdx;
 		const detailModal = document.getElementById('productDetailModal');
         initProductDetailModal(productIdx);
         ModalManager.openModal(detailModal);
@@ -342,8 +344,7 @@ $(function () {
 	
 	//상품상세보기>삭제
 	$(document).on('click', '.btn-delete', function() {
-		const productIdx = $('#productDetailForm [name=productIdx]').val();
-		console.log(productIdx)
+		console.log(detailProductIdx);
 		Swal.fire({
 	        title: '정말 삭제하시겠습니까?',
 	        icon: 'warning',
@@ -353,7 +354,7 @@ $(function () {
 	    }).then((result) => {
 
 		    ajaxPost( '/admin/systemPreference/product/removeProduct',
-				{productIdx: productIdx}
+				{productIdx: detailProductIdx}
 			).then(function(result) {
 	            Swal.fire('알림', result.msg , result.result).then(()=>{
 						window.location.reload();

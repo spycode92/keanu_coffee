@@ -21,9 +21,11 @@ import com.itwillbs.keanu_coffee.admin.dto.FranchiseDTO;
 import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
 import com.itwillbs.keanu_coffee.admin.dto.RoleDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplyContractDTO;
 import com.itwillbs.keanu_coffee.admin.dto.TeamDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
+import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
 import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
 import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
@@ -42,6 +44,7 @@ import lombok.extern.log4j.Log4j2;
 public class SystemLogAspect {
 	private final EmployeeManagementMapper employeeManagementMapper;
 	private final OrganizationMapper organizationMapper;
+	private final SupplyContractMapper supplyContractMapper;
 	private final LogMapper logmapper;
 	
 //	@Around("@annotation(com.itwillbs.keanu_coffee.common.aop.annotation.Insert)")
@@ -542,11 +545,6 @@ public class SystemLogAspect {
 	        	slog.setSubSection("상품관리");
 	        	slog.setTargetIdx(productIdx);
 	        	if (errorMessage == null) {
-	        		if (product.getStatus().equals("삭제")){
-	        			slog.setLogMessage(
-            				slog.getSection() + ">" + slog.getSubSection() + " " + productName + " 상품 삭제 완료"
-        				);
-	        		}
 	        		slog.setLogMessage(
         				slog.getSection() + ">" + slog.getSubSection() + " " + productName + " 상품정보 수정 완료"
     				);
@@ -554,6 +552,25 @@ public class SystemLogAspect {
 	        		slog.setLogMessage(
         				slog.getSection() + ">" + slog.getSubSection() + " " + productName + " 상품정보 수정 중 오류 발생: " + errorMessage
     				);
+	        	}
+	        }
+	        
+	        // 상품관리 상품정보수정
+	        if ("deleteProduct".equals(methodName)) {
+	        	ProductDTO product = (ProductDTO)args[0];
+	        	Integer productIdx = product.getProductIdx();
+	        	String productName = product.getProductName();
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("상품관리");
+	        	slog.setTargetIdx(productIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + productName + " 상품정보 삭제 완료"
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + productName + " 상품정보 삭제 중 오류 발생: " + errorMessage
+	        				);
 	        	}
 	        }
 	        
@@ -572,6 +589,107 @@ public class SystemLogAspect {
 	        	} else {
 	        		slog.setLogMessage(
 	        				slog.getSection() + ">" + slog.getSubSection() + " " + supplierName + " 공급업체 등록 중 오류 발생: " + errorMessage
+	        				);
+	        	}
+	        }
+	        
+	        // 공급업체 삭제
+	        if ("deleteSupplier".equals(methodName)) {
+	        	SupplierDTO supplier = (SupplierDTO)args[0];
+	        	Integer supplierIdx = supplier.getSupplierIdx();
+	        	String supplierName = supplier.getSupplierName();
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("공급업체관리");
+	        	slog.setTargetIdx(supplierIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + supplierName + " 공급업체 삭제 완료"
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + supplierName + " 공급업체 삭제 중 오류 발생: " + errorMessage
+	        				);
+	        	}
+	        }
+	        
+	        // 공급업체 수정
+	        if ("modifySupplier".equals(methodName)) {
+	        	SupplierDTO supplier = (SupplierDTO)args[0];
+	        	Integer supplierIdx = supplier.getSupplierIdx();
+	        	String supplierName = supplier.getSupplierName();
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("공급업체관리");
+	        	slog.setTargetIdx(supplierIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + supplierName + " 공급업체 수정 완료"
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + supplierName + " 공급업체 수정 중 오류 발생: " + errorMessage
+	        				);
+	        	}
+	        }
+	        
+	        // 공급계약 등록
+	        if ("addContract".equals(methodName)) {
+	        	SupplyContractDTO supplyContract = (SupplyContractDTO)args[0];
+	        	Integer supplyContractIdx = supplyContract.getSupplyContractIdx();
+	        	supplyContract = supplyContractMapper.selectContractDetail(supplyContract);
+	        	String supplierName = supplyContract.getSupplier().getSupplierName();
+	        	String productName = supplyContract.getProduct().getProductName();
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("공급계약관리");
+	        	slog.setTargetIdx(supplyContractIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + supplierName + "-" + productName + " 공급계약 등록 완료"
+    				);
+	        	} else {
+	        		slog.setLogMessage(
+        				slog.getSection() + ">" + slog.getSubSection() + " " + supplierName + "-" + productName + " 공급계약 등록 중 오류 발생: " + errorMessage
+    				);
+	        	}
+	        }
+	        
+	        // 공급계약 수정
+	        if ("updateContractDetail".equals(methodName)) {
+	        	SupplyContractDTO supplyContract = (SupplyContractDTO)args[0];
+	        	Integer supplyContractIdx = supplyContract.getSupplyContractIdx();
+	        	supplyContract = supplyContractMapper.selectContractDetail(supplyContract);
+	        	String supplierName = supplyContract.getSupplier().getSupplierName();
+	        	String productName = supplyContract.getProduct().getProductName();
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("공급계약관리");
+	        	slog.setTargetIdx(supplyContractIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + supplierName + "-" + productName + " 공급계약 수정 완료"
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + supplierName + "-" + productName + " 공급계약 수정 중 오류 발생: " + errorMessage
+	        				);
+	        	}
+	        }
+	        
+	        // 공급계약 삭제
+	        if ("deleteContractDetail".equals(methodName)) {
+	        	SupplyContractDTO supplyContract = (SupplyContractDTO)args[0];
+	        	Integer supplyContractIdx = supplyContract.getSupplyContractIdx();
+	        	supplyContract = supplyContractMapper.selectContractDetail(supplyContract);
+	        	String supplierName = supplyContract.getSupplier().getSupplierName();
+	        	String productName = supplyContract.getProduct().getProductName();
+	        	slog.setSection("시스템설정");
+	        	slog.setSubSection("공급계약관리");
+	        	slog.setTargetIdx(supplyContractIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + supplierName + "-" + productName + " 공급계약 삭제 완료"
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + supplierName + "-" + productName + " 공급계약 삭제 중 오류 발생: " + errorMessage
 	        				);
 	        	}
 	        }
