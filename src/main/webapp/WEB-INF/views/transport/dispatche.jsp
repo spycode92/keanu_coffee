@@ -155,14 +155,14 @@ header {
                                 <tr>
                                     <th style="width:44px">선택</th>
                                     <th>배차일</th>
-                                    <th>구역</th>
-                                    <th>요청중량</th>
+                                    <th>배차시간</th>
+                                    <th>구역명</th>
+                                    <th>총적재량</th>
                                     <th>상태</th>
                                 </tr>
                             </thead>
                             <tbody><!-- JS 렌더링 --></tbody>
                         </table>
-                        <div class="hint" style="margin-top:6px">상태가 <b>대기</b> 또는 <b>추가 필요</b>인 건만 표시됩니다.</div>
                     </div>
                     <!-- 우: 선택건 조치 -->
                     <div>
