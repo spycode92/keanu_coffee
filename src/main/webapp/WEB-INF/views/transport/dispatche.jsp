@@ -171,24 +171,24 @@ header {
                             <input id="selAssignSummary" disabled />
                         </div>
                         <div class="field">
-                            <label>기본 기사(1.0t 차량) 변경</label>
+                            <label>가용 가능한 기사</label>
                             <select id="primaryDriverSelect"></select>
-                            <div class="help">기본적으로 1.0t 기사 1명이 배정되어 있습니다(한도 0.8t). 필요 시 변경하세요.</div>
+                            <button id="btnAssignDriver">기사 배정</button>
                         </div>
 
                         <div class="field" id="extraDriverBlock" style="display:none">
-                            <label>추가 기사 배정 (추가 필요 상태에서만)</label>
-                            <div style="display:flex; gap:8px">
-                                <select id="extraDriverSelect"></select>
-                                <button class="btn" id="btnAddDriver">기사 추가 등록</button>
-                            </div>
-                            <div class="help">총 가용 한도(각 기사 80%)가 요청중량 이상이면 상태가 자동으로 <b>대기</b>로 전환됩니다.</div>
+                           <span>추가 배차가 필요합니다.</span>
                         </div>
 
                         <div class="field">
                             <label>요청중량 / 현재 가용 한도</label>
                             <input id="capacityInfo" disabled />
                         </div>
+                        
+                        <div class="field">
+							<label>배정된 기사/차량</label>
+						  	<ul id="assignedDriverList"></ul>
+						</div>
 
                         <div style="display:flex; gap:8px; margin-top:8px">
                             <button class="btn danger" id="btnCancelAssign" style="display:none">배차 취소</button>

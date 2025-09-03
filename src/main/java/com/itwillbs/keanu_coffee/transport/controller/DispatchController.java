@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegionGroupViewDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO;
 import com.itwillbs.keanu_coffee.transport.service.DispatchService;
+import com.itwillbs.keanu_coffee.transport.service.DriverService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DispatchController {
 	private final DispatchService dispatchService;
+	private final DriverService driverService;
 	
 	// 배차 요청 리스트
 	@GetMapping("/dispatch/lsit")
@@ -30,5 +33,19 @@ public class DispatchController {
 		}
 		
 		return ResponseEntity.ok(dispatchList);
+	}
+	
+	
+	// 가용 가능한 기사 목록
+	@GetMapping("/dispatch/availableDrivers")
+	@ResponseBody
+	public ResponseEntity<List<DriverVehicleDTO>> availableDrivers() {
+		List<DriverVehicleDTO> availableDriverList = driverService.getAvailableDrivers();
+		
+		if (availableDriverList == null) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		return ResponseEntity.ok(availableDriverList);
 	}
 }
