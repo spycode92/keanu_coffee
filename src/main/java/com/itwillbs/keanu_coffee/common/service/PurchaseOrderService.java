@@ -13,11 +13,15 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class PurchaseOrderService {
-	
 	private final PurchaseOrderMapper purchaseOrderMapper;
 	
 	public List<PurchaseOrderDTO> orderDetail() {
 		return purchaseOrderMapper.orderDetail();
+	}
+
+	public String getTodaysPurchaseOrderNumbersInOrderToMakeNewPurchaseOrderNumber() {
+		
+		return purchaseOrderMapper.selectTodaysPurchaseOrderNumbersInOrderToMakeNewPurchaseOrderNumber();
 	}
 
 	

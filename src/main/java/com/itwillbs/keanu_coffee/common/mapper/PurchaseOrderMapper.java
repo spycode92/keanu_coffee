@@ -13,4 +13,6 @@ public interface PurchaseOrderMapper {
 
 	List<PurchaseOrderDTO> getOrderDetailByOrderIdx(int orderIdx);
 
+	String selectTodaysPurchaseOrderNumbersInOrderToMakeNewPurchaseOrderNumber();
+
 }

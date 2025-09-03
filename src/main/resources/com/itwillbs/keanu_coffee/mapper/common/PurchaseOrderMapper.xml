@@ -73,6 +73,17 @@
 		WHERE o.order_idx = #{orderIdx}
 		ORDER BY o.order_date DESC
 	</select>
-
+	
+	<select id="selectTodaysPurchaseOrderNumbersInOrderToMakeNewPurchaseOrderNumber" resultType="String">
+		SELECT
+			order_number
+		FROM
+			PURCHASE_ORDER
+		WHERE
+			DATE(created_at) = CURDATE()
+		ORDER BY 
+			created_at DESC
+		LIMIT 1;		
+	</select>
 
 </mapper>
