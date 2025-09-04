@@ -10,28 +10,19 @@ import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderDTO;
 import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderItemDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO;
+import com.itwillbs.keanu_coffee.inbound.dto.InboundProductDetailDTO;
 
 @Mapper
 public interface InboundMapper {
 	
-	// orderNumber로 orderIdx 조회
-	int searchOrderIdx(String orderNumber);
+	// management 전체 리스트 조회
+	List<InboundManagementDTO> selectInboundWaitingInfo();
 	
-	// orderIdx로 productIdx 조회
-	List<PurchaseOrderItemDTO> searchProductIdx(int orderIdx);
+	// detail 기본 정보 조회
+	InboundDetailDTO selectInboundDetailData(int ibwaitIdx);
 	
-	// productIdx로 product 상세정보 조회
-	List<ProductDTO> searchProductDetail(List<PurchaseOrderItemDTO> productIdx);
-	
-	//
-	List<EmployeeInfoDTO> getInboundStaffNameList();
-	
-	// 회사명 확인하기
-	String getSupplierName(int supplierIdx);
-
-	List<InboundManagementDTO> selectAllInboundWaitingInfo();
-
-	InboundDetailDTO getInboundDetailData(int ibwaitIdx);
+	// detail 상품 정보 조회 
+	List<InboundProductDetailDTO> selectInboundProductDetail(String orderNumber);
 	
 	
 

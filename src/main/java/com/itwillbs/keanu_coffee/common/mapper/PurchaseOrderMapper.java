@@ -11,9 +11,7 @@ import com.itwillbs.keanu_coffee.common.dto.PurchaseWithSupplierDTO;
 @Mapper
 public interface PurchaseOrderMapper {
 
-	List<PurchaseWithSupplierDTO> orderDetail();
 
-	List<PurchaseWithSupplierDTO> getOrderDetailByOrderIdx(int orderIdx);
 
 
 

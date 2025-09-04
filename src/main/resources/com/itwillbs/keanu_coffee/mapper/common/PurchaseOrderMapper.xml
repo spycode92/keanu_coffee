@@ -3,87 +3,62 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.common.mapper.PurchaseOrderMapper">
-	<resultMap id="PurchaseOrderResultMap" type="com.itwillbs.keanu_coffee.common.dto.PurchaseOrderDTO">
-	    <id     property="orderIdx"                column="주문_고유번호"/>
-	    <result property="orderNumber"             column="발주번호"/>
-	    <result property="supplierIdx"             column="공급업체_고유번호"/>
-	    <result property="empIdx"                  column="발주요청자_고유번호"/>
-	    <result property="orderDate"               column="발주일"/>
-	    <result property="status"                  column="발주상태"/>
-	    <result property="expectedArrivalDate"     column="예상입고일"/>
-	    <result property="note"                    column="비고"/>
-	    <result property="createdAt"               column="생성일시"/>
-	    <result property="updatedAt"               column="수정일시"/>
-
-	    <collection property="items" ofType="com.itwillbs.keanu_coffee.common.dto.PurchaseOrderItemDTO">
-			<id     property="orderItemIdx"          column="발주상세_고유번호"/>
-	      	<result property="orderIdx"              column="발주_고유번호"/>
-	      	<result property="productIdx"            column="상품_고유번호"/>
-	      	<result property="quantity"              column="발주수량"/>
-	     	<result property="unitPrice"             column="단가"/>
-	      	<result property="totalPrice"            column="총액"/>
-	    </collection>
+	<resultMap id="PurchaseWithSupplierResultMap" type="com.itwillbs.keanu_coffee.common.dto.PurchaseWithSupplierDTO">
+	    <association property="purchaseOrder" javaType="com.itwillbs.keanu_coffee.common.dto.PurchaseOrderDTO">
+	        <id     property="orderIdx"            column="주문_고유번호"/>
+	        <result property="orderNumber"         column="발주번호"/>
+	        <result property="supplierIdx"         column="공급업체_고유번호"/>
+	        <result property="empIdx"              column="발주요청자_고유번호"/>
+	        <result property="orderDate"           column="발주일"/>
+	        <result property="status"              column="발주상태"/>
+	        <result property="expectedArrivalDate" column="예상입고일"/>
+	        <result property="note"                column="비고"/>
+	        <result property="createdAt"           column="생성일시"/>
+	        <result property="updatedAt"           column="수정일시"/>
+	
+	        <collection property="items" ofType="com.itwillbs.keanu_coffee.common.dto.PurchaseOrderItemDTO" javaType="java.util.ArrayList">
+	            <id     property="orderItemIdx" column="발주상세_고유번호"/>
+	            <result property="orderIdx"     column="발주_고유번호"/>
+	            <result property="productIdx"   column="상품_고유번호"/>
+	            <result property="quantity"     column="발주수량"/>
+	            <result property="unitPrice"    column="단가"/>
+	            <result property="totalPrice"   column="총액"/>
+	        </collection>
+	    </association>
+	
+	    <association property="supplier" javaType="com.itwillbs.keanu_coffee.admin.dto.SupplierDTO">
+	        <result property="supplierName" column="회사명"/>
+	    </association>
 	</resultMap>
 
 	<!-- select: 발주 + 발주상세 + 상품명 (AS는 한글) -->
-	<select id="orderDetail" resultMap="PurchaseOrderResultMap">
+	<select id="orderDetail" resultMap="PurchaseWithSupplierResultMap">
 		SELECT
-		o.order_idx                 AS  주문_고유번호
-		,o.order_number             AS  발주번호
-		,o.supplier_idx             AS  공급업체_고유번호
-		,o.emp_idx                  AS  발주요청자_고유번호
-		,o.order_date               AS  발주일
-		,o.status                   AS  발주상태
-		,o.expected_arrival_date    AS  예상입고일
-		,o.note                     AS  비고
-		,o.created_at               AS  생성일시
-		,o.updated_at               AS  수정일시
-		,i.order_item_idx           AS  발주상세_고유번호
-		,i.order_idx                AS  발주_고유번호
-		,i.product_idx              AS  상품_고유번호
-		,i.quantity                 AS  발주수량
-		,i.unit_price               AS  단가
-		,i.total_price              AS  총액
+				o.order_idx                 AS  주문_고유번호
+				,o.order_number             AS  발주번호
+				,o.supplier_idx             AS  공급업체_고유번호
+		        ,s.supplier_name			AS  회사명
+				,o.emp_idx                  AS  발주요청자_고유번호
+				,o.order_date               AS  발주일
+				,o.status                   AS  발주상태
+				,o.expected_arrival_date    AS  예상입고일
+				,o.note                     AS  비고
+				,o.created_at               AS  생성일시
+				,o.updated_at               AS  수정일시
+				,i.order_item_idx           AS  발주상세_고유번호
+				,i.order_idx                AS  발주_고유번호
+				,i.product_idx              AS  상품_고유번호
+				,i.quantity                 AS  발주수량
+				,i.unit_price               AS  단가
+				,i.total_price              AS  총액
 		FROM PURCHASE_ORDER o
 		LEFT JOIN PURCHASE_ORDER_ITEM i ON o.order_idx = i.order_idx
+	    LEFT JOIN SUPPLIER s ON o.supplier_idx = s.supplier_idx
 		ORDER BY o.order_date DESC
 	</select>
 	
-	<!-- select: 발주 + 발주상세 + 상품명 (AS는 한글) WHERE order_idx -->
-	<select id="getOrderDetailByOrderIdx" resultMap="PurchaseOrderResultMap">
-		SELECT
-		o.order_idx                 AS  주문_고유번호
-		,o.order_number             AS  발주번호
-		,o.supplier_idx             AS  공급업체_고유번호
-		,o.emp_idx                  AS  발주요청자_고유번호
-		,o.order_date               AS  발주일
-		,o.status                   AS  발주상태
-		,o.expected_arrival_date    AS  예상입고일
-		,o.note                     AS  비고
-		,o.created_at               AS  생성일시
-		,o.updated_at               AS  수정일시
-		,i.order_item_idx           AS  발주상세_고유번호
-		,i.order_idx                AS  발주_고유번호
-		,i.product_idx              AS  상품_고유번호
-		,i.quantity                 AS  발주수량
-		,i.unit_price               AS  단가
-		,i.total_price              AS  총액
-		FROM PURCHASE_ORDER o
-		LEFT JOIN PURCHASE_ORDER_ITEM i ON o.order_idx = i.order_idx
-		WHERE o.order_idx = #{orderIdx}
-		ORDER BY o.order_date DESC
-	</select>
 	
-	<select id="selectTodaysPurchaseOrderNumbersInOrderToMakeNewPurchaseOrderNumber" resultType="String">
-		SELECT
-			order_number
-		FROM
-			PURCHASE_ORDER
-		WHERE
-			DATE(created_at) = CURDATE()
-		ORDER BY 
-			created_at DESC
-		LIMIT 1;		
-	</select>
+	
+
 
 </mapper>
