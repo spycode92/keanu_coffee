@@ -1,22 +1,22 @@
-const DISPATCH_LIST_URL = "/transport/dispatch/lsit"
+const DISPATCH_LIST_URL = "/transport/dispatch/lsit";
 const DISPATCH_AVAILABLE_DRIVERS_URL = "/transport/dispatch/availableDrivers";
+const ADD_DISPATCH_URL = "/transport/dispatch/add";
 
 // 배차 등록 버튼 클릭 시 배차 요청 리스트
-function addDispatch() {
+function openAddDispatchModal() {
 	ModalManager.openModalById('assignModal');
 		
 	// 배차 요청 리스트
 	$.getJSON(DISPATCH_LIST_URL)
 		.done(function(dispatchs) {
-						
 			const html = dispatchs.map((dispatch) => `
-				<tr data-idx="${dispatch.outboundOrderIdx}">
+				<tr data-order-ids="${dispatch.orderIds}">
 					<td><input type="radio" name="dispatchPick"/></td>
 					<td>${formatDate(dispatch.dispatchDate)}</td>
 					<td>${dispatch.startSlot}</td>
 					<td>${dispatch.regionName}</td>
 					<td>${dispatch.totalVolume}</td>
-					<td>${dispatch.urgentFlag === "Y" ? "긴급" : dispatch.status}</td>
+					<td>${dispatch.urgentFlag === "Y" ? "긴급" : "대기"}</td>
 				</tr>
 			`).join("");
 			$("#assignList tbody").html(html);
@@ -48,7 +48,7 @@ $(document).on("click", "input[name='dispatchPick']", function() {
 	const region = row.find("td:eq(3)").text();
 	totalVolume = row.find("td:eq( 4)").text();
 	
-	const summary = `${date} ${slot} / ${region} / ${totalVolume} 적재`;
+	const summary = `${date} ${slot} / ${region} / ${totalVolume}L`;
 	
 	// 선택한 배차 정보 표시
 	$("#selAssignSummary").val(summary);
@@ -71,6 +71,7 @@ function assignBtn() {
 	const driverName = selected.data("emp-name");
 	const vehicleType = selected.data("vehicle-type");
 	const volume = selected.data("volume");
+	const capacity = selected.data("capacity") === 1000 ? "1.0t" : "1.5t";
 	
 	if (!vehicleIdx) {
 		return;
@@ -80,7 +81,11 @@ function assignBtn() {
 	assignedDrivers.push({
 		vehicleIdx, driverName, vehicleType, volume
 	});
-	$("#assignedDriverList").append(`<li>${driverName} (${vehicleType})</li>`);
+	$("#assignedDriverList").append(`
+		<div class="driver-item" data-vehicle-idx="${vehicleIdx}">
+			<span>${driverName} ${capacity} (${vehicleType})</span>
+			<button class="removeDriverBtn">X</button>
+		</div>`);
 	
 	// 이미 선택한 기사 목록에서 비활성화
 	selected.prop("disabled", true);
@@ -111,8 +116,9 @@ function loadAvailableDrivers() {
 			    <option value="${driver.vehicleIdx}"
 			            data-emp-name="${driver.empName}"
 			            data-vehicle-type="${driver.vehicleType}"
-			            data-volume="${driver.volume}">
-			        ${driver.empName} (${driver.vehicleType})
+			            data-volume="${driver.volume}"
+						data-capacity="${driver.capacity}">
+			        ${driver.empName} ${driver.capacity === 1000 ? "1.0t" : "1.5t"} (${driver.vehicleType})
 			    </option>
 			`).join("");
 			
@@ -121,7 +127,65 @@ function loadAvailableDrivers() {
 		});
 }
 
+// 기사 삭제 버튼 클릭
+$(document).on("click", ".removeDriverBtn", function() {
+	const parent = $(this).closest(".driver-item");
+	const vehicleIdx = parent.data("vehicle-idx");
+	// 1) DOM에서 삭제
+	parent.remove();
 
+  	// 2) 배열에서 제거
+  	assignedDrivers = assignedDrivers.filter(d => d.vehicleIdx != vehicleIdx);
+
+  	// 3) select 옵션 다시 활성화
+  	$(`#primaryDriverSelect option[value="${vehicleIdx}"]`).prop("disabled", false);
+})
+
+// 배차 등록
+function addDispatch() {
+	const selected = $("input[name='dispatchPick']:checked");
+	
+	if (selected.length === 0) {
+		Swal.fire({icon:'error', text:'등록할 배차를 선택해주세요!'}); 
+		return;
+	}
+	
+	// 선택된 라디오 버튼이 속한 행
+    const row = selected.closest("tr");
+    const orderIds = row.data("order-ids");
+
+	// 문자열을 숫자 배열로 변경
+	const orderIdList = orderIds ? orderIds.toString().split(",").map(id => Number(id)) : [];
+	
+	// 선택된 기사
+	const driverSelected = $("#primaryDriverSelect option:selected");
+	const vehicleIdx = parseInt(driverSelected.val());
+	
+	const requestData = {
+		vehicleIdx
+	};
+	
+	const { token, header } = getCsrf()
+	
+	// 등록 요청
+	$.ajax({
+		url: ADD_DISPATCH_URL,
+		type: "POST",
+		contentType: "application/json; charset=UTF-8",
+		data: JSON.stringify(requestData),
+		beforeSend(xhr) {
+     	    if (token && header) xhr.setRequestHeader(header, token);
+        },
+		success: function() {
+			Swal.fire("등록완료", "배차 등록이 완료되었습니다.", "success").then(() => {
+				location.reload();
+			});
+		},
+		error : function(xhr) {
+			Swal.fire("에러", xhr.responseText, "error");
+		}
+	});
+}
 
 
 // 날짜 변환
@@ -134,6 +198,7 @@ function formatDate(timestamp) {
 }
 
 $(document).ready(function () {
-	 $("#openRegister").on("click", addDispatch);
+	 $("#openRegister").on("click", openAddDispatchModal);
 	 $("#btnAssignDriver").on("click", assignBtn);
+	 $("#btnSaveAssign").on("click", addDispatch);
 })

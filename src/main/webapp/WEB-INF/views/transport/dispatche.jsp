@@ -58,25 +58,6 @@ header {
 .badge.done { background: #e5ffe9; color: #047857; }     /* 완료 */
 .badge.cancel { background: #fee2e2; color: #991b1b; }   /* 취소 */
 
-/* 모달 */
-/* .modal { */
-/*     position: fixed; inset: 0; display: none; align-items: center; justify-content: center; */
-/*     padding: 20px; background: rgba(0, 0, 0, .45); z-index: 1000; */
-/* } */
-/* .modal.open { display: flex; } */
-/* .modal-card { */
-/*     width: min(860px, 96vw); background: #fff; border: 1px solid var(--border); */
-/*     border-radius: 12px; overflow: hidden; */
-/* } */
-/* .modal-head { */
-/*     display: flex; justify-content: space-between; align-items: center; */
-/*     padding: 14px 16px; border-bottom: 1px solid var(--border); */
-/* } */
-/* .modal-body { padding: 14px 16px; } */
-/* .modal-foot { */
-/*     display: flex; justify-content: flex-end; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--border); */
-/* } */
-
 .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
 .field input, .field select { height: 38px; padding: 0 10px; border: 1px solid var(--border); border-radius: 10px; }
 .help, .hint { font-size: .83rem; color: var(--muted-foreground); }
@@ -144,10 +125,10 @@ header {
         <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="assignTitle">
             <div class="modal-head">
                 <strong id="assignTitle">배차 등록/수정</strong>
-                <button class="btn secondary" id="closeAssign">닫기</button>
+                <button class="modal-close-btn" >✕</button>
             </div>
             <div class="modal-body">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px;">
                     <!-- 좌: 대기/추가 필요 리스트 -->
                     <div>
                         <table class="table" id="assignList">
@@ -173,7 +154,7 @@ header {
                         <div class="field">
                             <label>가용 가능한 기사</label>
                             <select id="primaryDriverSelect"></select>
-                            <button id="btnAssignDriver">기사 배정</button>
+                            <button class="btn btn-primary" id="btnAssignDriver" style="justify-content: center;">기사 배정</button>
                         </div>
 
                         <div class="field" id="extraDriverBlock" style="display:none">
@@ -181,24 +162,20 @@ header {
                         </div>
 
                         <div class="field">
-                            <label>요청중량 / 현재 가용 한도</label>
+                            <label>요청중량 / 배정 확정 한도</label>
                             <input id="capacityInfo" disabled />
                         </div>
                         
                         <div class="field">
 							<label>배정된 기사/차량</label>
-						  	<ul id="assignedDriverList"></ul>
+						  	<div id="assignedDriverList"></div>
 						</div>
-
-                        <div style="display:flex; gap:8px; margin-top:8px">
-                            <button class="btn danger" id="btnCancelAssign" style="display:none">배차 취소</button>
-                            <button class="btn" id="btnSaveAssign">저장</button>
-                        </div>
                     </div>
                 </div>
             </div>
             <div class="modal-foot">
-                <button class="btn secondary" id="closeAssign2">닫기</button>
+           		<button class="btn btn-cancel" id="btnCancelAssign">배차 취소</button>
+       			<button class="btn btn-confirm" id="btnSaveAssign">배차등록</button>
             </div>
         </div>
     </div>

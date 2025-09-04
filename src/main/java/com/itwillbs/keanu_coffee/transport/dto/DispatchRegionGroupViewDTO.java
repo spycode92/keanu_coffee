@@ -23,6 +23,9 @@ public class DispatchRegionGroupViewDTO {
 	// 지점별 세부 상품 리스트
 	private List<OutboundOrderItemDTO> items;
 	
+	// 주문 ID 리스트
+	private String orderIds;
+	
 	// 집계
 	private BigDecimal totalVolume;   // 총 적재 부피
 	private Integer totalQty;         // 총 수량
