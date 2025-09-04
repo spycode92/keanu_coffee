@@ -1,29 +1,18 @@
 package com.itwillbs.keanu_coffee.inbound.controller;
 
-import java.security.Principal;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.function.Function;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
-import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
-import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderDTO;
-import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderItemDTO;
-import com.itwillbs.keanu_coffee.common.dto.PurchaseWithSupplierDTO;
-import com.itwillbs.keanu_coffee.common.service.PurchaseOrderService;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO;
+import com.itwillbs.keanu_coffee.inbound.dto.InboundProductDetailDTO;
 import com.itwillbs.keanu_coffee.inbound.service.InboundService;
 
 import lombok.RequiredArgsConstructor;
@@ -33,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/inbound")
 public class InboundController {
 	
-	private final PurchaseOrderService purchaseOrderService;
 	private final InboundService inboundService;
 	
 	// ====================================================================================================================================
@@ -48,17 +36,7 @@ public class InboundController {
 	@GetMapping("/management")
 	public String showInboundManagement(Model model) {
 	    // 입고 리스트 조회
-	    List<InboundManagementDTO> orderDetailList = inboundService.inboundWaitingInfo();
-
-	    // LocalDateTime → String 포맷 처리
-	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-	    orderDetailList.forEach(dto -> {
-	        if (dto.getArrivalDate() != null) {
-	            dto.setArrivalDateStr(dto.getArrivalDate().format(formatter));
-	        }
-	    });
-
-	    // 모델에 전달
+	    List<InboundManagementDTO> orderDetailList = inboundService.getAllinboundWaitingInfo();
 	    model.addAttribute("orderList", orderDetailList);
 
 	    return "/inbound/inboundManagement";
@@ -69,56 +47,16 @@ public class InboundController {
 	// 입고상세
 	@GetMapping("/inboundDetail")
 	public String showInboundDetail(@RequestParam(name="orderNumber", required=false) String orderNumber, 
-									@RequestParam(name="orderIdx", required=false) Integer orderIdx,
-									Model model, RedirectAttributes ra, Principal principal) {
+									@RequestParam(name="ibwaitIdx", required=false) Integer ibwaitIdx,
+									HttpSession session) {
 		
-		// 1) 파라미터 유효성 검사 (없으면 목록으로 리다이렉트)
-//		if (orderNumber == null || orderNumber.trim().isEmpty()) {
-//			ra.addFlashAttribute("errorMessage", "발주번호가 전달되지 않았습니다.");
-//			return "redirect:/inbound/management";
-//		}
-//		
-//		// 2) productDTO 조회
-//		List<ProductDTO> product = inboundService.getOrderDetailByOrderNum(orderNumber);
-//		model.addAttribute("product", product);
-//		
-//		// 3) orderIdx로 조회
-//		List<PurchaseWithSupplierDTO> orderItems = inboundService.getOrderDetailByOrderIdx(orderIdx);
-//		model.addAttribute("orderItems", orderItems);
-//		
-//		// 4) orderItems 내부의 PurchaseOrderItemDTO 를 펼쳐서 productIdx -> item 맵 생성
-//	    Map<Integer, PurchaseOrderItemDTO> itemMap = orderItems.stream()
-//	    	.map(PurchaseWithSupplierDTO::getPurchaseOrder)  
-//	        .filter(o -> o.getItems() != null)                             // items null 체크
-//	        .flatMap(o -> o.getItems().stream())                           // PurchaseOrderItemDTO 스트림으로 변환
-//	        .collect(Collectors.toMap(
-//	            PurchaseOrderItemDTO::getProductIdx,                       // key = productIdx
-//	            Function.identity(),                                       // value = PurchaseOrderItemDTO
-//	            (existing, replacement) -> existing,                       // 충돌 시 기존 유지
-//	            LinkedHashMap::new                                         // 순서 유지
-//	        ));
-//	    model.addAttribute("itemMap", itemMap);
+		// 1) 기본정보 보드 조회
+	    InboundDetailDTO inboundDetailData = inboundService.getInboundDetailData(ibwaitIdx);
+	    session.setAttribute("inboundDetailData", inboundDetailData);
 		
-	    // 5) 담당자 가능 인원 조회
-//	    List<EmployeeInfoDTO> inboundStaffNameList = inboundService.getInboundStaffNameList();
-//	    model.addAttribute("staffList", inboundStaffNameList);
-	    
-	    // 6) 회사명 조회
-//	    int supplierIdx = orderItems.get(0).getPurchaseOrder().getSupplierIdx();
-//	    String supplierName = inboundService.getSupplierName(supplierIdx);
-//	    model.addAttribute("supplierName", supplierName);
-	    
-	    // 7) 통합 조회
-	    InboundDetailDTO inboundDetailData = inboundService.getInboundDetailData(orderIdx);
-	    model.addAttribute("inboundDetailData", inboundDetailData);
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
+	    // 2) 상품 상세 정보 조회
+	    List<InboundProductDetailDTO> ibProductDetail = inboundService.getInboundProductDetail(orderNumber);
+	    session.setAttribute("ibProductDetail", ibProductDetail);
 	    
 		return "/inbound/inboundDetail";
 	}
