@@ -9,6 +9,7 @@ import java.util.Random;
 
 import javax.servlet.http.HttpSession;
 
+import org.aspectj.lang.annotation.Around;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
+import com.itwillbs.keanu_coffee.common.aop.annotation.Insert;
+import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
@@ -61,7 +65,8 @@ public class EmployeeManagementService {
 	
 	//직원추가 로직
 	@Transactional
-	public int inputEmployeeInfo(EmployeeInfoDTO employee) throws IOException {
+	@SystemLog(target = SystemLogTarget.EMPLOYEE_INFO)
+	public int insertEmployeeInfo(EmployeeInfoDTO employee) throws IOException {
 		// 첫 비밀번호 1234 
 		String empPassword = passwordEncoder.encode("1234");
 		// empId생성
@@ -70,7 +75,7 @@ public class EmployeeManagementService {
 		//empId, empPassword DTO 주입
 		employee.setEmpNo(empNo);
 		employee.setEmpPassword(empPassword);
-		System.out.println(employee);
+
 		// 정보 입력 후 empIdx 받아오기
 		int inputCount = employeeManagementMapper.insertEmployeeInfo(employee);
 		
@@ -102,6 +107,7 @@ public class EmployeeManagementService {
 	
 	// 회원정보 업데이트 
 	@Transactional
+	@SystemLog(target = SystemLogTarget.EMPLOYEE_INFO)
 	public int modifyEmployeeInfo(EmployeeInfoDTO employee, Authentication authentication) throws IllegalStateException, IOException {
 		EmployeeDetail empDetail = (EmployeeDetail)authentication.getPrincipal();
 		Integer empIdx = empDetail.getEmpIdx();
@@ -119,11 +125,13 @@ public class EmployeeManagementService {
 	}
 	
 	// 관리자가 직원정보 업데이트
+	@SystemLog(target = SystemLogTarget.EMPLOYEE_INFO)
 	public void updateEmployeeInfo(EmployeeInfoDTO employee) {
 		employeeManagementMapper.updateEmployeeInfo(employee);
 	}
 	
 	//직원 비밀번호 초기화(1234)
+	@SystemLog(target = SystemLogTarget.EMPLOYEE_INFO)
 	public int resetPw(EmployeeInfoDTO employee) {
 		String empPassword = passwordEncoder.encode("1234");
 		employee.setEmpPassword(empPassword);

@@ -66,11 +66,15 @@ $("#saveRouteBtn").on("click", function() {
     	return;
 	}
 	
+	const { token, header } = getCsrf();
 	$.ajax({
 		url: FRANCHISE_ROUTE_REORDER_URL,
 		type: "POST",
 		contentType: "application/json",
 		data: JSON.stringify(newOrder),
+		beforeSend(xhr) {
+     	    if (token && header) xhr.setRequestHeader(header, token);
+    	},
 		success: function() {
 			Swal.fire("순서저장완료", "", "success");
 		},

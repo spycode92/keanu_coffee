@@ -17,12 +17,9 @@ public class CustomUserDetailsService implements UserDetailsService{
 
 	@Override
 	public UserDetails loadUserByUsername(String empNo) throws UsernameNotFoundException {
-		log.info("직원정보 조회 시작 !!!!!!!!!!!!!!!!!!!!!!!");
 		
 		EmployeeDetail employeeDetail = employeeManagementMapper.selectEmployeeDetailByEmpNo(empNo)
 				.orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다 - " + empNo));
-		
-		log.info("조회된 직원정보: {}", employeeDetail);
 		
 		return employeeDetail;
 	}

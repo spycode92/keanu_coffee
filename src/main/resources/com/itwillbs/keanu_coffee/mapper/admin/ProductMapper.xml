@@ -91,7 +91,7 @@
 				AND category_idx = #{filterCategoryIdx}
 			</if>
 			<if test="searchKeyword != '' and searchKeyword != null">
-				AND supplier_name LIKE CONCAT('%', #{searchKeyword}, '%')
+				AND product_name LIKE CONCAT('%', #{searchKeyword}, '%')
 			</if>
 		</where>
 		<if test="orderKey != '' and orderkey != null">
@@ -114,7 +114,7 @@
 				AND category_idx = #{filterCategoryIdx}
 			</if>
 			<if test="searchKeyword != '' and searchKeyword != null">
-				AND supplier_name LIKE CONCAT('%', #{searchKeyword}, '%')
+				AND product_name LIKE CONCAT('%', #{searchKeyword}, '%')
 			</if>
 		</where>
 	</select>
@@ -136,11 +136,11 @@
 	</select>
 	
 	<!-- 카테고리추가 -->
-	<insert id="insertCategory">
+	<insert id="insertCategory" useGeneratedKeys="true" parameterType="CommonCodeDTO" keyProperty="commonCodeIdx">
 		INSERT INTO COMMON_CODE
 		(common_code_name, common_code, group_code)
 		VALUES
-		(#{categoryName}, #{categoryName}, 'CATEGORY')
+		(#{commonCodeName}, #{commonCodeName}, 'CATEGORY')
 	</insert>
 	<!-- 카테고리수정 -->
 	<update id="updateCategory">
@@ -233,11 +233,12 @@
 	        , status = #{status}
 		WHERE product_idx = #{productIdx}
 	</update>
-	<!-- 상품상태변경 -->
-	<update id="updateProductStatus">
+	
+	<!-- 상품삭제 -->
+	<update id="deleteProduct">
 		UPDATE PRODUCT
 		SET
-			status = #{status}
+			status = "삭제"
 		WHERE
 			product_idx = #{productIdx}
 	</update>
@@ -249,6 +250,13 @@
 			, product_name
 		FROM PRODUCT
 		ORDER BY product_name
+	</select>
+	
+	<!-- 단일카테고리 정보 가져오기 -->
+	<select id="selectCategoryByIdx" resultType="CommoncodeDTO">
+		SELECT common_code_idx, common_code_name
+		FROM COMMON_CODE
+		WHERE common_code_idx = #{commonCodeIdx}
 	</select>
 	
 </mapper>

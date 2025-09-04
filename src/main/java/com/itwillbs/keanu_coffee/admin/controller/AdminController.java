@@ -8,7 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.itwillbs.keanu_coffee.common.dto.SweetAlertIcon;
+import com.itwillbs.keanu_coffee.common.utils.MakeAlert;
 import com.mysql.cj.x.protobuf.MysqlxSession.AuthenticateContinue;
 
 import lombok.RequiredArgsConstructor;
@@ -20,20 +23,13 @@ public class AdminController {
 	
 	//관리자페이지 메인
 	@GetMapping("")
-	public String adminMain(HttpSession session, Model model, Authentication authentication) {
-		String id = authentication.getName();
-		if(!id.equals("admin")) {
-			model.addAttribute("msg", "권한이 없습니다.");
-			model.addAttribute("targetURL", "/"); 
-			return "/commons/result_process";
-		}
+	public String adminMain() {
 		
 		return "/admin/admin_main";
 	}
 	//직원관리
 	@GetMapping("/employeeManage")
 	public String employeeManagement() {
-		
 		return "redirect:/admin/employeeManagement";
 	}
 	//조직관리
@@ -79,10 +75,9 @@ public class AdminController {
 		return "redirect:/admin/dashboard";
 	}
 	
-	//
-	@GetMapping("/moveInventory")
-	public String moveInventory() {
-		return "/admin/employee_management/move_inventory";
+	@GetMapping("/sysNoti")
+	public String systemNotification() {
+		return "redirect:/admin/systemnotification";
 	}
 	
 	

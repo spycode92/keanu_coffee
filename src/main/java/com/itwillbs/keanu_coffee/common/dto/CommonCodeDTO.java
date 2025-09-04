@@ -15,7 +15,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class CommonCodeDTO implements Serializable {
 	private Integer commonCodeIdx;
-	private String gorupCode;
+	private String groupCode;
 	private String commonCode;
 	private String commonCodeName;
 	private String description;

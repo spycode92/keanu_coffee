@@ -97,17 +97,21 @@ $("#addMappingBtn").on("click", function() {
 		Swal.fire("선택필수", "모든 값을 선택하세요", "error");
 		return;
 	}
+	const { token, header } = getCsrf();
 	
 	$.ajax({
 		url : MAPPING_URL,
 		type: "POST",
 		contentType: "application/json; charset=UTF-8",
 		data: JSON.stringify(requestData),
+		beforeSend(xhr) {
+     	    if (token && header) xhr.setRequestHeader(header, token);
+        },
 		success: function(res) {
-			Swal.fire("추가완료", "구역 범위가 등록되었습니다.", "success");
+			Swal.fire("추가완료", "구역 범위가 등록되었습니다.", "success").then(() => {
+				location.reload();
+			});
 			
-			location.reload();
-		
 			$("#sidoSelect").find("option:first").prop('selected', true);
 			$("#sigunguSelect").find("option:first").prop('selected', true);
 			$("#dongSelect").find("option:first").prop('selected', true);
@@ -181,11 +185,15 @@ $(document).on("click", ".dong-del", function() {
 	  	denyButtonText: "취소",
 	}).then((result) => {
 		if (result.isConfirmed) {
+			const { token, header } = getCsrf();
 			$.ajax({
 				url: DELETE_DONG_URL,
 				type: "POST",
 				contentType: "application/json; charset=utf-8",
 				data: JSON.stringify(dongIdx),
+				beforeSend(xhr) {
+			     	if (token && header) xhr.setRequestHeader(header, token);
+			    },
 				success: function() {
 					Swal.fire("삭제완료", "", "success").then(() => {
 						location.reload();
@@ -212,11 +220,15 @@ $(document).on("click", ".delete-btn", function() {
 	  	denyButtonText: "취소",
 	}).then((result) => {
 		if (result.isConfirmed) {
+			const { token, header } = getCsrf();
 			$.ajax({
 				url: DELETE_GROUP_URL,
 				type: "POST",
 				contentType: "application/json; charset=utf-8",
 				data: JSON.stringify(numIdxs),
+			    beforeSend(xhr) {
+			     	if (token && header) xhr.setRequestHeader(header, token);
+			     },
 				success: function() {
 					Swal.fire("삭제완료", "", "success").then(() => {
 						$(this).closest("tr").remove();

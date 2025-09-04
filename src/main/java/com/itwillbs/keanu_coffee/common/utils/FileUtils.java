@@ -48,12 +48,9 @@ public class FileUtils {
 		String subDir = localDateNow.format(dtf);
 
 		path += "/" + subDir;
-		System.out.println("path : " + path);
-		
-		Path absolutePath = Paths.get(path).toAbsolutePath().normalize();
 		
 		try {
-			Files.createDirectories(absolutePath);
+			Path resultPath = Files.createDirectories(Paths.get(path).toAbsolutePath().normalize());
 		} catch (IOException e) {
 			System.out.println("서브 디렉토리 생성 실패 - " + path);
 			e.printStackTrace();
@@ -76,14 +73,13 @@ public class FileUtils {
 		// --------------------------------------------------------
 		// 프로젝트 상의 가상의 업로드 경로를 사용할 경우 추가 작업
 //		String realPath = uploadPath; // 서버 업로드용
-		String realPath = session.getServletContext().getRealPath(uploadPath); // 로컬작업용
-		System.out.println("realPath : " + realPath);
+//		String realPath = session.getServletContext().getRealPath(uploadPath); // 로컬작업용[프로젝트]
 		
-		subDir = FileUtils.createDirectories(realPath);
+		subDir = FileUtils.createDirectories(uploadPath);
 		
 		// 실제 파일 업로드 공간 : 업로드 경로와 서브 디렉토리 결합
-		String destinationPath = realPath + "/" + subDir;
-
+		String destinationPath = uploadPath + "/" + subDir;
+		
 		List<FileDTO> fileList = new ArrayList<FileDTO>(); // 파일 정보들을 저장할 List 객체 생성
 		for(MultipartFile mFile : help.getFiles()) {
 			// 파일이 존재할 경우 실제 업로드 처리 및 BoardFileDTO 객체에 정보 저장
@@ -116,9 +112,9 @@ public class FileUtils {
 	public static void deleteFile(FileDTO fileDTO, HttpSession session) {
 		
 //		String realPath = uploadPath; // 서버 업로드용
-		String realPath = session.getServletContext().getRealPath(uploadPath); // 로컬작업용
+//		String realPath = session.getServletContext().getRealPath(uploadPath); // 로컬작업용
 		
-		Path path = Paths.get(realPath, fileDTO.getSubDir(), fileDTO.getRealFileName());
+		Path path = Paths.get(uploadPath , fileDTO.getSubDir(), fileDTO.getRealFileName());
 
 		try {
 			Files.deleteIfExists(path);
@@ -139,11 +135,11 @@ public class FileUtils {
 	public static Map<String, Object> getFileResource(FileDTO fileDTO, HttpSession session) {
 		try {
 //			String realPath = uploadPath; // 서버 업로드용
-			String realPath = session.getServletContext().getRealPath(uploadPath); // 로컬작업용
+//			String realPath = session.getServletContext().getRealPath(uploadPath); // 로컬작업용
 			
 			// 가져올 파일의 실제 위치 : 업로드 디렉토리의 파일 정보를 Path 객체로 가져오기
 //			Path path = Paths.get(absolutePath.toString(), fileDTO.getSubDir()).resolve(fileDTO.getRealFileName()).normalize(); // 서버업로드용
-			Path path = Paths.get(realPath, fileDTO.getSubDir()).resolve(fileDTO.getRealFileName()).normalize();
+			Path path = Paths.get(uploadPath, fileDTO.getSubDir()).resolve(fileDTO.getRealFileName()).normalize();
 			
 			// 해당 파일에 대한 Resource 객체 생성
 			Resource resource = new UrlResource(path.toUri());
@@ -155,7 +151,6 @@ public class FileUtils {
 			
 			// 파일의 MIME 타입(= 컨텐츠 타입) 설정
 			String contentType = Files.probeContentType(path); // 실제 파일로부터 파일 타입 알아내기
-			System.out.println("contentType : " + contentType);
 			
 			if(contentType == null) {
 				contentType = "application/octet-stream"; //일반적인 바이너리 타입으로 컨텐츠 타입 강제 고정
@@ -198,11 +193,10 @@ public class FileUtils {
 	            return null;
 	        }
 	        
-	        String realPath = session.getServletContext().getRealPath(uploadPath);
-	        if (realPath == null) {
+	        if (uploadPath == null) {
 	            System.err.println("getRealPath()가 null을 반환했습니다.");
 	            // 대체 경로 사용
-	            realPath = System.getProperty("user.dir") + "/uploads";
+	            uploadPath = System.getProperty("user.dir") + "/uploads";
 	        }
 	        
 	        String subDir = fileDTO.getSubDir() != null ? fileDTO.getSubDir() : "";
@@ -213,7 +207,7 @@ public class FileUtils {
 	            return null;
 	        }
 	        
-	        Path path = Paths.get(realPath, subDir, fileName);
+	        Path path = Paths.get(uploadPath, subDir, fileName);
 	        return path.toString();
 	        
 	    } catch (Exception e) {

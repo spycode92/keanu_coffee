@@ -29,6 +29,8 @@ import com.itwillbs.keanu_coffee.admin.dto.SupplyContractDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
 import com.itwillbs.keanu_coffee.admin.service.OrganizationService;
 import com.itwillbs.keanu_coffee.admin.service.SupplyContractService;
+import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 
@@ -118,14 +120,19 @@ public class SupplyContractController {
     //공급계약삭제
     @PostMapping("/deleteContractDetail")
     @ResponseBody
+    @SystemLog(target = SystemLogTarget.SUPPLIER_PRODUCT_CONTRACT)
     public ResponseEntity<Map<String,String>> deleteContractDetail(@RequestBody SupplyContractDTO contract) {
     	boolean result = supplyContractService.deleteContractDetail(contract);
     	Map<String,String> response = new HashMap<>();
         if (result) {
-            response.put("status", "success");
+        	response.put("title", "성공");
+        	response.put("msg", "공급계약 삭제 완료");
+            response.put("result", "success");
             return ResponseEntity.ok(response);
         } else {
-            response.put("status", "fail");
+        	response.put("title", "실패");
+            response.put("msg", "공급계약 삭제 실패");
+            response.put("result", "error");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     

@@ -18,6 +18,8 @@
 	    <log4j2-version>2.25.0</log4j2-version>
 	    <!-- 스프링 시큐리티 버전 -->
 		<spring-security-version>5.8.16</spring-security-version>
+		<!-- AOP사용을위해 버전설정 -->
+		<org.aspectj-version>1.9.24</org.aspectj-version>
 	</properties>
 	
 	<repositories>
@@ -321,23 +323,22 @@
 		    <version>${spring-security-version}</version>
 		</dependency>
 		
-<!-- 		using this to make a product order pdf from data -->
-		<!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
-<!-- 		<dependency> -->
-<!-- 			    <groupId>com.itextpdf</groupId> -->
-<!-- 			    <artifactId>itextpdf</artifactId> -->
-<!-- 			    <version>5.5.13.4</version> -->
-<!-- 			</dependency> -->
-		<!-- https://mvnrepository.com/artifact/com.itextpdf/itext-core -->
+		<!-- AOP 사용에 필요한 라이브러리 -->
+		<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
 		<dependency>
-		    <groupId>com.itextpdf</groupId>
-		    <artifactId>itext-core</artifactId>
-		    <version>9.2.0</version>
-		    <type>pom</type>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${org.aspectj-version}</version>
 		</dependency>
 		
-		
-		</dependencies>
+		<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+		<dependency>
+		    <groupId>org.aspectj</groupId>
+		    <artifactId>aspectjweaver</artifactId>
+		    <version>${org.aspectj-version}</version>
+		    <scope>runtime</scope>
+		</dependency>	
+	</dependencies>
 	
 	
 	<build>

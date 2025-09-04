@@ -17,10 +17,14 @@ function editRegion(commonCodeIdx, commonCodeName) {
 	  	denyButtonText: "취소"
 	}).then((result) => {
 		if (result.isConfirmed) {
+			const { token, header } = getCsrf();
 			$.ajax({
 				url: MODIFY_REGION_URL,
 				type: "POST",
 				contentType: "application/json",
+				beforeSend(xhr) {
+		     		if (token && header) xhr.setRequestHeader(header, token);
+		    	},
 				data: JSON.stringify({commonCodeIdx: commonCodeIdx, commonCodeName: newName}),
 				error: function() {
 					Swal.fire({
@@ -48,11 +52,15 @@ function deleteRegion(commonCodeIdx) {
 	    denyButtonText: "취소"
 	  }).then((result) => {
 	      if (result.isConfirmed) {
+			  const { token, header } = getCsrf();
 		      $.ajax({
 		        url: DELETE_REGION_URL,
 		        type: "POST",
 		        contentType: "application/json",
 		        data: JSON.stringify({ commonCodeIdx: commonCodeIdx }),
+			    beforeSend(xhr) {
+			    	if (token && header) xhr.setRequestHeader(header, token);
+			    },
 		        success: function() {
 		          Swal.fire("삭제되었습니다.", "", "success").then(() => {
 		            location.reload();
