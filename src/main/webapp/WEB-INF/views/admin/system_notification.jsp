@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
@@ -169,7 +170,7 @@
 				<c:forEach var="notification" items="${notificationList }">
 					<tr class="employee-row" data-emp-idx="${notification.logIdx}">
 						<td>${notification.logIdx }</td>
-						<td>${notification.createdAt }</td>
+						<td><fmt:formatDate value="${notification.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 						<td>${notification.empNo }</td>
 						<td>${notification.subSection }</td>
 						<td>${notification.logMessage }</td>

@@ -24,7 +24,7 @@ public class SystemLogDTO {
 	//어떻게 
 	private String logMessage;
 	
-	private LocalDateTime createdAt;
+	private Timestamp createdAt;
     
     private List<CommonCodeDTO> commonCodeList;
 }
