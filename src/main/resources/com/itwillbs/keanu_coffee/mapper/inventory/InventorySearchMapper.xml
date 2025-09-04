@@ -157,19 +157,19 @@
 	<!-- 재고 상세 조회 모달창 - AJAX -->
     <select id="selectInventoryDetail" parameterType="int" resultType="map">
         SELECT 
-            r.receipt_product_idx,
-            r.lot_number,
-            r.manufacture_date,
-            r.expiration_date,
-            r.received_at,
-            r.quantity AS received_quantity,
-            p.product_idx,
-            p.product_name,
-            i.quantity AS current_quantity,
-            w.location_name,
-            w.location_type,
-            s.supplier_name
-        FROM RECEIPT_PRODUCT r
+	        r.receipt_product_idx,
+	        r.lot_number,
+	        DATE_FORMAT(r.manufacture_date, '%Y-%m-%d') AS manufacture_date,
+	        DATE_FORMAT(r.expiration_date, '%Y-%m-%d') AS expiration_date,
+	        r.received_at,
+	        r.quantity AS received_quantity,
+	        p.product_idx,
+	        p.product_name,
+	        i.quantity AS current_quantity,
+	        w.location_name,
+	        w.location_type,
+	        s.supplier_name
+	    FROM RECEIPT_PRODUCT r
         JOIN PRODUCT p 
             ON r.product_idx = p.product_idx
         LEFT JOIN INVENTORY i 

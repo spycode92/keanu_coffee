@@ -442,6 +442,29 @@
 	        if (d === 0) return 'D-day';
 	        return 'D-' + d;
 	    }
+	    
+	    /* fmtDate 추가 */
+	    function fmtDate(val){
+		    if(val === null || val === undefined) return '–';
+		
+		    // 숫자인 경우 (타임스탬프)
+		    if(typeof val === 'number'){
+		        const d = new Date(val);
+		        return d.toISOString().split('T')[0]; // "2025-06-20"
+		    }
+		
+		    // 문자열인데 "2025-06-20" 같이 온 경우
+		    if(typeof val === 'string'){
+		        if(val.includes('-')) return val; // 이미 YYYY-MM-DD
+		        const num = parseInt(val, 10);
+		        if(!isNaN(num)){
+		            const d = new Date(num);
+		            return d.toISOString().split('T')[0];
+		        }
+		    }
+		
+		    return '–';
+		}
 	
 	    /* 고정 임박 기준값 */
 	    const FIXED_THRESHOLD = 7;
@@ -488,10 +511,21 @@
 		        // 상품 정보 채우기
 		        $('#miName').text(data.product_name || '–');
 		        $('#miItem').text(data.product_idx || '–');
-		        $('#miMfg').text(data.manufacture_date || '–');
-		        $('#miExp').text(data.expiration_date || '–');
+		        
+		    	 // ✅ 여기 사이에 디버깅 console.log 넣으세요
+		        console.log("제조일자 원본:", data.manufacture_date, typeof data.manufacture_date);
+		        console.log("new Date() 결과:", new Date(data.manufacture_date));
+		        console.log("fmtDate() 결과:", fmtDate(data.manufacture_date));
+		        
+// 		        $('#miMfg').text(fmtDate(data.manufacture_date));
+// 		        console.log("모달에 세팅된 제조일자:", $('#miMfg').text());
+// 		        $('#miExp').text(fmtDate(data.expiration_date));
+
+				document.getElementById("miMfg").innerText = fmtDate(data.manufacture_date);
+				document.getElementById("miExp").innerText = fmtDate(data.expiration_date);
+
 		        $('#miCurrent').text((data.current_quantity || 0) + ' BOX');
-		        $('#miSupplier').text(data.supplier_name || '–'); // ✅ 컬럼명 맞추기
+		        $('#miSupplier').text(data.supplier_name || '–'); // 컬럼명 맞추기
 		
 		        // 로케이션 분포
 		        const $box = $('#locList').empty();
