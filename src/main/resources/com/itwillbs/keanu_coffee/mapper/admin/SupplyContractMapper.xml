@@ -110,14 +110,6 @@
 			 , p.status as product_status
 			 , f.file_idx
 		FROM SUPPLIER_PRODUCT_CONTRACT spc
-		LEFT JOIN SUPPLIER s
-			on spc.supplier_idx = s.supplier_idx
-		LEFT JOIN PRODUCT p
-			on spc.product_idx = p.product_idx
-		LEFT JOIN FILE f
-			on f.target_table = 'product' AND f.target_table_idx = p.product_idx
-		LEFT JOIN COMMON_CODE c
-			on c.common_code_idx = p.category_idx
 		<where>
 		<if test="searchType != ''">
 			${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
@@ -126,6 +118,14 @@
 			AND spc.status = #{filterStatus}
 		</if>
 		</where>
+		LEFT JOIN SUPPLIER s
+			on spc.supplier_idx = s.supplier_idx
+		LEFT JOIN PRODUCT p
+			on spc.product_idx = p.product_idx
+		LEFT JOIN FILE f
+			on f.target_table = 'product' AND f.target_table_idx = p.product_idx
+		LEFT JOIN COMMON_CODE c
+			on c.common_code_idx = p.category_idx
 		<if test="orderKey != ''">
 			ORDER BY ${orderKey} ${orderMethod}			
 		</if>
@@ -138,14 +138,6 @@
 	<select id="countContractList" resultType="int">
 		SELECT count(*)
 		FROM SUPPLIER_PRODUCT_CONTRACT spc
-		LEFT JOIN SUPPLIER s
-			on spc.supplier_idx = s.supplier_idx
-		LEFT JOIN PRODUCT p
-			on spc.product_idx = p.product_idx
-		LEFT JOIN FILE f
-			on f.target_table = 'product' AND f.target_table_idx = p.product_idx
-		LEFT JOIN COMMON_CODE c
-			on c.common_code_idx = p.category_idx
 		<where>
 		<if test="searchType != ''">
 			${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
@@ -154,6 +146,14 @@
 			AND spc.status = #{filterStatus}
 		</if>
 		</where>
+		LEFT JOIN SUPPLIER s
+			on spc.supplier_idx = s.supplier_idx
+		LEFT JOIN PRODUCT p
+			on spc.product_idx = p.product_idx
+		LEFT JOIN FILE f
+			on f.target_table = 'product' AND f.target_table_idx = p.product_idx
+		LEFT JOIN COMMON_CODE c
+			on c.common_code_idx = p.category_idx
 	</select>
 	
 	
@@ -209,6 +209,7 @@
 			 , p.status as product_status
 			 , f.file_idx
 		FROM SUPPLIER_PRODUCT_CONTRACT spc
+		WHERE spc.supply_contract_idx = #{supplyContractIdx}
 		LEFT JOIN SUPPLIER s
 			on spc.supplier_idx = s.supplier_idx
 		LEFT JOIN PRODUCT p
@@ -217,7 +218,6 @@
 			on f.target_table = 'product' AND f.target_table_idx = p.product_idx
 		LEFT JOIN COMMON_CODE c
 			on c.common_code_idx = p.category_idx
-		WHERE spc.supply_contract_idx = #{supplyContractIdx}
 	</select>
 	
 	<!-- 계약수정 -->

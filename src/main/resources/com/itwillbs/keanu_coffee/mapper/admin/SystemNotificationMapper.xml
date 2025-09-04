@@ -24,7 +24,7 @@
 	<select id="selectNotificationCount" resultType="int">
 		SELECT count(*)
 		FROM SYSTEM_LOG
-				<where>
+		<where>
 		<if test="searchType != ''">
 			${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
 		</if>

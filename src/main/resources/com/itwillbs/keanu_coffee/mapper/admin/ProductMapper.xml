@@ -3,35 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.ProductMapper">
-	<!--  상품(PRODUCT) 테이블 ResultMap -->
-	<resultMap id="productResultMap" type="ProductDTO">
-		<id property="productIdx" column="product_idx" />
-		<result property="productName" column="product_name" />
-		<result property="categoryIdx" column="category_idx" />
-		<result property="productWeight" column="product_weight" />
-		<result property="productVolume" column="product_volume" />
-		<result property="productFrom" column="product_from" />
-		<result property="status" column="product_status" /> <!-- as product_status -->
-		<result property="note" column="product_note" /> <!-- as product_note -->
-	</resultMap>
-	
-	<!--  공급계약(SUPPLIER_PRODUCT_CONTRACT) 테이블 ResultMap -->
-	<resultMap id="contractResultMap" type="SupplyContractDTO">
-		<id property="supplyContractIdx" column="supplyContract_idx" />
-		<result property="supplierIdx" column="supplier_idx" />
-		<result property="productIdx" column="product_idx" />
-		<result property="contractPrice" column="contract_price" />
-		<result property="contractStart" column="contract_start" />
-		<result property="contractEnd" column="contract_end" />
-		<result property="minOrderQuantity" column="minOrder_quantity" />
-		<result property="maxOrderQuantity" column="maxOrder_quantity" />
-		<result property="status" column="contract_status" /> <!-- as contract_status -->
-		<result property="note" column="contract_note" /> <!-- as contract_note -->
-		<result property="createdAt" column="contract_created_at" /> 
- 		<result property="updatedAt" column="contract_updated_at" /> 
-	</resultMap>
-	
-	
+
 	<!-- 공통코드(COMMON_CODE) 테이블 ResultMap -->
 	<resultMap id="commonCodeResultMap" type="CommonCodeDTO">
 		<id property="commonCodeIdx" column="common_code_idx" /> 

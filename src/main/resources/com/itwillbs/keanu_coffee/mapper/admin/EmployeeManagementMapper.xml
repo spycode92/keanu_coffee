@@ -130,10 +130,10 @@
 			, e.hire_date
 			, e.emp_status
 		FROM EMPLOYEE_INFO e
+		WHERE emp_idx = #{empIdx}
 		LEFT JOIN COMMON_CODE c ON e.department_idx = c.common_code_idx
 		LEFT JOIN TEAM t ON e.team_idx = t.team_idx
 		LEFT JOIN ROLE r ON e.role_idx = r.role_idx
-		WHERE emp_idx = #{empIdx}
 	</select>
 	
 	<!--  회원정보 업데이트하기 -->
@@ -249,14 +249,14 @@
 			, c.common_code
 			FROM
 				EMPLOYEE_INFO e
+			WHERE
+				e.emp_no = #{empNo} 
 			LEFT JOIN ROLE r
 				ON e.role_idx = r.role_idx
 			LEFT JOIN ROLE_AUTHO ra
 				ON e.role_idx = ra.role_idx
 			LEFT JOIN COMMON_CODE c
 				ON c.common_code_idx = ra.autho_idx
-			WHERE
-				e.emp_no = #{empNo} 
 	</select>
 	
 

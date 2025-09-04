@@ -23,40 +23,34 @@ public class SystemNotificationController {
 	private final SystemNotificationService systemNotificationService;
 
 	@GetMapping("")
-	public String workingLog(Model model, @RequestParam(defaultValue = "1") int pageNum, 
-			@RequestParam(defaultValue = "") String searchType,
-			@RequestParam(defaultValue = "") String searchKeyword,
-			@RequestParam(defaultValue ="") String orderKey,
-			@RequestParam(defaultValue ="") String orderMethod) {
-		model.addAttribute("pageNum",pageNum);
-		model.addAttribute("searchType",searchType);
-		model.addAttribute("searchKeyword",searchKeyword);
-		model.addAttribute("orderKey",orderKey);
-		model.addAttribute("orderMethod",orderMethod);
+	public String workingLog(Model model, @RequestParam(defaultValue = "1") int pageNum,
+			@RequestParam(defaultValue = "") String searchType, @RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue = "") String orderKey, @RequestParam(defaultValue = "") String orderMethod) {
+		model.addAttribute("pageNum", pageNum);
+		model.addAttribute("searchType", searchType);
+		model.addAttribute("searchKeyword", searchKeyword);
+		model.addAttribute("orderKey", orderKey);
+		model.addAttribute("orderMethod", orderMethod);
 		int listLimit = 10;
-		
+
 		int notiCount = systemNotificationService.getNoticeCount(searchType, searchKeyword);
-		
+
 		if (notiCount > 0) {
 			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, notiCount, pageNum, 3);
-			
+
 			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
 				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
 				model.addAttribute("targetURL", "/admin/customer/notice_list");
 				return "commons/result_process";
 			}
-			
+
 			model.addAttribute("pageInfo", pageInfoDTO);
-		
+
 			List<SystemLogDTO> notificationList = systemNotificationService.getNotificationList(
-					pageInfoDTO.getStartRow(), listLimit, searchType, searchKeyword, orderKey,orderMethod);
+					pageInfoDTO.getStartRow(), listLimit, searchType, searchKeyword, orderKey, orderMethod);
 			model.addAttribute("notificationList", notificationList);
 		}
-		
-		
-		
-		
-		
+
 		return "/admin/system_notification";
 	}
 }

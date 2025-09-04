@@ -98,11 +98,11 @@
 		, t.team_idx
 		, t.team_name
 		FROM COMMON_CODE c
+		WHERE c.group_code = 'DEPARTMENT'
 		LEFT JOIN ROLE r
 		ON c.common_code_idx = r.department_idx
 		LEFT JOIN TEAM t
 		ON c.common_code_idx = t.department_idx
-		WHERE c.group_code = 'DEPARTMENT'
 	</select>
 	<!-- 권한목록 조회 -->
 	<select id="selectAuthorityList" resultType="commonCodeDTO">

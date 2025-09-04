@@ -18,8 +18,6 @@ import lombok.RequiredArgsConstructor;
 public class TotalDashBoardController {
 	@GetMapping("")
 	public String Dashboard(Model model) {
-		
-		
-		return "/admin/dashboard";
+		return "/admin/dashboard/dashboard";
 	}
 }
