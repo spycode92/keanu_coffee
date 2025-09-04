@@ -11,6 +11,7 @@ import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderDTO;
 import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderItemDTO;
 import com.itwillbs.keanu_coffee.common.dto.PurchaseWithSupplierDTO;
 import com.itwillbs.keanu_coffee.common.mapper.PurchaseOrderMapper;
+import com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO;
 import com.itwillbs.keanu_coffee.inbound.mapper.InboundMapper;
 
@@ -56,6 +57,11 @@ public class InboundService {
 
 	public String getSupplierName(int supplierIdx) {
 		return inboundMapper.getSupplierName(supplierIdx);
+	}
+
+
+	public InboundDetailDTO getInboundDetailData(int ibwaitIdx) {
+		return inboundMapper.getInboundDetailData(ibwaitIdx);
 	}
 
 	

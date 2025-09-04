@@ -39,6 +39,32 @@
     </select>
 	
 	
+	<!-- inbound upgrade -->
+	<select id="getInboundDetailData" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO">
+		SELECT 
+		    iw.ibwait_idx                          		AS ibwaitIdx,
+		    iw.arrival_date                      		AS arrivalDate,
+		    po.order_number                        		AS orderNumber,
+		    po.inbound_classification             		AS inboundClassification,
+		    s.supplier_name                        		AS supplierName,
+		    iw.manager                           		AS managerName,
+		    iw.inbound_location                   		AS inboundLocation,
+		    iw.number_of_items                    		AS numberOfItems,
+		    iw.quantity                            		AS quantity,
+		    SUM(poi.quantity * poi.unit_price * 1.1) 	AS totalPrice,
+		    iw.note                               		AS note
+		FROM INBOUND_WAITING iw
+		JOIN PURCHASE_ORDER po ON iw.order_idx = po.order_idx
+		JOIN SUPPLIER s ON po.supplier_idx = s.supplier_idx
+		JOIN PURCHASE_ORDER_ITEM poi ON po.order_idx = poi.order_idx
+		WHERE iw.ibwait_idx = #{ibwaitIdx}
+		GROUP BY iw.ibwait_idx, iw.arrival_date, po.order_number, po.inbound_classification,
+		         s.supplier_name, iw.manager, iw.inbound_location, iw.number_of_items,
+		         iw.quantity, iw.note
+	</select>
+	
+	
+	
 	
 	
 	

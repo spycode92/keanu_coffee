@@ -8,6 +8,7 @@ import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
 import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderDTO;
 import com.itwillbs.keanu_coffee.common.dto.PurchaseOrderItemDTO;
+import com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO;
 
 @Mapper
@@ -29,6 +30,8 @@ public interface InboundMapper {
 	String getSupplierName(int supplierIdx);
 
 	List<InboundManagementDTO> selectAllInboundWaitingInfo();
+
+	InboundDetailDTO getInboundDetailData(int ibwaitIdx);
 	
 	
 

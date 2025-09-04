@@ -152,17 +152,17 @@
 					<div class="kv-label">입고번호</div>
 					<div class="kv-value" style="display:flex; align-items:center; gap:.5rem;">
 				        <a id="inboundLink" class="inbound-link">
-				           -
+							<c:out value="${inboundDetailData.ibwaitIdx}" default="-"/>
 				        </a>
 				    </div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고일자</div>
-					<div class="kv-value">-</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.arrivalDate}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">발주번호</div>
-					<div class="kv-value">-</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.orderNumber}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고구분</div>
@@ -171,36 +171,36 @@
 
 				<div class="kv-item">
 					<div class="kv-label">공급업체</div>
-					<div class="kv-value"><c:out value="${supplierName }"/></div>
+					<div class="kv-value"><c:out value="${inboundDetailData.supplierName}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">담당자</div>
-					<div class="kv-value">-</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.managerName}" default="담당자 미정"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">발주번호(PO)</div>
-					<div class="kv-value"><c:out value="${orderItems[0].purchaseOrder.orderNumber}" /></div>
+					<div class="kv-value"><c:out value="${inboundDetailData.orderNumber}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고위치</div>
-					<div class="kv-value">-</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.inboundLocation}" default="-"/></div>
 				</div>
 
 				<div class="kv-item">
 					<div class="kv-label">총 품목 수</div>
-					<div class="kv-value"><c:out value="${fn:length(product)}" /></div>
+					<div class="kv-value"><c:out value="${inboundDetailData.numberOfItems}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">총 수량</div>
-					<div class="kv-value"><fmt:formatNumber value="${totalQty}" pattern="#,##0" /></div>
+					<div class="kv-value"><c:out value="${inboundDetailData.quantity}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">총 금액</div>
-					<div class="kv-value"> <fmt:formatNumber value="${grandTotal}" pattern="₩ #,##0" /></div>
+					<div class="kv-value"><c:out value="${inboundDetailData.totalPrice}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">비고</div>
-					<div class="kv-value">-</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.note}" default="-"/></div>
 				</div>
 			</div>
 		</div>
