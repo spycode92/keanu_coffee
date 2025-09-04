@@ -114,9 +114,9 @@
 			, a.dong
 		FROM
 			FRANCHISE f
-		WHERE f.franchise_idx = #{franchiseIdx}
 		LEFT JOIN ADMINISTRATIVE_REGION a
 			ON f.bcode = a.bcode
+		WHERE f.franchise_idx = #{franchiseIdx}
 	</select>
 	
 	<!-- 행정정보삭제 -->

@@ -6,9 +6,25 @@ document.addEventListener('DOMContentLoaded', () => {
         { date: '2025-09-01', product: '상품A', category: '카테고리1', inboundWaiting: 25, inboundCompleted: 15, disposal: 5 },
         { date: '2025-09-01', product: '상품B', category: '카테고리2', inboundWaiting: 30, inboundCompleted: 20, disposal: 5 },
         { date: '2025-09-02', product: '상품A', category: '카테고리1', inboundWaiting: 22, inboundCompleted: 12, disposal: 6 },
-        { date: '2025-09-02', product: '상품B', category: '카테고리2', inboundWaiting: 25, inboundCompleted: 14, disposal: 7 }
+        { date: '2025-09-02', product: '상품B', category: '카테고리2', inboundWaiting: 25, inboundCompleted: 14, disposal: 7 },
+        { date: '2025-09-03', product: '상품A', category: '카테고리1', inboundWaiting: 22, inboundCompleted: 12, disposal: 6 },
+        { date: '2025-09-03', product: '상품B', category: '카테고리2', inboundWaiting: 25, inboundCompleted: 14, disposal: 7 },
+        { date: '2025-09-04', product: '상품A', category: '카테고리1', inboundWaiting: 22, inboundCompleted: 12, disposal: 6 },
+        { date: '2025-09-04', product: '상품B', category: '카테고리2', inboundWaiting: 25, inboundCompleted: 14, disposal: 7 },
+        { date: '2025-09-05', product: '상품A', category: '카테고리1', inboundWaiting: 22, inboundCompleted: 12, disposal: 6 },
+        { date: '2025-09-05', product: '상품B', category: '카테고리2', inboundWaiting: 25, inboundCompleted: 14, disposal: 7 }
         // ... 추가 데이터
     ];
+
+	//inboundRawData에 넣을 데이터 가져오기
+	function getDayInbound(){
+		ajaxGet("/admin/dashboard/dayInbound")
+			.then((data)=>{
+				inboundRawData = data;
+			}).catch(()=>{
+				
+			})
+	}
 
     // 1. 날짜별 카테고리별 데이터 집계 함수 (입고대기량 재계산 포함)
     function aggregateCategoryData(rawData) {

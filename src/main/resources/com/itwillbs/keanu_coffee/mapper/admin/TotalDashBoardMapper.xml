@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.TotalDashBoardMapper">
+	
+	<!-- 일별 입고 정보조회 -->
+	<select id="selectTotalDashBoardByDay">
+		SELECT
+			DATE(iw.arrival_date) -- 도착일 
+			, iw.quantity as ibwaitQuantity -- 총입고대기수량
+			, poi.quantity as POIQuantity -- 발주물건수량
+			, p.product_name as POIName -- 물건
+			, c.common_code_name as POICategoryName -- 카테고리
+			, COALESCE(rp.quantity, 0) as RPQuantity -- 입고완료 물건수량
+			, COALESCE(d.disposal_amount, 0) as disposalAmount -- 폐기물건수량
+			FROM PURCHASE_ORDER_ITEM poi 
+			LEFT JOIN INBOUND_WAITING iw ON iw.order_idx = poi.order_idx
+			LEFT JOIN PRODUCT p ON p.product_idx = poi.product_idx
+			LEFT JOIN COMMON_CODE c ON p.category_idx = c.common_code_idx
+			LEFT JOIN RECEIPT_PRODUCT rp ON iw.ibwait_idx = rp.ibwait_idx 
+						and rp.product_idx = poi.product_idx
+			LEFT JOIN DISPOSAL d ON d.receipt_product_idx = rp.receipt_product_idx
+			GROUP BY DATE(iw.arrival_date), p.product_name, c.common_code_name
+			ORDER BY p.product_name;
+	</select>
+	
+	
+	
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
