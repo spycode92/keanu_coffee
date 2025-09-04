@@ -26,6 +26,7 @@
         <li><strong>${authority.authority}</strong></li>
     </c:forEach>
 	</ul>
+	<br>
 </section>
 
 

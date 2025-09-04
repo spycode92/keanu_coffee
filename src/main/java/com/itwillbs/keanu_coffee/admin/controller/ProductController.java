@@ -135,17 +135,21 @@ public class ProductController {
     //카테고리 삭제
     @PostMapping("/removeCategory")
     @ResponseBody
-    public ResponseEntity<?> removeCategory(@RequestBody CommonCodeDTO category) {
+    public ResponseEntity<Map<String,String>> removeCategory(@RequestBody CommonCodeDTO category) {
         Integer commonCodeIdx = category.getCommonCodeIdx();
+        category = productService.getCategoryInfoByCategoryIdx(commonCodeIdx);
         // 서비스에서: 이 카테고리를 참조하는 상품이 있는지 체크
-        boolean removed = productService.removeCategoryIfUnused(commonCodeIdx);
+        boolean removed = productService.removeCategoryIfUnused(category);
+        
+        Map<String, String> response = new HashMap<>();
         if(removed) {
-            return ResponseEntity.ok().contentType(MediaType.valueOf("text/plain; charset=UTF-8"))
-            		.body("카테고리가 삭제되었습니다.");
+        	response.put("result", "success");
+	        response.put("message", "카테고리가 삭제되었습니다.");
+	        return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-            		.contentType(MediaType.valueOf("text/plain; charset=UTF-8"))
-                    	.body("상품이 연결된 카테고리는 삭제할 수 없습니다. 확인후 다시시도 하십시오.");
+        	response.put("result", "error");
+            response.put("message", "서버 오류가 발생했습니다.");
+            return ResponseEntity.ok(response);
         }
     }
 	
@@ -176,40 +180,39 @@ public class ProductController {
     //상품수정
     @PostMapping("/modifyProduct")
     @ResponseBody
-    public ResponseEntity<String> modifyProduct(@ModelAttribute ProductDTO product) throws IOException {
+    public ResponseEntity<Map<String,String>> modifyProduct(@ModelAttribute ProductDTO product) throws IOException {
     	Boolean result = productService.modifyProduct(product);
-    	if(result) {
-    		return ResponseEntity.ok("상품정보가 수정되었습니다.");
-    	}
+    	Map<String,String> res = new HashMap();
     	
-    	return ResponseEntity.ok("상품정보 수정에 실패하였습니다. 등록된 계약이 있는지 확인하십시오.");
+    	if(result) {
+    		res.put("result", "success");
+    		res.put("msg", "상품정보가 수정되었습니다");
+    		return ResponseEntity.ok(res);
+    	}
+    	res.put("result", "error");
+		res.put("msg", "잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오. ");
+		return ResponseEntity.ok(res);
     }
 	
-    //상품삭제
     @PostMapping("/removeProduct")
-    public ResponseEntity<String> removeProduct(@RequestBody Map<String, Object> request) {
+    @ResponseBody
+    public ResponseEntity<Map<String,String>> removeProduct(@RequestBody ProductDTO product) throws IOException {
+    	product = productService.getProductDetail(product);
     	
-    	Object idxObj = request.get("productIdx");
-        
-    	Integer productIdx = null;
-        
-    	if (idxObj != null) {
-            productIdx = Integer.valueOf(idxObj.toString());
-        }
+    	Boolean result = productService.deleteProduct(product);
+    	Map<String,String> res = new HashMap();
     	
-        if (productIdx == null) {
-            return ResponseEntity.badRequest().body("상품 번호가 올바르지 않습니다.");
-        }
-        
-        String status = "삭제";
-        boolean result = productService.changeProductStatus(productIdx, status);
-        
-        if (result) {
-            return ResponseEntity.ok("상품이 삭제(비활성화) 처리되었습니다.");
-        } else {
-            return ResponseEntity.status(500).body("상품 삭제 처리에 실패했습니다.");
-        }
+    	if(result) {
+    		res.put("result", "success");
+    		res.put("msg", "상품정보가 수정되었습니다");
+    		return ResponseEntity.ok(res);
+    	}
+    	res.put("result", "error");
+		res.put("msg", "잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오. ");
+		return ResponseEntity.ok(res);
     }
+    
+    
     
     @GetMapping("/getProductList")
     @ResponseBody

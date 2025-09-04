@@ -14,6 +14,8 @@ import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplyContractDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
+import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.utils.FileUtils;
@@ -42,6 +44,7 @@ public class SupplyContractService {
 	}
 	
 	//계약등록
+	@SystemLog(target = SystemLogTarget.SUPPLIER_PRODUCT_CONTRACT )
 	public boolean addContract(SupplyContractDTO supplyContract) {
 		int insertCount = supplyContractMapper.insertContract(supplyContract);
 		return insertCount > 0;
@@ -55,11 +58,13 @@ public class SupplyContractService {
 	}
 	
 	//계약수정
+	@SystemLog(target = SystemLogTarget.SUPPLIER_PRODUCT_CONTRACT)
 	public SupplyContractDTO updateContractDetail(SupplyContractDTO contract) {
 		int updateCount = supplyContractMapper.updateContractDetail(contract);
 		
 		return contract;
 	}
+	
 	//계약삭제
 	public boolean deleteContractDetail(SupplyContractDTO contract) {
 		int updateCount = supplyContractMapper.deleteContractDetail(contract);

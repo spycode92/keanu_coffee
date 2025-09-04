@@ -158,7 +158,7 @@
 	
 	
 	<!-- 계약등록 -->
-	<insert id="insertContract">
+	<insert id="insertContract" useGeneratedKeys="true" parameterType="SupplyContractDTO" keyProperty="supplyContractIdx"> 
 		INSERT INTO SUPPLIER_PRODUCT_CONTRACT
 		(
 	        supplier_idx,
@@ -236,6 +236,13 @@
 	    WHERE supply_contract_idx = #{supplyContractIdx}
 	</update>
 	
+	<!-- 계약삭제 -->
+	<update id="deleteContractDetail">
+		UPDATE SUPPLIER_PRODUCT_CONTRACT
+		SET
+			status = #{status}
+		WHERE supply_contract_idx = #{supplyContractIdx}
+	</update>
 	
 	<!-- 상품idx로 계약검색 -->
 	<select id="selectContractWithproductIdx" resultType="int">
@@ -249,7 +256,7 @@
 	<select id="selectContractWithSupplierIdx" resultType="int">
 		SELECT count(*)
 		FROM SUPPLIER_PRODUCT_CONTRACT
-		WHERE product_idx = #{supplierIdx}
+		WHERE supplier_idx = #{supplierIdx}
 			AND status != '삭제'
 	</select>
 </mapper>

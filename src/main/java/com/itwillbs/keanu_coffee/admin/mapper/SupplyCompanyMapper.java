@@ -26,7 +26,7 @@ public interface SupplyCompanyMapper {
 	//공급업체 삭제시 계약이남아있나 확인
 	int countActiveContractsBySupplier(Long supplierIdx);
 	// 공급업체 삭제
-	int deleteSupplierByIdx(Long supplierIdx);
+	int deleteSupplierByIdx(SupplierDTO supplier);
 	//공급업체상세정보
 	SupplierDTO selectSupplierInfo(Long idx);
 	// 공급업체 정보 수정
