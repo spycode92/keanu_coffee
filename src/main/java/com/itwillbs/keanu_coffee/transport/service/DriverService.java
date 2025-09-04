@@ -40,10 +40,4 @@ public class DriverService {
 		return driverMapper.selectAvailableDrivers();
 	}
 
-	// 배차 등록
-	public void insertDispatch() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

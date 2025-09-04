@@ -1,4 +1,4 @@
-const DISPATCH_LIST_URL = "/transport/dispatch/lsit";
+const DISPATCH_LIST_URL = "/transport/dispatch/list";
 const DISPATCH_AVAILABLE_DRIVERS_URL = "/transport/dispatch/availableDrivers";
 const ADD_DISPATCH_URL = "/transport/dispatch/add";
 
@@ -9,14 +9,15 @@ function openAddDispatchModal() {
 	// 배차 요청 리스트
 	$.getJSON(DISPATCH_LIST_URL)
 		.done(function(dispatchs) {
+			console.log(dispatchs);
 			const html = dispatchs.map((dispatch) => `
 				<tr data-order-ids="${dispatch.orderIds}">
 					<td><input type="radio" name="dispatchPick"/></td>
-					<td>${formatDate(dispatch.dispatchDate)}</td>
+					<td data-dispatch-date="${dispatch.dispatchDate}">${formatDate(dispatch.dispatchDate)}</td>
 					<td>${dispatch.startSlot}</td>
-					<td>${dispatch.regionName}</td>
+					<td data-region-idx="${dispatch.regionIdx}">${dispatch.regionName}</td>
 					<td>${dispatch.totalVolume}</td>
-					<td>${dispatch.urgentFlag === "Y" ? "긴급" : "대기"}</td>
+					<td data-urgentFlag="${dispatch.urgentFlag}">${dispatch.urgentFlag === "Y" ? "긴급" : "대기"}</td>
 				</tr>
 			`).join("");
 			$("#assignList tbody").html(html);
@@ -117,7 +118,8 @@ function loadAvailableDrivers() {
 			            data-emp-name="${driver.empName}"
 			            data-vehicle-type="${driver.vehicleType}"
 			            data-volume="${driver.volume}"
-						data-capacity="${driver.capacity}">
+						data-capacity="${driver.capacity}"
+						data-emp-idx=${driver.empIdx}>
 			        ${driver.empName} ${driver.capacity === 1000 ? "1.0t" : "1.5t"} (${driver.vehicleType})
 			    </option>
 			`).join("");
@@ -139,7 +141,8 @@ $(document).on("click", ".removeDriverBtn", function() {
 
   	// 3) select 옵션 다시 활성화
   	$(`#primaryDriverSelect option[value="${vehicleIdx}"]`).prop("disabled", false);
-})
+});
+
 
 // 배차 등록
 function addDispatch() {
@@ -153,19 +156,21 @@ function addDispatch() {
 	// 선택된 라디오 버튼이 속한 행
     const row = selected.closest("tr");
     const orderIds = row.data("order-ids");
-
-	// 문자열을 숫자 배열로 변경
-	const orderIdList = orderIds ? orderIds.toString().split(",").map(id => Number(id)) : [];
+	const dispatchDate = row.find("td:eq(1)").data("dispatch-date");
+	const startSlot = row.find("td:eq(2)").text();
+	const urgentFlag = row.find("td:eq(5)").data("urgentFlag");
+	const regionIdx = parseInt(row.find("td:eq(3)").data("region-idx"));
 	
 	// 선택된 기사
 	const driverSelected = $("#primaryDriverSelect option:selected");
 	const vehicleIdx = parseInt(driverSelected.val());
+	const empIdx = parseInt(driverSelected.data("emp-idx"));
 	
 	const requestData = {
-		vehicleIdx
+		orderIds, vehicleIdx, empIdx, startSlot, urgentFlag, regionIdx, dispatchDate
 	};
 	
-	const { token, header } = getCsrf()
+	const { token, header } = getCsrf();
 	
 	// 등록 요청
 	$.ajax({
@@ -174,8 +179,8 @@ function addDispatch() {
 		contentType: "application/json; charset=UTF-8",
 		data: JSON.stringify(requestData),
 		beforeSend(xhr) {
-     	    if (token && header) xhr.setRequestHeader(header, token);
-        },
+     		if (token && header) xhr.setRequestHeader(header, token);
+     	},
 		success: function() {
 			Swal.fire("등록완료", "배차 등록이 완료되었습니다.", "success").then(() => {
 				location.reload();

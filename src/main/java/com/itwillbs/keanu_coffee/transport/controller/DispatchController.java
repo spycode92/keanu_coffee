@@ -21,7 +21,7 @@ import com.itwillbs.keanu_coffee.transport.service.DriverService;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
+@Controller
 @RequestMapping("transport")
 @RequiredArgsConstructor
 public class DispatchController {
@@ -29,7 +29,7 @@ public class DispatchController {
 	private final DriverService driverService;
 	
 	// 배차 요청 리스트
-	@GetMapping("/dispatch/lsit")
+	@GetMapping("/dispatch/list")
 	public ResponseEntity<List<DispatchRegionGroupViewDTO>> getAllDispatch() {
 		List<DispatchRegionGroupViewDTO> dispatchList = dispatchService.getDispatchList();
 		
@@ -55,12 +55,14 @@ public class DispatchController {
 	
 	// 배차 등록
 	@PostMapping("/dispatch/add")
-	public ResponseEntity<?> addDispatch(@RequestBody Map<String, Object> body) {
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>");
+	@ResponseBody
+	public ResponseEntity<String> addDispatch(@RequestBody DispatchRegionGroupViewDTO dispatchRegionGroupView) {		
+		System.out.println(dispatchRegionGroupView + ">>>>>>>>>>>>>>>");
 		try {
-			driverService.insertDispatch();
+			dispatchService.insertDispatch(dispatchRegionGroupView);
 			return ResponseEntity.ok("배차 등록 완료");
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("배차 등록 중 오류가 발생했습니다.");
 		}

@@ -9,4 +9,50 @@
 		FROM
 			V_OUTBOUND_REGION_GROUP
 	</select>
+	
+	<!-- 배차 등록 -->
+	<insert id="insertDispatch" useGeneratedKeys="true" keyProperty="dispatchIdx">
+		INSERT INTO DISPATCH (
+			dispatch_date
+	        , start_slot
+	        , region_idx
+	        , created_at
+		)
+		VALUES (
+			#{dispatchDate}
+			, #{startSlot}
+			, #{regionIdx}
+			, NOW()
+		)
+	</insert>
+	
+	<!-- 배차 배정 테이블 등록 -->
+	<insert id="insertDispatchAssignment" useGeneratedKeys="true" keyProperty="dispatchAssignmentIdx">
+		INSERT INTO DISPATCH_ASSIGNMENT (
+			dispatch_idx
+			, driver_idx
+			, vehicle_idx
+			, created_at
+		)
+		VALUES (
+			#{dispatchIdx}
+			, #{empIdx}
+			, #{vehicleIdx}
+			, NOW()
+		)
+	</insert>
+	
+	<!-- 배차 매핑 테이블 등록 -->
+	<insert id="insertDispatchOrderMap">
+		INSERT INTO DISPATCH_ORDER_MAP (
+			dispatch_idx
+			, outbound_order_idx
+			, created_at
+		)
+		VALUES (
+			#{dispatchIdx}
+			, #{outboundOrderIdx}
+			, NOW()
+		)
+	</insert>
 </mapper>
