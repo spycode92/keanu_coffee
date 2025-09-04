@@ -15,4 +15,6 @@ public interface PurchaseOrderMapper {
 
 
 
+	String selectTodaysPurchaseOrderNumbersInOrderToMakeNewPurchaseOrderNumber();
+
 }
