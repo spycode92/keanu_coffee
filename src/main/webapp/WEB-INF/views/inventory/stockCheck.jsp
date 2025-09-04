@@ -512,20 +512,26 @@
 		        $('#miName').text(data.product_name || '–');
 		        $('#miItem').text(data.product_idx || '–');
 		        
-		    	 // ✅ 여기 사이에 디버깅 console.log 넣으세요
-		        console.log("제조일자 원본:", data.manufacture_date, typeof data.manufacture_date);
-		        console.log("new Date() 결과:", new Date(data.manufacture_date));
-		        console.log("fmtDate() 결과:", fmtDate(data.manufacture_date));
+		     	// LOT 번호 넣기
+		        $('#miLot').text(data.lot_number || '–');
 		        
-// 		        $('#miMfg').text(fmtDate(data.manufacture_date));
-// 		        console.log("모달에 세팅된 제조일자:", $('#miMfg').text());
-// 		        $('#miExp').text(fmtDate(data.expiration_date));
-
+		        // 콘솔창으로 제조일자, 유통기한 나오는지 확인용
+// 		        console.log("제조일자 원본:", data.manufacture_date, typeof data.manufacture_date);
+// 		        console.log("new Date() 결과:", new Date(data.manufacture_date));
+// 		        console.log("fmtDate() 결과:", fmtDate(data.manufacture_date));
+				
+				// 제조일자 / 유통기한
 				document.getElementById("miMfg").innerText = fmtDate(data.manufacture_date);
 				document.getElementById("miExp").innerText = fmtDate(data.expiration_date);
-
+				
+				// D-Day & 재고상태
+			    const ddayInfo = makeStatusAndDday(fmtDate(data.expiration_date), FIXED_THRESHOLD);
+			    $('#miDday').html(ddayInfo.ddayHtml);
+			    $('#miStatus').html(ddayInfo.labelHtml);
+				
+				// 현재고, 공급처
 		        $('#miCurrent').text((data.current_quantity || 0) + ' BOX');
-		        $('#miSupplier').text(data.supplier_name || '–'); // 컬럼명 맞추기
+		        $('#miSupplier').text(data.supplier_name || '–');
 		
 		        // 로케이션 분포
 		        const $box = $('#locList').empty();
