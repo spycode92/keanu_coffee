@@ -1,5 +1,6 @@
 package com.itwillbs.keanu_coffee.inbound.service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import com.itwillbs.keanu_coffee.common.dto.PurchaseWithSupplierDTO;
 import com.itwillbs.keanu_coffee.common.mapper.PurchaseOrderMapper;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO;
+import com.itwillbs.keanu_coffee.inbound.dto.InboundProductDetailDTO;
 import com.itwillbs.keanu_coffee.inbound.mapper.InboundMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -22,46 +24,31 @@ import lombok.RequiredArgsConstructor;
 public class InboundService {
 	
 	private final InboundMapper inboundMapper;
-	private final PurchaseOrderMapper purchaseOrderMapper;
 	
 	// management list 조회
-	public List<InboundManagementDTO> inboundWaitingInfo() {
-		return inboundMapper.selectAllInboundWaitingInfo();
-	}
-	
-	
-	@Transactional
-	public List<ProductDTO> getOrderDetailByOrderNum(String orderNumber) {
-		// orderNumber로 orderIdx 조회
-		int orderIdx = inboundMapper.searchOrderIdx(orderNumber);
+	public List<InboundManagementDTO> getAllinboundWaitingInfo() {
 		
-		// orderIdx로 productIdx 조회
-		List<PurchaseOrderItemDTO> productIdx = inboundMapper.searchProductIdx(orderIdx);
+		List<InboundManagementDTO> orderDetailList = inboundMapper.selectInboundWaitingInfo();
 		
-		// productIdx로 product 상세정보 조회
-		List<ProductDTO> productDetail = inboundMapper.searchProductDetail(productIdx);
+		// LocalDateTime → String 포맷 처리
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+	    orderDetailList.forEach(dto -> {
+	        if (dto.getArrivalDate() != null) {
+	            dto.setArrivalDateStr(dto.getArrivalDate().format(formatter));
+	        }
+	    });
 		
-		
-		return productDetail;
+		return orderDetailList;
 	}
 
-	// 상품상세정보 조회
-	public List<PurchaseWithSupplierDTO> getOrderDetailByOrderIdx(int orderIdx) {
-		return purchaseOrderMapper.getOrderDetailByOrderIdx(orderIdx);
-	}
-	
-	// 담당사원명 검색
-	public List<EmployeeInfoDTO> getInboundStaffNameList() {
-		return inboundMapper.getInboundStaffNameList();
-	}
-
-	public String getSupplierName(int supplierIdx) {
-		return inboundMapper.getSupplierName(supplierIdx);
-	}
-
-
+	// Detail 보드 데이터 조회
 	public InboundDetailDTO getInboundDetailData(int ibwaitIdx) {
-		return inboundMapper.getInboundDetailData(ibwaitIdx);
+		return inboundMapper.selectInboundDetailData(ibwaitIdx);
+	}
+
+	// Detail 상품정보 리스트 조회
+	public List<InboundProductDetailDTO> getInboundProductDetail(String orderNumber) {
+		return inboundMapper.selectInboundProductDetail(orderNumber);
 	}
 
 	

@@ -9,6 +9,7 @@ public class InboundManagementDTO {
 	
 	private String orderNumber;           // 발주번호
     private int ibwaitIdx;                // 입고번호
+    private String ibwaitNumber;          // 입고번호
     private LocalDateTime arrivalDate;    // 입고일자
     private String arrivalDateStr;		  // 입고일자 문자열 포매팅
     private String supplierName;          // 공급업체명
