@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
+import com.itwillbs.keanu_coffee.common.dto.SweetAlertIcon;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
+import com.itwillbs.keanu_coffee.common.utils.MakeAlert;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -42,8 +45,8 @@ public class EmployeeManagementController {
 		model.addAttribute("pageNum",pageNum);
 		model.addAttribute("searchType",searchType);
 		model.addAttribute("searchKeyword",searchKeyword);
-		model.addAttribute("sortKey",orderKey);
-		model.addAttribute("sortMethod",orderMethod);
+		model.addAttribute("orderKey",orderKey);
+		model.addAttribute("orderMethod",orderMethod);
 		
 		switch (searchType) {
         case "이름":
@@ -115,15 +118,13 @@ public class EmployeeManagementController {
 	
 	//직원추가 모달창 직원추가 로직
 	@PostMapping("/addEmployee")
-	public String addEmployeeForm(EmployeeInfoDTO employee, Model model) throws IOException {
-		int inputCount = employeeManagementService.inputEmployeeInfo(employee);
+	public String addEmployeeForm(EmployeeInfoDTO employee, Model model, RedirectAttributes redirectAttributes) throws IOException {
+		int inputCount = employeeManagementService.insertEmployeeInfo(employee);
 		if (inputCount == 0) {
-			model.addAttribute("msg", "추가실패");
+			MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.ERROR, "실패", "직원추가실패");
 		}
-		model.addAttribute("msg", "추가완료");
-		model.addAttribute("targetURL", "/admin/employeeManagement/addEmployeeForm"); 
+		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "성공", "직원추가완료");
 		return "redirect:/admin/employeeManagement";
-//		return "";
 	}
 	
 	//직원 정보 조회
@@ -138,8 +139,9 @@ public class EmployeeManagementController {
 	
 	// 직원 정보 수정
 	@PostMapping("/updateEmployee")
-	public String updateEmployee(EmployeeInfoDTO employee) {
+	public String updateEmployee(EmployeeInfoDTO employee, RedirectAttributes redirectAttributes) {
 		employeeManagementService.updateEmployeeInfo(employee);
+		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "성공","직원 정보 수정 완료");
 		
 		return "redirect:/admin/employeeManagement"; 
 	}

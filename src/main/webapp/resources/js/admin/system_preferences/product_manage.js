@@ -1,5 +1,6 @@
 //전역변수선언
 let allCategories = [];
+let detailProductIdx = null;
 $(function () {
 	//dom로드후 loadCategoryList() 실행
 	// allCategories 에 카테고리 정보 입력, 검색창의 카테고리항목 채우기
@@ -257,6 +258,7 @@ $(function () {
 	        Swal.fire('오류', '상품 정보를 불러올 수 없습니다.', 'error');
 	        return;
 	    }
+		detailProductIdx = productIdx;
 		const detailModal = document.getElementById('productDetailModal');
         initProductDetailModal(productIdx);
         ModalManager.openModal(detailModal);
@@ -328,7 +330,7 @@ $(function () {
 	    ajaxPostWithFile( '/admin/systemPreference/product/modifyProduct',
 			'#productDetailForm'
 		).then(function(result) {
-            Swal.fire('성공', '상품이 정상적으로 저장되었습니다.', 'success').then(()=>{
+            Swal.fire('알림', result.msg , result.result).then(()=>{
 					window.location.reload();
 			});
         }).catch( function() {
@@ -338,6 +340,33 @@ $(function () {
 			  	icon: 'error'
 			});
 	    });
+	});
+	
+	//상품상세보기>삭제
+	$(document).on('click', '.btn-delete', function() {
+		console.log(detailProductIdx);
+		Swal.fire({
+	        title: '정말 삭제하시겠습니까?',
+	        icon: 'warning',
+	        showCancelButton: true,
+	        confirmButtonText: '확인',
+	        cancelButtonText: '취소'
+	    }).then((result) => {
+
+		    ajaxPost( '/admin/systemPreference/product/removeProduct',
+				{productIdx: detailProductIdx}
+			).then(function(result) {
+	            Swal.fire('알림', result.msg , result.result).then(()=>{
+						window.location.reload();
+				});
+	        }).catch( function() {
+	            Swal.fire({
+					title: '실패',
+				  	html: '잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오.',
+				  	icon: 'error'
+				});
+		    });
+		});
 	});
 	
 	// 상품정보수정 파일 미리보기

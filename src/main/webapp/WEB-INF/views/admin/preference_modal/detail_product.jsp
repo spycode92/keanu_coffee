@@ -103,13 +103,17 @@
                             <select id="detailProductStatus" name="status" class="form-control" required>
 		                    	<option value="활성">활성</option>
 		                    	<option value="비활성">비활성</option>
-		                    	<option value="삭제">삭제</option>
 		                    </select>
                         </div>
                 	</div>
             	</div>
            	</div>
             <div class="modal-foot">
+                <button type="button"
+                        class="btn btn-primary btn-delete"
+                        >
+                    삭제
+                </button>
                 <button type="button"
                         class="btn btn-secondary btn-cancel-edit"
                         style="display: none;">
