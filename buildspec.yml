@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+    commands:
+      - echo Installing Maven
+      - yum install -y maven
+  pre_build:
+    commands:
+      - echo Build started on `date`
+      - mvn clean install
+  build:
+    commands:
+      - echo Packaging application
+      - mv target/keanu_coffee-1.0.0-BUILD-SNAPSHOT.war myapp.war
+  post_build:
+    commands:
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - myapp.war
+    - appspec.yml
+    - scripts/*
