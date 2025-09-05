@@ -2,6 +2,9 @@ const DISPATCH_LIST_URL = "/transport/dispatch/list";
 const DISPATCH_AVAILABLE_DRIVERS_URL = "/transport/dispatch/availableDrivers";
 const ADD_DISPATCH_URL = "/transport/dispatch/add";
 
+let assignedDrivers = [];
+let totalVolume = 0;
+
 // 배차 등록 버튼 클릭 시 배차 요청 리스트
 function openAddDispatchModal() {
 	ModalManager.openModalById('assignModal');
@@ -27,9 +30,6 @@ function openAddDispatchModal() {
 	loadAvailableDrivers()
 }
 
-let assignedDrivers = [];
-let totalVolume = 0;
-
 // 배차 요청 리스트 클릭 이벤트
 $(document).on("click", "input[name='dispatchPick']", function() {
 	// 이전 선택 초기화
@@ -42,17 +42,17 @@ $(document).on("click", "input[name='dispatchPick']", function() {
 
 	// 기사 목록 다시 로드
     loadAvailableDrivers();
+
+	const requestData = dispatchRequestData();
+	
+	if (requestData) {
+		const summary = `${formatDate(requestData.dispatchDate)} ${requestData.startSlot} / ${requestData.regionIdx} / ${requestData.orderIds}`;
+		// 선택한 배차 정보 표시
+		$("#selAssignSummary").val(summary);
+	}
 	
 	const row = $(this).closest("tr");
-	const date = row.find("td:eq(1)").text();
-	const slot = row.find("td:eq(2)").text();
-	const region = row.find("td:eq(3)").text();
 	totalVolume = row.find("td:eq( 4)").text();
-	
-	const summary = `${date} ${slot} / ${region} / ${totalVolume}L`;
-	
-	// 선택한 배차 정보 표시
-	$("#selAssignSummary").val(summary);
 	
 	// 기사 선택시 
 	$("#primaryDriverSelect").off("change").on("change", function() {
@@ -72,6 +72,7 @@ function assignBtn() {
 	const driverName = selected.data("emp-name");
 	const vehicleType = selected.data("vehicle-type");
 	const volume = selected.data("volume");
+	const empIdx = selected.data("emp-idx");
 	const capacity = selected.data("capacity") === 1000 ? "1.0t" : "1.5t";
 	
 	if (!vehicleIdx) {
@@ -80,8 +81,9 @@ function assignBtn() {
 	
 	// 배정된 기사 목록에 추가
 	assignedDrivers.push({
-		vehicleIdx, driverName, vehicleType, volume
+		vehicleIdx, driverName, vehicleType, volume, empIdx
 	});
+	
 	$("#assignedDriverList").append(`
 		<div class="driver-item" data-vehicle-idx="${vehicleIdx}">
 			<span>${driverName} ${capacity} (${vehicleType})</span>
@@ -133,11 +135,13 @@ function loadAvailableDrivers() {
 $(document).on("click", ".removeDriverBtn", function() {
 	const parent = $(this).closest(".driver-item");
 	const vehicleIdx = parent.data("vehicle-idx");
+	const empIdx = parent.data("emp-idx");
 	// 1) DOM에서 삭제
 	parent.remove();
 
   	// 2) 배열에서 제거
   	assignedDrivers = assignedDrivers.filter(d => d.vehicleIdx != vehicleIdx);
+  	assignedDrivers = assignedDrivers.filter(d => d.empIdx != empIdx);
 
   	// 3) select 옵션 다시 활성화
   	$(`#primaryDriverSelect option[value="${vehicleIdx}"]`).prop("disabled", false);
@@ -146,29 +150,24 @@ $(document).on("click", ".removeDriverBtn", function() {
 
 // 배차 등록
 function addDispatch() {
-	const selected = $("input[name='dispatchPick']:checked");
+//	const selected = $("input[name='dispatchPick']:checked");
+//	
+//	if (selected.length === 0) {
+//		Swal.fire({icon:'error', text:'등록할 배차를 선택해주세요!'}); 
+//		return;
+//	}
 	
-	if (selected.length === 0) {
+	const requestData = dispatchRequestData();
+	
+	if (!requestData) {
 		Swal.fire({icon:'error', text:'등록할 배차를 선택해주세요!'}); 
 		return;
 	}
 	
-	// 선택된 라디오 버튼이 속한 행
-    const row = selected.closest("tr");
-    const orderIds = row.data("order-ids");
-	const dispatchDate = row.find("td:eq(1)").data("dispatch-date");
-	const startSlot = row.find("td:eq(2)").text();
-	const urgentFlag = row.find("td:eq(5)").data("urgentFlag");
-	const regionIdx = parseInt(row.find("td:eq(3)").data("region-idx"));
-	
-	// 선택된 기사
-	const driverSelected = $("#primaryDriverSelect option:selected");
-	const vehicleIdx = parseInt(driverSelected.val());
-	const empIdx = parseInt(driverSelected.data("emp-idx"));
-	
-	const requestData = {
-		orderIds, vehicleIdx, empIdx, startSlot, urgentFlag, regionIdx, dispatchDate
-	};
+	if (requestData.drivers.length === 0) {
+		Swal.fire({icon:'error', text:'기사 배정 후 배차가 가능합니다!'}); 
+		return;
+	}
 	
 	const { token, header } = getCsrf();
 	
@@ -190,6 +189,38 @@ function addDispatch() {
 			Swal.fire("에러", xhr.responseText, "error");
 		}
 	});
+}
+
+function dispatchRequestData() {
+	const selected = $("input[name='dispatchPick']:checked");
+	
+	if (selected.length === 0) {
+		return null;
+	}
+	
+	// 선택된 라디오 버튼이 속한 행
+	const row = selected.closest("tr");
+	const orderIds = row.data("order-ids");
+	const dispatchDate = row.find("td:eq(1)").data("dispatch-date");
+	const startSlot = row.find("td:eq(2)").text();
+	const urgentFlag = row.find("td:eq(5)").data("urgentFlag");
+	const regionIdx = parseInt(row.find("td:eq(3)").data("region-idx"));
+	
+	// 기사 배열화
+	const drivers = assignedDrivers.map((driver) => ({
+		vehicleIdx: driver.vehicleIdx,
+		empIdx: driver.empIdx
+	}));
+	
+	return {
+		orderIds,
+		dispatchDate,
+		startSlot,
+		urgentFlag,
+		regionIdx,
+		drivers
+	}
+	
 }
 
 
