@@ -10,14 +10,15 @@ import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 
 public interface EmployeeManagementMapper {
+	
 	// 로그인용 아이디로 회원정보 조회
 	EmployeeInfoDTO selectEmployeeInfoByEmpNo(String empNo);
 	
 	//직원목록 선택
 	List<EmployeeInfoDTO> selectEmployeeList(
-			@Param("startRow") int startRow, @Param("listLimit") int listLimit, 
-			@Param("searchType") String searchType, @Param("searchKeyword") String searchKeyword,
-			@Param("orderKey")String orderKey, @Param("orderMethod")String orderMethod);
+		@Param("startRow") int startRow, @Param("listLimit") int listLimit, 
+		@Param("searchType") String searchType, @Param("searchKeyword") String searchKeyword,
+		@Param("orderKey")String orderKey, @Param("orderMethod")String orderMethod);
 
 	// 직원목록 수
 	int countEmployee(@Param("searchType")String searchType, @Param("searchKeyword")String searchKeyword);
@@ -30,8 +31,10 @@ public interface EmployeeManagementMapper {
 	
 	// 회원직책 NULL로 변경
 	void updateRoleToNull(Integer integer);
+	
 	// 팀 NULL로 바꾸기
 	void updateTeamToNull(Integer teamIdx);
+	
 	// 부서, 팀, 직책 널로바꾸기
 	void updateDeptTeamRoleToNull(Integer departmentIdx);
 	

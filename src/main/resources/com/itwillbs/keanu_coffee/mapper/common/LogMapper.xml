@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.common.mapper.LogMapper">
+	<!--  로그등록 -->
+	<insert id="insertSystemLog">
+		INSERT INTO SYSTEM_LOG(emp_no, section, sub_section, target, target_idx
+			, start_time, end_time, elapsed_time, log_message)
+		VALUES (#{empNo}, #{section}, #{subSection}, #{target}, #{targetIdx}
+			, #{startTime}, #{endTime}, #{elapsedTime}, #{logMessage}) 
+	</insert>
+
+
+
+
+</mapper>

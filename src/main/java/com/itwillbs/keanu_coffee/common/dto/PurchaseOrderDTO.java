@@ -28,4 +28,5 @@ public class PurchaseOrderDTO implements Serializable {
     private LocalDateTime updatedAt;              // updated_at
     
     private List<PurchaseOrderItemDTO> items;
+    
 }

@@ -17,6 +17,24 @@
 	            #{height}
 			)	
 	</insert>
+	
+	
+	<insert id="insertOrder" >
+        INSERT INTO OUTBOUND_ORDER (
+            outbound_order_idx,
+            franchise_idx,
+            status,
+            requested_date,
+            expect_outbound_date
+        ) VALUES (
+            #{outboundOrderIdx},
+            #{franchiseIdx},
+            #{status},
+            #{requestedDate},
+            #{expectOutboundDate}
+        )
+    </insert>
+
 
 
 

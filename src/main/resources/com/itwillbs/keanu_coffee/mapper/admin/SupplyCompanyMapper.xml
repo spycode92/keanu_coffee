@@ -159,4 +159,13 @@
 			ORDER BY supplier_name
 	</select>
 	
+	<!-- 공급업체 삭제  -->
+	<update id="deleteSupplierByIdx">
+		UPDATE SUPPLIER
+		SET
+			status = "삭제"
+		WHERE
+			supplier_idx = #{supplierIdx}
+	</update>
+	
 </mapper>
