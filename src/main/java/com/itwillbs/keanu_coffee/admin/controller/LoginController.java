@@ -22,36 +22,6 @@ public class LoginController {
 	private final EmployeeManagementService employeeManagementService;
 	private final FileService fileService;
 	
-	@PostMapping("/login")
-	public String login(EmployeeInfoDTO employee, Model model, HttpSession session) {
-		
-		boolean checkPassword = loginService.checkPassword(employee);
-		
-		// 로그인 실패시
-		if(checkPassword == false) {
-			model.addAttribute("msg", "로그인 실패");
-			model.addAttribute("targetURL", "/");
-			return "/commons/result_process";
-		}
-		//임시 세션만료시간 1일
-		session.setMaxInactiveInterval(60 * 60 * 24);
-		
-		return "redirect:/main";
-	}
-	
-	
-	//로그아웃시 세션만료
-	@GetMapping("logout")
-	public String logout(HttpSession session) {
-		if (session != null) {
-	        session.invalidate(); // 세션 자체를 무효화
-	    }
-		
-		return "redirect:/";
-	}
-	
-	
-	
 	@GetMapping("/main")
 	public String main() {
 

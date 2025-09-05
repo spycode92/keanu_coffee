@@ -70,23 +70,17 @@ $(function() {
 	        return;
 	    }
 	
-	    $.ajax({
-	        url: '/admin/systemPreference/supplyCompany/addSupplier', 
-	        type: 'POST',
-	        contentType: 'application/json',
-	        data: JSON.stringify(supplierData),
-			dataType: 'json',
-	        success: function(newSupplier) {
+	    ajaxPost('/admin/systemPreference/supplyCompany/addSupplier',
+			supplierData
+		).then(function(newSupplier) {
 	            const modal = document.getElementById('supplierModal');
 				ModalManager.closeModal(modal);
 
 	            Swal.fire('공급업체가 등록되었습니다.', '', 'success').then(() => {
             	window.location.reload();
 				});
-	        },
-	        error: function() {
+	        }).catch(function() {
 	            Swal.fire('등록 실패', '서버 오류이나 중복 등록 등 확인 필요.', 'error');
-	        }
 	    });
 	});
 	
@@ -105,25 +99,20 @@ $(function() {
 	        cancelButtonText: '취소'
 	    }).then((result) => {
 	        if (result.isConfirmed) {
-	            $.ajax({
-	                url: '/admin/systemPreference/supplyCompany/removeSupplier',
-	                type: 'DELETE',
-	                contentType: 'application/json',
-	                data: JSON.stringify({ idx: supplierIdx }),
-	                success: function() {
-	                    // 테이블에서 삭제
-	                    $(`#supplierTable tr[data-id="${supplierIdx}"]`).remove();
-	                    Swal.fire('삭제되었습니다.', '', 'success');
-	                },
-	                error: function() {
+	            ajaxPost( '/admin/systemPreference/supplyCompany/removeSupplier',
+					{ idx: supplierIdx }
+				).then(function() {
+                    // 테이블에서 삭제
+                    $(`#supplierTable tr[data-id="${supplierIdx}"]`).remove();
+                    Swal.fire('삭제되었습니다.', '', 'success');
+                }).catch(function() {
 	                    Swal.fire('삭제에 실패했습니다.', '', 'error');
-	                }
 	            });
 	        }
 	    });
 	});
 	
-	// 공급업체 상세보기 버튼 클릭 이벤트
+	// 공급업체 상세보기 이벤트
 	let originalSupplierData = null; //전역변수선언
 	$('.supplier-row').each(function() {
 		$(this).on('click', function(){
@@ -145,6 +134,10 @@ $(function() {
 		            $('#supplierDetailForm #detailSupplierStatus').val(data.status);
 		
 		            const detailModal = document.getElementById('supplierDetailModal');
+					detailModal.removeAttribute('aria-hidden');
+	                detailModal.removeAttribute('inert');
+	                detailModal.setAttribute('aria-modal', 'true');
+					
 					ModalManager.openModal(detailModal);
 		            setReadonlyMode();
 		        },
@@ -233,28 +226,50 @@ $(function() {
 			status: $('#detailSupplierStatus').val().trim()
 		};
 	
-	    $.ajax({
-	        url: '/admin/systemPreference/supplyCompany/modifySupplier',
-	        type: 'PUT',
-	        contentType: 'application/json',
-	        data: JSON.stringify(updateData),
-	        success: function() {
+	    ajaxPost('/admin/systemPreference/supplyCompany/modifySupplier',
+			updateData
+		).then(function() {
 	            Swal.fire('수정 완료', '', 'success').then( () => {
 	            setReadonlyMode();
 	            const detailModal = document.getElementById('supplierDetailModal');
 				ModalManager.closeModal(detailModal);
 				location.href = '/admin/systemPreference/supplyCompany'
 				});
-	        },
-	        error: function() {
+	        }).catch(function() {
 	            Swal.fire({
 					title: '실패',
 					html: '잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오.',
 					icon: 'error'
 				});
-	        }
 	    });
 	});
+	
+	//공급업체삭제
+	$(document).on('click', '.btn-delete', function() {
+		const supplierIdx = $('#supplierIdx').val()
+		Swal.fire({
+	        title: '정말 삭제하시겠습니까?',
+	        icon: 'warning',
+	        showCancelButton: true,
+	        confirmButtonText: '확인',
+	        cancelButtonText: '취소'
+	    }).then((result) => {
+		    ajaxPost( '/admin/systemPreference/supplyCompany/removeSupplier',
+				{supplierIdx: supplierIdx}
+			).then(function(result) {
+	            Swal.fire('알림', result.msg , result.result).then(()=>{
+						window.location.reload();
+				});
+	        }).catch( function() {
+	            Swal.fire({
+					title: '실패',
+				  	html: '잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오.',
+				  	icon: 'error'
+				});
+		    });
+		});
+	});
+	
 
 
 	

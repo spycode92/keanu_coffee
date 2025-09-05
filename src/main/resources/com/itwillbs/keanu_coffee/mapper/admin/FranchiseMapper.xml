@@ -143,6 +143,34 @@
 	WHERE franchise_idx = #{franchiseIdx}
 	</update>
 	
+	<!-- 등록된 구역이 있는지 확인 -->
+	<select id="countFranchiseByRegion" resultType="int">
+    	SELECT 
+			COUNT(*)
+		FROM
+			FRANCHISE
+		WHERE
+			region_idx = #{regionIdx}
+	</select>
+	
+	<!-- bcode로 지점 찾기 -->
+	<select id="selectBecode" resultType="FranchiseDTO">
+		SELECT *
+		FROM
+			FRANCHISE
+		WHERE
+			bcode = #{bcode}
+	</select>
+	
+	<!-- 구역 정보 추가 -->
+	<update id="updateRegionIdx">
+		UPDATE
+			FRANCHISE
+		SET
+			region_idx = #{regionIdx}
+		WHERE
+			franchise_idx = #{franchiseIdx}
+	</update>
 </mapper>
 
 

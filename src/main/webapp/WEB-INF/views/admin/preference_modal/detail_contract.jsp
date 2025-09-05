@@ -1,10 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- 공급계약 상세 모달 -->
 <div id="contractDetailModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="contractDetailLabel" tabindex="-1">
     <div class="modal-card md">
         <form id="contractDetailForm" class="modal-content">
+        	<sec:csrfInput/>
             <div class="modal-head">
                 <h5 id="contractDetailLabel">공급계약 상세보기</h5>
                 <button type="button"
@@ -26,12 +28,14 @@
                     <!-- 오른쪽: 주요 정보 -->
                     <div style="flex:2;">
                         <div class="field mb-2">
-                            <label class="form-label">공급업체</label>
-                            <input type="text" id="detailSupplier" class="form-control" readonly>
-                        </div>
-                        <div class="field mb-2">
-                            <label class="form-label">상품</label>
-                            <input type="text" id="detailProduct" class="form-control" readonly>
+		                    <div style=" display:flex; gap:1rem; min-width:150px;">
+		                        <button id="detailContractSupplierSearch" class="btn btn-primary searchSupplier" >공급업체검색</button>
+		                        <button id="detailContractProductSearch" class="btn btn-primary searchProduct" >상품검색</button>
+		                    </div>
+		                        <select id="detailContractSupplierSelect" name="supplierIdx" class="form-select supplierSelectList" required disabled>
+		                        </select>
+		                        <select id="detailContractProductSelect" name="productIdx" class="form-select productSelectList"  required disabled>
+		                        </select>
                         </div>
                         <div class="field mb-2">
                             <label class="form-label">계약 단가</label>
@@ -71,10 +75,10 @@
                 </div>
             </div>
             <div class="modal-foot">
-                <button type="button" id="btnEditContractDetail" class="btn btn-primary">수정</button>
-                <button type="button" class="btn btn-secondary" onclick="ModalManager.closeModal(document.getElementById('contractDetailModal'))">닫기</button>
-                <button type="button" id="btnSaveContractDetail" class="btn btn-success" style="display:none;">저장</button>
+                <button type="button" id="btnDeleteContractDetail" class="btn btn-primary btn-delete">삭제</button>
                 <button type="button" id="btnCancelEditDetail" class="btn btn-secondary" style="display:none;">취소</button>
+                <button type="button" id="btnEditContractDetail" class="btn btn-primary">수정</button>
+                <button type="button" id="btnSaveContractDetail" class="btn btn-success" style="display:none;">수정완료</button>
             </div>
         </form>
     </div>

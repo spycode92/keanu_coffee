@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.Gson;
 import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
 import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
@@ -88,19 +89,6 @@ public class SupplyCompanyController {
 	    return savedSupplier;
 	}
 	
-	// 공급업체삭제
-	@DeleteMapping("/removeSupplier")
-	@ResponseBody
-	public ResponseEntity<?> removeSupplier(@RequestBody Map<String, Long> param) {
-	    Long idx = param.get("idx");
-	    boolean removed = supplyCompanyService.removeSupplierByIdx(idx);
-	    if(removed) {
-	        return ResponseEntity.ok().body("삭제되었습니다");
-	    } else {
-	        return ResponseEntity.status(HttpStatus.CONFLICT).body("삭제 불가능합니다. 계약이 남아있는지 확인하십시오.");
-	    }
-	}
-	
 	//공급업체상세보기
 	@GetMapping("/supplier/{idx}")
 	@ResponseBody
@@ -109,16 +97,35 @@ public class SupplyCompanyController {
 	}
 	
 	//공급업체정보수정
-	@PutMapping("/modifySupplier")
+	@PostMapping("/modifySupplier")
 	@ResponseBody
 	public String modifySupplier(@RequestBody SupplierDTO supplier) {
 		
 	    int updateCount = supplyCompanyService.modifySupplier(supplier);
 	    if (updateCount > 0) {
-	        return "success";
+	        return new Gson().toJson("success");
 	    } else {
-	        return "fail";
+	        return new Gson().toJson("fail");
 	    }
+	}
+	
+	//공급처삭제
+	@PostMapping("/removeSupplier")
+	@ResponseBody
+	public ResponseEntity<Map<String,String>> removeSuppleir(@RequestBody SupplierDTO supplier){
+		Map<String, String> res = new HashMap();
+		supplier = supplyCompanyService.selectSupplierByIdx((long)supplier.getSupplierIdx());
+		
+		boolean result = supplyCompanyService.deleteSupplier(supplier);
+		
+		if(result) {
+    		res.put("result", "success");
+    		res.put("msg", "상품정보가 수정되었습니다");
+    		return ResponseEntity.ok(res);
+    	}
+    	res.put("result", "error");
+		res.put("msg", "잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오. ");
+		return ResponseEntity.ok(res);
 	}
 	
 	//공급처목록 조회 AJAX

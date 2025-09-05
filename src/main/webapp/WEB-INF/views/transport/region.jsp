@@ -1,13 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>운송관리대시보드</title>
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" ></script>
 <link
 	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
 	rel="stylesheet">
@@ -19,6 +23,12 @@
 	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script
 	src="${pageContext.request.contextPath}/resources/js/transport/region.js"
+	defer></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/transport/administrativeRegion.js"
+	defer></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/transport/route.js"
 	defer></script>
 <style type="text/css">
 /* 컨테이너 */
@@ -172,6 +182,7 @@ margin-top: 0.5rem;
 			<div class="region-card">
 				<h2>구역 추가</h2>
 				<form action="/transport/region/add"  method="POST" id="regionForm">
+					<sec:csrfInput/>
 					<label>구역 이름</label> 
 					<input type="text" id="regionName" name="regionName" placeholder="예: 1구역">
 					<button type="submit" class="btn">구역 추가</button>
@@ -196,21 +207,34 @@ margin-top: 0.5rem;
 					</c:choose>
 				</div>
 			</div>
-
 			<!-- 2. 행정구역 매핑 -->
 			<div class="region-card">
-				<h2>bcode 매핑 등록</h2>
-				<label>구역 선택</label> <select id="regionSelect"></select> <label>시/도</label>
-				<select id="sidoSelect"></select> <label>시군구</label> <select
-					id="sigunguSelect"></select> <label>동/리</label> <select
-					id="dongSelect"></select> <label>bcode</label> <input type="text"
-					id="bcode" readonly>
+				<h2>구역 범위 등록</h2>
+				<label>구역 선택</label> 
+				<select id="regionSelect">
+					<option value="" selected disabled>구역을 선택하세요</option>
+					<c:forEach var="region" items="${regionList}">
+						<option value="${region.commonCodeIdx}">${region.commonCodeName}</option>
+					</c:forEach>
+				</select> 
+				
+				<label>시/도</label>
+				<select id="sidoSelect">
+ 					<option value="">-- 시/도 선택 --</option>
+				</select> 
+				
+				<label>시군구</label> 
+				<select id="sigunguSelect">
+	 				<option value="">-- 시/도 선택 --</option>
+				</select> 
+				<label>동/리</label> 
+				<select id="dongSelect">
+ 					<option value="">-- 시/도 선택 --</option>
+				</select> 
+				<button id="addMappingBtn">범위 추가</button>
 
 
-				<button id="addMappingBtn">매핑 추가</button>
-
-
-				<h3>등록된 매핑</h3>
+				<h3>설정된 구역</h3>
 				<table>
 					<thead>
 						<tr>
@@ -218,7 +242,6 @@ margin-top: 0.5rem;
 							<th>시/도</th>
 							<th>시군구</th>
 							<th>동</th>
-							<th>bcode</th>
 							<th>관리</th>
 						</tr>
 					</thead>
@@ -228,9 +251,23 @@ margin-top: 0.5rem;
 			<!-- 3. 지점 순서 관리 -->
 			<div class="region-card">
 				<h2>지점 순서 관리</h2>
-				<label>구역 선택</label> <select id="routeRegionSelect"></select>
-				<ul id="franchiseList"></ul>
-				<button id="saveRouteBtn" disabled>순서 저장</button>
+				<label>구역 선택</label> 
+				<select id="routeRegionSelect">
+					<option value="" selected disabled>구역을 선택하세요</option>
+					<c:forEach var="region" items="${regionList}">
+						<option value="${region.commonCodeName}" data-idx="${region.commonCodeIdx} }">${region.commonCodeName}</option>
+					</c:forEach>
+				</select>
+				<table id="franchiseTable">
+					<thead>
+						<tr>
+							<th>지점명</th>
+							<th>순서</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<button id="saveRouteBtn" >순서 저장</button>
 			</div>
 		</div>
 	</section>

@@ -203,10 +203,10 @@
 					<thead>
 						<tr>
 							<th style="width:36px;"><input type="checkbox" class="select-all" /></th>
+							<th>발주번호</th>
 							<th>입고번호</th>
 							<th>입고일자</th>
 							<th>공급업체</th>
-							<th>창고</th>
 							<th>상태</th>
 							<th>품목수</th>
 <!-- 							<th>총수량</th> -->
@@ -217,95 +217,64 @@
 					</thead>
 	<!-- ==============================================================================================================리스트 존========= -->				
 					<tbody>
-						<!-- 출력 카운터 초기화 -->
-  						<c:set var="displayCount" value="0" />
-						
-						<c:forEach var="order" items="${orderList }">
-							<!-- orderNumber가 존재하는 항목만 행 생성 -->
-							<c:if test="${not empty order.orderNumber}">	
-								<tr>
-								
-									<!-- 체크박스 -->
-									<td>
-										<input type="checkbox" name="selectedOrder" value="${order.orderIdx}" />
-									</td>
-									
-									<!-- 입고번호 -->
-									<td>
-										<c:choose>
-											<c:when test="${not empty order.orderNumber and not empty order.orderIdx }">
-												<c:url var="detailUrl" value="/inbound/inboundDetail">
-													<c:param name="orderNumber" value="${order.orderNumber}" />
-													<c:param name="orderIdx" value="${order.orderIdx}" />
-												</c:url>
-												<a href="${detailUrl}" class="link-order-number">
-													<c:out value="${order.orderNumber}" />
-												</a>
-											</c:when>
-											<c:otherwise>-</c:otherwise>
-										</c:choose>
-									</td>
-															
-									<!-- 입고일자 -->
-									<td>-</td>
-															
-									<!-- 공급업체 -->
-									<td>-</td>
-															
-									<!-- 창고 -->
-									<td>-</td>
-															
-									<!-- 상태 -->
-									<td>
-										-
-									</td>
-															
-									<!-- 품목수 -->
-									<td>
-										<c:choose>
-											<c:when test="${not empty order.items}">
-												<c:out value="${fn:length(order.items)}" />
-											</c:when>
-											<c:otherwise>-</c:otherwise>
-										</c:choose>
-									</td>
-															
-									<!-- 총수량 -->
-<!-- 									<td>-</td> -->
-															
-									<!-- 입고예정수량 -->
-									<td>
-										<c:choose>
-											<c:when test="${not empty order.items}">
-												<!-- 합계 변수 초기화 -->
-												<c:set var="sumQty" value="0" />
-												<c:forEach var="item" items="${order.items}">
-													<c:set var="sumQty" value="${sumQty + (empty item.quantity ? 0 : item.quantity)}" />
-												</c:forEach>
-												<c:out value="${sumQty}" />
-											</c:when>
-											<c:otherwise>-</c:otherwise>
-										</c:choose>
-									</td>
-															
-									<!-- 담당자 -->
-									<td>-</td>
-															
-									<!-- 비고 -->
-									<td>-</td>
-								</tr>
-								
-								<!-- 출력 카운트 증가 -->
-								<c:set var="displayCount" value="${displayCount + 1 }"/>
-								
-							</c:if>		
-						</c:forEach>
-						<!-- 출력된 행이 하나도 없을 경우 안내문 -->
-						<c:if test="${displayCount == 0}">
-							<tr>
-								<td colspan="11" class="text-center">order_number가 존재하는 행이 없습니다.</td>
-							</tr>
-						</c:if>
+					    <!-- 출력 카운터 초기화 -->
+					    <c:set var="displayCount" value="0" />
+					
+					    <c:forEach var="order" items="${orderList}">
+					        <c:if test="${not empty order.orderNumber}">
+					            <tr>
+					                <!-- 체크박스 -->
+					                <td>
+					                    <input type="checkbox" name="selectedOrder" value="${order.ibwaitIdx}" />
+					                </td>
+					
+					                <!-- 발주번호 (링크) -->
+					                <td>
+					                    <c:url var="detailUrl" value="/inbound/inboundDetail">
+					                        <c:param name="orderNumber" value="${order.orderNumber}" />
+					                        <c:param name="ibwaitIdx" value="${order.ibwaitIdx}" />
+					                    </c:url>
+					                    <a href="${detailUrl}" class="link-order-number">
+					                        <c:out value="${order.orderNumber}" default="-" />
+					                    </a>
+					                </td>
+					
+					                <!-- 입고번호 -->
+					                <td><c:out value="${order.ibwaitNumber}" /></td>
+					
+					                <!-- 입고일자 -->
+					                <td><c:out value="${order.arrivalDateStr}" default="-" /></td>
+					
+					                <!-- 공급업체 -->
+					                <td><c:out value="${order.supplierName}" /></td>
+					                
+					                <!-- 상태 -->
+					                <td><c:out value="${order.inboundStatus}" /></td>
+					
+					                <!-- 품목수 -->
+					                <td><c:out value="${order.numberOfItems}" /></td>
+					
+					                <!-- 입고예정수량 -->
+					                <td><c:out value="${order.quantity}" /></td>
+					
+					                <!-- 담당자 -->
+					                <td><c:out value="${order.manager}" /></td>
+					
+					                <!-- 비고 -->
+					                <td><c:out value="${order.note}" /></td>
+					            </tr>
+					
+					            <!-- 출력 카운트 증가 -->
+					            <c:set var="displayCount" value="${displayCount + 1}" />
+					        </c:if>
+					    </c:forEach>
+					
+					    <!-- 출력된 행이 하나도 없을 경우 안내문 -->
+					    <c:if test="${displayCount == 0}">
+					        <tr>
+					            <td colspan="11" class="text-center">입고 데이터가 존재하지 않습니다.</td>
+					        </tr>
+					    </c:if>
 					</tbody>
 	<!-- ==============================================================================================================리스트 존========= -->				
 				</table>

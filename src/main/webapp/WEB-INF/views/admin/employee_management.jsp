@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -99,6 +100,7 @@
 }
    </style>
 <!-- 기본 양식 -->
+<sec:csrfMetaTags/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
@@ -106,6 +108,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="${pageContext.request.contextPath}/resources/js/admin/employee_management.js"></script>
 </head>
+
 <body>
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 <jsp:include page="/WEB-INF/views/admin/employee_modal/add_employee.jsp"></jsp:include> 
@@ -134,16 +137,94 @@
 		
 			<table class="table table-striped table-bordered" >
 				<tr>
-					<th data-key="e.emp_name" onclick="allineTable(this)">이름↕</th>
+					<c:if test="${param.orderKey eq e.emp_name }"></c:if>
+					<th data-key="e.emp_name" onclick="allineTable(this)">
+						이름
+						<c:choose>
+							<c:when test="${param.orderKey eq 'e.emp_name'}">
+								<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+								<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+							</c:when>
+							 <c:otherwise>
+								↕
+							 </c:otherwise>
+						</c:choose>
+					</th>
 					<th >성별</th>
-					<th data-key="e.emp_no" onclick="allineTable(this)">사번↕</th>
-					<th data-key="c.common_code_name" onclick="allineTable(this)">부서↕</th>
-					<th data-key="t.team_name" onclick="allineTable(this)">팀명↕</th>
-					<th data-key="r.role_name" onclick="allineTable(this)">직급↕</th>
+					<th data-key="e.emp_no" onclick="allineTable(this)">
+						사번
+						<c:choose>
+							<c:when test="${param.orderKey eq 'e.emp_no'}">
+								<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+								<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+							</c:when>
+							 <c:otherwise>
+								↕
+							 </c:otherwise>
+						</c:choose>
+					</th>
+					<th data-key="c.common_code_name" onclick="allineTable(this)">
+						부서
+						<c:choose>
+							<c:when test="${param.orderKey eq 'c.common_code_name'}">
+								<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+								<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+							</c:when>
+							 <c:otherwise>
+								↕
+							 </c:otherwise>
+						</c:choose>
+					</th>
+					<th data-key="t.team_name" onclick="allineTable(this)">
+						팀명
+						<c:choose>
+							<c:when test="${param.orderKey eq 't.team_name'}">
+								<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+								<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+							</c:when>
+							 <c:otherwise>
+								↕
+							 </c:otherwise>
+						</c:choose>
+					</th>
+					<th data-key="r.role_name" onclick="allineTable(this)">
+					직급
+						<c:choose>
+							<c:when test="${param.orderKey eq 'r.role_name'}">
+								<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+								<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+							</c:when>
+							 <c:otherwise>
+								↕
+							 </c:otherwise>
+						</c:choose>
+					</th>
 					<th>번호</th>
 					<th>이메일</th>
-					<th data-key="e.hire_date" onclick="allineTable(this)">입사일↕</th>
-					<th data-key="e.emp_status" onclick="allineTable(this)">상태↕</th>
+					<th data-key="e.hire_date" onclick="allineTable(this)">
+						입사일
+						<c:choose>
+							<c:when test="${param.orderKey eq 'e.hire_date'}">
+								<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+								<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+							</c:when>
+							 <c:otherwise>
+								↕
+							 </c:otherwise>
+						</c:choose>
+					</th>
+					<th data-key="e.emp_status" onclick="allineTable(this)">
+					상태
+						<c:choose>
+							<c:when test="${param.orderKey eq 'e.emp_status'}">
+								<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+								<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+							</c:when>
+							 <c:otherwise>
+								↕
+							 </c:otherwise>
+						</c:choose>
+					</th>
 				</tr>
 				<c:forEach var="employee" items="${employeeList }">
 					<tr class="employee-row" data-emp-idx="${employee.empIdx}">
@@ -174,7 +255,7 @@
 					<div>
 						<c:if test="${not empty pageInfo.maxPage or pageInfo.maxPage > 0}">
 							<input type="button" value="이전" 
-								onclick="location.href='/admin/employeeManagement?pageNum=${pageInfo.pageNum - 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}'" 
+								onclick="location.href='/admin/employeeManagement?pageNum=${pageInfo.pageNum - 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod=${param.orderMethod}'" 
 								<c:if test="${pageInfo.pageNum eq 1}">disabled</c:if>>
 							
 							<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
@@ -183,13 +264,13 @@
 										<strong>${i}</strong>
 									</c:when>
 									<c:otherwise>
-										<a href="/admin/employeeManagement?pageNum=${i}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}">${i}</a>
+										<a href="/admin/employeeManagement?pageNum=${i}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod=${param.orderMethod}">${i}</a>
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
 							
 							<input type="button" value="다음" 
-								onclick="location.href='/admin/employeeManagement?pageNum=${pageInfo.pageNum + 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}'" 
+								onclick="location.href='/admin/employeeManagement?pageNum=${pageInfo.pageNum + 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod=${param.orderMethod}'" 
 							<c:if test="${pageInfo.pageNum eq pageInfo.maxPage}">disabled</c:if>>
 						</c:if>
 					</div>

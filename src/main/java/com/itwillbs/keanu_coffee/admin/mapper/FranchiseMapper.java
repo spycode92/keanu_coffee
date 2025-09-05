@@ -25,6 +25,15 @@ public interface FranchiseMapper {
 	void deleteAdministratveRegionInfo(String bcode);
 	//행정정보 수정
 	int updateFranchiseInfo(FranchiseDTO franchise);
+	
+	// 등록된 구역이 있는지 확인
+	int countFranchiseByRegion(Integer regionIdx);
+	
+	// becode로 지점 찾기
+	List<FranchiseDTO> selectBecode(String bcode);
+	
+	// 구역 정보 추가
+	void updateRegionIdx(@Param("franchiseIdx") Integer franchiseIdx, @Param("regionIdx") Integer regionIdx);
 
 
 

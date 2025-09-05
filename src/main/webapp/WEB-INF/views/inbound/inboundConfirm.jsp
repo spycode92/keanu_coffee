@@ -58,13 +58,13 @@
 					<tbody>
 						<tr>
 							<td><input type="checkbox" class="row-check" /></td>
-							<td>IN-20250811-001</td>
-							<td>2025-08-11</td>
-							<td>에이스상사</td>
-							<td class="right">540</td>
-							<td><input class="form-control assign-loc" type="text" value="A-01-03" /></td>
-							<td><span class="badge badge-pending">검수완료</span></td>
-							<td>부분입고</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td class="right">-</td>
+							<td><input class="form-control assign-loc" type="text" value="A-01-03" />-</td>
+							<td><span class="badge badge-pending"></span></td>
+							<td>-</td>
 						</tr>
 						<tr>
 							<td><input type="checkbox" class="row-check" /></td>

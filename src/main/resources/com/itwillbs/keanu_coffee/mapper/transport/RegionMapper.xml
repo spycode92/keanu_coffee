@@ -23,6 +23,20 @@
 			group_code = 'REGION'
 	</select>
 	
+	<!-- 행정구역 리스트 -->
+	<select id="selectAdministrativeRegionList" resultType="com.itwillbs.keanu_coffee.transport.dto.AdministrativeRegionDTO">
+		select ar.*
+		FROM
+			ADMINISTRATIVE_REGION ar
+		WHERE NOT EXISTS (
+			SELECT 1
+			FROM
+				REGION_ADMINISTRATIVE_MAP ram
+			WHERE
+				ram.bcode = ar.bcode
+		)
+	</select>
+	
 	<!-- 구역 이름 수정 -->
 	<update id="updateRegion">
 		UPDATE
@@ -54,5 +68,62 @@
 			group_code = 'REGION'
 		AND
 			common_code_name LIKE CONCAT('%', #{regionName}, '%')
+	</select>
+	
+	<!-- ================================================ -->
+	<!-- 구역 매핑 등록 -->
+	<insert id="insertMapping">
+		INSERT 
+			REGION_ADMINISTRATIVE_MAP(region_idx, bcode)
+		VALUES (
+			#{regionIdx}, #{bcode}
+		)
+	</insert>
+	
+	<!-- 구역별 행정 리스트 -->
+	<select id="selectMappingRegionList" resultType="com.itwillbs.keanu_coffee.transport.dto.MappingDTO">
+		SELECT
+			c.common_code, ad.sido, ad.sigungu, ad.dong, ram.bcode, ram.region_administrative_map_idx
+		FROM
+			COMMON_CODE c
+		JOIN
+			REGION_ADMINISTRATIVE_MAP ram
+		ON
+			c.common_code_idx = ram.region_idx
+		JOIN
+			ADMINISTRATIVE_REGION ad
+		ON
+			ram.bcode = ad.bcode
+		ORDER BY
+			c.common_code
+	</select>
+	
+	<!-- 행정구역 삭제 -->
+	<delete id="deleteMapping">
+		DELETE FROM	
+			REGION_ADMINISTRATIVE_MAP
+		WHERE
+			region_administrative_map_idx = #{idx}
+	</delete>
+	
+	<!-- 행정구역 그룹 삭제 -->
+	<delete id="deleteAllMapping">
+		DELETE FROM
+			REGION_ADMINISTRATIVE_MAP
+		WHERE 
+			region_administrative_map_idx 
+		IN
+			<foreach collection="list" item="idx" open="(" separator="," close=")">
+				#{idx}
+			</foreach>
+	</delete>
+	
+	<!-- 매핑 정보 조회 -->
+	<select id="findByIdx" resultType="com.itwillbs.keanu_coffee.transport.dto.MappingDTO">
+		SELECT *
+		FROM
+			REGION_ADMINISTRATIVE_MAP
+		WHERE
+			region_administrative_map_idx = #{idx}
 	</select>
 </mapper>

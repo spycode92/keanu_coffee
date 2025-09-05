@@ -84,7 +84,7 @@ public class FranchiseController {
 	}
 	
 	//지점정보 업데이트
-	@PutMapping("/modifyFranchise")
+	@PostMapping("/modifyFranchise")
 	@ResponseBody
 	public ResponseEntity<Map<String,String>> modifyFranchiseInfo(@RequestBody FranchiseDTO franchise) {
 		Map<String, String> resultMap = new HashMap<String, String>();

@@ -1,5 +1,6 @@
 //전역변수선언
 let allCategories = [];
+let detailProductIdx = null;
 $(function () {
 	//dom로드후 loadCategoryList() 실행
 	// allCategories 에 카테고리 정보 입력, 검색창의 카테고리항목 채우기
@@ -56,33 +57,29 @@ $(function () {
 	        return;
 	    }
 	
-	    $.ajax({
-	        url: '/admin/systemPreference/product/addCategory', // 실제 매핑된 서버 주소로 맞추세요!
-	        method: 'POST',
-	        contentType: 'application/json',
-	        data: JSON.stringify({ commonCodeName: categoryName }),
-	        success: function (res) {
-				let msg = "카테고리 추가 성공";
-				let result ="success"
-				if(res.responseJSON){
-					msg = res.responseJSON.message || msg;
-					result = res.responseJSON.result || result;
-				}
-				loadCategoryList().then(()=>{
-					// 상위 카테고리에 카테고리 값집어넣기
-					$('.categories').html('<option value="">전체</option>');
-					$(allCategories).each(function(index, category){
-						$('.categories').append(`
-						<option value="${category.commonCodeIdx}">${category.commonCodeName}</option>`
-						);
-					})
+	    ajaxPost('/admin/systemPreference/product/addCategory',
+			{ commonCodeName: categoryName }
+		).then(function (res) {
+			let msg = "카테고리 추가 성공";
+			let result ="success"
+			if(res.responseJSON){
+				msg = res.responseJSON.message || msg;
+				result = res.responseJSON.result || result;
+			}
+			loadCategoryList().then(()=>{
+				// 상위 카테고리에 카테고리 값집어넣기
+				$('.categories').html('<option value="">전체</option>');
+				$(allCategories).each(function(index, category){
+					$('.categories').append(`
+					<option value="${category.commonCodeIdx}">${category.commonCodeName}</option>`
+					);
 				})
-	            Swal.fire(msg, '', result);
-	            const addCatModal = document.getElementById('addCategoryModal');
-				ModalManager.closeModal(addCatModal);
-	            // 성공 후 전체 카테고리 목록을 다시 불러와서 화면 동기화
-	        },
-	        error: function (res) {
+			})
+            Swal.fire(msg, '', result);
+            const addCatModal = document.getElementById('addCategoryModal');
+			ModalManager.closeModal(addCatModal);
+            // 성공 후 전체 카테고리 목록을 다시 불러와서 화면 동기화
+        }).catch(function (res) {
 	            let msg = "알 수 없는 오류가 발생했습니다.";
 		        let result = "error";
 		        if (res.responseJSON) {
@@ -90,7 +87,6 @@ $(function () {
 		            result = res.responseJSON.result || result;
 		        }
 		        Swal.fire(msg, '', result);
-	        }
 	    });
 	});
 	
@@ -134,23 +130,18 @@ $(function () {
 	        return;
 	    }	    
 	
-        $.ajax({
-            url: '/admin/systemPreference/product/modifyCategory',
-            method: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify({ commonCodeIdx:categoryIdx, commonCodeName:newName }),
-            success: function () {
+        ajaxPost('/admin/systemPreference/product/modifyCategory',
+           { commonCodeIdx:categoryIdx, commonCodeName:newName }
+		).then(function () {
                 Swal.fire('성공', '카테고리명이 수정되었습니다.', 'success');
 				loadCategoryList().then(()=>{
 	                renderCategoryListInModal();
 				});
-            },
-            error: function () {
+            }).catch(function () {
                 Swal.fire('실패', '수정 중 오류가 발생했습니다.', 'error');
                 loadCategoryList().then(()=>{
 	                renderCategoryListInModal();
 				});
-            }
         });
 
 	});
@@ -167,25 +158,20 @@ $(function () {
 	        cancelButtonText: '취소'
 	    }).then((result) => {
 	        if (result.isConfirmed) {
-	            $.ajax({
-	                url: `/admin/systemPreference/product/removeCategory`,
-	                method: 'DELETE',
-					contentType: 'application/json',
-					data: JSON.stringify({ commonCodeIdx: categoryIdx }),
-	                success: function (event) {
+				ajaxPost(`/admin/systemPreference/product/removeCategory`,
+	                { commonCodeIdx: categoryIdx }
+				).then(function (event) {
 						console.log(event.responseText);
 	                    Swal.fire(event.responseText, '카테고리가 삭제되었습니다.', 'success');
 	                    loadCategoryList().then(()=>{
 			                renderCategoryListInModal();
 						}); // 삭제 후 리스트 다시 로드
-	                },
-	                error: function (xhr) {
+	                }).catch(function (xhr) {
 	                    if (xhr.status === 409) {
 				            Swal.fire('삭제 실패', xhr.responseText, 'warning');
 				        } else {
 				            Swal.fire('삭제 실패', '서버 오류가 발생했습니다.', 'error');
 				        }
-					}
 	            });
 	        }
 	    });
@@ -216,9 +202,6 @@ $(function () {
 	$('#productAddForm').off('submit').on('submit', function (e) {
 	    e.preventDefault();
 	
-	    // FormData 객체 생성 (this는 form)
-	    const formData = new FormData(this);
-	
 	    // (필수 검증 추가 가능)
 	    if (!$('#productName').val().trim()) {
 	        Swal.fire('상품명을 입력하세요.', '', 'warning');
@@ -229,22 +212,16 @@ $(function () {
 	        return;
 	    }
 	
-	    $.ajax({
-	        url: '/admin/systemPreference/product/addProduct',
-	        method: 'POST',
-	        data: formData,
-	        processData: false,            // 반드시 false (formData 전송 시)
-	        contentType: false,            // 반드시 false (formData 전송 시)
-	        success: function (res) {
-	            Swal.fire('등록 완료', res, 'success').then(()=>{
-		            const addModal = document.getElementById('productAddModal');
-	            	ModalManager.closeModal(addModal);
-					window.location.href = '/admin/systemPreference/product'
-				});
-	        },
-	        error: function (res) {
-	            Swal.fire('등록 실패', res, 'error');
-	        }
+	   ajaxPostWithFile('/admin/systemPreference/product/addProduct',
+	        '#productAddForm'
+		).then(function (res) {
+            Swal.fire('등록 완료', res, 'success').then(()=>{
+	            const addModal = document.getElementById('productAddModal');
+            	ModalManager.closeModal(addModal);
+				window.location.href = '/admin/systemPreference/product'
+			});
+        }).catch( function (res) {
+            Swal.fire('등록 실패', res, 'error');
 	    });
 	});
 	
@@ -281,6 +258,7 @@ $(function () {
 	        Swal.fire('오류', '상품 정보를 불러올 수 없습니다.', 'error');
 	        return;
 	    }
+		detailProductIdx = productIdx;
 		const detailModal = document.getElementById('productDetailModal');
         initProductDetailModal(productIdx);
         ModalManager.openModal(detailModal);
@@ -348,33 +326,47 @@ $(function () {
 	
 	//상품상세보기>수정>저장
 	$(document).on('click', '.btn-save', function() {
-	    const formData = new FormData($('#productDetailForm')[0]);
 	
-	    $.ajax({
-	        url: '/admin/systemPreference/product/modifyProduct',  // 수정 API 경로에 맞게 변경
-	        type: 'POST',
-	        data: formData,
-	        processData: false,
-	        contentType: false,
-	        success: function(result) {
-				console.log(result);
-	            Swal.fire('성공', '상품이 정상적으로 저장되었습니다.', 'success').then(()=>{
-				        // 모달 닫기
-//				        const detailModal = document.getElementById('productDetailModal');
-//	            		ModalManager.closeModal(detailModal);
-				        // 새로고침
+	    ajaxPostWithFile( '/admin/systemPreference/product/modifyProduct',
+			'#productDetailForm'
+		).then(function(result) {
+            Swal.fire('알림', result.msg , result.result).then(()=>{
+					window.location.reload();
+			});
+        }).catch( function() {
+            Swal.fire({
+				title: '실패',
+			  	html: '잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오.',
+			  	icon: 'error'
+			});
+	    });
+	});
+	
+	//상품상세보기>삭제
+	$(document).on('click', '.btn-delete', function() {
+		console.log(detailProductIdx);
+		Swal.fire({
+	        title: '정말 삭제하시겠습니까?',
+	        icon: 'warning',
+	        showCancelButton: true,
+	        confirmButtonText: '확인',
+	        cancelButtonText: '취소'
+	    }).then((result) => {
+
+		    ajaxPost( '/admin/systemPreference/product/removeProduct',
+				{productIdx: detailProductIdx}
+			).then(function(result) {
+	            Swal.fire('알림', result.msg , result.result).then(()=>{
 						window.location.reload();
-				        
 				});
-	        },
-	        error: function() {
+	        }).catch( function() {
 	            Swal.fire({
 					title: '실패',
 				  	html: '잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오.',
 				  	icon: 'error'
 				});
-	        }
-	    });
+		    });
+		});
 	});
 	
 	// 상품정보수정 파일 미리보기

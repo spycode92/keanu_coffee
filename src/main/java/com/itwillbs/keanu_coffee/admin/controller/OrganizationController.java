@@ -29,6 +29,7 @@ import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.dto.TeamDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
 import com.itwillbs.keanu_coffee.admin.service.OrganizationService;
+import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,6 +43,11 @@ public class OrganizationController {
 	public String systemPreference(Model model) {
 		// 부서리스트 가져오기
 		List<DepartmentDTO> departmentList = organizationService.getDepartInfo();
+		
+		//권한정보 가져오기
+		List<CommonCodeDTO> authorityList = organizationService.getAuthorityList();
+		
+		model.addAttribute("authorityList", authorityList);
 		model.addAttribute("departmentList", departmentList);
 		
 		return "/admin/system_preference/organization_management";
@@ -95,80 +101,195 @@ public class OrganizationController {
 	}
 	
 	//부서삭제
-	@DeleteMapping("/removeDepartment")
+	@PostMapping("/removeDepartment")
 	@ResponseBody
-	public ResponseEntity<Void> removeDepartment(@RequestBody Map<String, Integer> data) {
+	public ResponseEntity<Map<String, Object>> removeDepartment(@RequestBody Map<String, Integer> data) {
 		Integer departmentIdx = data.get("departmentIdx");
-		boolean deleted = organizationService.removeDepartmentByIdx(departmentIdx);
+		CommonCodeDTO commonCodeDTO = organizationService.selectDept(departmentIdx);
+		boolean deleted = organizationService.removeDepartmentByIdx(departmentIdx, commonCodeDTO.getCommonCodeName());
+		
+		Map<String, Object> response = new HashMap<>();
 		
 		if (deleted) {
-			return ResponseEntity.ok().build();
+			response.put("success", true);
+	        response.put("message", "부서가 성공적으로 삭제되었습니다.");
+	        return ResponseEntity.ok(response);
 		} else {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			response.put("success", false);
+	        response.put("message", "부서 삭제에 실패했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 	}
 	
 	//팀삭제
-	@DeleteMapping("/removeTeam")
+	@PostMapping("/removeTeam")
 	@ResponseBody
-	public ResponseEntity<Void> deleteTeam(@RequestBody Map<String, Integer> data) {
+	public ResponseEntity<Map<String, Object>> deleteTeam(@RequestBody Map<String, Integer> data) {
 		Integer teamIdx = data.get("teamIdx");
-	    boolean deleted = organizationService.deleteTeamByIdx(teamIdx);
+		TeamDTO team = organizationService.selectTeam(teamIdx);
+		
+	    boolean deleted = organizationService.deleteTeamByIdx(teamIdx, team.getTeamName());
+	    
+	    Map<String, Object> response = new HashMap<>();
+	    
 	    if (deleted) {
-	        return ResponseEntity.ok().build();
-	    } else {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	    }
+			response.put("success", true);
+	        response.put("message", "팀이 성공적으로 삭제되었습니다.");
+	        return ResponseEntity.ok(response);
+		} else {
+			response.put("success", false);
+	        response.put("message", "팀 삭제에 실패했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
 	}
 	
 	//직책삭제
-	@DeleteMapping("/removeRole")
+	@PostMapping("/removeRole")
 	@ResponseBody
-	public ResponseEntity<Void> deleteRole(@RequestBody Map<String, Integer> data) {
+	public ResponseEntity<Map<String, Object>> deleteRole(@RequestBody Map<String, Integer> data) {
 		Integer roleIdx = data.get("roleIdx");
-		boolean deleted = organizationService.deleteRoleByIdx(roleIdx);
-		if (deleted) {
-			return ResponseEntity.ok().build();
+		RoleDTO role = organizationService.selectRole(roleIdx);
+		boolean deleted = organizationService.deleteRoleByIdx(roleIdx, (String)role.getRoleName());
+
+	    Map<String, Object> response = new HashMap<>();
+	    
+	    if (deleted) {
+			response.put("success", true);
+	        response.put("message", "직책이 성공적으로 삭제되었습니다.");
+	        return ResponseEntity.ok(response);
 		} else {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			response.put("success", false);
+	        response.put("message", "직책 삭제에 실패했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 	}
 	
 	//부서이름수정
-	@PutMapping("/modifyDepartment")
+	@PostMapping("/modifyDepartment")
 	@ResponseBody
-	public ResponseEntity<Void> modifyDepartment(@RequestBody DepartmentDTO dto) {
+	public ResponseEntity<Map<String, Object>> modifyDepartment(@RequestBody DepartmentDTO dto) {
 	    boolean success = organizationService.modifyDepartmentName(dto.getDepartmentIdx(), dto.getDepartmentName());
+	    Map<String, Object> response = new HashMap<>();
 	    if (success) {
-	        return ResponseEntity.ok().build();
+	    	response.put("success", true);
+	        response.put("message", "부서명이 성공적으로 수정되었습니다.");
+	        response.put("data", dto);
+	        return ResponseEntity.ok(response);
 	    } else {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    	response.put("success", false);
+	        response.put("message", "부서명 수정에 실패했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 	    }
 	}
 	
 	//팀이름수정
-	@PutMapping("/modifyTeam")
+	@PostMapping("/modifyTeam")
 	@ResponseBody
-	public ResponseEntity<Void> modifyTeam(@RequestBody TeamDTO teamDTO) {
+	public ResponseEntity<Map<String, Object>> modifyTeam(@RequestBody TeamDTO teamDTO) {
 		boolean success = organizationService.modifyTeamName(teamDTO.getTeamIdx(), teamDTO.getTeamName());
-		if (success) {
-			return ResponseEntity.ok().build();
-		} else {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
+		Map<String, Object> response = new HashMap<>();
+	    if (success) {
+	    	response.put("success", true);
+	        response.put("message", "팀이름 수정에 성공하였습니다.");
+	        response.put("data", teamDTO);
+	        return ResponseEntity.ok(response);
+	    } else {
+	    	response.put("success", false);
+	        response.put("message", "팀이름 수정에 실패했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	    }
 	}
 	
-	//팀이름수정
-	@PutMapping("/modifyRole")
+	//직책이름수정
+	@PostMapping("/modifyRole")
 	@ResponseBody
-	public ResponseEntity<Void> modifyRole(@RequestBody RoleDTO roleDTO) {
+	public ResponseEntity<Map<String, Object>> modifyRole(@RequestBody RoleDTO roleDTO) {
 		boolean success = organizationService.modifyRoleName(roleDTO.getRoleIdx(), roleDTO.getRoleName());
-		if (success) {
-			return ResponseEntity.ok().build();
-		} else {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
+		Map<String, Object> response = new HashMap<>();
+	    if (success) {
+	    	response.put("success", true);
+	        response.put("message", "직책이름 수정에 성공하였습니다.");
+	        response.put("data", roleDTO);
+	        return ResponseEntity.ok(response);
+	    } else {
+	    	response.put("success", false);
+	        response.put("message", "직책이름 수정에 실패했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	    }
 	}
+	
+	//직책에부여된 권한정보가져오기
+	@GetMapping("/getAutho")
+	public ResponseEntity<List<Map<String, Object>>> getRolesAutho(@RequestParam Integer roleIdx){
+		List<Map<String, Object>> authority = organizationService.getAuthrityInfo(roleIdx);
+		 System.out.println("authority size: " + (authority != null ? authority.size() : "null")); // 결과 확인
+		
+		return ResponseEntity.ok(authority);
+	}
+	
+	//직책에 변경된 권한 정보 저장하기
+	@PostMapping("/saveRoleAutho")
+	@ResponseBody
+	public ResponseEntity<Map<String,String>> modifyRoleAutho(@RequestBody Map<String, Object> data){
+       organizationService.modifyRoleAutho(data);
+       Map<String, String> result = new HashMap<>();
+       result.put("result", "success");
+       result.put("msg", "권한정보 변경 완료");
+       return ResponseEntity.ok(result);
+
+	}
+	
+	//권한 이름 변경
+	@PostMapping("/modifyAutho")
+	@ResponseBody
+	public ResponseEntity<Map<String,String>> modifyAuthoName(@RequestBody Map<String, Object> data){
+		
+		Map<String, String> result = new HashMap<>();
+		Boolean modifyResult = organizationService.modifyAuthoName(data);
+		if(modifyResult) {
+			result.put("result", "success");
+			result.put("msg", "직책이름 변경 완료");
+			
+			return ResponseEntity.ok(result);
+		}
+		result.put("result", "fail");
+		result.put("msg", "직책이름 변경 실패");
+		
+		return ResponseEntity.ok(result);
+	}
+	
+	//권한 제거
+	@PostMapping("/removeAutho/{authoIdx}")
+	@ResponseBody
+	public ResponseEntity<Map<String,String>> removeAuthoName(@PathVariable Integer authoIdx){
+		
+		Map<String, String> result = new HashMap<>();
+		CommonCodeDTO common = new CommonCodeDTO();
+		common.setCommonCodeIdx(authoIdx);
+		common = organizationService.selectAuthoName(common);
+		
+		result = organizationService.removeAuthoName(common);
+
+		return ResponseEntity.ok(result);
+	}
+	
+	//권한 추가
+	@PostMapping("/addAutho")
+	@ResponseBody
+	public ResponseEntity<Map<String,String>> addAutho(@RequestBody Map<String, Object> data){
+		
+		Map<String, String> result = new HashMap<>();
+		String authoCode = (String)data.get("authoCode");
+		String authoName = (String)data.get("authoName");
+		CommonCodeDTO common = new CommonCodeDTO();
+		common.setCommonCode(authoCode);
+		common.setCommonCodeName(authoName);
+		
+		result = organizationService.addAutho(common);
+
+		return ResponseEntity.ok(result);
+	}
+	
 	
 
 }
