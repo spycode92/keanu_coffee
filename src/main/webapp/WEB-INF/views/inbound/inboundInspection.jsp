@@ -101,9 +101,7 @@
 		<div class="card mb-3">
 			<div class="card-header d-flex justify-content-between align-items-center">
 				<div class="card-title">기본 정보</div>
-				<div class="text-muted">상태: 	<span class="badge badge-pending">
-													<c:out value="${inboundDetailData.inboundStatus}" default="-"/>
-												</span></div>
+				<input type="button" value="수정" >
 			</div>
 			<div class="kv-grid">
 				<div class="kv-item">
@@ -140,10 +138,16 @@
 					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.orderNumber}" default="-"/></div>
 				</div>
 				<div class="kv-item">
-					<div class="kv-label">입고위치</div>
-					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.inboundLocation}" default="-"/></div>
+				    <div class="kv-label">입고위치</div>
+				    <div class="kv-value">
+				        <select name="inboundLocation" id="inboundLocation">
+				            <option value="" <c:if test="${empty sessionScope.inboundDetailData.inboundLocation}">selected</c:if>>-</option>
+				            <option value="1" <c:if test="${sessionScope.inboundDetailData.inboundLocation == '1'}">selected</c:if>>1</option>
+				            <option value="2" <c:if test="${sessionScope.inboundDetailData.inboundLocation == '2'}">selected</c:if>>2</option>
+				            <option value="3" <c:if test="${sessionScope.inboundDetailData.inboundLocation == '3'}">selected</c:if>>3</option>
+				        </select>
+				    </div>
 				</div>
-
 				<div class="kv-item">
 					<div class="kv-label">총 품목 수</div>
 					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.numberOfItems}" default="-"/></div>
@@ -154,7 +158,7 @@
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">총 금액</div>
-					<div class="kv-value"><fmt:formatNumber value="${sessionScope.inboundDetailData.totalPrice}" pattern="₩ #,##0" /></div>
+					<div class="kv-value"><fmt:formatNumber value="${sessionScope.inboundDetailData.totalPrice}" pattern="₩ #,##0" />-</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">비고</div>
@@ -163,30 +167,7 @@
 			</div>
 		</div>
 
-		<!-- 타임라인 -->
-		<div class="card mb-3">
-			<div class="card-header">
-				<div class="card-title">상태 이력 (타임라인)</div>
-			</div>
-			<div class="timeline p-2">
-				<div class="timeline-step active">
-					<div class="timeline-dot"></div>
-					<div class="muted" style="font-size:.85rem;">등록</div>
-					<div style="font-size:.85rem;">2025-08-11<br/><span class="muted">홍길동</span></div>
-				</div>
-				<div class="timeline-step">
-					<div class="timeline-dot"></div>
-					<div class="muted" style="font-size:.85rem;">검수대기</div>
-					<div style="font-size:.85rem;">(미완료)</div>
-				</div>
-				<div class="timeline-step">
-					<div class="timeline-dot"></div>
-					<div class="muted" style="font-size:.85rem;">확정</div>
-					<div style="font-size:.85rem;">-</div>
-				</div>
-			</div>
-		</div>
-
+		
 		<!-- 품목 목록 -->
 		<div class="card mb-3">
 			<div class="card-header d-flex justify-content-between align-items-center">
@@ -198,15 +179,15 @@
 				<table id="itemsTable" class="table">
 					<thead>
 						<tr>
-							<th style="width:40px;">No</th>
-							<th>품목명 / 규격</th>
-							<th style="width:80px;">수량</th>
-							<th style="width:100px;">단위</th>
-							<th style="width:120px;">단가</th>
-							<th style="width:140px;">공급가액</th>
-							<th style="width:120px;">부가세</th>
-							<th style="width:140px;">총액</th>
-							<th style="width:120px;">LOT번호</th>
+							<th>No</th>
+							<th colspan="2">품목명 / 규격</th>
+							<th>LOT번호</th>
+							<th>수량</th>
+							<th>단위</th>
+							<th>단가</th>
+							<th>공급가액</th>
+							<th>부가세</th>
+							<th>총액</th>
 						</tr>
 					</thead>
 	<!-- ==============================================================================================================리스트 존========= -->
@@ -215,49 +196,46 @@
 					        <c:when test="${not empty sessionScope.ibProductDetail}">
 					            <c:forEach var="item" items="${sessionScope.ibProductDetail}" varStatus="vs">
 					                <tr>
-					                    <!-- No. -->
-					                    <td>
-					                        <c:out value="${vs.index + 1}" />
-					                    </td>
-					
-					                    <!-- 상품명 -->
-					                    <td>
-					                        <c:out value="${item.productName}" />
-					                    </td>
-					
-					                    <!-- 수량 -->
-					                    <td>
-					                        <fmt:formatNumber value="${item.quantity}" pattern="#개,##0" />
-					                    </td>
-					
-					                    <!-- 단위 -->
-					                    <td>
-					                        <fmt:formatNumber value="${item.productVolume}" pattern="#호" />
-					                    </td>
-					
-					                    <!-- 단가 -->
-					                    <td>
-					                        <fmt:formatNumber value="${item.unitPrice}" pattern="₩ #,##0" />
-					                    </td>
-					
-					                    <!-- 공급가액 -->
-					                    <td>
-					                        <fmt:formatNumber value="${item.amount}" pattern="₩ #,##0" />
-					                    </td>
-					
-					                    <!-- 부가세 -->
-					                    <td>
-					                        <fmt:formatNumber value="${item.tax}" pattern="₩ #,##0" />
-					                    </td>
-					
-					                    <!-- 총액 -->
-					                    <td>
-					                        <fmt:formatNumber value="${item.totalPrice}" pattern="₩ #,##0" />
-					                    </td>
-					
-					                    <!-- LOT넘버 -->
-					                    <td><c:out value="${item.lotNumber}" /></td>
-					                </tr>
+									    <!-- No. -->
+									    <td><c:out value="${vs.index + 1}" /></td>
+									
+									    <!-- 상품명 -->
+									    <td colspan="2"><c:out value="${item.productName}" /></td>
+									    
+									    <!-- LOT넘버 -->
+									    <td><c:out value="${item.lotNumber}" /></td>
+									
+									    <!-- 수량 -->
+									    <td>
+									        <input type="number" class="quantity" value="${item.quantity}" data-index="${vs.index}" style="width:30%;"/>개
+									    </td>
+									
+									    <!-- 단위 -->
+									    <td><fmt:formatNumber value="${item.productVolume}" pattern="#호" /></td>
+									
+									    <!-- 단가 -->
+									    <td>
+									       ₩<input type="number" class="unitPrice" value="${item.unitPrice}" data-index="${vs.index}" style="width:50%"/>
+									    </td>
+									
+									    <!-- 공급가액 -->
+									    <td class="amount" data-index="${vs.index}">
+									        <fmt:formatNumber value="${item.amount}" pattern="₩ #,##0" />
+									    </td>
+									
+									    <!-- 부가세 -->
+									    <td class="tax" data-index="${vs.index}">
+									        <fmt:formatNumber value="${item.tax}" pattern="₩ #,##0" />
+									    </td>
+									
+									    <!-- 총액 -->
+									    <td class="totalPrice" data-index="${vs.index}">
+									        <fmt:formatNumber value="${item.totalPrice}" pattern="₩ #,##0" />
+									    </td>
+									
+									    
+									</tr>
+
 					            </c:forEach>
 					        </c:when>
 					        <c:otherwise>
@@ -275,14 +253,9 @@
 					
 					<tfoot>
 					    <tr>
-					        <td colspan="4"></td>
+					        <td colspan="8"></td>
 					        <td>합계</td>
-					        <td>-</td>
-					        <td>-</td>
-					        <td>
-					            <fmt:formatNumber value="${grandTotal}" pattern="₩ #,##0" />
-					        </td>
-					        <td></td>
+					        <td><fmt:formatNumber value="${grandTotal}" pattern="₩ #,##0" /></td>
 					    </tr>
 					</tfoot>
 	<!-- ==============================================================================================================리스트 존========= -->
