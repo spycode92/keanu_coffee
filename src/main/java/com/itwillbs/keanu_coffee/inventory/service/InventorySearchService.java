@@ -14,6 +14,16 @@ import lombok.RequiredArgsConstructor;
 public class InventorySearchService {
 	private final InventorySearchMapper inventorySearchMapper;
 	
+	// 총 SKU
+	public int getTotalSku() {
+	    return inventorySearchMapper.selectTotalSku();
+	}
+	
+	// 총 재고 수량
+	public int getTotalQuantity() {
+	    return inventorySearchMapper.selectTotalQuantity();
+	}
+	
 	// 총 데이터 개수
 	public int getInventoryCount(
             String keyword, String location, String locationType,

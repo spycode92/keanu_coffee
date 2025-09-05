@@ -4,6 +4,18 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.inventory.mapper.InventorySearchMapper">
 	
+	<!-- 총 SKU: 서로 다른 상품 코드(product_idx) 개수 -->
+    <select id="selectTotalSku" resultType="int">
+        SELECT COUNT(DISTINCT product_idx)
+        FROM RECEIPT_PRODUCT
+    </select>
+
+    <!-- 총 재고 수량: 전체 quantity 합계 -->
+    <select id="selectTotalQuantity" resultType="int">
+        SELECT COALESCE(SUM(quantity), 0)
+        FROM RECEIPT_PRODUCT
+    </select>
+	
 	<!-- 총 데이터 개수 -->
 	<select id="selectInventoryCount" resultType="int">
 	    SELECT COUNT(1)

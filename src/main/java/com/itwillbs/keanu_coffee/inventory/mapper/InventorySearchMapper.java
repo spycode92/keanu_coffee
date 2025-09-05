@@ -9,6 +9,12 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface InventorySearchMapper {
 	
+	// 총 SKU
+	int selectTotalSku();
+	
+	// 총 재고수량
+	int selectTotalQuantity();
+	
 	// 총 데이터 개수
     int selectInventoryCount(
             @Param("keyword") String keyword,
@@ -37,6 +43,6 @@ public interface InventorySearchMapper {
     
     // 재고 상세 조회 모달창 (Ajax)
     Map<String, Object> selectInventoryDetail(int receiptProductIdx);
-	
+    
 	
 }

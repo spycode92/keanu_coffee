@@ -421,6 +421,14 @@
     <!-- ========================= /LOT 상세 모달 ========================= -->
 
     <script>
+	 	// ✅ KPI 카드 데이터 채우기
+	    $(document).ready(function(){
+	        $.getJSON('${pageContext.request.contextPath}/inventory/metrics', function(res){
+	            $('#kpiSku').text(res.totalSku ?? '–');
+	            $('#kpiQty').text(res.totalQty ?? '–');
+	        });
+	    });
+    	
 	    /* ====================== 유틸 ====================== */
 	    function toDateOrNull(s){
 	        if (s === null || s === undefined) return null;

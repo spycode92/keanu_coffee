@@ -1,5 +1,6 @@
 package com.itwillbs.keanu_coffee.inventory.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,18 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/inventory")
 public class InventorySearchController {
 	private final InventorySearchService inventorySearchService;
+	
+	// KPI (총 SKU, 총 재고 수량)
+	@GetMapping("/metrics") // 재고 관리 화면의 KPI 지표(=metrics)
+	@ResponseBody
+	public Map<String, Object> getMetrics() {
+	    Map<String, Object> result = new HashMap<>();
+	    
+	    result.put("totalSku", inventorySearchService.getTotalSku());
+	    result.put("totalQty", inventorySearchService.getTotalQuantity());
+	    
+	    return result;
+	}
 	
 	// 재고 리스트 조회 (페이징 + 검색조건 대비)
     @GetMapping("/stockCheck")
@@ -84,4 +97,6 @@ public class InventorySearchController {
         // 서비스에서 단건 조회 (상세정보 + 로케이션 분포까지 조회)
         return inventorySearchService.getInventoryDetail(receiptProductIdx);
     }
+    
+    
 }
