@@ -394,7 +394,7 @@
 	            </configuration>
 	        </plugin>
 	    </plugins>
-	    <finalName>/</finalName>
+<!-- 	    <finalName>/</finalName> -->
 	</build>
 </project>
 	
