@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class PurchaseOrderService {
-
+	private final PurchaseOrderMapper purchaseOrderMapper;
 	
 	public String getTodaysPurchaseOrderNumbersInOrderToMakeNewPurchaseOrderNumber() {
 		
