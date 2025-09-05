@@ -16,7 +16,7 @@ phases:
       - DB_PASSWORD=$(aws ssm get-parameter --name "/keanu_coffee/db_password" --with-decryption --query "Parameter.Value" --output text)
       - DB_USERNAME=$(aws ssm get-parameter --name "/keanu_coffee/db_username" --with-decryption --query "Parameter.Value" --output text)
       - |
-      - cat > src/mian/resources/config/application.properties << EOF
+      - cat > src/main/resources/config/application.properties << EOF
         db.host= ${DB_HOST}
         db.db_name= ${DB_NAME}
         db.username= ${DB_USERNAME}
