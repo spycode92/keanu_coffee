@@ -98,6 +98,7 @@
 	                <select id="filterStatus" name="filter">
 	                    <option value="전체">전체</option>
 	                    <option value="대기">대기</option>
+	                    <option value="예약">예약</option>
 	                    <option value="운행중">운행중</option>
 	                </select>
 	            </div>

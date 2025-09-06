@@ -1,6 +1,7 @@
  <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,6 +11,9 @@
 <title>운송관리대시보드</title>
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link
+	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
+	rel="stylesheet">
 <link
 	href="${pageContext.request.contextPath}/resources/css/common/common.css"
 	rel="stylesheet">
@@ -32,41 +36,14 @@ header {
     margin-bottom: 12px;
 }
 
-/* 검색/필터 바 */
-.filters {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(200px, 1fr));
-    gap: 10px;
-}
-.filters .field { display: flex; flex-direction: column; gap: 6px; justify-content: center;
-}
-.filters .search { display: flex; flex-direction: column; gap: 6px; justify-content: center;
-}
-.search { width: 500px; }
-.filters input, .filters select {
-    height: 38px; padding: 0 10px; border: 1px solid var(--border); border-radius: 10px; background: #fff;
-}
-.filters .actions {
-    display: flex; align-items: end; justify-content: center; gap: 8px;
-}
-
 .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: .8rem; font-weight: 700; }
 .badge.run { background: #dcfce7; color: #166534; }      /* 운행중 */
 .badge.book { background: #e0e7ff; color: #3730a3; }     /* 예약 */
 .badge.done { background: #e5ffe9; color: #047857; }     /* 완료 */
 .badge.cancel { background: #fee2e2; color: #991b1b; }   /* 취소 */
 
-.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
-.field input, .field select { height: 38px; padding: 0 10px; border: 1px solid var(--border); border-radius: 10px; }
 .help, .hint { font-size: .83rem; color: var(--muted-foreground); }
 
-@media (max-width: 1100px) {
-    .filters { grid-template-columns: repeat(3, minmax(140px, 1fr)); }
-}
 
 button:disabled {
   background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
@@ -76,7 +53,10 @@ button:disabled {
   opacity: 0.7;
   transform: none;   /* hover시 scale 효과 제거 */
 }
-    </style>
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field input { height: 38px; border: 1px solid var(--border); border-radius: 10px; padding: 0 10px; background: #f9fafb; }
+</style>
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
@@ -92,10 +72,10 @@ button:disabled {
         </header>
 
         <!-- 검색/필터 -->
-        <section class="filters" aria-label="검색 및 필터">
+        <form class="filters" aria-label="검색 및 필터">
             <div class="field">
-                <select id="filterStatus">
-                    <option value="">전체</option>
+                <select id="filterStatus" name="filter">
+                    <option value="전체">전체</option>
                     <option value="예약">예약</option>
                     <option value="운행중">운행중</option>
                     <option value="완료">완료</option>
@@ -103,31 +83,51 @@ button:disabled {
                 </select>
             </div>
             <div class="search">
-                <input id="filterText" type="text" placeholder="기사명 / 차량번호 / 목적지 검색" />
+                <input id="filterText" type="text" name="searchKeyword" placeholder="기사명 / 차량번호 / 구역명 검색" />
             </div>
             <div class="actions">
-                <button class="btn secondary" id="btnReset">초기화</button>
                 <button class="btn" id="btnSearch">검색</button>
             </div>
-        </section>
+        </form>
 
         <!-- 배차 목록 -->
         <section style="margin-top:14px">
             <h3>배차목록</h3>
-            <table class="table" id="dispatchTable">
-                <thead>
-                    <tr>
-                        <th>배차일</th>
-                        <th>기사명</th>
-                        <th>차량번호</th>
-                        <th>요청중량</th>
-                        <th>담당구역</th>
-                        <th>예상도착시간</th>
-                        <th>상태</th>
-                    </tr>
-                </thead>
-                <tbody><!-- JS 렌더링 --></tbody>
-            </table>
+            <c:choose>
+            	<c:when test="${empty dispatchList}">
+            		<div class="empty-result">검색된 배차가 없습니다.</div>
+            	</c:when>
+            	<c:otherwise>
+		            <table class="table" id="dispatchTable">
+		                <thead>
+		                    <tr>
+		                        <th>배차일</th>
+		                        <th>배차시간</th>
+		                        <th>기사명</th>
+		                        <th>차량번호</th>
+		                        <th>차량용량</th>
+		                        <th>구역</th>
+		                        <th>상태</th>
+		                    </tr>
+		                </thead>
+		                <tbody>
+		                	<c:forEach var="dispatch" items="${dispatchList}">
+		                		<tr>
+		                			<td>
+		                				<fmt:formatDate value="${dispatch.dispatchDate}" pattern="yyyy-MM-dd"/>
+		                			</td>
+		                			<td>${dispatch.startSlot}</td>
+		                			<td>${dispatch.driverName}</td>
+		                			<td>${dispatch.vehicleNumber}</td>
+		                			<td>${dispatch.capacity}</td>
+		                			<td>${dispatch.regionName}</td>
+		                			<td>${dispatch.status}</td>
+		                		</tr>
+		                	</c:forEach>
+		                </tbody>
+		            </table>
+            	</c:otherwise>
+            </c:choose>
         </section>
     </div>
 

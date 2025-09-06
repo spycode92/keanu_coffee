@@ -18,6 +18,19 @@ import lombok.RequiredArgsConstructor;
 public class DispatchService {
 	private final DispatchMapper dispatchMapper;
 	private final VehicleMapper vehicleMapper;
+	
+	// 페이징을 위한 배차 수
+	@Transactional(readOnly = true)
+	public int getDispatchCount(String filter, String searchKeyword) {
+		return dispatchMapper.selectDispatchCount(filter, searchKeyword);
+	}
+	
+	// 배차 리스트
+	@Transactional(readOnly = true)
+	public List<DispatchRegionGroupViewDTO> selectAllDispatch(int startRow, int listLimit, String filter,
+			String searchKeyword) {
+		return dispatchMapper.selectAllDispatch(startRow, listLimit, filter, searchKeyword);
+	}
 
 	// 배차 요청 리스트
 	@Transactional(readOnly = true)
@@ -80,6 +93,5 @@ public class DispatchService {
 		}
 		
 	}
-	
 
 }

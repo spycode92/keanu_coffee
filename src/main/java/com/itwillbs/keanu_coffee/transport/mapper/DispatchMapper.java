@@ -9,7 +9,14 @@ import com.itwillbs.keanu_coffee.transport.dto.DispatchRegionGroupViewDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegisterRequestDTO;
 
 public interface DispatchMapper {
+	
+	// 페이징을 위한 배차 카운트
+	int selectDispatchCount(@Param("filter") String filter, @Param("searchKeyword") String searchKeyword);
 
+	// 배차 리스트
+	List<DispatchRegionGroupViewDTO> selectAllDispatch(@Param("startRow") int startRow, @Param("listLimit") int listLimit, @Param("filter") String filter,
+			@Param("searchKeyword") String searchKeyword);
+	
 	// 배차 요청 리스트
 	List<DispatchRegionGroupViewDTO> selectDispatchList();
 

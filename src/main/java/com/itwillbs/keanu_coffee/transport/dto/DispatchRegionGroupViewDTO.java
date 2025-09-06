@@ -15,7 +15,6 @@ public class DispatchRegionGroupViewDTO {
 	private Integer outboundOrderIdx;      // 출고주문 idx
 	private Integer regionIdx;             // 구역 idx
 	private Integer vehicleIdx;       	   // 차량 idx
-	private Integer empIdx;           	   // 기사 idx
 	private Integer dispatchIdx;           // 배차 idx
 	private String regionName;        	   // 구역 이름
 	private Timestamp dispatchDate;   	   // 출고일자
@@ -24,6 +23,9 @@ public class DispatchRegionGroupViewDTO {
 	private String franchiseName;     	   // 지점 이름
 	private char urgent;          	       // 긴급 여부
 	private String status;            	   // 주문 상태
+	private String driverName;             // 기사 이름
+	private String vehicleNumber;          // 차량 번호
+	private Integer capacity;              // 차량 용량
 	
 	// 지점별 세부 상품 리스트
 	private List<OutboundOrderItemDTO> items;

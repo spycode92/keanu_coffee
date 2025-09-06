@@ -12,9 +12,11 @@ import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 import com.itwillbs.keanu_coffee.transport.dto.AdministrativeRegionDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DispatchRegionGroupViewDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO;
 import com.itwillbs.keanu_coffee.transport.dto.RegionFranchiseRouteDTO;
 import com.itwillbs.keanu_coffee.transport.dto.VehicleDTO;
+import com.itwillbs.keanu_coffee.transport.service.DispatchService;
 import com.itwillbs.keanu_coffee.transport.service.DriverService;
 import com.itwillbs.keanu_coffee.transport.service.RegionService;
 import com.itwillbs.keanu_coffee.transport.service.RouteService;
@@ -29,6 +31,7 @@ public class TransportController {
 	private final VehicleService vehicleService;
 	private final DriverService driverService;
 	private final RegionService regionService;
+	private final DispatchService dispatchService;
 	
 	// 운송 대시보드
 	@GetMapping("")
@@ -98,7 +101,30 @@ public class TransportController {
 	
 	// 배차 관리 페이지
 	@GetMapping("/dispatches")
-	public String dispatcheList() {
+	public String getAllDispatch(@RequestParam(defaultValue = "1") int pageNum, 
+			@RequestParam(defaultValue = "전체") String filter,
+			@RequestParam(defaultValue = "") String searchKeyword,
+			Model model) {
+		
+		int listLimit = 10;
+		int listCount = dispatchService.getDispatchCount(filter, searchKeyword);
+		
+		if (listCount > 0) {
+			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, listCount, pageNum, 10);
+			
+			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
+				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+				model.addAttribute("targetURL", "/transport/vehicle");
+				return "commons/result_process";
+			}
+			
+			model.addAttribute("pageInfo", pageInfoDTO);
+			
+			List<DispatchRegionGroupViewDTO> dispatchList = dispatchService.selectAllDispatch(pageInfoDTO.getStartRow(), listLimit, filter, searchKeyword);
+			
+			model.addAttribute("dispatchList", dispatchList );
+		}
+		
 		return "/transport/dispatche";
 	}
 	
