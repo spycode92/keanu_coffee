@@ -4,11 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.dto.TotalDashBoardDTO;
-import com.itwillbs.keanu_coffee.admin.mapper.SystemNotificationMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.TotalDashBoardMapper;
-import com.itwillbs.keanu_coffee.common.dto.SystemLogDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,8 +15,17 @@ public class TotalDashBoardService {
 	private final TotalDashBoardMapper totalDashBoardMapper;
 	
 	//일별 입고량 대시보드 조회
-	public List<TotalDashBoardDTO> getTotalDashBoardByDay() {
-		return totalDashBoardMapper.selectTotalDashBoardByDay()
+	public List<TotalDashBoardDTO> getInboundDashData(String needData, String startDate, String endDate) {
+		
+		if(needData.equals("daily")) {
+			return totalDashBoardMapper.selectInboundDashDataByDay(startDate, endDate);
+		}else if(needData.equals("weekly")) {
+			return totalDashBoardMapper.selectInboundDashDataByWeek(startDate, endDate); 
+		}else {
+			return totalDashBoardMapper.selectInboundDashDataByMonth(startDate, endDate);
+		}
+		
+		
 	}
 	
 
