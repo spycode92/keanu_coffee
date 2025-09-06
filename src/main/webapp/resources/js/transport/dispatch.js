@@ -20,7 +20,7 @@ function openAddDispatchModal() {
 					<td>${dispatch.startSlot}</td>
 					<td data-region-idx="${dispatch.regionIdx}">${dispatch.regionName}</td>
 					<td>${dispatch.totalVolume}</td>
-					<td data-urgentFlag="${dispatch.urgentFlag}">${dispatch.urgentFlag === "Y" ? "긴급" : "대기"}</td>
+					<td data-urgent="${dispatch.urgent}">${dispatch.urgent === "Y" ? "긴급" : "대기"}</td>
 				</tr>
 			`).join("");
 			$("#assignList tbody").html(html);
@@ -45,14 +45,15 @@ $(document).on("click", "input[name='dispatchPick']", function() {
 
 	const requestData = dispatchRequestData();
 	
+	const row = $(this).closest("tr");
+	const region = row.find("td:eq(3)").text();
+	totalVolume = row.find("td:eq( 4)").text();
+	
 	if (requestData) {
-		const summary = `${formatDate(requestData.dispatchDate)} ${requestData.startSlot} / ${requestData.regionIdx} / ${requestData.orderIds}`;
+		const summary = `${formatDate(requestData.dispatchDate)} ${requestData.startSlot} / ${region} / ${totalVolume}L`;
 		// 선택한 배차 정보 표시
 		$("#selAssignSummary").val(summary);
 	}
-	
-	const row = $(this).closest("tr");
-	totalVolume = row.find("td:eq( 4)").text();
 	
 	// 기사 선택시 
 	$("#primaryDriverSelect").off("change").on("change", function() {
@@ -149,14 +150,7 @@ $(document).on("click", ".removeDriverBtn", function() {
 
 
 // 배차 등록
-function addDispatch() {
-//	const selected = $("input[name='dispatchPick']:checked");
-//	
-//	if (selected.length === 0) {
-//		Swal.fire({icon:'error', text:'등록할 배차를 선택해주세요!'}); 
-//		return;
-//	}
-	
+function addDispatch() {	
 	const requestData = dispatchRequestData();
 	
 	if (!requestData) {
@@ -203,7 +197,7 @@ function dispatchRequestData() {
 	const orderIds = row.data("order-ids");
 	const dispatchDate = row.find("td:eq(1)").data("dispatch-date");
 	const startSlot = row.find("td:eq(2)").text();
-	const urgentFlag = row.find("td:eq(5)").data("urgentFlag");
+	const urgent = row.find("td:eq(5)").data("urgent");
 	const regionIdx = parseInt(row.find("td:eq(3)").data("region-idx"));
 	
 	// 기사 배열화
@@ -216,7 +210,7 @@ function dispatchRequestData() {
 		orderIds,
 		dispatchDate,
 		startSlot,
-		urgentFlag,
+		urgent,
 		regionIdx,
 		drivers
 	}

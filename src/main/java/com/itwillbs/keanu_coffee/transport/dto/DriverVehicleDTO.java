@@ -1,8 +1,12 @@
 package com.itwillbs.keanu_coffee.transport.dto;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
+@Setter
+@ToString
 public class DriverVehicleDTO {
 	private Integer empIdx;
 	private String empNo;          // 사번 (PK)

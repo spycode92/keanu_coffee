@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegionGroupViewDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DispatchRegisterRequestDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO;
 import com.itwillbs.keanu_coffee.transport.service.DispatchService;
 import com.itwillbs.keanu_coffee.transport.service.DriverService;
@@ -56,10 +57,9 @@ public class DispatchController {
 	// 배차 등록
 	@PostMapping("/dispatch/add")
 	@ResponseBody
-	public ResponseEntity<String> addDispatch(@RequestBody DispatchRegionGroupViewDTO dispatchRegionGroupView) {		
-		System.out.println(dispatchRegionGroupView + ">>>>>>>>>>>>>>>");
+	public ResponseEntity<String> addDispatch(@RequestBody DispatchRegisterRequestDTO request) {		
 		try {
-			dispatchService.insertDispatch(dispatchRegionGroupView);
+			dispatchService.insertDispatch(request);
 			return ResponseEntity.ok("배차 등록 완료");
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -17,27 +17,35 @@
 	        , start_slot
 	        , region_idx
 	        , created_at
+	        , status
+	        , urgent
+	        , requires_additional
 		)
 		VALUES (
 			#{dispatchDate}
 			, #{startSlot}
 			, #{regionIdx}
 			, NOW()
+			, #{status}
+			, #{urgent}
+			, #{requiresAdditional}
 		)
 	</insert>
 	
 	<!-- 배차 배정 테이블 등록 -->
-	<insert id="insertDispatchAssignment" useGeneratedKeys="true" keyProperty="dispatchAssignmentIdx">
+	<insert id="insertDispatchAssignment">
 		INSERT INTO DISPATCH_ASSIGNMENT (
 			dispatch_idx
 			, driver_idx
 			, vehicle_idx
+			, status
 			, created_at
 		)
 		VALUES (
 			#{dispatchIdx}
 			, #{empIdx}
 			, #{vehicleIdx}
+			, #{status}
 			, NOW()
 		)
 	</insert>
@@ -55,4 +63,15 @@
 			, NOW()
 		)
 	</insert>
+	
+	<!-- 출고 주문 테이블 상태 변경 -->
+	<update id="updateOutboundOrderStatus" >
+		UPDATE 	
+			OUTBOUND_ORDER
+		SET
+			status = #{status}
+			, updated_at = NOW()
+		WHERE
+			outbound_order_idx = #{outboundOrderIdx}
+	</update>
 </mapper>

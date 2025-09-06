@@ -17,13 +17,12 @@ public class DispatchRegionGroupViewDTO {
 	private Integer vehicleIdx;       	   // 차량 idx
 	private Integer empIdx;           	   // 기사 idx
 	private Integer dispatchIdx;           // 배차 idx
-	private Integer dispatchAssignmentIdx; // 기사배정 idx
 	private String regionName;        	   // 구역 이름
 	private Timestamp dispatchDate;   	   // 출고일자
 	private String startSlot;         	   // 출발 시간
 	private Integer franchiseIdx;     	   // 지점 idx
 	private String franchiseName;     	   // 지점 이름
-	private char urgentFlag;          	   // 긴급 여부
+	private char urgent;          	       // 긴급 여부
 	private String status;            	   // 주문 상태
 	
 	// 지점별 세부 상품 리스트

@@ -2,7 +2,11 @@ package com.itwillbs.keanu_coffee.transport.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
+import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegionGroupViewDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DispatchRegisterRequestDTO;
 
 public interface DispatchMapper {
 
@@ -10,12 +14,15 @@ public interface DispatchMapper {
 	List<DispatchRegionGroupViewDTO> selectDispatchList();
 
 	// 배차 테이블 등록
-	void insertDispatch(DispatchRegionGroupViewDTO dispatchRegionGroupView);
+	void insertDispatch(DispatchRegisterRequestDTO request);
 
 	// 배차 배정 테이블 등록
-	void insertDispatchAssignment(DispatchRegionGroupViewDTO dispatchRegionGroupView);
+	void insertDispatchAssignment(DispatchAssignmentDTO driver);
 
 	// 배차 매핑 테이블 등록
-	void insertDispatchOrderMap(DispatchRegionGroupViewDTO dispatchRegionGroupView);
+	void insertDispatchOrderMap(@Param("outboundOrderIdx") Integer outboundOrderIdx, @Param("dispatchIdx") Integer dispatchIdx);
+
+	// 출고 주문 테이블 상태 변경
+	void updateOutboundOrderStatus(@Param("outboundOrderIdx") Integer outboundOrderIdx, @Param("status") String status);
 
 }
