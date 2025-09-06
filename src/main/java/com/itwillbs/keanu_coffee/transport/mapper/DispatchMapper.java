@@ -20,9 +20,16 @@ public interface DispatchMapper {
 	void insertDispatchAssignment(DispatchAssignmentDTO driver);
 
 	// 배차 매핑 테이블 등록
-	void insertDispatchOrderMap(@Param("outboundOrderIdx") Integer outboundOrderIdx, @Param("dispatchIdx") Integer dispatchIdx);
+	void insertDispatchOrderMap(@Param("outboundOrderIdx") Integer outboundOrderIdx,
+			@Param("dispatchIdx") Integer dispatchIdx);
 
 	// 출고 주문 테이블 상태 변경
 	void updateOutboundOrderStatus(@Param("outboundOrderIdx") Integer outboundOrderIdx, @Param("status") String status);
+
+	// 출고Idx로 배차idx 조회
+	Integer selectByorderIdList(Integer outboundOrderIdx);
+
+	// 배차 상태 취소로 변경
+	void updateDispatchStatus(@Param("dispatchIdx") Integer dispatchIdx, @Param("status") String status);
 
 }

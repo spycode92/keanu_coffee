@@ -1,6 +1,7 @@
 const DISPATCH_LIST_URL = "/transport/dispatch/list";
 const DISPATCH_AVAILABLE_DRIVERS_URL = "/transport/dispatch/availableDrivers";
 const ADD_DISPATCH_URL = "/transport/dispatch/add";
+const CANCEL_DISPATCH_URL = "/transport/dispatch/cancel"
 
 let assignedDrivers = [];
 let totalVolume = 0;
@@ -12,7 +13,6 @@ function openAddDispatchModal() {
 	// 배차 요청 리스트
 	$.getJSON(DISPATCH_LIST_URL)
 		.done(function(dispatchs) {
-			console.log(dispatchs);
 			const html = dispatchs.map((dispatch) => `
 				<tr data-order-ids="${dispatch.orderIds}">
 					<td><input type="radio" name="dispatchPick"/></td>
@@ -20,7 +20,7 @@ function openAddDispatchModal() {
 					<td>${dispatch.startSlot}</td>
 					<td data-region-idx="${dispatch.regionIdx}">${dispatch.regionName}</td>
 					<td>${dispatch.totalVolume}</td>
-					<td data-urgent="${dispatch.urgent}">${dispatch.urgent === "Y" ? "긴급" : "대기"}</td>
+					<td data-urgent="${dispatch.urgent}">${dispatch.urgent === "Y" ? "긴급" : dispatch.status}</td>
 				</tr>
 			`).join("");
 			$("#assignList tbody").html(html);
@@ -47,12 +47,21 @@ $(document).on("click", "input[name='dispatchPick']", function() {
 	
 	const row = $(this).closest("tr");
 	const region = row.find("td:eq(3)").text();
+	const status = row.find("td:eq(5)").text();
 	totalVolume = row.find("td:eq( 4)").text();
 	
 	if (requestData) {
 		const summary = `${formatDate(requestData.dispatchDate)} ${requestData.startSlot} / ${region} / ${totalVolume}L`;
 		// 선택한 배차 정보 표시
 		$("#selAssignSummary").val(summary);
+	}
+	
+	// 배차완료시에만 배차 취소 버튼 활성화
+	if (status === "배차완료") {
+		$("#btnCancelAssign").prop('disabled', false);
+		
+	} else {
+		$("#btnCancelAssign").prop('disabled', true);
 	}
 	
 	// 기사 선택시 
@@ -185,6 +194,37 @@ function addDispatch() {
 	});
 }
 
+function cancelDispatch() {
+	const request = dispatchRequestData();
+	
+	if (request.status != "배차완료") {
+		return;
+	}
+	
+	const { token, header } = getCsrf();
+	
+	$.ajax({
+		url: CANCEL_DISPATCH_URL,
+		type: "POST",
+		contentType: "application/json; charset=UTF-8",
+		data: JSON.stringify({
+			orderIds: request.orderIds,
+			status: request.status
+		}),		
+		beforeSend(xhr) {
+     		if (token && header) xhr.setRequestHeader(header, token);
+     	},
+		success: function() {
+			Swal.fire("취소완료", "배차 취소가 완료되었습니다.", "success").then(() => {
+				location.reload();
+			});
+		},
+		error: function(xhr) {
+			Swal.fire("에러", xhr.responseText, "error");
+		}
+	})
+}
+
 function dispatchRequestData() {
 	const selected = $("input[name='dispatchPick']:checked");
 	
@@ -198,6 +238,7 @@ function dispatchRequestData() {
 	const dispatchDate = row.find("td:eq(1)").data("dispatch-date");
 	const startSlot = row.find("td:eq(2)").text();
 	const urgent = row.find("td:eq(5)").data("urgent");
+	const status = row.find("td:eq(5)").text();
 	const regionIdx = parseInt(row.find("td:eq(3)").data("region-idx"));
 	
 	// 기사 배열화
@@ -212,7 +253,8 @@ function dispatchRequestData() {
 		startSlot,
 		urgent,
 		regionIdx,
-		drivers
+		drivers,
+		status
 	}
 	
 }
@@ -231,4 +273,5 @@ $(document).ready(function () {
 	 $("#openRegister").on("click", openAddDispatchModal);
 	 $("#btnAssignDriver").on("click", assignBtn);
 	 $("#btnSaveAssign").on("click", addDispatch);
+	 $("#btnCancelAssign").on("click", cancelDispatch);
 })

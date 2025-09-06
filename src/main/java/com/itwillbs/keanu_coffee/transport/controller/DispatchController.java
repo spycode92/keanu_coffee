@@ -22,7 +22,7 @@ import com.itwillbs.keanu_coffee.transport.service.DriverService;
 
 import lombok.RequiredArgsConstructor;
 
-@Controller
+@RestController
 @RequestMapping("transport")
 @RequiredArgsConstructor
 public class DispatchController {
@@ -56,15 +56,26 @@ public class DispatchController {
 	
 	// 배차 등록
 	@PostMapping("/dispatch/add")
-	@ResponseBody
 	public ResponseEntity<String> addDispatch(@RequestBody DispatchRegisterRequestDTO request) {		
 		try {
 			dispatchService.insertDispatch(request);
 			return ResponseEntity.ok("배차 등록 완료");
 		} catch (Exception e) {
-			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("배차 등록 중 오류가 발생했습니다.");
+		}
+	}
+	
+	// 배차 취소
+	@PostMapping("/dispatch/cancel")
+	public ResponseEntity<String> modifyDispatchStatus(@RequestBody DispatchRegisterRequestDTO request) {
+		try {
+			dispatchService.updateDispatchStatus(request);
+			return ResponseEntity.ok("배차 취소 완료");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("배차 취소 중 오류가 발생했습니다.");
 		}
 	}
 }

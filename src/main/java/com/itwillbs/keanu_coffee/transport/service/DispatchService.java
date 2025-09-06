@@ -20,6 +20,7 @@ public class DispatchService {
 	private final VehicleMapper vehicleMapper;
 
 	// 배차 요청 리스트
+	@Transactional(readOnly = true)
 	public List<DispatchRegionGroupViewDTO> getDispatchList() {
 		return dispatchMapper.selectDispatchList();
 	}
@@ -63,8 +64,21 @@ public class DispatchService {
 			// 출고 주문 테이블 상태 변경
 			dispatchMapper.updateOutboundOrderStatus(outboundOrderIdx, "배차완료");
 		}
+	}
+
+	// 배차 취소
+	@Transactional
+	public void updateDispatchStatus(DispatchRegisterRequestDTO request) {
+		List<Integer> orderIdList = request.getOrderList();
+		request.setStatus("취소");
 		
-				
+		for (Integer outboundOrderIdx : orderIdList) {
+			// 출고주문idx로 배차 idx 조회
+			Integer dispatchIdx = dispatchMapper.selectByorderIdList(outboundOrderIdx);
+			
+			dispatchMapper.updateDispatchStatus(dispatchIdx, request.getStatus());
+		}
+		
 	}
 	
 

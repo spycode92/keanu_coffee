@@ -67,6 +67,15 @@ header {
 @media (max-width: 1100px) {
     .filters { grid-template-columns: repeat(3, minmax(140px, 1fr)); }
 }
+
+button:disabled {
+  background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
+  color: #999;
+  border: 1px solid #bbb;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;   /* hover시 scale 효과 제거 */
+}
     </style>
 </head>
 <body>
