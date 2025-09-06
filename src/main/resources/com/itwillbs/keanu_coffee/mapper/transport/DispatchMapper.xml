@@ -8,7 +8,7 @@
 		SELECT
 			COUNT(dispatch_idx)
 		FROM
-			V_DISPATCH_SUMMARY
+			V_DISPATCH_DETAIL
 		WHERE
 			1 = 1
 			<if test="filter != null and filter != '전체'">
@@ -29,7 +29,7 @@
 	<select id="selectAllDispatch" resultType="DispatchRegionGroupViewDTO">
 		SELECT *
 		FROM
-			V_DISPATCH_SUMMARY
+			V_DISPATCH_DETAIL
 		WHERE
 			1 = 1
 			<if test="filter != null and filter != '전체'">
@@ -133,6 +133,30 @@
 		WHERE
 			dispatch_idx = #{dispatchIdx}
 	</update>
+	
+	<!-- 배차 상태 확인 -->
+	<select id="selectDispatchStatus" resultType="string">
+		SELECT
+			status
+		FROM
+			DISPATCH
+		WHERE
+			dispatch_idx = #{dispatchIdx}
+	</select>
+	
+	<!-- 배차 상세 정보(예약 및 취소 상태일 경우)  -->
+	<select id="selectDispatchSummary" resultType="DispatchRegionGroupViewDTO">
+		SELECT *
+		FROM
+			V_DISPATCH_DETAIL
+		WHERE
+			dispatch_idx = #{dispatchIdx}
+		AND
+			vehicle_idx = #{vehicleIdx}
+	</select>
+	
+	<!-- 배차 상제 정보(적재 완료 후) -->
+<!-- 	<resultMap id="DispatchDetailMap" type=""></resultMap> -->
 	
 	<!-- 출고 주문 테이블 상태 변경 -->
 	<update id="updateOutboundOrderStatus" >

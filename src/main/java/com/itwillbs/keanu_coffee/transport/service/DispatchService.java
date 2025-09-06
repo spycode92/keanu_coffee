@@ -94,4 +94,18 @@ public class DispatchService {
 		
 	}
 
+	// 배차 상세 정보
+	public DispatchRegionGroupViewDTO selectDispatchInfo(Integer dispatchIdx, Integer vehicleIdx) {
+		// 배차 상태 확인
+		String status = dispatchMapper.selectDispatchStatus(dispatchIdx);
+//		
+//		if (status.equals("예약") || status.equals("취소")) {
+//			return dispatchMapper.selectDispatchSummary(dispatchIdx);
+//		} else {
+//			return dispatchMapper.selectDispatchDetail(dispatchIdx);
+//		}
+		
+		return dispatchMapper.selectDispatchSummary(dispatchIdx, vehicleIdx);
+	}
+
 }

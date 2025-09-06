@@ -39,4 +39,14 @@ public interface DispatchMapper {
 	// 배차 상태 취소로 변경
 	void updateDispatchStatus(@Param("dispatchIdx") Integer dispatchIdx, @Param("status") String status);
 
+	// 배차 상태 확인
+	String selectDispatchStatus(int dispatchIdx);
+
+	// 배차 상세 정보(적재 전)
+	DispatchRegionGroupViewDTO selectDispatchSummary(@Param("dispatchIdx") Integer dispatchIdx, @Param("vehicleIdx") Integer vehicleIdx);
+
+	// 배차 상제 정보(적재 완료 후)
+	DispatchRegionGroupViewDTO selectDispatchDetail(int dispatchIdx);
+
+
 }

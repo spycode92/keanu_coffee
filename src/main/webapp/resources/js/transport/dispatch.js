@@ -1,7 +1,8 @@
 const DISPATCH_LIST_URL = "/transport/dispatch/list";
 const DISPATCH_AVAILABLE_DRIVERS_URL = "/transport/dispatch/availableDrivers";
 const ADD_DISPATCH_URL = "/transport/dispatch/add";
-const CANCEL_DISPATCH_URL = "/transport/dispatch/cancel"
+const CANCEL_DISPATCH_URL = "/transport/dispatch/cancel";
+const DISPATCH_DETAIL_URL = "/transport/dispatch/detail";
 
 let assignedDrivers = [];
 let totalVolume = 0;
@@ -194,6 +195,7 @@ function addDispatch() {
 	});
 }
 
+// 취소 버튼 로직
 function cancelDispatch() {
 	const request = dispatchRequestData();
 	
@@ -224,6 +226,38 @@ function cancelDispatch() {
 		}
 	})
 }
+
+// 배차 상세 보기
+$(document).on("click", ".dispatchInfo", function() {
+	ModalManager.openModalById('detailModal');
+	
+	const dispatchIdx = parseInt($(this).data("dispatch-idx"));
+	const vehicleIdx = parseInt($(this).data("vehicle-idx"));
+	
+	$.getJSON((`${DISPATCH_DETAIL_URL}/${dispatchIdx}/${vehicleIdx}`))
+		.done(function(dispatch) {
+			$("#detailDriver").val(`${dispatch.driverName} / ${dispatch.vehicleNumber} / ${dispatch.capacity === 1000 ? "1.0t" : "1.5t"}`)
+			
+			if (dispatch.status === "예약" || dispatch.status === "취소") {
+				$("#detail").hide();
+				$("#summary").show();
+				
+				const html = `
+					<tr>
+						<td>${formatDate(dispatch.dispatchDate)}</td>
+						<td>${dispatch.startSlot}</td>				
+						<td>${dispatch.regionName}</td>			
+						<td>${dispatch.totalVolume}</td>			
+						<td>${dispatch.status}</td>			
+					</tr>
+				`
+				$("#summary tbody").html(html);
+			} else {
+				$("#summary").hide();
+				$("#detail").show();
+			}
+		}) 
+});
 
 function dispatchRequestData() {
 	const selected = $("input[name='dispatchPick']:checked");
