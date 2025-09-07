@@ -11,8 +11,7 @@
         .chart-card {
             flex: 1 1 300px;
             min-width: 280px;
-            max-width: 70%;
-            min-height: 20%;
+            width: 100%;
             background-color: var(--card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
@@ -20,6 +19,7 @@
             color: var(--card-foreground);
             box-sizing: border-box;
         }
+
         /* 버튼 그룹 위치 왼쪽 상단 고정 */
         .period-selector-wrapper {
             display: flex;
@@ -77,16 +77,17 @@
 	            </div>
 	        </div>
 	        <div class="dashboard-charts">
-	            <!-- 전체 요약 누적 막대차트 -->
-	            <div class="chart-card">
+	            <!-- 입고차트 -->
+	            <div class="chart-card" >
 	                <h3 class="card-title" id="inbound_title">입고현황</h3>
-	                <canvas id="IBoverallChart" style="width:80%; maxheight:20%;"></canvas>
+	                <canvas id="IBoverallChart" style="width:80%; height:200px"></canvas>
 	            </div>
-	            <!-- 카테고리별 누적 막대차트 -->
-<!-- 	            <div class="chart-card"> -->
-<!-- 	                <h3 class="card-title">카테고리별 입고 현황</h3> -->
-<%-- 	                <canvas id="categoryChart" width="400" height="300"></canvas> --%>
-<!-- 	            </div> -->
+	            <br>
+	            <!-- 운송/출고 차트 -->
+	            <div class="chart-card">
+	                <h3 class="card-title" id="outbound_title">출고/운송 현황</h3>
+	                <canvas id="OBoverallChart" width="width:80%; height:200px"></canvas>
+	            </div>
 	            <!-- 상품별 입고율 및 폐기율 도넛 차트(예: 카테고리 선택시 동적 표시) -->
 <!-- 	            <div class="chart-card"> -->
 <!-- 	                <h3 class="card-title">상세 입고/폐기 현황</h3> -->

@@ -27,6 +27,16 @@ public class TotalDashBoardService {
 		
 		
 	}
+
+	public List<TotalDashBoardDTO> getOutboundDashData(String needData, String startDate, String endDate) {
+		if(needData.equals("daily")) {
+			return totalDashBoardMapper.selectOutboundDashDataByDay(startDate, endDate);
+		}else if(needData.equals("weekly")) {
+			return totalDashBoardMapper.selectOutboundDashDataByWeek(startDate, endDate); 
+		}else {
+			return totalDashBoardMapper.selectOutboundDashDataByMonth(startDate, endDate);
+		}
+	}
 	
 
 }

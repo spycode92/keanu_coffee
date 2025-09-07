@@ -10,16 +10,29 @@ import lombok.Data;
 
 @Data
 public class TotalDashBoardDTO {
+	// 입고
+	private String arrivalDate; // 입고도착일 
+	private String arrivalMonth; // 입고도착월
+	private String arrivalMonthWeek; //입고도착주
 	
-	private String arrivalDate; 
-	private String arrivalMonth;
-	private String arrivalMonthWeek; 
-	private String productName;
-	private String categoryName;
-	private Long IBWQuantity;
-	private Long RIQuantity;
-	private Long disposalQuantity;
+	private Long IBWQuantity; // 입고대기수량 
+	private Long RIQuantity; // 입고완료수량
+	
+	// 운송출고
+	private String transportDate; //배송도착일
+	private String transportWeek;// 배송도착주
+	private String transportMonth; //배송도착월
+	
+	private Long OBOQuantity; // 출고주문수량
+	private Long DIQuantity; //배송완료 수량
+	
+	
 	
     
-    private List<CommonCodeDTO> commonCodeList;
+
+	private String productName; // 상품이름
+	private String categoryName; // 카테고리이름
+	private Long disposalQuantity; //폐기수량
+
+	private List<CommonCodeDTO> commonCodeList;
 }

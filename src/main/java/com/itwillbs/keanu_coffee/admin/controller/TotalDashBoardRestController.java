@@ -23,10 +23,18 @@ public class TotalDashBoardRestController {
 	private final TotalDashBoardService totalDashBoardService;
 	
 	@GetMapping("inbound/{needData}")
-		public ResponseEntity<List<TotalDashBoardDTO>> Dashboard(@PathVariable String needData,
+		public ResponseEntity<List<TotalDashBoardDTO>> inbound(@PathVariable String needData,
 				@RequestParam("startDate")String startDate, @RequestParam("endDate")String endDate) {
-		System.out.println(startDate + "  " + endDate + "Dddddd");
 		List<TotalDashBoardDTO> totalDList = totalDashBoardService.getInboundDashData(needData, startDate, endDate);
+		
+		return ResponseEntity.ok(totalDList);
+	}
+	
+	@GetMapping("outbound/{needData}")
+	public ResponseEntity<List<TotalDashBoardDTO>> outbound(@PathVariable String needData,
+			@RequestParam("startDate")String startDate, @RequestParam("endDate")String endDate) {
+		System.out.println(startDate + "  " + endDate + "Dddddd");
+		List<TotalDashBoardDTO> totalDList = totalDashBoardService.getOutboundDashData(needData, startDate, endDate);
 		
 		return ResponseEntity.ok(totalDList);
 	}

@@ -1,36 +1,54 @@
 // inboundChart.js
 
 document.addEventListener('DOMContentLoaded', () => {
-	
-    // 샘플 수신 데이터 (총 발주 수량 포함, 폐기 수량 명시)
-    let inboundRawData = [    ];
-	let needData = null;
-	let overallChart = null;    // 누적 막대그래프
-	let categoryChart = null; // 누적막대그래프 분해
-	let productChart = null; // 도넛차트
-	let savedCategoryData = null;
-	let savedDetailRows = null;   
-	let currentSelectedDate = null;
+	//전역변수
+	// 그래프 범위 날짜 구하기
 	let startDate = null;
 	let endDate = null;
+	let needData = null;
+	
+	// 입고차트에 필요한 변수들
+    let inboundRawData = [    ];
+	let overallChart = null;    // 누적 막대그래프
+	let categoryChart = null; // 카테고리 누적막대
+	let productChart = null; // 도넛차트
+	
+	let savedCategoryData = null; //카테고리 누적막대 정보저장
+	let savedDetailRows = null;   
+	let currentSelectedDate = null; // 선택한 날짜 저장
+	
+	// 출고 차트에 필요한 변수들
+	let outboundRawData = [    ];
+	let oubboundOverallchart = null;
+	let outboundCategoryChart = null;
+	let outboundProductChart = null;
+	
+	let savedOutboundCategoryData = null;
+	let savedOutboundDetailRows = null;
+	let outboundCurrentSelectedDate = null; 
 	
 	//날짜인풋
 	const dateInput = document.getElementById('baseDate');
     // 초기 버튼 스타일 설정
     const defaultBtn = document.querySelector('.btn-group .btn[data-period="daily"]');
-    
+    //처음 버튼선택, 초기값 설정
 	if (defaultBtn) {
 		needData = defaultBtn.getAttribute('data-period');
 		printSelectedDate();
         defaultBtn.classList.add('btn-primary');
         defaultBtn.classList.remove('btn-secondary');
+		getOutboundData().then(() =>{
+			const OutboundChartData = outboundProcessChartData(outboundRawData);
+			console.log("출고데이터",OutboundChartData);
+			upgradeOutboundOverallChart(OutboundChartData);
+		});
 		getDayInbound().then( () => {
 			const firstChartData = processChartData(inboundRawData);
 			upgradeOverallChart(firstChartData);
 		});
 	}
 	
-	
+	//날짜선택함수
 	function printSelectedDate() {
         let selectedDate = dateInput.value;
 		if(!selectedDate){
@@ -39,6 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
             selectedDate = today;
 		}
         calculateDateRange(selectedDate, needData);
+		document.getElementById("dateRangeInfo")
+			.innerHTML = `${startDate} ~ ${endDate}`;
     }
 
 	dateInput.addEventListener('change', () => {
@@ -61,21 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		endDate = end.toISOString().split('T')[0];
 	}
 	
-	
-	//inboundRawData에 넣을 데이터 가져오기
-	function getDayInbound(){
-		return ajaxGet(`/admin/dashboard/inbound/${needData}?startDate=${startDate}&endDate=${endDate}`
-			)
-			.then((data)=>{
-				inboundRawData = data;
-			
-			}).catch((data)=>{
-				console.log("error " + data)	
-			})
-	}
-
-    
-
     // 기간 버튼 클릭 이벤트 (TODO: AJAX 호출 및 데이터 재집계 로직으로 확장 가능)
     document.querySelectorAll('.btn-group .btn').forEach(button => {
         button.addEventListener('click', () => {
@@ -88,16 +93,51 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             button.classList.add('btn-primary');
             button.classList.remove('btn-secondary');
+			//날짜범위선택
 			printSelectedDate()
+			//입고정보조회후 차트그리기
+			getOutboundData().then(()=>{
+				const OutboundChartData = outboundProcessChartData(outboundRawData);
+				upgradeOutboundOverallChart(OutboundChartData);
+			});
 			getDayInbound().then(() =>{
 				const firstChartData = processChartData(inboundRawData);
 				upgradeOverallChart(firstChartData);
 			})
         });
     });
+	
+	// 데이터 검증 및 빈 데이터 처리 함수
+	function handleEmptyData(ctx, message) {
+	    // 캔버스 초기화
+	    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	    
+	    // 텍스트 스타일 설정
+	    ctx.font = '18px Arial';
+	    ctx.fillStyle = '#6c757d';
+	    ctx.textAlign = 'center';
+	    ctx.textBaseline = 'middle';
+	    
+	    // 메시지 출력 (캔버스 중앙)
+	    const centerX = ctx.canvas.width / 2;
+	    const centerY = ctx.canvas.height / 2;
+	    ctx.fillText(message, centerX, centerY);
+	}
+
+	//inboundRawData에 넣을 데이터 가져오기
+	function getDayInbound(){
+		return ajaxGet(`/admin/dashboard/inbound/${needData}?startDate=${startDate}&endDate=${endDate}`
+			)
+			.then((data)=>{
+				inboundRawData = data;
+			
+			}).catch((data)=>{
+				console.log("error " + data)	
+			})
+	}
 
 	
-	// 데이터 가공 함수 (upgradeOverallChart 함수 위에 추가)
+	// 데이터 가공 함수
 	function processChartData(rawData) {
 	    const grouped = {};
 	    
@@ -158,7 +198,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	        ]
 	    };
 	}
-	//누적막대그래프차트 생성[제일왼쪽]
+	
+	//누적막대그래프차트 생성[입고]
 	function upgradeOverallChart(inputData){
         // 기존 차트 제거
 	    if (overallChart) {
@@ -178,12 +219,17 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 차트 데이터 (나중에 가공된 데이터로 교체 예정)
         const chartData = inputData;
-        
+        if(!inputData || !inputData.labels || inputData.labels.length === 0){
+			handleEmptyData(ctx, '해당 기간에 입고 데이터가 없습니다');
+			return;
+		}
+		
         overallChart = new Chart(ctx, {
 	        type: 'bar',
 	        data: chartData,
 	        options: {
 	            responsive: true,
+				aspectRatio: 3,
 	            scales: {
 	                x: { stacked: true },
 	                y: { stacked: true, beginAtZero: true }
@@ -194,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					console.log(elements);
 					const idx = elements[0].index;
 	                const dateKey = overallChart.data.labels[idx];
-					$("#inbound_title").html(`${dateKey} 카테고리별 입고현황`);
+					
 	                // 상세 데이터 필터링
 	                let detailRows = null;
 	                if(needData == 'daily'){
@@ -217,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	    });
 	}
 	
-	// 카테고리차트데이터로 변환 함수
+	// 카테고리차트데이터로 변환 함수[입고]
 	function categoryData(detailRows){
 		const grouped = {};
 	    
@@ -274,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		
 	};
 	
-	// 입고 카테고리별 차트생성 함수
+	//  카테고리별 차트생성 함수[입고]
 	function upgradeCategoryChart(inputData){
 	    if (overallChart) {
 	        overallChart.destroy();
@@ -285,20 +331,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	    
 	    const ctx2 = document.getElementById('IBoverallChart').getContext('2d');
 	    
+		$("#inbound_title").html(`${currentSelectedDate} 카테고리별 입고현황`);
+		
 	    categoryChart = new Chart(ctx2, {
 	        type: 'bar',
 	        data: inputData,
 	        options: {
 	            responsive: true,
+				aspectRatio: 3,
 	            scales: {
 	                x: { stacked: true },
 	                y: { stacked: true, beginAtZero: true }
-	            },
-	            plugins: {
-	                title: {
-	                    display: true,
-	                    text: '카테고리별 입고 현황'
-	                }
 	            },
 	            onClick: (event, elements) => {
 	                if (!elements.length) return;
@@ -316,9 +359,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	            }
 	        }
 	    });
+		
 	};
 	
-	//도넛그래프 데이터
+	//도넛그래프 데이터[입고]
 	function productDonutData(categoryProducts){
 		const productGrouped = {};
 		let totalDisposal = 0;
@@ -361,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	    };
 	};
 	
-	//도넛색상생성함수
+	//도넛색상생성함수[입고]
 	function generateColors(count) {
 	    const colors = [
 	        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
@@ -371,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	    return colors.slice(0, count);
 	}
 	
-	//도넛차트만들기
+	//도넛차트만들기[입고]
 	function upgradeProductChart(inputData, categoryName, selectedDate) {
 	    // 기존 차트 제거
 	    if (productChart) {
@@ -382,18 +426,16 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	    
 	    const ctx3 = document.getElementById('IBoverallChart').getContext('2d');
-	    
+		$("#inbound_title").html(`${selectedDate} > ${categoryName} 카테고리별 입고상품 제품별 분포`);
 	    productChart = new Chart(ctx3, {
 	        type: 'doughnut',
 	        data: inputData,
 	        options: {
 	            responsive: true,
-				aspectRatio:2,
+				aspectRatio: 3,
+				radius: 70,
+				cutout: '20%',
 	            plugins: {
-	                title: {
-	                    display: true,
-	                    text: `${selectedDate} > ${categoryName} 제품별 분포`
-	                },
 	                legend: {
 	                    position: 'right',  // 범례를 오른쪽에 배치
 	                },
@@ -423,5 +465,324 @@ document.addEventListener('DOMContentLoaded', () => {
 	        }
 	    });
 	}
+	
+	
+	//outboundRawData에 넣을 데이터 가져오기
+	function getOutboundData(){
+		return ajaxGet(`/admin/dashboard/outbound/${needData}?startDate=${startDate}&endDate=${endDate}`
+			)
+			.then((data)=>{
+				console.log(data);
+				outboundRawData = data;
+			
+			}).catch((data)=>{
+				console.log("error " + data)	
+			})
+	}
+	
+	//출고현황 그래프에 넣을 데이터 가공
+	function outboundProcessChartData(rawData) {
+	    const grouped = {};
+	
+	    rawData.forEach(item => {
+	        let key = null;
+	        if (needData === 'daily') {
+	            key = item.transportDate;
+	        } else if (needData === 'weekly') {
+	            key = item.transportWeek;
+	        } else if (needData === 'monthly') {
+	            key = item.transportMonth;
+	        }
+	
+	        if (!key) return;
+	
+	        const obQuantity = item.oboquantity || 0;
+	        const diQuantity = item.diquantity || 0;
+	        const disposalQuantity = item.disposalQuantity || 0;
+	
+	        const 미출고 = Math.max(0, obQuantity - diQuantity - disposalQuantity);
+	        const 수주완료 = diQuantity;
+	        const 폐기 = disposalQuantity;
+	
+	        if (!grouped[key]) {
+	            grouped[key] = { 미출고: 0, 수주완료: 0, 폐기: 0 };
+	        }
+	
+	        grouped[key].미출고 += 미출고;
+	        grouped[key].수주완료 += 수주완료;
+	        grouped[key].폐기 += 폐기;
+	    });
+	
+	    const dates = Object.keys(grouped).sort();
+	    return {
+	        labels: dates,
+	        datasets: [
+	            {
+	                label: '수주완료',
+	                data: dates.map(date => grouped[date].수주완료),
+	                backgroundColor: '#4BC0C0'
+	            },
+	            {
+	                label: '폐기',
+	                data: dates.map(date => grouped[date].폐기),
+	                backgroundColor: '#FF6384'
+	            },
+	            {
+	                label: '미출고',
+	                data: dates.map(date => grouped[date].미출고),
+	                backgroundColor: '#FFCE56'
+	            }
+	        ]
+	    };
+	}
+	
+	// 가공된 출고데이터 차트로 출력
+	function upgradeOutboundOverallChart(inputData) {
+	    // 기존 차트 제거
+	    if (oubboundOverallchart) {
+	        oubboundOverallchart.destroy();
+	    }
+	    if (outboundCategoryChart) {
+	        outboundCategoryChart.destroy();
+	    }
+	    if (outboundProductChart) {
+	        outboundProductChart.destroy();
+	    }
+	
+	    $("#outbound_title").html(`출고/운송 현황`);
+	
+	    const ctx = document.getElementById('OBoverallChart').getContext('2d');
+	    if (!inputData || !inputData.labels || inputData.labels.length === 0) {
+	        handleEmptyData(ctx, '해당 기간에 출고/운송 데이터가 없습니다');
+	        return;
+	    }
+	
+	    oubboundOverallchart = new Chart(ctx, {
+	        type: 'bar',
+	        data: inputData,
+	        options: {
+	            responsive: true,
+	            aspectRatio: 3,
+	            scales: {
+	                x: { stacked: true },
+	                y: { stacked: true, beginAtZero: true }
+	            },
+	            onClick: (event, elements) => {
+	                if (!elements.length) return;
+	
+	                const idx = elements[0].index;
+	                const dateKey = oubboundOverallchart.data.labels[idx];
+					outboundCurrentSelectedDate = dateKey;
+	
+	                let detailRows = null;
+	                if (needData === 'daily') {
+	                    detailRows = outboundRawData.filter(rec => rec.transportDate === dateKey);
+	                } else if (needData === 'weekly') {
+	                    detailRows = outboundRawData.filter(rec => rec.transportWeek === dateKey);
+	                } else {
+	                    detailRows = outboundRawData.filter(rec => rec.transportMonth === dateKey);
+	                }
+	
+	                const newdata = outboundCategoryData(detailRows);
+	                savedOutboundCategoryData = newdata;
+	                savedOutboundDetailRows = detailRows;
+	                outboundCurrentSelectedDate = dateKey;
+	
+	                upgradeOutboundCategoryChart(newdata);
+	            }
+	        }
+	    });
+	}
+	// 출고 카테고리별 데이터 가공함수
+	function outboundCategoryData(detailRows) {
+	    const grouped = {};
+	
+	    detailRows.forEach(item => {
+	        const key = item.categoryName;
+	        if (!key) return;
+	
+	        const obQuantity = item.oboquantity || 0;
+	        const diQuantity = item.diquantity || 0;
+	        const disposalQuantity = item.disposalQuantity || 0;
+	
+	        const 미출고 = Math.max(0, obQuantity - diQuantity - disposalQuantity);
+	        const 수주완료 = diQuantity;
+	        const 폐기 = disposalQuantity;
+	
+	        if (!grouped[key]) {
+	            grouped[key] = { 미출고: 0, 수주완료: 0, 폐기: 0 };
+	        }
+	
+	        grouped[key].미출고 += 미출고;
+	        grouped[key].수주완료 += 수주완료;
+	        grouped[key].폐기 += 폐기;
+	    });
+	
+	    const categories = Object.keys(grouped).sort();
+		console.log(categories);
+		console.log(categories.map(c => grouped[c].수주완료));
+		console.log(categories.map(c => grouped[c].폐기));
+		console.log(categories.map(c => grouped[c].미출고));
+	    return {
+	        labels: categories,
+	        datasets: [
+	            {
+	                label: '수주완료',
+	                data: categories.map(c => grouped[c].수주완료),
+	                backgroundColor: '#4BC0C0'
+	            },
+	            {
+	                label: '폐기',
+	                data: categories.map(c => grouped[c].폐기),
+	                backgroundColor: '#FF6384'
+	            },
+	            {
+	                label: '미출고',
+	                data: categories.map(c => grouped[c].미출고),
+	                backgroundColor: '#FFCE56'
+	            }
+	        ]
+	    };
+	}
+	// 카테고리별 누적차트[출고]
+	function upgradeOutboundCategoryChart(inputData) {
+	    // 기존 차트 제거
+	    if (oubboundOverallchart) {
+	        oubboundOverallchart.destroy();
+	    }
+	    if (outboundProductChart) {
+	        outboundProductChart.destroy();
+	    }
+	    const ctx2 = document.getElementById('OBoverallChart').getContext('2d');
+
+
+		outboundCategoryChart = new Chart(ctx2, {
+	        type: 'bar',
+	        data: inputData,
+	        options: {
+	            responsive: true,
+	            aspectRatio: 3,
+	            scales: {
+	                x: { stacked: true },
+	                y: { stacked: true, beginAtZero: true }
+	            },
+	            plugins: {
+//	                title: {
+//	                    display: true,
+//	                    text: '카테고리별 출고/운송 현황'
+//	                }
+	            },
+	            onClick: (event, elements) => {
+	                if (!elements.length) return;
+					
+	                const idx = elements[0].index;
+	                const categoryKey = outboundCategoryChart.data.labels[idx];
+	
+	                const categoryProducts = savedOutboundDetailRows.filter(item =>
+	                    item.categoryName === categoryKey
+	                );
+	
+	                const donutData = outboundProductDonutData(categoryProducts);
+	                upgradeOutboundProductChart(donutData, categoryKey, outboundCurrentSelectedDate);
+	            }
+	        }
+	    });		
+		$("#outbound_title").html(`${outboundCurrentSelectedDate} 카테고리별 출고/운송 현황`);
+	}
+	
+	//수주완료품목 도넛차트데이터가공[출고]
+	function outboundProductDonutData(categoryProducts) {
+	    const productGrouped = {};
+	    let totalDisposal = 0;
+	
+	    categoryProducts.forEach(item => {
+	        const productName = item.productName;
+	        const diQuantity = item.diquantity || 0;
+	        const disposalQuantity = item.disposalQuantity || 0;
+	
+	        // 폐기 포함한 수주완료 수량으로 집계
+	        if (!productGrouped[productName]) {
+	            productGrouped[productName] = 0;
+	        }
+	
+	        productGrouped[productName] += diQuantity;
+	        totalDisposal += disposalQuantity;
+	    });
+	
+	    const products = Object.keys(productGrouped);
+	    const quantities = products.map(product => productGrouped[product]);
+	
+	    const labels = [...products, '폐기'];
+	    const data = [...quantities, totalDisposal];
+	
+	    const productColors = generateColors(products.length);
+	    const colors = [...productColors, '#FFF']; // 폐기는 흰색으로 구분
+	
+	    return {
+	        labels: labels,
+	        datasets: [{
+	            data: data,
+	            backgroundColor: colors,
+	            borderWidth: 2,
+	            borderColor: '#fff'
+	        }]
+	    };
+	}
+	//도넛차트생성[출고]
+	function upgradeOutboundProductChart(inputData, categoryName, selectedDate) {
+	    // 기존 차트 제거
+	    if (outboundProductChart) {
+	        outboundProductChart.destroy();
+	    }
+	    if (outboundCategoryChart) {
+	        outboundCategoryChart.destroy();
+	    }
+	
+	    const ctx3 = document.getElementById('OBoverallChart').getContext('2d');
+	
+	    outboundProductChart = new Chart(ctx3, {
+	        type: 'doughnut',
+	        data: inputData,
+	        options: {
+	            responsive: true,
+	            aspectRatio: 3,
+	            radius: 70,
+	            cutout: '20%',
+	            plugins: {
+//	                title: {
+//	                    display: true,
+//	                    text: `${selectedDate} > ${categoryName} 제품별 출고 분포`
+//	                },
+	                legend: {
+	                    position: 'right'
+	                },
+	                tooltip: {
+	                    callbacks: {
+	                        label: function(context) {
+	                            const label = context.label || '';
+	                            const value = context.raw;
+	                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+	                            const percentage = ((value / total) * 100).toFixed(1);
+	                            return `${label}: ${value}개 (${percentage}%)`;
+	                        }
+	                    }
+	                }
+	            },
+	            onClick: (event, elements) => {
+	                if (!elements.length) return;
+	
+	                const idx = elements[0].index;
+	                const productName = outboundProductChart.data.labels[idx];
+	
+	                // 도넛 클릭 시 카테고리 차트로 돌아가기
+	                upgradeOutboundCategoryChart(savedOutboundCategoryData);
+	            }
+	        }
+	    });
+		$("#outbound_title").html(`${selectedDate} > ${categoryName} 카테고리별 출고/운송 상품분포`);
+
+	}
+
+	
 		
 });

@@ -14,6 +14,12 @@ public interface TotalDashBoardMapper {
 	List<TotalDashBoardDTO> selectInboundDashDataByWeek(@Param("startDate")String startDate, @Param("endDate")String endDate);
 	// 월별 입고 정보 조회
 	List<TotalDashBoardDTO> selectInboundDashDataByMonth(@Param("startDate")String startDate, @Param("endDate")String endDate);
+	// 일별 출고 정보조회
+	List<TotalDashBoardDTO> selectOutboundDashDataByDay(@Param("startDate")String startDate, @Param("endDate")String endDate);
+	// 주별 출고 정보 조회
+	List<TotalDashBoardDTO> selectOutboundDashDataByWeek(@Param("startDate")String startDate, @Param("endDate")String endDate);
+	// 월별 출고 정보 조회
+	List<TotalDashBoardDTO> selectOutboundDashDataByMonth(@Param("startDate")String startDate, @Param("endDate")String endDate);
 
 
 }
