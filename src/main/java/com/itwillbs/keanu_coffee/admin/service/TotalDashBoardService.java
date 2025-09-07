@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class TotalDashBoardService {
 	private final TotalDashBoardMapper totalDashBoardMapper;
 	
-	//일별 입고량 대시보드 조회
+	//입고 데이터 조회
 	public List<TotalDashBoardDTO> getInboundDashData(String needData, String startDate, String endDate) {
 		
 		if(needData.equals("daily")) {
@@ -27,7 +27,8 @@ public class TotalDashBoardService {
 		
 		
 	}
-
+	
+	// 출고 데이터 조회
 	public List<TotalDashBoardDTO> getOutboundDashData(String needData, String startDate, String endDate) {
 		if(needData.equals("daily")) {
 			return totalDashBoardMapper.selectOutboundDashDataByDay(startDate, endDate);
@@ -35,6 +36,17 @@ public class TotalDashBoardService {
 			return totalDashBoardMapper.selectOutboundDashDataByWeek(startDate, endDate); 
 		}else {
 			return totalDashBoardMapper.selectOutboundDashDataByMonth(startDate, endDate);
+		}
+	}
+	
+	// 폐기데이터 조회
+	public List<TotalDashBoardDTO> getDisposalDashData(String needData, String startDate, String endDate) {
+		if(needData.equals("daily")) {
+			return totalDashBoardMapper.selectDisposalDashDataByDay(startDate, endDate);
+		}else if(needData.equals("weekly")) {
+			return totalDashBoardMapper.selectDisposalDashDataByWeek(startDate, endDate); 
+		}else {
+			return totalDashBoardMapper.selectDisposalDashDataByMonth(startDate, endDate);
 		}
 	}
 	

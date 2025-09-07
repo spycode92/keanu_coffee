@@ -26,6 +26,12 @@ public class TotalDashBoardDTO {
 	private Long OBOQuantity; // 출고주문수량
 	private Long DIQuantity; //배송완료 수량
 	
+	//폐기량
+	private String disposalDate; //폐기일
+	private String disposalWeek; //폐기주
+	private String disposalMonth; //폐기월
+	
+	private String section; //공정
 	
 	
     

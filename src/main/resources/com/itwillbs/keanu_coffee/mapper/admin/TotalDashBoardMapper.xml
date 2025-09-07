@@ -144,7 +144,55 @@
 	    GROUP BY transportMonth, p.product_name, c.common_code_name
 	    ORDER BY transportMonth;
 	</select>
-		
+	
+	<!-- 일별 폐기량 조회 -->
+	<select id="selectDisposalDashDataByDay">
+		SELECT
+		 d.section as section
+		 , COALESCE(SUM(d.disposal_amount), 0) as disposalQuantity
+		 , DATE_FORMAT(d.created_at, '%m-%d') as disposalDate
+		 , p.product_name as productName
+		FROM DISPOSAL d 
+		LEFT JOIN RECEIPT_PRODUCT rp ON d.receipt_product_idx = rp.receipt_product_idx
+		LEFT JOIN PRODUCT p ON p.product_idx = rp.product_idx
+		WHERE DATE(d.created_at) BETWEEN #{startDate} AND #{endDate}
+		GROUP BY d.section, p.product_name, d.created_at
+		ORDER BY d.created_at
+	</select>
+	
+	<!-- 주별 폐기량 조회 -->
+	<select id="selectDisposalDashDataByWeek">
+	    SELECT
+	    	CONCAT(
+	            MONTH(d.created_at), '월 ',
+	            FLOOR((DAY(d.created_at) - 1) / 7) + 1, '주차'
+	        ) AS disposalWeek,
+	        d.section AS section,
+	        COALESCE(SUM(d.disposal_amount), 0) AS disposalQuantity,
+	        p.product_name AS productName
+	    FROM DISPOSAL d
+	    LEFT JOIN RECEIPT_PRODUCT rp ON d.receipt_product_idx = rp.receipt_product_idx
+	    LEFT JOIN PRODUCT p ON p.product_idx = rp.product_idx
+	    WHERE DATE(d.created_at) BETWEEN #{startDate} AND #{endDate}
+	    GROUP BY d.section, p.product_name, disposalWeek
+	    ORDER BY disposalWeek
+	</select>
+	
+	<!-- 월별 폐기량 조회 -->
+	<select id="selectDisposalDashDataByMonth">
+	    SELECT
+	    	CONCAT(DATE_FORMAT(d.created_at, '%m'), '월') AS disposalMonth,
+	        d.section AS section,
+	        COALESCE(SUM(d.disposal_amount), 0) AS disposalQuantity,
+	        p.product_name AS productName
+	    FROM DISPOSAL d
+	    LEFT JOIN RECEIPT_PRODUCT rp ON d.receipt_product_idx = rp.receipt_product_idx
+	    LEFT JOIN PRODUCT p ON p.product_idx = rp.product_idx
+	    WHERE DATE(d.created_at) BETWEEN #{startDate} AND #{endDate}
+	    GROUP BY d.section, p.product_name, disposalMonth
+	    ORDER BY disposalMonth
+	</select>
+	
 	
 	
 	

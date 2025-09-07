@@ -21,7 +21,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class TotalDashBoardRestController {
 	private final TotalDashBoardService totalDashBoardService;
-	
+	// 입고차트 필요한정보 불러오기
 	@GetMapping("inbound/{needData}")
 		public ResponseEntity<List<TotalDashBoardDTO>> inbound(@PathVariable String needData,
 				@RequestParam("startDate")String startDate, @RequestParam("endDate")String endDate) {
@@ -29,13 +29,44 @@ public class TotalDashBoardRestController {
 		
 		return ResponseEntity.ok(totalDList);
 	}
-	
+	// 출고차트 필요한정보 불러오기
 	@GetMapping("outbound/{needData}")
 	public ResponseEntity<List<TotalDashBoardDTO>> outbound(@PathVariable String needData,
 			@RequestParam("startDate")String startDate, @RequestParam("endDate")String endDate) {
-		System.out.println(startDate + "  " + endDate + "Dddddd");
 		List<TotalDashBoardDTO> totalDList = totalDashBoardService.getOutboundDashData(needData, startDate, endDate);
 		
 		return ResponseEntity.ok(totalDList);
 	}
+	// 폐기차트 필요한정보 불러오기
+	@GetMapping("disposal/{needData}")
+	public ResponseEntity<List<TotalDashBoardDTO>> didsposal(@PathVariable String needData,
+			@RequestParam("startDate")String startDate, @RequestParam("endDate")String endDate) {
+		List<TotalDashBoardDTO> totalDList = totalDashBoardService.getDisposalDashData(needData, startDate, endDate);
+		
+		return ResponseEntity.ok(totalDList);
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

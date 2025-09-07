@@ -25,7 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	
 	let savedOutboundCategoryData = null;
 	let savedOutboundDetailRows = null;
-	let outboundCurrentSelectedDate = null; 
+	let outboundCurrentSelectedDate = null;
+	
+	// 폐기 차트에 필요한 변수
+	let disposalRawData = [  ];
 	
 	//날짜인풋
 	const dateInput = document.getElementById('baseDate');
@@ -45,6 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		getDayInbound().then( () => {
 			const firstChartData = processChartData(inboundRawData);
 			upgradeOverallChart(firstChartData);
+		});
+		getDisposalData().then(() => {
+			const disposalChartData = processDisposalChartData(disposalRawData);
+			renderDisposalChart(disposalChartData);
 		});
 	}
 	
@@ -103,7 +110,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			getDayInbound().then(() =>{
 				const firstChartData = processChartData(inboundRawData);
 				upgradeOverallChart(firstChartData);
-			})
+			});
+			getDisposalData().then(() => {
+				const disposalChartData = processDisposalChartData(disposalRawData);
+				renderDisposalChart(disposalChartData);
+			});
         });
     });
 	
@@ -782,7 +793,127 @@ document.addEventListener('DOMContentLoaded', () => {
 		$("#outbound_title").html(`${selectedDate} > ${categoryName} 카테고리별 출고/운송 상품분포`);
 
 	}
-
 	
-		
+	// 폐기량 데이터 불러오기
+	function getDisposalData(){
+		return ajaxGet(`/admin/dashboard/disposal/${needData}?startDate=${startDate}&endDate=${endDate}`
+			)
+			.then((data)=>{
+				disposalRawData = data;
+			
+			}).catch((data)=>{
+				console.log("error " + data)	
+			})
+	}
+	
+	function processDisposalChartData(rawData) {
+	    const grouped = {};
+	
+	    rawData.forEach(item => {
+	        let dateKey = null;
+	
+	        if (needData === 'daily') {
+	            dateKey = item.disposalDate;
+	        } else if (needData === 'weekly') {
+	            dateKey = item.disposalWeek;
+	        } else if (needData === 'monthly') {
+	            dateKey = item.disposalMonth;
+	        }
+	
+	        const section = item.section;
+	        const quantity = item.disposalQuantity || 0;
+	
+	        if (!dateKey || !section) return;
+	
+	        if (!grouped[section]) grouped[section] = {};
+	        if (!grouped[section][dateKey]) grouped[section][dateKey] = 0;
+	
+	        grouped[section][dateKey] += quantity;
+	    });
+	
+	    const allDates = new Set();
+	    Object.values(grouped).forEach(sectionData => {
+	        Object.keys(sectionData).forEach(date => allDates.add(date));
+	    });
+	
+	    const sortedDates = Array.from(allDates).sort();
+	
+	    const datasets = Object.entries(grouped).map(([section, dateMap]) => ({
+	        label: section,
+	        data: sortedDates.map(date => dateMap[date] || 0),
+	        borderColor: getSectionColor(section),
+	        backgroundColor: getSectionColor(section),
+	        fill: false,
+	        tension: 0.3
+	    }));
+	
+	    return {
+	        labels: sortedDates,
+	        datasets
+	    };
+	}
+	
+	//꺽은선색
+	function getSectionColor(section) {
+	    const colors = {
+	        INBOUND: '#36A2EB',
+	        INVENTORY: '#FFCE56',
+	        OUTBOUND: '#4BC0C0',
+	        TRANSPORT: '#FF6384',
+	        DEFAULT: '#999'
+	    };
+	    return colors[section] || colors.DEFAULT;
+	}
+	
+	//폐기꺽은선차트 그리기함수
+	function renderDisposalChart(chartData) {
+	    const ctx = document.getElementById('disposalChart').getContext('2d');
+	    if (!chartData || !chartData.labels || chartData.labels.length === 0) {
+	        handleEmptyData(ctx, '해당 기간에 폐기 데이터가 없습니다');
+	        return;
+	    }
+	    new Chart(ctx, {
+	        type: 'line',
+	        data: chartData,
+	        options: {
+	            responsive: true,
+	            aspectRatio: 3,
+	            plugins: {
+	                title: {
+	                    display: true,
+	                    text: '공정별 폐기량 추이'
+	                },
+	                legend: {
+	                    position: 'bottom'
+	                },
+	                tooltip: {
+	                    mode: 'index',
+	                    intersect: false
+	                }
+	            },
+	            interaction: {
+	                mode: 'nearest',
+	                axis: 'x',
+	                intersect: false
+	            },
+	            scales: {
+	                x: {
+	                    title: {
+	                        display: true,
+	                        text: needData === 'daily' ? '일자' :
+	                              needData === 'weekly' ? '주차' : '월'
+	                    }
+	                },
+	                y: {
+	                    title: {
+	                        display: true,
+	                        text: '폐기량'
+	                    },
+	                    beginAtZero: true
+	                }
+	            }
+	        }
+	    });
+	}
+	
 });

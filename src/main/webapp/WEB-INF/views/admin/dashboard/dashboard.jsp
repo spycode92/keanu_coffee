@@ -80,19 +80,20 @@
 	            <!-- 입고차트 -->
 	            <div class="chart-card" >
 	                <h3 class="card-title" id="inbound_title">입고현황</h3>
-	                <canvas id="IBoverallChart" style="width:80%; height:200px"></canvas>
+	                <canvas id="IBoverallChart" style="width:80%; height:200px;"></canvas>
 	            </div>
 	            <br>
 	            <!-- 운송/출고 차트 -->
 	            <div class="chart-card">
 	                <h3 class="card-title" id="outbound_title">출고/운송 현황</h3>
-	                <canvas id="OBoverallChart" width="width:80%; height:200px"></canvas>
+	                <canvas id="OBoverallChart" style="width:80%; height:200px;"></canvas>
 	            </div>
-	            <!-- 상품별 입고율 및 폐기율 도넛 차트(예: 카테고리 선택시 동적 표시) -->
-<!-- 	            <div class="chart-card"> -->
-<!-- 	                <h3 class="card-title">상세 입고/폐기 현황</h3> -->
-<%-- 	                <canvas id="detailDonutChart" width="300" height="300"></canvas> --%>
-<!-- 	            </div> -->
+	            <br>
+	            <!-- 폐기량 꺽은선차트 -->
+	            <div class="chart-card">
+	                <h3 class="card-title">폐기 현황</h3>
+	                <canvas id="disposalChart" style="width:80%; height:200px;"></canvas>
+	            </div>
 	        </div>
 	    </div>
 
