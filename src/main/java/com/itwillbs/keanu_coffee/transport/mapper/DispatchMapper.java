@@ -4,9 +4,13 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationItemDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DispatchDetailDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegionGroupViewDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegisterRequestDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DispatchStopDTO;
 
 public interface DispatchMapper {
 	
@@ -46,7 +50,25 @@ public interface DispatchMapper {
 	DispatchRegionGroupViewDTO selectDispatchSummary(@Param("dispatchIdx") Integer dispatchIdx, @Param("vehicleIdx") Integer vehicleIdx);
 
 	// 배차 상제 정보(적재 완료 후)
-	DispatchRegionGroupViewDTO selectDispatchDetail(int dispatchIdx);
+	DispatchDetailDTO selectDispatchDetail(@Param("dispatchIdx") Integer dispatchIdx, @Param("vehicleIdx") Integer vehicleIdx);
+
+	// 배차 정보 조회 (차량idx로 조회)
+	List<DispatchRegionGroupViewDTO> selectDispatchByVehicleIdx(Integer vehicleIdx);
+
+	// 마이페이지 배차 상세 정보 조회
+	DispatchDetailDTO selectMyDispatchInfo(@Param("dispatchIdx") Integer dispatchIdx, @Param("vehicleIdx") Integer vehicleIdx);
+
+	// 배차 배정 테이블 조회
+	Integer selectAssigmentIdx(@Param("dispatchIdx") Integer dispatchIdx, @Param("vehicleIdx") Integer vehicleIdx);
+
+	// 경유지 데이터 등록
+	void insertDispatchStop(DispatchStopDTO dispatchStop);
+
+	// 수주확인서 데이터 등록
+	void insertDeliveryConfirmation(DeliveryConfirmationDTO confirmation);
+
+	// 수주확인서품목 데이터 등록
+	void insertDeliveryConfirmationItem(DeliveryConfirmationItemDTO confirmItem);
 
 
 }

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.itwillbs.keanu_coffee.admin.dto.FranchiseDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderItemDTO;
 
 import lombok.Data;
@@ -19,8 +20,6 @@ public class DispatchRegionGroupViewDTO {
 	private String regionName;        	   // 구역 이름
 	private Timestamp dispatchDate;   	   // 출고일자
 	private String startSlot;         	   // 출발 시간
-	private Integer franchiseIdx;     	   // 지점 idx
-	private String franchiseName;     	   // 지점 이름
 	private char urgent;          	       // 긴급 여부
 	private String status;            	   // 주문 상태
 	private String driverName;             // 기사 이름

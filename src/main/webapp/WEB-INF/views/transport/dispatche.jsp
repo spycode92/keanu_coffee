@@ -17,6 +17,7 @@
 <link
 	href="${pageContext.request.contextPath}/resources/css/common/common.css"
 	rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script
 	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script
@@ -77,6 +78,7 @@ button:disabled {
                 <select id="filterStatus" name="filter">
                     <option value="전체">전체</option>
                     <option value="예약">예약</option>
+                    <option value="적재완료">적재완료</option>
                     <option value="운행중">운행중</option>
                     <option value="완료">완료</option>
                     <option value="취소">취소</option>
@@ -148,57 +150,6 @@ button:disabled {
 	<jsp:include page="/WEB-INF/views/transport/modal/add_dispatch.jsp"></jsp:include>
 
     <!-- 상세 모달(배차 클릭 시) -->
-    <div class="modal" id="detailModal" aria-hidden="true">
-        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
-            <div class="modal-head">
-                <strong id="detailTitle">배차 상세</strong>
-                <button class="modal-close-btn" >✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="field">
-                    <label>담당 기사 정보</label>
-                    <input id="detailDriver" disabled />
-                </div>
-
-                <div class="card" style="margin-top:10px" id="summary">
-                    <div class="card-header">주문서(품목)</div>
-                    <table class="table" id="summaryInfo">
-                        <thead>
-                            <tr>
-                                <th>배차일</th>
-                                <th>배차시간</th>
-                                <th>구역명</th>
-                                <th>총적재량</th>
-                                <th>상태</th>
-                            </tr>
-                        </thead>
-                        <tbody><!-- JS 렌더링 --></tbody>
-                    </table>
-                </div>
-                <div class="card" style="margin-top:10px" id="detail">
-                    <div class="card-header">주문서(품목)</div>
-                    <table class="table" id="detailItems">
-                        <thead>
-                            <tr>
-                                <th>지점</th>
-                                <th>품목</th>
-                                <th>수량</th>
-                                <th>중량</th>
-                                <th>상태</th>
-                            </tr>
-                        </thead>
-                        <tbody><!-- JS 렌더링 --></tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-foot">
-            <button type="button"
-                    class="btn btn-secondary"
-                    onclick="ModalManager.closeModal(document.getElementById('detailModal'))">
-                닫기
-            </button>
-            </div>
-        </div>
-    </div>
+	<jsp:include page="/WEB-INF/views/transport/modal/detail_dispatch.jsp"></jsp:include>
 </body>
 </html>

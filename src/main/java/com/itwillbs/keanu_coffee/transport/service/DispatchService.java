@@ -5,10 +5,17 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationItemDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DispatchCompleteRequest;
+import com.itwillbs.keanu_coffee.transport.dto.DispatchDetailDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegionGroupViewDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegisterRequestDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DispatchStopDTO;
+import com.itwillbs.keanu_coffee.transport.dto.RouteDTO;
 import com.itwillbs.keanu_coffee.transport.mapper.DispatchMapper;
+import com.itwillbs.keanu_coffee.transport.mapper.RouteMapper;
 import com.itwillbs.keanu_coffee.transport.mapper.VehicleMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class DispatchService {
 	private final DispatchMapper dispatchMapper;
 	private final VehicleMapper vehicleMapper;
+	private final RouteMapper routeMapper;
 	
 	// 페이징을 위한 배차 수
 	@Transactional(readOnly = true)
@@ -93,19 +101,82 @@ public class DispatchService {
 		}
 		
 	}
+	
+	// 배차 상태 조회
+	public String getDispatchStatus(Integer dispatchIdx) {
+		return dispatchMapper.selectDispatchStatus(dispatchIdx);
+	}
 
 	// 배차 상세 정보
 	public DispatchRegionGroupViewDTO selectDispatchInfo(Integer dispatchIdx, Integer vehicleIdx) {
-		// 배차 상태 확인
-		String status = dispatchMapper.selectDispatchStatus(dispatchIdx);
-//		
-//		if (status.equals("예약") || status.equals("취소")) {
-//			return dispatchMapper.selectDispatchSummary(dispatchIdx);
-//		} else {
-//			return dispatchMapper.selectDispatchDetail(dispatchIdx);
-//		}
-		
 		return dispatchMapper.selectDispatchSummary(dispatchIdx, vehicleIdx);
+	}
+	
+	// 적재 완료 후 상세조회
+	public DispatchDetailDTO selectDispatchDetail(Integer dispatchIdx, Integer vehicleIdx) {
+		return dispatchMapper.selectDispatchDetail(dispatchIdx, vehicleIdx);
+	}
+
+	// 배차 정보 조회 (차량idx로 조회)
+	public List<DispatchRegionGroupViewDTO> selectDispatchByVehicleIdx(Integer vehicleIdx) {
+		return dispatchMapper.selectDispatchByVehicleIdx(vehicleIdx);
+	}
+
+	// 마이페이지 배차 상세 정보 조회
+	public DispatchDetailDTO selectMyDispatchInfo(Integer dispatchIdx, Integer vehicleIdx) {
+		return dispatchMapper.selectMyDispatchInfo(dispatchIdx, vehicleIdx);
+	}
+
+	// 마이페이지 적재 등록
+	@Transactional
+	public void insertDispatchLoad(DispatchCompleteRequest request) {
+		// 배차 테이블 상태 변경
+		dispatchMapper.updateDispatchStatus(request.getDispatchIdx(), "적재완료");
+		
+		Integer assigmentIdx = dispatchMapper.selectAssigmentIdx(request.getDispatchIdx(), request.getVehicleIdx());
+		
+		// 선택한 지점별 처리
+		for (DispatchCompleteRequest.StopComplete stopReq: request.getStops()) {
+			dispatchMapper.updateOutboundOrderStatus(stopReq.getOutboundOrderIdx(), "적재완료");
+			
+			// 경로 조회
+			RouteDTO route = routeMapper.selectFranchise(stopReq.getFranchiseIdx());
+			
+			if (route == null) {
+				throw new IllegalStateException("해당 지점에 대한 경로 정보가 없습니다.");
+			}
+			
+			DispatchStopDTO dispatchStop = new DispatchStopDTO();
+			dispatchStop.setDispatchIdx(request.getDispatchIdx());
+			dispatchStop.setDispatchAssignmentIdx(assigmentIdx);
+			dispatchStop.setFranchiseIdx(stopReq.getFranchiseIdx());
+			dispatchStop.setDeliverySequence(route.getDeliverySequence());
+			dispatchStop.setStatus("대기");
+			dispatchStop.setUrgent('N');
+			
+			// 경유지 데이터 등록
+			dispatchMapper.insertDispatchStop(dispatchStop);
+			
+			DeliveryConfirmationDTO confirmation = new DeliveryConfirmationDTO();
+			confirmation.setDispatchAssignmentIdx(assigmentIdx);
+			confirmation.setDispatchStopIdx(dispatchStop.getDispatchStopIdx());
+			confirmation.setOutboundOrderIdx(stopReq.getOutboundOrderIdx());
+			
+			// 수주확인서 데이터 등록
+			dispatchMapper.insertDeliveryConfirmation(confirmation);
+			
+			for (DispatchCompleteRequest.ItemComplete itemReq: stopReq.getItems()) {
+				DeliveryConfirmationItemDTO confirmItem = new DeliveryConfirmationItemDTO();
+				confirmItem.setConfirmationIdx(confirmation.getDeliveryConfirmationIdx());
+				confirmItem.setProductIdx(itemReq.getProductIdx());
+				confirmItem.setItemName(itemReq.getItemName());
+				confirmItem.setOrderedQty(itemReq.getOrderedQty());
+				
+				// 수주확인서 품목 데이터 등록
+				dispatchMapper.insertDeliveryConfirmationItem(confirmItem);
+			}
+		}
+		
 	}
 
 }

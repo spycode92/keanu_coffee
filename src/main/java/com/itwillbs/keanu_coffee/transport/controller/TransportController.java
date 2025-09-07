@@ -2,6 +2,7 @@ package com.itwillbs.keanu_coffee.transport.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,12 +11,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
+import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 import com.itwillbs.keanu_coffee.transport.dto.AdministrativeRegionDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegionGroupViewDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO;
 import com.itwillbs.keanu_coffee.transport.dto.RegionFranchiseRouteDTO;
 import com.itwillbs.keanu_coffee.transport.dto.VehicleDTO;
+import com.itwillbs.keanu_coffee.transport.mapper.DispatchMapper;
 import com.itwillbs.keanu_coffee.transport.service.DispatchService;
 import com.itwillbs.keanu_coffee.transport.service.DriverService;
 import com.itwillbs.keanu_coffee.transport.service.RegionService;
@@ -130,7 +133,30 @@ public class TransportController {
 	
 	// 기사 마이페이지
 	@GetMapping("/mypage")
-	public String mypage() {
+	public String mypage(Authentication authentication, Model model) {
+		EmployeeDetail empDetail = (EmployeeDetail)authentication.getPrincipal();
+		
+		// 기사 정보
+		DriverVehicleDTO driverInfo = driverService.getDriver(empDetail.getEmpIdx());
+		
+		if (driverInfo == null) {
+			model.addAttribute("msg", "기사 정보를 불러올 수 없습니다.");
+			model.addAttribute("targetURL", "/transport/mypage");
+			return "commons/result_process";
+		}
+		
+		// 배차 정보 
+		List<DispatchRegionGroupViewDTO> dispatchInfo = dispatchService.selectDispatchByVehicleIdx(driverInfo.getVehicleIdx());
+		
+		if (dispatchInfo == null) {
+			model.addAttribute("msg", "배차 정보를 불러올 수 없습니다.");
+			model.addAttribute("targetURL", "/transport/mypage");
+			return "commons/result_process";
+		}
+		
+		model.addAttribute("driverInfo", driverInfo);
+		model.addAttribute("dispatchInfo", dispatchInfo);
+		
 		return "/transport/mypage";
 	}
 	
@@ -142,7 +168,7 @@ public class TransportController {
 		
 		if (regionList == null) {
 			model.addAttribute("msg", "지역 정보를 불러올 수 없습니다.");
-			model.addAttribute("targetURL", "/region");
+			model.addAttribute("targetURL", "/transport/region");
 			return "commons/result_process";
 		}
 		

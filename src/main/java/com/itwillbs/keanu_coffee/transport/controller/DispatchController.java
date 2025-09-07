@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.itwillbs.keanu_coffee.transport.dto.DispatchCompleteRequest;
+import com.itwillbs.keanu_coffee.transport.dto.DispatchDetailDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegionGroupViewDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegisterRequestDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO;
@@ -83,14 +85,41 @@ public class DispatchController {
 	
 	// 배차 상세 정보
 	@GetMapping("/dispatch/detail/{dispatchIdx}/{vehicleIdx}")
-	public ResponseEntity<DispatchRegionGroupViewDTO> getDispatchInfo(@PathVariable Integer dispatchIdx, @PathVariable Integer vehicleIdx) {
-		DispatchRegionGroupViewDTO dispatchInfo = dispatchService.selectDispatchInfo(dispatchIdx, vehicleIdx);
+	public ResponseEntity<?> getDispatchInfo(@PathVariable Integer dispatchIdx, @PathVariable Integer vehicleIdx) {
+		String status = dispatchService.getDispatchStatus(dispatchIdx);
+		
+		if (status.equals("예약") || status.equals("취소")) {
+			DispatchRegionGroupViewDTO dispatchInfo = dispatchService.selectDispatchInfo(dispatchIdx, vehicleIdx);
+			return ResponseEntity.ok(dispatchInfo);
+		} else {
+			DispatchDetailDTO detail = dispatchService.selectDispatchDetail(dispatchIdx, vehicleIdx);
+			System.out.println(detail + ">>>>>>>>>>>>>>>>>>>>");
+			return ResponseEntity.ok(detail);
+		}
+	}
+	
+	// 기사 마이페이지 배차 상세 정보
+	@GetMapping("/mypage/dispatch/detail/{dispatchIdx}/{vehicleIdx}")
+	public ResponseEntity<DispatchDetailDTO> getMyDispatchInfo(@PathVariable Integer dispatchIdx, @PathVariable Integer vehicleIdx) {
+		DispatchDetailDTO dispatchInfo = dispatchService.selectMyDispatchInfo(dispatchIdx, vehicleIdx);
 		
 		if (dispatchInfo == null) {
 			return ResponseEntity.notFound().build();
 		}
 		
 		return ResponseEntity.ok(dispatchInfo);
-		
+	}
+	
+	// 기사 마이페이지 적재 완료
+	@PostMapping("/mypage/dispatch/complete")
+	public ResponseEntity<String> addLoad(@RequestBody DispatchCompleteRequest request) {
+		try {
+			dispatchService.insertDispatchLoad(request);
+			return ResponseEntity.ok("적재 완료");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("적재 등록 중 오류가 발생했습니다.");
+		}
 	}
 }

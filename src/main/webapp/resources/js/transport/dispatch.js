@@ -236,8 +236,7 @@ $(document).on("click", ".dispatchInfo", function() {
 	
 	$.getJSON((`${DISPATCH_DETAIL_URL}/${dispatchIdx}/${vehicleIdx}`))
 		.done(function(dispatch) {
-			$("#detailDriver").val(`${dispatch.driverName} / ${dispatch.vehicleNumber} / ${dispatch.capacity === 1000 ? "1.0t" : "1.5t"}`)
-			
+			$("#detailDriver").val(`${dispatch.driverName} / ${dispatch.vehicleNumber} / ${dispatch.capacity === 1000 ? "1.0t" : "1.5t"}`);
 			if (dispatch.status === "예약" || dispatch.status === "취소") {
 				$("#detail").hide();
 				$("#summary").show();
@@ -255,8 +254,72 @@ $(document).on("click", ".dispatchInfo", function() {
 			} else {
 				$("#summary").hide();
 				$("#detail").show();
+				 let detailHtml = "";
+				
+				    dispatch.franchises?.forEach(stop => {
+				        // 경유지(지점) 이름을 한 번만 출력하고, 품목은 하위 반복문으로 출력
+				        if (stop.deliveryConfirmations) {
+				            stop.deliveryConfirmations.forEach(dc => {
+				                dc.items?.forEach(item => {
+				                    detailHtml += `
+				                        <tr>
+				                            <td>${stop.franchiseName}</td>
+				                            <td>${item.itemName || "-"}</td>
+				                            <td class="text-right">${item.deliveredQty ?? 0} / ${item.orderedQty}</td>
+				                            <td>${item.status || "대기"}</td>
+				                        </tr>
+				                    `;
+				                });
+				            });
+				        }
+				    });
+
+    				$("#detailItems tbody").html(detailHtml);
+
+					let timelineHtml = "";
+
+					if (dispatch.status === "적재완료") {
+					    timelineHtml += `
+					        <div class="timeline-item">
+					            <div class="timeline-point"></div>
+					            <div class="timeline-content">
+					                <div class="font-bold">배송 준비 중</div>
+					            </div>
+					        </div>
+					    `;
+					}
+
+					dispatch.franchises?.forEach(stop => {
+				    // arrivalTime 또는 completeTime 이 있는 경우만 표시
+				    if (stop.arrivalTime || stop.completeTime) {
+				        let stepLabel = "";
+				        if (stop.arrivalTime && !stop.completeTime) {
+				            stepLabel = "배송 중";
+				        } else if (stop.completeTime) {
+				            stepLabel = "납품 완료";
+				        }
+				
+				        timelineHtml += `
+				            <div class="timeline-item">
+				                <div class="timeline-point"></div>
+				                <div class="timeline-content">
+				                    <div class="font-bold">${stop.franchiseName} (${stepLabel})</div>
+				                    <div class="text-sm text-gray-600">
+				                        ${stop.arrivalTime ? `도착: ${formatDate(stop.arrivalTime)}` : ""}
+				                        ${stop.completeTime ? `완료: ${formatDate(stop.completeTime)}` : ""}
+				                    </div>
+				                </div>
+				            </div>
+				        	`;
+				   		}
+					});
+					$("#timeline").html(timelineHtml);
 			}
-		}) 
+		})
+		.fail((xhr, status, error) => {
+			 console.error("실패", status, error, xhr.responseText);
+			Swal.fire({icon:'error', text:'배차 정보를 불러오지 못했습니다. 다시 시도해주세요.'});
+		});
 });
 
 function dispatchRequestData() {
@@ -308,4 +371,4 @@ $(document).ready(function () {
 	 $("#btnAssignDriver").on("click", assignBtn);
 	 $("#btnSaveAssign").on("click", addDispatch);
 	 $("#btnCancelAssign").on("click", cancelDispatch);
-})
+});
