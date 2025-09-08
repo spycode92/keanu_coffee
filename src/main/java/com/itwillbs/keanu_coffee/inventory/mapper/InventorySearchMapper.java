@@ -42,7 +42,7 @@ public interface InventorySearchMapper {
     );
     
     // 재고 상세 조회 모달창 (Ajax)
-    Map<String, Object> selectInventoryDetail(int receiptProductIdx);
+    Map<String, Object> selectInventoryDetail(int inventoryIdx);
     
 	
 }

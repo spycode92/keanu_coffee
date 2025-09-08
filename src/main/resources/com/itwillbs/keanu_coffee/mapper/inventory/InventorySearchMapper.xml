@@ -7,44 +7,54 @@
 	<!-- 총 SKU: 서로 다른 상품 코드(product_idx) 개수 -->
     <select id="selectTotalSku" resultType="int">
         SELECT COUNT(DISTINCT product_idx)
-        FROM RECEIPT_PRODUCT
+        FROM INVENTORY
     </select>
 
     <!-- 총 재고 수량: 전체 quantity 합계 -->
     <select id="selectTotalQuantity" resultType="int">
         SELECT COALESCE(SUM(quantity), 0)
-        FROM RECEIPT_PRODUCT
+        FROM INVENTORY
     </select>
 	
 	<!-- 총 데이터 개수 -->
 	<select id="selectInventoryCount" resultType="int">
 	    SELECT COUNT(1)
-	    FROM RECEIPT_PRODUCT r
+	    FROM INVENTORY i
 	    JOIN PRODUCT p 
-	        ON r.product_idx = p.product_idx
-	    LEFT JOIN INVENTORY i 
-	        ON r.receipt_product_idx = i.receipt_product_idx
-	    LEFT JOIN WAREHOUSE_LOCATION w 
-	        ON i.location_idx = w.location_idx
+	        ON i.product_idx = p.product_idx
+	    JOIN RECEIPT_PRODUCT r 
+	        ON i.receipt_product_idx = r.receipt_product_idx
+	    LEFT JOIN SUPPLIER s 
+	        ON r.supplier_idx = s.supplier_idx
 	    <where>
+	        <!-- 검색 키워드 -->
 	        <if test="keyword != null and keyword != ''">
 	            (p.product_name LIKE CONCAT('%', #{keyword}, '%')
-	            OR CAST(p.product_idx AS CHAR) LIKE CONCAT('%', #{keyword}, '%'))
+	             OR CAST(p.product_idx AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
+	             OR r.lot_number LIKE CONCAT('%', #{keyword}, '%'))
 	        </if>
+	
+	        <!-- 로케이션명 -->
 	        <if test="location != null and location != ''">
-	            AND w.location_name = #{location}
+	            AND i.location_name = #{location}
 	        </if>
+	
+	        <!-- 로케이션 유형 -->
 	        <if test="locationType != null and locationType != '' and locationType != '전체'">
-	            AND w.location_type = #{locationType}
+	            AND i.location_idx = #{locationType}
 	        </if>
+	
+	        <!-- 제조일자 -->
 	        <if test="mfgDate != null and mfgDate != ''">
 	            AND r.manufacture_date = #{mfgDate}
 	        </if>
+	
+	        <!-- 유통기한 -->
 	        <if test="expDate != null and expDate != ''">
 	            AND r.expiration_date = #{expDate}
 	        </if>
 	
-	        <!-- ✅ 재고 상태 필터 -->
+	        <!-- 재고 상태 필터 -->
 	        <if test="stockStatus != null and stockStatus != '' and stockStatus != '전체'">
 	            <choose>
 	                <when test="stockStatus == 'EXPIRED'">
@@ -58,58 +68,63 @@
 	                </when>
 	            </choose>
 	        </if>
-	        
-	        <!-- ✅ 출고 여부 필터 -->
+	
+	        <!-- 출고 여부 필터 -->
 	        <if test="outboundStatus != null and outboundStatus != '' and outboundStatus != '전체'">
 	            <choose>
 	                <when test="outboundStatus == 'YES'">
-					    AND r.expiration_date &gt;= NOW()
-					    AND COALESCE(i.quantity,0) &gt; 0
-					</when>
-					<when test="outboundStatus == 'NO'">
-					    AND (
-					        r.expiration_date &lt; NOW()
-					        OR COALESCE(i.quantity,0) &lt;= 0
-					    )
-					</when>
+	                    AND r.expiration_date &gt;= NOW()
+	                    AND COALESCE(i.quantity,0) &gt; 0
+	                </when>
+	                <when test="outboundStatus == 'NO'">
+	                    AND (
+	                        r.expiration_date &lt; NOW()
+	                        OR COALESCE(i.quantity,0) &lt;= 0
+	                    )
+	                </when>
 	            </choose>
 	        </if>
 	    </where>
 	</select>
 	
-	<!-- 리스트 조회 -->
+	<!-- 재고 리스트 조회 -->
 	<select id="selectReceiptProductList" resultType="map">
 	    SELECT
-	        r.receipt_product_idx,
+	        i.inventory_idx,
+	        i.receipt_product_idx,
 	        r.lot_number,
 	        r.manufacture_date,
 	        r.expiration_date,
 	        r.received_at,
-	        r.quantity AS received_quantity,
+	        i.quantity AS current_quantity,   
 	        p.product_idx,
 	        p.product_name,
-	        i.quantity AS current_quantity,
-	        w.location_name,
+	        i.location_name,                  
+	        i.location_idx,
 	        w.location_type,
+	        s.supplier_name,
 	        CASE
 	            WHEN r.expiration_date &lt; NOW() THEN 'EXPIRED'
 	            WHEN DATEDIFF(r.expiration_date, NOW()) BETWEEN 0 AND 7 THEN 'WARN'
 	            ELSE 'OK'
 	        END AS stockStatus
-	    FROM RECEIPT_PRODUCT r
+	    FROM INVENTORY i
+	    JOIN RECEIPT_PRODUCT r 
+	        ON i.receipt_product_idx = r.receipt_product_idx
 	    JOIN PRODUCT p 
-	        ON r.product_idx = p.product_idx
-	    LEFT JOIN INVENTORY i 
-	        ON r.receipt_product_idx = i.receipt_product_idx
+	        ON i.product_idx = p.product_idx
+	    LEFT JOIN SUPPLIER s 
+	        ON r.supplier_idx = s.supplier_idx
 	    LEFT JOIN WAREHOUSE_LOCATION w 
 	        ON i.location_idx = w.location_idx
 	    <where>
 	        <if test="keyword != null and keyword != ''">
 	            (p.product_name LIKE CONCAT('%', #{keyword}, '%')
-	            OR CAST(p.product_idx AS CHAR) LIKE CONCAT('%', #{keyword}, '%'))
+	             OR CAST(p.product_idx AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
+	             OR r.lot_number LIKE CONCAT('%', #{keyword}, '%'))
 	        </if>
 	        <if test="location != null and location != ''">
-	            AND w.location_name = #{location}
+	            AND i.location_name = #{location}
 	        </if>
 	        <if test="locationType != null and locationType != '' and locationType != '전체'">
 	            AND w.location_type = #{locationType}
@@ -121,24 +136,24 @@
 	            AND r.expiration_date = #{expDate}
 	        </if>
 	
-	        <!-- ✅ 출고 여부 필터 -->
+	        <!-- 출고 여부 필터 -->
 	        <if test="outboundStatus != null and outboundStatus != '' and outboundStatus != '전체'">
 	            <choose>
 	                <when test="outboundStatus == 'YES'">
-					    AND r.expiration_date &gt;= NOW()
-					    AND COALESCE(i.quantity,0) &gt; 0
-					</when>
-					<when test="outboundStatus == 'NO'">
-					    AND (
-					        r.expiration_date &lt; NOW()
-					        OR COALESCE(i.quantity,0) &lt;= 0
-					    )
-					</when>
+	                    AND r.expiration_date &gt;= NOW()
+	                    AND COALESCE(i.quantity,0) &gt; 0
+	                </when>
+	                <when test="outboundStatus == 'NO'">
+	                    AND (
+	                        r.expiration_date &lt; NOW()
+	                        OR COALESCE(i.quantity,0) &lt;= 0
+	                    )
+	                </when>
 	            </choose>
 	        </if>
 	    </where>
 	
-	    <!-- ✅ 정렬 조건은 하나만 적용되게 choose로 묶음 -->
+	    <!-- ✅ 정렬 조건 -->
 	    <choose>
 	        <when test="sortOption == 'manufactureAsc'">
 	            ORDER BY r.manufacture_date ASC
@@ -167,32 +182,31 @@
 	</select>
 	
 	<!-- 재고 상세 조회 모달창 - AJAX -->
-    <select id="selectInventoryDetail" parameterType="int" resultType="map">
-        SELECT 
-	        r.receipt_product_idx,
+     <select id="selectInventoryDetail" parameterType="int" resultType="map">
+	    SELECT 
+	        i.inventory_idx,
+	        i.receipt_product_idx,
 	        r.lot_number,
 	        DATE_FORMAT(r.manufacture_date, '%Y-%m-%d') AS manufacture_date,
 	        DATE_FORMAT(r.expiration_date, '%Y-%m-%d') AS expiration_date,
 	        r.received_at,
-	        r.quantity AS received_quantity,
+	        i.quantity AS current_quantity,
 	        p.product_idx,
 	        p.product_name,
-	        i.quantity AS current_quantity,
-	        w.location_name,
+	        i.location_name,
 	        w.location_type,
 	        s.supplier_name
-	    FROM RECEIPT_PRODUCT r
-        JOIN PRODUCT p 
-            ON r.product_idx = p.product_idx
-        LEFT JOIN INVENTORY i 
-            ON r.receipt_product_idx = i.receipt_product_idx
-        LEFT JOIN WAREHOUSE_LOCATION w 
-            ON i.location_idx = w.location_idx
-        LEFT JOIN SUPPLIER s 
-            ON r.supplier_idx = s.supplier_idx
-        WHERE r.receipt_product_idx = #{receiptProductIdx}
-    </select>
-	
+	    FROM INVENTORY i
+	    JOIN RECEIPT_PRODUCT r 
+	        ON i.receipt_product_idx = r.receipt_product_idx
+	    JOIN PRODUCT p 
+	        ON i.product_idx = p.product_idx
+	    LEFT JOIN SUPPLIER s 
+	        ON r.supplier_idx = s.supplier_idx
+	    LEFT JOIN WAREHOUSE_LOCATION w 
+	        ON i.location_idx = w.location_idx
+	    WHERE i.inventory_idx = #{inventoryIdx}
+	</select>
 	
 </mapper>
 

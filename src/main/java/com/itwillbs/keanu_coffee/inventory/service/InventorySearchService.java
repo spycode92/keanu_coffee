@@ -15,17 +15,17 @@ public class InventorySearchService {
 	private final InventorySearchMapper inventorySearchMapper;
 	
 	// 총 SKU
-	public int getTotalSku() {
+	public int selectTotalSku() {
 	    return inventorySearchMapper.selectTotalSku();
 	}
 	
 	// 총 재고 수량
-	public int getTotalQuantity() {
+	public int selectTotalQuantity() {
 	    return inventorySearchMapper.selectTotalQuantity();
 	}
 	
 	// 총 데이터 개수
-	public int getInventoryCount(
+	public int selectInventoryCount(
             String keyword, String location, String locationType,
             String mfgDate, String expDate,
             String stockStatus, String outboundStatus
@@ -38,7 +38,7 @@ public class InventorySearchService {
     }
 
 	 // 리스트 조회
-    public List<Map<String, Object>> getReceiptProductList(
+    public List<Map<String, Object>> selectReceiptProductList(
             int startRow, int listLimit,
             String keyword, String location, String locationType,
             String mfgDate, String expDate,
@@ -55,8 +55,8 @@ public class InventorySearchService {
     }
     
     // 재고 상세 조회 모달창 (Ajax)
-    public Map<String, Object> getInventoryDetail(int receiptProductIdx) {
-        return inventorySearchMapper.selectInventoryDetail(receiptProductIdx);
+    public Map<String, Object> selectInventoryDetail(int inventoryIdx) {
+        return inventorySearchMapper.selectInventoryDetail(inventoryIdx);
     }
     
     

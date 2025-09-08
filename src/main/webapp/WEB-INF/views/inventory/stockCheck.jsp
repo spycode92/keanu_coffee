@@ -5,6 +5,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>재고 조회 / 검수</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
@@ -269,37 +271,34 @@
 	            </thead>
 	            <tbody id="tbodyRealtime">
 				    <c:forEach var="item" items="${inventoryList}">
-						<tr data-idx="${item.receipt_product_idx}">
-				            <td>${item.location_name}</td>
-				            <td>${item.product_name}</td>
-				            <td>${item.product_idx}</td>
-				            <td>${item.current_quantity}</td>
-				            <td>BOX</td>
-				            <td>
-				                <c:choose>
-				                    <c:when test="${item.location_type == 1}">Pallet</c:when>
-				                    <c:when test="${item.location_type == 2}">Picking</c:when>
-				                    <c:otherwise>미지정</c:otherwise>
-				                </c:choose>
-				            </td>
-				            <td>${item.manufacture_date}</td>
-				            <td>${item.expiration_date}</td>
-				
-				            <!-- ✅ 여기 빈칸 두고 data-exp에 날짜 저장 -->
-				            <td class="dday-cell" data-exp="${item.expiration_date}"></td>
-				            <td class="status-cell" data-exp="${item.expiration_date}"></td>
-				
-				            <td>
-				                <c:choose>
-				                    <c:when test="${item.received_quantity > 0}">
-				                        <span class="ship-badge ship-yes">가능</span>
-				                    </c:when>
-				                    <c:otherwise>
-				                        <span class="ship-badge ship-no">불가능</span>
-				                    </c:otherwise>
-				                </c:choose>
-				            </td>
-				        </tr>
+						<tr data-idx="${item.inventory_idx}">
+						    <td>${item.location_name}</td>
+						    <td>${item.product_name}</td>
+						    <td>${item.product_idx}</td>
+						    <td>${item.current_quantity}</td>
+						    <td>BOX</td>
+						    <td>
+						        <c:choose>
+						            <c:when test="${item.location_type == 1}">Pallet</c:when>
+						            <c:when test="${item.location_type == 2}">Picking</c:when>
+						            <c:otherwise>미지정</c:otherwise>
+						        </c:choose>
+						    </td>
+						    <td>${item.manufacture_date}</td>
+						    <td>${item.expiration_date}</td>
+						    <td class="dday-cell" data-exp="${item.expiration_date}"></td>
+						    <td class="status-cell" data-exp="${item.expiration_date}"></td>
+						    <td>
+						        <c:choose>
+						            <c:when test="${item.quantity > 0}">
+						                <span class="ship-badge ship-yes">가능</span>
+						            </c:when>
+						            <c:otherwise>
+						                <span class="ship-badge ship-no">불가능</span>
+						            </c:otherwise>
+						        </c:choose>
+						    </td>
+						</tr>
 				    </c:forEach>
 				</tbody>
 	        </table>
@@ -374,44 +373,44 @@
 	            </div>
 	
 	            <!-- 폐기 처리 -->
-	            <div class="card" style="padding:12px; grid-column:1 / -1;">
-	                <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-	                    <h3 class="card-title">폐기 처리</h3>
-	                    <button type="button" id="btn-disposal-toggle" class="btn btn-destructive" aria-expanded="false" aria-controls="disposalPanel">폐기 처리</button>
-	                </div>
+<!-- 	            <div class="card" style="padding:12px; grid-column:1 / -1;"> -->
+<!-- 	                <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;"> -->
+<!-- 	                    <h3 class="card-title">폐기 처리</h3> -->
+<!-- 	                    <button type="button" id="btn-disposal-toggle" class="btn btn-destructive" aria-expanded="false" aria-controls="disposalPanel">폐기 처리</button> -->
+<!-- 	                </div> -->
 	
-	                <div id="disposalPanel" class="panel-disposal hidden">
-	                    <form id="disposalForm" class="form">
-	                        <input type="hidden" id="df-lotNumber" name="lotNumber">
-	                        <input type="hidden" id="df-productCode" name="productCode">
-	                        <input type="hidden" id="df-locationCode" name="locationCode">
+<!-- 	                <div id="disposalPanel" class="panel-disposal hidden"> -->
+<!-- 	                    <form id="disposalForm" class="form"> -->
+<!-- 	                        <input type="hidden" id="df-lotNumber" name="lotNumber"> -->
+<!-- 	                        <input type="hidden" id="df-productCode" name="productCode"> -->
+<!-- 	                        <input type="hidden" id="df-locationCode" name="locationCode"> -->
 	
-	                        <div class="field">
-	                            <label>현재 재고</label>
-	                            <div>
-	                                <span id="df-currentQtyText">0</span>
-	                                <span id="df-unitText">BOX</span>
-	                            </div>
-	                        </div>
+<!-- 	                        <div class="field"> -->
+<!-- 	                            <label>현재 재고</label> -->
+<!-- 	                            <div> -->
+<!-- 	                                <span id="df-currentQtyText">0</span> -->
+<!-- 	                                <span id="df-unitText">BOX</span> -->
+<!-- 	                            </div> -->
+<!-- 	                        </div> -->
 	
-	                        <div class="field">
-	                            <label for="df-disposalAmount">폐기 수량</label>
-	                            <input type="number" id="df-disposalAmount" name="disposalAmount" class="form-control" min="1" required>
-	                        </div>
+<!-- 	                        <div class="field"> -->
+<!-- 	                            <label for="df-disposalAmount">폐기 수량</label> -->
+<!-- 	                            <input type="number" id="df-disposalAmount" name="disposalAmount" class="form-control" min="1" required> -->
+<!-- 	                        </div> -->
 	
-	                        <div class="field">
-	                            <label for="df-note">폐기 사유</label>
-	                            <textarea id="df-note" name="note" class="form-control" placeholder="폐기 사유를 입력하세요" required></textarea>
-	                        </div>
+<!-- 	                        <div class="field"> -->
+<!-- 	                            <label for="df-note">폐기 사유</label> -->
+<!-- 	                            <textarea id="df-note" name="note" class="form-control" placeholder="폐기 사유를 입력하세요" required></textarea> -->
+<!-- 	                        </div> -->
 	
-	                        <div style="display:flex; justify-content:flex-end; gap:8px;">
-	                            <button type="submit" class="btn btn-primary">등록</button>
-	                            <button type="button" class="btn btn-secondary" id="btn-disposal-cancel">취소</button>
-	                        </div>
-	                    </form>
-	                </div>
-	            </div>
-	        </div>
+<!-- 	                        <div style="display:flex; justify-content:flex-end; gap:8px;"> -->
+<!-- 	                            <button type="submit" class="btn btn-primary">등록</button> -->
+<!-- 	                            <button type="button" class="btn btn-secondary" id="btn-disposal-cancel">취소</button> -->
+<!-- 	                        </div> -->
+<!-- 	                    </form> -->
+<!-- 	                </div> -->
+<!-- 	            </div> -->
+<!-- 	        </div> -->
 	
 	        <div class="modal-foot">
 	            <button class="btn btn-secondary" onclick="ModalManager.closeModal(document.getElementById('lotModal'))">닫기</button>
@@ -569,67 +568,67 @@
 		    });
 		});
 					    
-	    /* ====================== 폐기 패널 토글 ====================== */
-	    $('#btn-disposal-toggle').on('click', function(){
-	        const $panel = $('#disposalPanel');
-	        const expanded = $(this).attr('aria-expanded') === 'true';
-	        if(expanded){
-	            $(this).attr('aria-expanded','false').text('폐기 처리');
-	            $panel.addClass('hidden');
-	        }else{
-	            $(this).attr('aria-expanded','true').text('닫기');
-	            $panel.removeClass('hidden');
-	            setTimeout(()=> $('#df-disposalAmount').trigger('focus'),80);
-	        }
-	    });
+// 	    /* ====================== 폐기 패널 토글 ====================== */
+// 	    $('#btn-disposal-toggle').on('click', function(){
+// 	        const $panel = $('#disposalPanel');
+// 	        const expanded = $(this).attr('aria-expanded') === 'true';
+// 	        if(expanded){
+// 	            $(this).attr('aria-expanded','false').text('폐기 처리');
+// 	            $panel.addClass('hidden');
+// 	        }else{
+// 	            $(this).attr('aria-expanded','true').text('닫기');
+// 	            $panel.removeClass('hidden');
+// 	            setTimeout(()=> $('#df-disposalAmount').trigger('focus'),80);
+// 	        }
+// 	    });
 	
-	    $('#btn-disposal-cancel').on('click', function(){
-	        $('#btn-disposal-toggle').attr('aria-expanded','false').text('폐기 처리');
-	        $('#disposalPanel').addClass('hidden');
-	        $('#disposalForm')[0].reset();
-	    });
+// 	    $('#btn-disposal-cancel').on('click', function(){
+// 	        $('#btn-disposal-toggle').attr('aria-expanded','false').text('폐기 처리');
+// 	        $('#disposalPanel').addClass('hidden');
+// 	        $('#disposalForm')[0].reset();
+// 	    });
 	
-	    $('#disposalForm').on('submit', function(e){
-	        e.preventDefault(); // 기본 submit 막음 (지금은 DB 연동 전이니까)
+// 	    $('#disposalForm').on('submit', function(e){
+// 	        e.preventDefault(); // 기본 submit 막음 (지금은 DB 연동 전이니까)
 	
-	        const currentQty = parseInt($('#df-currentQtyText').text().replace(/[^0-9]/g,''), 10) || 0;
-	        const amount = parseInt($('#df-disposalAmount').val(), 10) || 0;
-	        const note = ($('#df-note').val() || '').trim();
+// 	        const currentQty = parseInt($('#df-currentQtyText').text().replace(/[^0-9]/g,''), 10) || 0;
+// 	        const amount = parseInt($('#df-disposalAmount').val(), 10) || 0;
+// 	        const note = ($('#df-note').val() || '').trim();
 	
-	        if(amount <= 0){
-	            alert('폐기 수량은 1 이상이어야 합니다.');
-	            $('#df-disposalAmount').focus();
-	            return;
-	        }
-	        if(amount > currentQty){
-	            alert('폐기 수량이 현재 재고보다 많습니다.');
-	            $('#df-disposalAmount').focus();
-	            return;
-	        }
-	        if(note.length < 2){
-	            alert('폐기 사유를 두 글자 이상 입력하세요.');
-	            $('#df-note').focus();
-	            return;
-	        }
+// 	        if(amount <= 0){
+// 	            alert('폐기 수량은 1 이상이어야 합니다.');
+// 	            $('#df-disposalAmount').focus();
+// 	            return;
+// 	        }
+// 	        if(amount > currentQty){
+// 	            alert('폐기 수량이 현재 재고보다 많습니다.');
+// 	            $('#df-disposalAmount').focus();
+// 	            return;
+// 	        }
+// 	        if(note.length < 2){
+// 	            alert('폐기 사유를 두 글자 이상 입력하세요.');
+// 	            $('#df-note').focus();
+// 	            return;
+// 	        }
 	
-	        // 상태를 폐기로 업데이트
-	        const lotNo = $('#df-lotNumber').val();
-	        const row = realtimeData.find(x => x.lotNo === lotNo);
-	        if(row){
-	            row.qty -= amount; // 재고 차감
-	            if(row.qty <= 0){
-	                row.qty = 0;
-	            }
-	            // 재고가 남았어도 폐기 상태로 표시되게 강제
-	            row.status = 'DISPOSED';
-	        }
+// 	        // 상태를 폐기로 업데이트
+// 	        const lotNo = $('#df-lotNumber').val();
+// 	        const row = realtimeData.find(x => x.lotNo === lotNo);
+// 	        if(row){
+// 	            row.qty -= amount; // 재고 차감
+// 	            if(row.qty <= 0){
+// 	                row.qty = 0;
+// 	            }
+// 	            // 재고가 남았어도 폐기 상태로 표시되게 강제
+// 	            row.status = 'DISPOSED';
+// 	        }
 	
-	        // 모달 닫고 테이블 갱신
-	        ModalManager.closeModal(document.getElementById('lotModal'));
-	        renderTable(true);
+// 	        // 모달 닫고 테이블 갱신
+// 	        ModalManager.closeModal(document.getElementById('lotModal'));
+// 	        renderTable(true);
 	
-	        alert('폐기 처리가 완료되었습니다.');
-	    });
+// 	        alert('폐기 처리가 완료되었습니다.');
+// 	    });
 	    /* ====================== 초기화 버튼 ====================== */
 	    $('#btnReset').on('click', function(){
 	        $('form')[0].reset();

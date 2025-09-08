@@ -29,8 +29,8 @@ public class InventorySearchController {
 	public Map<String, Object> getMetrics() {
 	    Map<String, Object> result = new HashMap<>();
 	    
-	    result.put("totalSku", inventorySearchService.getTotalSku());
-	    result.put("totalQty", inventorySearchService.getTotalQuantity());
+	    result.put("totalSku", inventorySearchService.selectTotalSku());
+	    result.put("totalQty", inventorySearchService.selectTotalQuantity());
 	    
 	    return result;
 	}
@@ -54,7 +54,7 @@ public class InventorySearchController {
         int listLimit = 10; // 한 페이지에 보여줄 행 개수
 
         // 총 데이터 개수 가져오기
-        int inventoryCount = inventorySearchService.getInventoryCount(
+        int inventoryCount = inventorySearchService.selectInventoryCount(
                 keyword, location, locationType, mfgDate, expDate,
                 stockStatus, outboundStatus
         );
@@ -64,7 +64,7 @@ public class InventorySearchController {
             PageInfoDTO pageInfo = PageUtil.paging(listLimit, inventoryCount, pageNum, 5);
 
             // 현재 페이지 데이터 조회
-            List<Map<String, Object>> list = inventorySearchService.getReceiptProductList(
+            List<Map<String, Object>> list = inventorySearchService.selectReceiptProductList(
                     pageInfo.getStartRow(),
                     listLimit,
                     keyword, location, locationType, mfgDate, expDate,
@@ -93,9 +93,9 @@ public class InventorySearchController {
     // 재고 상세 조회 모달창 (Ajax)
     @GetMapping("/detail")
     @ResponseBody
-    public Map<String, Object> getInventoryDetail(@RequestParam("idx") int receiptProductIdx) {
+    public Map<String, Object> getInventoryDetail(@RequestParam("idx") int inventoryIdx) {
         // 서비스에서 단건 조회 (상세정보 + 로케이션 분포까지 조회)
-        return inventorySearchService.getInventoryDetail(receiptProductIdx);
+        return inventorySearchService.selectInventoryDetail(inventoryIdx);
     }
     
     
