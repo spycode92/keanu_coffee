@@ -1,6 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.outbound.mapper.OutboundMapper">
+
+  <!-- OUTBOUND_ORDER -->
+  <insert id="insertOutboundOrder"
+          parameterType="com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderDTO"
+          useGeneratedKeys="true" keyProperty="outboundOrderIdx">
+    INSERT INTO OUTBOUND_ORDER
+    ( franchise_idx
+    , status
+    , urgent
+    , requested_date
+    , expect_outbound_date
+    , created_at
+    , updated_at
+    )
+    VALUES
+    ( #{franchiseIdx}
+    , #{status}
+    , #{urgent}
+    , NOW()
+    , DATE_ADD(NOW(), INTERVAL 2 DAY)               
+    , NOW()
+    , NOW()
+    )
+  </insert>
+
+  <!-- OUTBOUND_ORDER_ITEM -->
+  <insert id="insertOutboundOrderItem"
+          parameterType="com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderItemDTO"
+          useGeneratedKeys="true" keyProperty="outboundOrderItemIdx">
+    INSERT INTO OUTBOUND_ORDER_ITEM
+    ( outbound_order_idx
+    , product_idx
+    , receipt_product_idx
+    , quantity
+    )
+    VALUES
+    ( #{outboundOrderIdx}
+    , #{productIdx}
+    , NULL
+    , #{quantity}
+    )
+  </insert>
+
+  <!-- OUTBOUND_WAITING -->
+  <insert id="insertOutboundWaiting"
+          parameterType="com.itwillbs.keanu_coffee.outbound.dto.OutboundWaitingDTO"
+          useGeneratedKeys="true" keyProperty="obwaitIdx">
+    INSERT INTO OUTBOUND_WAITING
+    ( obwait_number
+    , outbound_order_idx
+    , departure_date
+    , outbound_quantity
+    , outbound_classification
+    , manager
+    , outbound_location
+    , note
+    , created_at
+    , updated_at
+    )
+    VALUES
+    ( #{obwaitNumber}
+    , #{outboundOrderIdx}
+    , DATE_ADD(NOW(), INTERVAL 2 DAY)        
+    , #{outboundQuantity}
+    , #{outboundClassification}
+    , #{manager}
+    , #{outboundLocation}
+    , #{note}
+    , NOW()
+    , NOW()
+    )
+  </insert>
+
+  <!-- Advisory Lock -->
+  <select id="getLock" resultType="int">
+    SELECT GET_LOCK(#{lockName}, #{timeout})
+  </select>
+
+  <select id="releaseLock" resultType="int">
+    SELECT RELEASE_LOCK(#{lockName})
+  </select>
+
+  <select id="selectMaxSuffixForDate" resultType="int">
+    SELECT COALESCE(
+      MAX(CAST(SUBSTRING(obwait_number, 12) AS UNSIGNED))
+    , 0)
+    FROM OUTBOUND_WAITING
+    WHERE obwait_number LIKE CONCAT('OB', #{dateStr}, '-%')
+  </select>
+
 </mapper>
