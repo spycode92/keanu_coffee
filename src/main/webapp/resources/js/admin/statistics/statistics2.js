@@ -110,7 +110,18 @@ document.addEventListener('DOMContentLoaded', () => {
 	                            return `${context.label}: ${context.parsed.y}개`;
 	                        }
 	                    }
-	                }
+	                },
+	                datalabels: {
+		                anchor: 'end',
+		                align: 'top',
+		                formatter: function(value) {
+		                    return `${value}개`;
+		                },
+		                font: {
+		                    weight: 'bold'
+		                },
+		                color: '#333'
+		            }
 	            },
 	            scales: {
 	                y: {
@@ -134,7 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
 				        showProductChart(categoryName);
 				    }
 				}
-	        }
+	        },
+			plugins: [ChartDataLabels]
 	    });
 	}
 	
@@ -173,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        data: {
 	            labels: labels,
 	            datasets: [{
-	                label: `${categoryName} 상품별 재고`,
+	                label: `상품 갯수`,
 	                data: data,
 	                backgroundColor: 'rgba(255, 159, 64, 0.6)',
 	                borderColor: 'rgba(255, 159, 64, 1)',
@@ -188,6 +200,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	                title: {
 	                    display: true,
 	                    text: `${categoryName} 카테고리 상세`
+	                },
+					datalabels: {
+	                    anchor: 'end',
+	                    align: 'top',
+	                    formatter: function(value) {
+	                        return `${value}개`;
+	                    },
+	                    font: {
+	                        weight: 'bold'
+	                    },
+	                    color: '#333'
 	                }
 	            },
 	            scales: {
@@ -195,7 +218,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	                    beginAtZero: true
 	                }
 	            }
-	        }
+	        },
+			plugins: [ChartDataLabels]
 	    });
 	}
 	
