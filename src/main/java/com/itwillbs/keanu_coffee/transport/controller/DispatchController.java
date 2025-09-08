@@ -93,7 +93,6 @@ public class DispatchController {
 			return ResponseEntity.ok(dispatchInfo);
 		} else {
 			DispatchDetailDTO detail = dispatchService.selectDispatchDetail(dispatchIdx, vehicleIdx);
-			System.out.println(detail + ">>>>>>>>>>>>>>>>>>>>");
 			return ResponseEntity.ok(detail);
 		}
 	}
@@ -107,7 +106,12 @@ public class DispatchController {
 			return ResponseEntity.notFound().build();
 		}
 		
-		return ResponseEntity.ok(dispatchInfo);
+		if (dispatchInfo.getStatus().equals("예약") || dispatchInfo.getStatus().equals("취소")) {
+			return ResponseEntity.ok(dispatchInfo);
+		} else {
+			DispatchDetailDTO detail = dispatchService.selectDispatchDetail(dispatchIdx, vehicleIdx);
+			return ResponseEntity.ok(detail);
+		}
 	}
 	
 	// 기사 마이페이지 적재 완료

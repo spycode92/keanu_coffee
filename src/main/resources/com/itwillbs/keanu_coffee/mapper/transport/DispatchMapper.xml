@@ -178,8 +178,9 @@
 	    <result property="receiverName" column="receiver_name"/>
 	    <result property="note" column="note"/>
 	
-	    <!-- ✅ 하위: 수주확인서 → 품목 리스트 -->
-	    <collection property="items" resultMap="deliveryConfirmationItemMap"/>
+	    <!-- 자식: 수주확인서 품목 -->
+	    <collection property="items" ofType="com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationItemDTO"
+	                resultMap="deliveryConfirmationItemMap"/>
 	</resultMap>
 	
 	<!-- 경유지 매핑 -->
@@ -197,27 +198,29 @@
 	    <result property="completeTime" column="complete_time"/>
 	    <result property="note" column="note"/>
 	
-	    <!-- ✅ 경유지 → 수주확인서 목록 -->
-	    <collection property="deliveryConfirmations" resultMap="deliveryConfirmationMap"/>
+	    <!-- 자식: 수주확인서 리스트 -->
+	    <collection property="deliveryConfirmations" ofType="com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO"
+	                resultMap="deliveryConfirmationMap"/>
 	</resultMap>
 	
 	<!-- 최상위 Dispatch 상세 -->
 	<resultMap id="dispatchDetailMap" type="com.itwillbs.keanu_coffee.transport.dto.DispatchDetailDTO">
 	    <id property="dispatchIdx" column="dispatch_idx"/>
 	    <result property="dispatchDate" column="dispatch_date"/>
+	    <result property="driverName" column="driver_name"/> 
 	    <result property="startSlot" column="start_slot"/>
 	    <result property="status" column="status"/>
 	    <result property="urgent" column="urgent"/>
 	    <result property="vehicleIdx" column="vehicle_idx"/>
 	    <result property="vehicleNumber" column="vehicle_number"/>
 	    <result property="capacity" column="capacity"/>
-	    <result property="driverName" column="driver_name"/>
 	    <result property="orderIds" column="order_ids"/>
 	    <result property="totalVolume" column="total_volume"/>
 	    <result property="totalQty" column="total_qty"/>
 	
-	    <!-- ✅ Dispatch → 여러 경유지 -->
-	    <collection property="franchises" resultMap="dispatchStopMap"/>
+	    <!-- ✅ 지점 매핑 -->
+	    <collection property="franchises" ofType="com.itwillbs.keanu_coffee.transport.dto.DispatchStopDTO"
+	                resultMap="dispatchStopMap"/>
 	</resultMap>
 	<select id="selectDispatchDetail" resultMap="dispatchDetailMap">
 	    SELECT
@@ -226,6 +229,7 @@
 	        , d.start_slot
 	        , d.status
 	        , d.urgent
+	        , e.emp_name AS driver_name
 	        , v.vehicle_idx
 	        , v.vehicle_number
 	        , v.capacity
@@ -245,18 +249,49 @@
 	        , dci.ordered_qty
 	        , dci.delivered_qty
 	        , dci.status AS item_status
-	    FROM DISPATCH d
-	    JOIN DISPATCH_ASSIGNMENT da ON d.dispatch_idx = da.dispatch_idx
-	    JOIN VEHICLE v              ON da.vehicle_idx = v.vehicle_idx
-	    JOIN DISPATCH_STOP ds       ON d.dispatch_idx = ds.dispatch_idx 
-	                               AND da.dispatch_assignment_idx = ds.dispatch_assignment_idx
-	    JOIN FRANCHISE f            ON ds.franchise_idx = f.franchise_idx
-	    JOIN COMMON_CODE c          ON f.region_idx = c.common_code_idx
-	    JOIN DELIVERY_CONFIRMATION dc ON ds.dispatch_stop_idx = dc.dispatch_stop_idx
-	    JOIN DISPATCH_STOPDELIVERY_CONFIRMATION_ITEM dci ON dc.delivery_confirmation_idx = dci.confirmation_idx
-	    WHERE d.dispatch_idx = #{dispatchIdx}
-	      AND da.vehicle_idx = #{vehicleIdx}
-	    ORDER BY ds.delivery_sequence, f.franchise_name, dci.item_name
+	        , da.dispatch_assignment_idx
+	    FROM 
+	    	DISPATCH d
+	    JOIN 
+	    	DISPATCH_ASSIGNMENT da 
+	    ON 
+	    	d.dispatch_idx = da.dispatch_idx
+	    JOIN 
+	    	VEHICLE v              
+	    ON 
+	    	da.vehicle_idx = v.vehicle_idx
+	    JOIN 
+	    	DISPATCH_STOP ds       
+	    ON 
+	    	d.dispatch_idx = ds.dispatch_idx 
+	    AND 
+	    	da.dispatch_assignment_idx = ds.dispatch_assignment_idx
+	    JOIN 
+	    	FRANCHISE f            
+	    ON 
+	    	ds.franchise_idx = f.franchise_idx
+	    JOIN 
+	    	COMMON_CODE c          
+	    ON 
+	    	f.region_idx = c.common_code_idx
+	    JOIN 
+	    	DELIVERY_CONFIRMATION dc 
+	    ON 
+	    	ds.dispatch_stop_idx = dc.dispatch_stop_idx
+	    JOIN 
+	    	DISPATCH_STOPDELIVERY_CONFIRMATION_ITEM dci 
+	    ON 
+	    	dc.delivery_confirmation_idx = dci.confirmation_idx
+	    JOIN 
+	    	EMPLOYEE_INFO e 
+	    ON 
+	    	da.driver_idx = e.emp_idx
+	    WHERE 
+	    	d.dispatch_idx = #{dispatchIdx}
+	    AND 
+	    	da.vehicle_idx = #{vehicleIdx}
+	    ORDER BY 
+	    	ds.delivery_sequence, f.franchise_name, dci.item_name
 	</select>
 	
 	<!-- 배차 정보 조회 (차량idx로 조회) -->
@@ -273,6 +308,7 @@
 		<!-- 배차 기본정보 --> 
 		<id property="dispatchIdx" column="dispatch_idx"/> 
 		<result property="dispatchDate" column="dispatch_date"/> 
+		<result property="driverName" column="driver_name"/> 
 		<result property="startSlot" column="start_slot"/> 
 		<result property="status" column="status"/> 
 		<result property="urgent" column="urgent"/> 
@@ -433,6 +469,38 @@
 			, #{orderedQty}
 		)
 	</insert>
+	
+	<!-- 현재 기사 Assignment 상태를 적재완료로 갱신 -->
+	<update id="updateAssigmentStatus">
+		UPDATE
+			DISPATCH_ASSIGNMENT
+		SET
+			status = #{status}
+		WHERE
+			dispatch_assignment_idx = #{assigmentIdx}
+	</update>
+	
+	<!-- 같은 배차에 배정된 기사 수 카운트 -->
+	<select id="selectCountAssigment" resultType="int">
+		SELECT
+			COUNT(dispatch_assignment_idx)
+		FROM
+			DISPATCH_ASSIGNMENT
+		WHERE
+			dispatch_idx = #{dispatchIdx}
+	</select>
+	
+	<!-- 적재 완료한 기사 수 카운트 -->
+	<select id="selectCountCompletedAssignments" resultType="int">
+		SELECT
+			COUNT(dispatch_assignment_idx)
+		FROM
+			DISPATCH_ASSIGNMENT
+		WHERE
+			dispatch_idx = #{dispatchIdx}
+		AND
+			status = '적재완료'
+	</select>
 	
 	<!-- 출고 주문 테이블 상태 변경 -->
 	<update id="updateOutboundOrderStatus" >

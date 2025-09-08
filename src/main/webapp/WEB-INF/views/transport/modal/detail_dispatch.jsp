@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
-	    <!-- 상세 모달(배차 클릭 시) -->
+	<!-- 상세 모달(배차 클릭 시) -->
     <div class="modal" id="detailModal" aria-hidden="true">
         <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
             <div class="modal-head">

@@ -21,6 +21,7 @@ public class DispatchRegionGroupViewDTO {
 	private Timestamp dispatchDate;   	   // 출고일자
 	private String startSlot;         	   // 출발 시간
 	private char urgent;          	       // 긴급 여부
+	private char requiresAdditional;       // 추가배차
 	private String status;            	   // 주문 상태
 	private String driverName;             // 기사 이름
 	private String vehicleNumber;          // 차량 번호

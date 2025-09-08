@@ -8,7 +8,7 @@ import lombok.Data;
 public class DispatchCompleteRequest {
     private Integer dispatchIdx;          // 배차 고유번호 
     private Integer vehicleIdx;           // 차량 고유번호
-    private char urgent;
+    private char requiresAdditional;      // 추가배차
     private List<StopComplete> stops;     // 선택한 경유지별 납품 데이터
     
     @Data

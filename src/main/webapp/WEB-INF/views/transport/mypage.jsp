@@ -54,9 +54,10 @@
                     </tr>
                 </thead>
                 <tbody>
+                	<c:set var="status" value="${dispatch.status }"/>
                 	<c:forEach var="dispatch" items="${dispatchInfo}">
                 		<tr data-dispatch-idx="${dispatch.dispatchIdx}" data-vehicle-idx="${dispatch.vehicleIdx}"
-                		    data-urgent="${dispatch.urgent}">
+                		    data-requires-additional="${dispatch.requiresAdditional}">
                 			<td>
                 				<fmt:formatDate value="${dispatch.dispatchDate}" pattern="yyyy-MM-dd"/>
                 			</td>
@@ -115,12 +116,26 @@
             </div>
             <div class="modal-body">
                 <div id="progMeta" class="muted" style="margin-bottom:8px">배차일 -</div>
-                <div id="deliverWrap"><!-- 지점별 납품 표 + 버튼 --></div>
+                <div id="deliverWrap">
+                	<table id="detailItems">
+                		<thead>
+                			<tr>
+                				<th>지점명</th>
+                				<th>품목명</th>
+                				<th>주문수량</th>
+                				<th>반품수량</th>
+                				<th>상태</th>
+                				<th></th>
+                			</tr>
+                		</thead>
+                		<tbody></tbody>
+                	</table>
+                </div>
                 <h3 style="margin:12px 0 6px">배송 현황</h3>
                 <div class="timeline" id="timeline"><!-- 단계 표시 --></div>
             </div>
             <div class="modal-foot">
-                <button class="btn ghost" id="btnBackBase" style="display:none">복귀</button>
+				<button class="btn ghost" id="detailActionBtn"></button>
             </div>
         </div>
     </div>

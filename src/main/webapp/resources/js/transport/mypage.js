@@ -1,5 +1,6 @@
 const MYPAGE_DISPATCH_DETAIL_URL = "/transport/mypage/dispatch/detail";
 const MYPAGE_DISPATCH_COMPLETE_URL = "/transport/mypage/dispatch/complete";
+const MYPAGE_DISPATCH_START_URL = "";
 
 let franchises = [];
 
@@ -16,7 +17,6 @@ $(document).on("click", ".load-btn", function() {
 
   $.getJSON(`${MYPAGE_DISPATCH_DETAIL_URL}/${dispatchIdx}/${vehicleIdx}`)
     .done(function(dispatch) {
-      console.log(dispatch);
 
       franchises = dispatch.franchises || [];
 
@@ -161,7 +161,7 @@ function loadCompleted() {
 	const requestData = {
 		dispatchIdx: parseInt($("#currentDispatchIdx").val()),
 		vehicleIdx: parseInt($("#currentVehicleIdx").val()),
-		urgent: $("#assignTable tbody tr").data("urgent"),
+		requiresAdditional: $("#assignTable tbody tr").data("requires-additional"),
 		stops: selectedStops
 	};
 	
@@ -196,6 +196,95 @@ function loadCompleted() {
 
 $(document).on("click", ".detail-btn", function() {
 	ModalManager.openModalById('progressModal');
+	
+	const row = $(this).closest("tr");
+	const status = row.find("td:eq(4)").text();
+	const btn = $("#detailActionBtn");
+	const dispatchIdx = row.data("dispatch-idx");
+	const vehicleIdx = row.data("vehicle-idx");
+	
+	
+	// --------------
+	// 화면 구현
+	$.getJSON(`${MYPAGE_DISPATCH_DETAIL_URL}/${dispatchIdx}/${vehicleIdx}`)
+	 .done(function(dispatch) {
+		let detailHtml = "";
+		dispatch.franchises?.forEach((stop) => {
+			const items = stop.deliveryConfirmations?.[0]?.items || [];
+			if (stop.deliveryConfirmations) {
+				stop.deliveryConfirmations.forEach((dc) => {
+					dc.items?.forEach((item, index) => {
+						detailHtml += `
+							<tr>
+								${index === 0 ? `<td rowspan="${items.length}">${stop.franchiseName}</td>` : ""}
+								<td>${item.itemName}</td>
+								<td>${item.orderedQty}</td>
+							  	<td>
+								    <input type="number"
+								           class="delivered-qty"
+								           data-ordered-qty="${item.orderedQty}"
+								           min="0"
+								           max="${item.orderedQty}"
+								           value="${item.deliveredQty != null ? item.deliveredQty : 0}" />
+							  	</td>
+								<td class="status-cell">${item.status || "-"}</td>
+						        ${index === 0 ? `<td rowspan="${items.length}">
+						        	<button class="complateBtn" data-franchise-idx="${stop.franchiseIdx}">
+						              납품완료
+						            </button>
+						          </td>` : ""}
+							</tr>
+						`;
+					});
+				});
+			}
+		});
+		
+		$("#detailItems tbody").html(detailHtml);
+		
+		
+	});
+	// --------------
+	
+	// 버튼 클릭 시 
+	if (status === "적재완료") {
+		btn.text("운송시작");
+		// 운송 시작 상태 변경 
+		btn.off("click").on("click", function() {
+			$.ajax({
+				url: MYPAGE_DISPATCH_START_URL
+			})
+		});
+	}
+	
+});
+
+// 반품 수량 입력할 때 이벤트
+$(document).on("input", ".delivered-qty", function() {
+	const tr = $(this).closest("tr");
+	const deliverd = parseInt($(this).val() || "0", 10);
+	const orderedQty = parseInt($(this).data("ordered-qty"), 10);
+	
+	let statusText = "대기 중";
+	let statusCode = null;
+
+	if (deliverd === 0) {
+		statusText = "완료";
+		statusCode = "OK";
+	} else if (deliverd < orderedQty) {
+		statusText = "부분 반품";
+		statusCode = "PARTIAL_REFUND";
+	} else if (deliverd === orderedQty) {
+		statusText = "전량 반품";
+		statusCode = "REFUND";
+	}
+	
+	// 상태 화면 표시
+	tr.find(".status-cell").text(statusText);
+	
+	// 전송할 데이터에 status도 담기 위해 data 속성 업데이트
+    tr.find(".delivered-qty").data("status-code", statusCode);
+ 
 });
 
 

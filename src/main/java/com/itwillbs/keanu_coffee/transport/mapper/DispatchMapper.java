@@ -70,5 +70,14 @@ public interface DispatchMapper {
 	// 수주확인서품목 데이터 등록
 	void insertDeliveryConfirmationItem(DeliveryConfirmationItemDTO confirmItem);
 
+	// 현재 기사 Assignment 상태를 적재완료로 갱신
+	void updateAssigmentStatus(@Param("assigmentIdx") Integer assigmentIdx, @Param("status") String status);
+	
+	// 같은 배차에 배정된 기사 수 카운트
+	int selectCountAssigment(Integer dispatchIdx);
+	
+	// 적재 완료한 기사 수 카운트
+	int selectCountCompletedAssignments(Integer dispatchIdx);
+
 
 }

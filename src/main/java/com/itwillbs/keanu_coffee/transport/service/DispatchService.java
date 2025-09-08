@@ -131,9 +131,10 @@ public class DispatchService {
 	@Transactional
 	public void insertDispatchLoad(DispatchCompleteRequest request) {
 		// 배차 테이블 상태 변경
-		dispatchMapper.updateDispatchStatus(request.getDispatchIdx(), "적재완료");
-		
 		Integer assigmentIdx = dispatchMapper.selectAssigmentIdx(request.getDispatchIdx(), request.getVehicleIdx());
+		
+		// 현재 기사 Assignment 상태를 적재완료로 갱신
+		dispatchMapper.updateAssigmentStatus(assigmentIdx, "적재완료");
 		
 		// 선택한 지점별 처리
 		for (DispatchCompleteRequest.StopComplete stopReq: request.getStops()) {
@@ -175,6 +176,21 @@ public class DispatchService {
 				// 수주확인서 품목 데이터 등록
 				dispatchMapper.insertDeliveryConfirmationItem(confirmItem);
 			}
+		}
+		
+		// 모든 기사 적재 확인
+		if (request.getRequiresAdditional() == 'Y') {
+			// 같은 배차에 배정된 기사 수 카운트
+			int totalDrivers = dispatchMapper.selectCountAssigment(request.getDispatchIdx());
+			// 적재 완료한 기사 수 카운트
+	        int completedDrivers = dispatchMapper.selectCountCompletedAssignments(request.getDispatchIdx());
+			
+	        // 모든 기사가 적재 완료일 때 상태 변경
+	        if (totalDrivers == completedDrivers) {
+	        	dispatchMapper.updateDispatchStatus(request.getDispatchIdx(), "적재완료");
+	        }
+		} else { // 단일 기사 상태 변경
+			dispatchMapper.updateDispatchStatus(request.getDispatchIdx(), "적재완료");
 		}
 		
 	}

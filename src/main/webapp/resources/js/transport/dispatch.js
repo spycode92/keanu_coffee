@@ -236,6 +236,7 @@ $(document).on("click", ".dispatchInfo", function() {
 	
 	$.getJSON((`${DISPATCH_DETAIL_URL}/${dispatchIdx}/${vehicleIdx}`))
 		.done(function(dispatch) {
+			console.log(dispatch);
 			$("#detailDriver").val(`${dispatch.driverName} / ${dispatch.vehicleNumber} / ${dispatch.capacity === 1000 ? "1.0t" : "1.5t"}`);
 			if (dispatch.status === "예약" || dispatch.status === "취소") {
 				$("#detail").hide();
