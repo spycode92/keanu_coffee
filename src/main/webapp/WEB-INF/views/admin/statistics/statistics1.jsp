@@ -5,7 +5,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Keanu Coffee - 총괄 대시보드</title>
+    <title>Keanu Coffee - 통계</title>
     <style>
         /* 각 차트 박스 공통 스타일 */
         .chart-card {
@@ -50,6 +50,8 @@
 
     <!-- 메인 내용 -->
     <section class="content">
+    	<input type="button" value="입출고폐기" class="btn-primary" id="statistics1"/>
+    	<input type="button" value="재고" class="btn-secondary" id="statistics2"/>
 	    <div class="card">
 	        <div class="card-header d-flex justify-content-between align-items-center">
 			    <!-- 왼쪽: 제목 + 날짜 선택기 -->
@@ -100,6 +102,6 @@
     </section>
 
    
-    <script src="/resources/js/admin/dashboard.js"></script>
+    <script src="/resources/js/admin/statistics/statistics1.js"></script>
 </body>
 </html>

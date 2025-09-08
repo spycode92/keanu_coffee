@@ -61,4 +61,10 @@
 		AND
 			franchise_idx = #{franchiseIdx}
 	</update>
+	<!-- 맵핑테이블 삭제 -->
+	<delete id="deleteMapping" >
+		DELETE FROM REGION_ADMINISTRATIVE_MAP
+		WHERE bcode = #{bcode}
+		
+	</delete>
 </mapper>

@@ -21,6 +21,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class TotalDashBoardRestController {
 	private final TotalDashBoardService totalDashBoardService;
+	
 	// 입고차트 필요한정보 불러오기
 	@GetMapping("inbound/{needData}")
 		public ResponseEntity<List<TotalDashBoardDTO>> inbound(@PathVariable String needData,

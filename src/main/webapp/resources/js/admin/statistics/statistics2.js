@@ -1,12 +1,18 @@
 // inboundChart.js
 
 document.addEventListener('DOMContentLoaded', () => {
-	//전역변수
-	// 그래프 범위 날짜 구하기
-	let startDate = null;
-	let endDate = null;
-	let needData = null;
 	
+	const statistics1 = document.getElementById("statistics1");
+	const statistics2 = document.getElementById("statistics2");
+	
+	statistics1.addEventListener('click', () =>{
+		window.location.href = "/admin/statistics1"		
+	});
+	statistics2.addEventListener('click', () =>{
+		window.location.href = "/admin/statistics2"		
+	});
+	
+	//전역변수
 	// 입고차트에 필요한 변수들
     let inboundRawData = [    ];
 	let overallChart = null;    // 누적 막대그래프
@@ -29,94 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	
 	// 폐기 차트에 필요한 변수
 	let disposalRawData = [  ];
-	
-	//날짜인풋
-	const dateInput = document.getElementById('baseDate');
-    // 초기 버튼 스타일 설정
-    const defaultBtn = document.querySelector('.btn-group .btn[data-period="daily"]');
-    //처음 버튼선택, 초기값 설정
-	if (defaultBtn) {
-		needData = defaultBtn.getAttribute('data-period');
-		printSelectedDate();
-        defaultBtn.classList.add('btn-primary');
-        defaultBtn.classList.remove('btn-secondary');
-		getOutboundData().then(() =>{
-			const OutboundChartData = outboundProcessChartData(outboundRawData);
-			console.log("출고데이터",OutboundChartData);
-			upgradeOutboundOverallChart(OutboundChartData);
-		});
-		getDayInbound().then( () => {
-			const firstChartData = processChartData(inboundRawData);
-			upgradeOverallChart(firstChartData);
-		});
-		getDisposalData().then(() => {
-			const disposalChartData = processDisposalChartData(disposalRawData);
-			renderDisposalChart(disposalChartData);
-		});
-	}
-	
-	//날짜선택함수
-	function printSelectedDate() {
-        let selectedDate = dateInput.value;
-		if(!selectedDate){
-			const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-            dateInput.value = today;
-            selectedDate = today;
-		}
-        calculateDateRange(selectedDate, needData);
-		document.getElementById("dateRangeInfo")
-			.innerHTML = `${startDate} ~ ${endDate}`;
-    }
-
-	dateInput.addEventListener('change', () => {
-		printSelectedDate();
-	});
-	
-	//날짜 범위 계산
-	function calculateDateRange(endD, period) {
-	    const end = new Date(endD);
-	    const start = new Date(endD);
-	    if (period === 'daily') {
-	        start.setDate(start.getDate() - 15);  // 15일 전
-	    } else if (period === 'weekly') {
-	        start.setDate(start.getDate() - (8 * 7));  // 8주 전 (56일)
-	    } else if (period === 'monthly') {
-	        start.setMonth(start.getMonth() - 12);  // 12개월 전
-	    }
-	    
-	    startDate = start.toISOString().split('T')[0];
-		endDate = end.toISOString().split('T')[0];
-	}
-	
-    // 기간 버튼 클릭 이벤트 (TODO: AJAX 호출 및 데이터 재집계 로직으로 확장 가능)
-    document.querySelectorAll('.btn-group .btn').forEach(button => {
-        button.addEventListener('click', () => {
-			//버튼선택시 표시
-            const period = button.getAttribute('data-period');
-			needData = period;
-            document.querySelectorAll('.btn-group .btn').forEach(btn => {
-                btn.classList.remove('btn-primary');
-                btn.classList.add('btn-secondary');
-            });
-            button.classList.add('btn-primary');
-            button.classList.remove('btn-secondary');
-			//날짜범위선택
-			printSelectedDate()
-			//입고정보조회후 차트그리기
-			getOutboundData().then(()=>{
-				const OutboundChartData = outboundProcessChartData(outboundRawData);
-				upgradeOutboundOverallChart(OutboundChartData);
-			});
-			getDayInbound().then(() =>{
-				const firstChartData = processChartData(inboundRawData);
-				upgradeOverallChart(firstChartData);
-			});
-			getDisposalData().then(() => {
-				const disposalChartData = processDisposalChartData(disposalRawData);
-				renderDisposalChart(disposalChartData);
-			});
-        });
-    });
+	let disposalChart = null;
 	
 	// 데이터 검증 및 빈 데이터 처리 함수
 	function handleEmptyData(ctx, message) {
@@ -240,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        data: chartData,
 	        options: {
 	            responsive: true,
-				aspectRatio: 3,
+				aspectRatio: 4,
 	            scales: {
 	                x: { stacked: true },
 	                y: { stacked: true, beginAtZero: true }
@@ -349,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        data: inputData,
 	        options: {
 	            responsive: true,
-				aspectRatio: 3,
+				aspectRatio: 4,
 	            scales: {
 	                x: { stacked: true },
 	                y: { stacked: true, beginAtZero: true }
@@ -443,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        data: inputData,
 	        options: {
 	            responsive: true,
-				aspectRatio: 3,
+				aspectRatio: 4,
 				radius: 70,
 				cutout: '20%',
 	            plugins: {
@@ -573,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        data: inputData,
 	        options: {
 	            responsive: true,
-	            aspectRatio: 3,
+	            aspectRatio: 4,
 	            scales: {
 	                x: { stacked: true },
 	                y: { stacked: true, beginAtZero: true }
@@ -672,7 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        data: inputData,
 	        options: {
 	            responsive: true,
-	            aspectRatio: 3,
+	            aspectRatio: 4,
 	            scales: {
 	                x: { stacked: true },
 	                y: { stacked: true, beginAtZero: true }
@@ -756,7 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        data: inputData,
 	        options: {
 	            responsive: true,
-	            aspectRatio: 3,
+	            aspectRatio: 4,
 	            radius: 70,
 	            cutout: '20%',
 	            plugins: {
@@ -799,8 +718,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		return ajaxGet(`/admin/dashboard/disposal/${needData}?startDate=${startDate}&endDate=${endDate}`
 			)
 			.then((data)=>{
+				console.log("어어엉어",data)
 				disposalRawData = data;
-			
 			}).catch((data)=>{
 				console.log("error " + data)	
 			})
@@ -867,17 +786,21 @@ document.addEventListener('DOMContentLoaded', () => {
 	
 	//폐기꺽은선차트 그리기함수
 	function renderDisposalChart(chartData) {
+		if (disposalChart) {
+	        disposalChart.destroy();
+	    }
+		
 	    const ctx = document.getElementById('disposalChart').getContext('2d');
 	    if (!chartData || !chartData.labels || chartData.labels.length === 0) {
 	        handleEmptyData(ctx, '해당 기간에 폐기 데이터가 없습니다');
 	        return;
 	    }
-	    new Chart(ctx, {
+	    disposalChart = new Chart(ctx, {
 	        type: 'line',
 	        data: chartData,
 	        options: {
 	            responsive: true,
-	            aspectRatio: 3,
+	            aspectRatio: 4,
 	            plugins: {
 	                title: {
 	                    display: true,
@@ -915,5 +838,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	        }
 	    });
 	}
+	
+
+	
+	
 	
 });

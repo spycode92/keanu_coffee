@@ -77,7 +77,7 @@ public class AdminController {
 	// 대시보드
 	@GetMapping("/dash")
 	public String dashboard() {
-		return "redirect:/admin/dashboard";
+		return "redirect:/admin/statistics1";
 	}
 
 	@GetMapping("/sysNoti")
