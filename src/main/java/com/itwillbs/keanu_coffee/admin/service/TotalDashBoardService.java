@@ -49,6 +49,11 @@ public class TotalDashBoardService {
 			return totalDashBoardMapper.selectDisposalDashDataByMonth(startDate, endDate);
 		}
 	}
+	//재고정보조회
+	public List<TotalDashBoardDTO> getInventoryDashData() {
+		
+		return totalDashBoardMapper.selectInventory();
+	}
 	
 
 }

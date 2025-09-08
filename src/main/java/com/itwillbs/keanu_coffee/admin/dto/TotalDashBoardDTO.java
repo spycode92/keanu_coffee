@@ -33,6 +33,9 @@ public class TotalDashBoardDTO {
 	
 	private String section; //공정
 	
+	//재고
+	private Long inventoryQTY;
+	
 	
     
 

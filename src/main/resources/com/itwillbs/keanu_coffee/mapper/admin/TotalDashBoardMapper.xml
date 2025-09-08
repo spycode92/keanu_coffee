@@ -146,7 +146,7 @@
 	</select>
 	
 	<!-- 일별 폐기량 조회 -->
-	<select id="selectDisposalDashDataByDay">
+	<select id="selectDisposalDashDataByDay" resultType="TotalDashBoardDTO">
 		SELECT
 		 d.section as section
 		 , COALESCE(SUM(d.disposal_amount), 0) as disposalQuantity
@@ -161,7 +161,7 @@
 	</select>
 	
 	<!-- 주별 폐기량 조회 -->
-	<select id="selectDisposalDashDataByWeek">
+	<select id="selectDisposalDashDataByWeek" resultType="TotalDashBoardDTO">
 	    SELECT
 	    	CONCAT(
 	            MONTH(d.created_at), '월 ',
@@ -179,7 +179,7 @@
 	</select>
 	
 	<!-- 월별 폐기량 조회 -->
-	<select id="selectDisposalDashDataByMonth">
+	<select id="selectDisposalDashDataByMonth" resultType="TotalDashBoardDTO">
 	    SELECT
 	    	CONCAT(DATE_FORMAT(d.created_at, '%m'), '월') AS disposalMonth,
 	        d.section AS section,
@@ -191,6 +191,20 @@
 	    WHERE DATE(d.created_at) BETWEEN #{startDate} AND #{endDate}
 	    GROUP BY d.section, p.product_name, disposalMonth
 	    ORDER BY disposalMonth
+	</select>
+	
+	<!-- 재고정보조회 -->
+	<select id="selectInventory" resultType="TotalDashBoardDTO">
+		SELECT
+			c.common_code_name as categoryName
+			, p.product_name as productName
+			, i.quantity as inventoryQTY
+		FROM INVENTORY i
+		LEFT JOIN PRODUCT p
+		ON i.product_idx = p.product_idx
+		LEFT JOIN COMMON_CODE c
+		ON p.category_idx = c.common_code_idx
+		ORDER BY inventoryQTY
 	</select>
 	
 	

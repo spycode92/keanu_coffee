@@ -12,30 +12,17 @@ document.addEventListener('DOMContentLoaded', () => {
 		window.location.href = "/admin/statistics2"		
 	});
 	
+	getInventory().then(()=>{
+		const InventoryChartData = processInventoryData(inventoryRawData);
+		drawInventoryChart(InventoryChartData);
+	})
+	
 	//전역변수
-	// 입고차트에 필요한 변수들
-    let inboundRawData = [    ];
-	let overallChart = null;    // 누적 막대그래프
+	// 재고차트에 필요한 변수들
+    let inventoryRawData = [    ];
+	let inventoryProductChart = null;    // 상품별막대그래프
 	let categoryChart = null; // 카테고리 누적막대
 	let productChart = null; // 도넛차트
-	
-	let savedCategoryData = null; //카테고리 누적막대 정보저장
-	let savedDetailRows = null;   
-	let currentSelectedDate = null; // 선택한 날짜 저장
-	
-	// 출고 차트에 필요한 변수들
-	let outboundRawData = [    ];
-	let oubboundOverallchart = null;
-	let outboundCategoryChart = null;
-	let outboundProductChart = null;
-	
-	let savedOutboundCategoryData = null;
-	let savedOutboundDetailRows = null;
-	let outboundCurrentSelectedDate = null;
-	
-	// 폐기 차트에 필요한 변수
-	let disposalRawData = [  ];
-	let disposalChart = null;
 	
 	// 데이터 검증 및 빈 데이터 처리 함수
 	function handleEmptyData(ctx, message) {
@@ -54,144 +41,172 @@ document.addEventListener('DOMContentLoaded', () => {
 	    ctx.fillText(message, centerX, centerY);
 	}
 
-	//inboundRawData에 넣을 데이터 가져오기
-	function getDayInbound(){
-		return ajaxGet(`/admin/dashboard/inbound/${needData}?startDate=${startDate}&endDate=${endDate}`
-			)
+	//inventoryRawData에 넣을 데이터 가져오기
+	function getInventory(){
+		return ajaxGet(`/admin/dashboard/inventory`)
 			.then((data)=>{
-				inboundRawData = data;
-			
+				console.log(data);
+				inventoryRawData = data;
 			}).catch((data)=>{
 				console.log("error " + data)	
 			})
 	}
 
-	
-	// 데이터 가공 함수
-	function processChartData(rawData) {
+	// 재고데이터 가공 함수
+	function processInventoryData(rawData) {
 	    const grouped = {};
 	    
 	    // 날짜별로 데이터 집계
 	    rawData.forEach(item => {
 	        // period에 따라 key 결정
-	        let key = null;
-	        if (needData === 'daily') {
-	            key = item.arrivalDate;       
-	        } else if (needData === 'weekly') {
-	            key = item.arrivalMonthWeek;    
-	        } else if (needData === 'monthly') {
-	            key = item.arrivalMonth;       
-	        }
-	        
+	        let key = item.categoryName || '기타';
+	        const inventoryQTY = item.inventoryQTY || 0;      //카테고리별재고량
+
 	        if (!key) return; // null인 경우 건너뜀
 	        
-	        const ibwquantity = item.ibwquantity || 0;      // 입고대기량
-	        const riquantity = item.riquantity || 0;        // 입고완료량  
-	        const disposalQuantity = item.disposalQuantity || 0; // 폐기량
-	        
-	        // 계산
-	        const 미입고 = Math.max(0, ibwquantity - riquantity);           // 음수 방지
-	        const 입고완료 = Math.max(0, riquantity - disposalQuantity);      // 음수 방지
-	        const 폐기 = disposalQuantity;
-	        
-	        if (!grouped[key]) {
-	            grouped[key] = { 미입고: 0, 입고완료: 0, 폐기: 0 };
+	        if (grouped[key]) {
+	            grouped[key] += inventoryQTY;
+	        } else {
+	            grouped[key] = inventoryQTY;
 	        }
-	        
-	        grouped[key].미입고 += 미입고;
-	        grouped[key].입고완료 += 입고완료; 
-	        grouped[key].폐기 += 폐기;
 	    });
 	    
 	    // 날짜 정렬
-	    const dates = Object.keys(grouped).sort();
 	    console.log(grouped);
+	    const sorted = Object.entries(grouped).sort((a, b) => b[1] - a[1]);
+		const labels = sorted.map(([category]) => category);
+		const data = sorted.map(([_, qty]) => qty);
 	    // Chart.js 형태로 변환
-	    return {
-	        labels: dates,  // X축: 날짜들
-	        datasets: [
-	            {
-	                label: '입고완료', 
-	                data: dates.map(date => grouped[date].입고완료),
-	                backgroundColor: '#4BC0C0'  // 청록색
-	            },
-	            {
-	                label: '폐기',
-	                data: dates.map(date => grouped[date].폐기),
-	                backgroundColor: '#FF6384'  // 빨간색
-	            },
-	            {
-	                label: '미입고',
-	                data: dates.map(date => grouped[date].미입고),
-	                backgroundColor: '#FFCE56'  // 노란색
-	            }
-	        ]
-	    };
+	    return { labels, data };
 	}
 	
-	//누적막대그래프차트 생성[입고]
-	function upgradeOverallChart(inputData){
-        // 기존 차트 제거
-	    if (overallChart) {
-	        overallChart.destroy();
-	    }
-	    if (categoryChart) {
-	        categoryChart.destroy();
-	    }
-	    if (productChart) {
-	        productChart.destroy();
-	    }
-
-        $("#inbound_title").html(`입고현황`);
-
-        // 중첩막대그래프 [입고]
-        const ctx = document.getElementById('IBoverallChart').getContext('2d');
-        
-        // 차트 데이터 (나중에 가공된 데이터로 교체 예정)
-        const chartData = inputData;
-        if(!inputData || !inputData.labels || inputData.labels.length === 0){
-			handleEmptyData(ctx, '해당 기간에 입고 데이터가 없습니다');
-			return;
-		}
-		
-        overallChart = new Chart(ctx, {
+	//카테고리별 재고차트그리기
+	function drawInventoryChart({ labels, data }) {
+	    const ctx = document.getElementById('inventory_chart').getContext('2d');
+	
+	    new Chart(ctx, {
 	        type: 'bar',
-	        data: chartData,
+	        data: {
+	            labels: labels,
+	            datasets: [{
+	                label: '카테고리별 재고 수량',
+	                data: data,
+	                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+	                borderColor: 'rgba(75, 192, 192, 1)',
+	                borderWidth: 1
+	            }]
+	        },
 	        options: {
 	            responsive: true,
 				aspectRatio: 4,
-	            scales: {
-	                x: { stacked: true },
-	                y: { stacked: true, beginAtZero: true }
-	            },
-				onClick: (event, elements) => {
-					if (!elements.length) return;
-					
-					console.log(elements);
-					const idx = elements[0].index;
-	                const dateKey = overallChart.data.labels[idx];
-					
-	                // 상세 데이터 필터링
-	                let detailRows = null;
-	                if(needData == 'daily'){
-	                    detailRows = inboundRawData.filter(rec => rec.arrivalDate === dateKey);
-	                } else if (needData == 'weekly'){
-	                    detailRows = inboundRawData.filter(rec => rec.arrivalMonthWeek === dateKey);
-	                } else {
-	                    detailRows = inboundRawData.filter(rec => rec.arrivalMonth === dateKey);
+				maintainAspectRatio: false,
+	            plugins: {
+	                title: {
+	                    display: true, text: '카테고리별 재고 현황'
+	                },
+	                tooltip: {
+	                    callbacks: {
+	                        label: function(context) {
+	                            return `${context.label}: ${context.parsed.y}개`;
+	                        }
+	                    }
 	                }
-	
-					const newdata = categoryData(detailRows);
-					
-					savedCategoryData = newdata;
-			        savedDetailRows = detailRows;
-			        currentSelectedDate = dateKey;
-
-					upgradeCategoryChart(savedCategoryData);
-		        }
-			}
+	            },
+	            scales: {
+	                y: {
+	                    beginAtZero: true,
+	                    title: {
+	                        display: true, text: '수량'
+	                    }
+	                },
+	                x: {
+	                    title: {
+	                        display: true, text: '카테고리'
+	                    }
+	                }
+	            },
+				onClick: function(event, elements) {
+				    if (elements.length > 0) {
+				        const clickedIndex = elements[0].index;
+				        const categoryName = this.data.labels[clickedIndex];
+				
+				        console.log("클릭된 카테고리:", categoryName);
+				        showProductChart(categoryName);
+				    }
+				}
+	        }
 	    });
 	}
+	
+	//선택한 카테고리 막대차트에서 상품별차트그리기
+	function showProductChart(categoryName) {
+	    const filtered = inventoryRawData.filter(item => item.categoryName === categoryName);
+	
+	    const productMap = {};
+	    filtered.forEach(item => {
+	        const name = item.productName || '이름없음';
+	        const qty = Number(item.inventoryQTY) || 0;
+	
+	        if (productMap[name]) {
+	            productMap[name] += qty;
+	        } else {
+	            productMap[name] = qty;
+	        }
+	    });
+	
+	    const labels = Object.keys(productMap);
+	    const data = Object.values(productMap);
+	
+	    drawProductChart({ labels, data, categoryName });
+	}
+	
+	//상품별 차트 그리기
+	function drawProductChart({ labels, data, categoryName }) {
+	    if (inventoryProductChart) {
+	        inventoryProductChart.destroy();
+	    }
+		
+	    const ctx = document.getElementById('inventory_detail_chart').getContext('2d');
+	
+	    inventoryProductChart = new Chart(ctx, {
+	        type: 'bar',
+	        data: {
+	            labels: labels,
+	            datasets: [{
+	                label: `${categoryName} 상품별 재고`,
+	                data: data,
+	                backgroundColor: 'rgba(255, 159, 64, 0.6)',
+	                borderColor: 'rgba(255, 159, 64, 1)',
+	                borderWidth: 1
+	            }]
+	        },
+	        options: {
+	            responsive: true,
+				aspectRatio: 4,
+				maintainAspectRatio: false,
+	            plugins: {
+	                title: {
+	                    display: true,
+	                    text: `${categoryName} 카테고리 상세`
+	                }
+	            },
+	            scales: {
+	                y: {
+	                    beginAtZero: true
+	                }
+	            }
+	        }
+	    });
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	// 카테고리차트데이터로 변환 함수[입고]
 	function categoryData(detailRows){

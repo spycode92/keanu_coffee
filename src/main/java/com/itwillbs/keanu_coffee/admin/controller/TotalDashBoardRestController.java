@@ -46,6 +46,13 @@ public class TotalDashBoardRestController {
 		
 		return ResponseEntity.ok(totalDList);
 	}
+	// 폐기차트 필요한정보 불러오기
+	@GetMapping("/inventory")
+	public ResponseEntity<List<TotalDashBoardDTO>> inventory() {
+		List<TotalDashBoardDTO> totalDList = totalDashBoardService.getInventoryDashData();
+		
+		return ResponseEntity.ok(totalDList);
+	}
 }
 
 

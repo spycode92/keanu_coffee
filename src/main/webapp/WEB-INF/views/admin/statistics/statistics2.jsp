@@ -19,7 +19,20 @@
             color: var(--card-foreground);
             box-sizing: border-box;
         }
-
+		.chart-wrapper {
+		    width: 100%;
+		    max-width: 40%; 
+		    height: 400px;
+		    position: relative;
+		}
+		
+		.chart-wrapper canvas {
+		    width: 100% !important;
+		    height: 100% !important;
+		    position: absolute;
+		    top: 0;
+		    left: 0;
+		}
         /* 버튼 그룹 위치 왼쪽 상단 고정 */
         .period-selector-wrapper {
             display: flex;
@@ -61,9 +74,14 @@
 	        </div>
 	        <div class="dashboard-charts">
 	            <!-- 입고차트 -->
-	            <div class="chart-card" >
+	            <div class="chart-card" style="display: flex;">
 	                <h3 class="card-title" id="inventory_title">재고현황</h3>
-	                <canvas id="inventory_chart" style="width:80%; height:200px;"></canvas>
+	                <div class="chart-wrapper">
+		                <canvas id="inventory_chart" ></canvas>
+	                </div>
+	                <div class="chart-wrapper">
+		                <canvas id="inventory_detail_chart" ></canvas>
+		            </div>
 	            </div>
 	            <br>
 	            <!-- 운송/출고 차트 -->
