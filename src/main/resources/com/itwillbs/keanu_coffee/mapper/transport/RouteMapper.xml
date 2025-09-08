@@ -42,7 +42,7 @@
 			COMMON_CODE c
 		ON 
 			c.common_code_idx = f.region_idx
-		JOIN
+		LEFT OUTER JOIN
 			ROUTE r
 		ON
 			f.franchise_idx = r.franchise_idx
