@@ -36,6 +36,14 @@ public class TotalDashBoardDTO {
 	//재고
 	private Long inventoryQTY;
 	
+	//창고
+	private String rack;
+	private String bay;
+	private String levelPosition;
+	private int locationType;
+	private long locationVolume;
+	private long productVolume;
+	
 	
     
 

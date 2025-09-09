@@ -28,6 +28,8 @@ public interface TotalDashBoardMapper {
 	List<TotalDashBoardDTO> selectDisposalDashDataByMonth(@Param("startDate")String startDate, @Param("endDate")String endDate);
 	// 재고정보 가져오기
 	List<TotalDashBoardDTO> selectInventory();
+	// 로케이션 용적율, 사용율 사용항목 조회
+	List<TotalDashBoardDTO> selectLocation();
 
 
 }

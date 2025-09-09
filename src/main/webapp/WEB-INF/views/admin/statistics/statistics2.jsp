@@ -55,6 +55,7 @@
     <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+	<script src="https://d3js.org/d3.v7.min.js"></script>
 	
 </head>
 <body>
@@ -86,8 +87,19 @@
 	            <br>
 	            <!-- 운송/출고 차트 -->
 	            <div class="chart-card">
-	                <h3 class="card-title" id="location_title">로케이션 용적율</h3>
-	                <canvas id="location_using_chart" style="width:80%; height:200px;"></canvas>
+<!-- 	                <h3 class="card-title" id="location_title">로케이션 용적율</h3> -->
+<%-- 	                <canvas id="location_using_chart" style="width:80%; height:200px;"></canvas> --%>
+					<div id="heatmap"></div>
+					<div id="tooltip" style="
+					    position: absolute;
+					    background: rgba(0,0,0,0.8);
+					    color: white;
+					    padding: 8px;
+					    border-radius: 4px;
+					    font-size: 14px;
+					    display: none;
+					    pointer-events: none;
+					"></div>
 	            </div>
 	            <br>
 	            <!-- 폐기량 꺽은선차트 -->

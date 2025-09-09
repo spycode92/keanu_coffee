@@ -207,6 +207,30 @@
 		ORDER BY inventoryQTY
 	</select>
 	
+	<!-- 창고사용율조회 -->
+	<select id="selectLocation" resultType="TotalDashBoardDTO">
+		SELECT l.location_idx
+			, l.rack
+			, l.bay
+			, l.level_position
+			, location_type
+			, l.volume as locationVolume
+			, sum(i.quantity) as inventoryQTY
+			, p.product_name
+			, p.product_volume
+		FROM WAREHOUSE_LOCATION l
+		LEFT JOIN INVENTORY i
+		ON l.location_idx = i.location_idx
+		LEFT JOIN PRODUCT p
+		ON p.product_idx = i.product_idx
+		group by l.location_idx,l.rack
+			, l.bay
+			, l.level_position
+			, l.location_type
+			, locationVolume
+			, product_name
+			, product_volume
+	</select>
 	
 	
 	

@@ -53,6 +53,13 @@ public class TotalDashBoardRestController {
 		
 		return ResponseEntity.ok(totalDList);
 	}
+	//용적율 정보
+	@GetMapping("/locationUse")
+	public ResponseEntity<List<TotalDashBoardDTO>> location() {
+		List<TotalDashBoardDTO> totalDList = totalDashBoardService.getLocationDashData();
+		
+		return ResponseEntity.ok(totalDList);
+	}
 }
 
 

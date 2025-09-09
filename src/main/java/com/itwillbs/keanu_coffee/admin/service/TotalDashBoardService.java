@@ -55,5 +55,24 @@ public class TotalDashBoardService {
 		return totalDashBoardMapper.selectInventory();
 	}
 	
+	//창고용적율확인
+	public List<TotalDashBoardDTO> getLocationDashData() {
+		List<TotalDashBoardDTO> dash = totalDashBoardMapper.selectLocation(); 
+		//상품물건 상자호수 대비 부피조정
+		for(TotalDashBoardDTO D : dash) {
+			long productVolume = D.getProductVolume();
+			switch((int)productVolume) {
+				case 3 : D.setProductVolume(17850);
+				break;
+				case 4 : D.setProductVolume(35588);
+				break;
+				case 5 : D.setProductVolume(60384);
+				break;
+			}
+		}
+		
+		return dash;
+	}
+	
 
 }
