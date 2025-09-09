@@ -388,14 +388,14 @@ document.addEventListener('DOMContentLoaded', () => {
 	        .attr("transform", `translate(${margin.left},${margin.top})`);
 	
 	    const colorScale = d3.scaleThreshold()
-		    .domain([30, 50, 70, 85, 95, 100]) // 세분화된 구간
+		    .domain([30, 50, 70, 80, 90, 100]) // 세분화된 구간
 		    .range([
 		        "#2196F3", // 0–30% → 파랑
 		        "#4CAF50", // 30–50% → 초록
 		        "#CDDC39", // 50–70% → 연두
-		        "#FFEB3B", // 70–85% → 노랑
-		        "#FF9800", // 85–95% → 주황
-		        "#F44336", // 95–100% → 빨강
+		        "#FFEB3B", // 70–80% → 노랑
+		        "#FF9800", // 80–90% → 주황
+		        "#F44336", // 90–100% → 빨강
 		        "#6A1B9A"  // 100% 초과 → 진한 보라 (과적)
 		    ]);
 	
