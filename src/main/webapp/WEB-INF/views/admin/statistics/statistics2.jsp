@@ -91,12 +91,34 @@
 	            <br>
 	            <!-- 운송/출고 차트 -->
 	            <div class="chart-card">
-<!-- 	                <h3 class="card-title" id="location_title">로케이션 용적율</h3> -->
+	                <h3 class="card-title" id="location_title">로케이션 용적율</h3>
+	                <hr>
 <%-- 	                <canvas id="location_using_chart" style="width:80%; height:200px;"></canvas> --%>
 					<div id="heatmap-container" style="display: flex; gap: 20px;">
 				        <div id="pallet_heatmap" style="flex: 1;"></div>
 				        <div id="picking_heatmap" style="flex: 1;"></div>
 				    </div>
+					<div id="heatmap-legend" style="
+					    display: flex;
+					    align-items: center;
+					    gap: 8px;
+					    margin-top: 16px;
+					    padding-left: 4px;
+					    font-size: 12px;
+					    color: #333;
+					">
+					    <span style="margin-right: 4px;">Empty</span>
+					    
+					    <div style="width: 20px; height: 20px; background: #2196F3;" title="여유"></div>
+					    <div style="width: 20px; height: 20px; background: #4CAF50;" title="적절"></div>
+					    <div style="width: 20px; height: 20px; background: #CDDC39;" title="살짝 채워짐"></div>
+					    <div style="width: 20px; height: 20px; background: #FFEB3B;" title="경고"></div>
+					    <div style="width: 20px; height: 20px; background: #FF9800;" title="과적 경고"></div>
+					    <div style="width: 20px; height: 20px; background: #F44336;" title="위험"></div>
+					    <div style="width: 20px; height: 20px; background: #6A1B9A;" title="과적"></div>
+					    
+					    <span style="margin-left: 4px;">Full</span>
+					</div>
 				    <div id="tooltip" style="
 				        position: absolute;
 				        background: rgba(0,0,0,0.8);

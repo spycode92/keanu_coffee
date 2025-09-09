@@ -237,13 +237,16 @@ document.addEventListener('DOMContentLoaded', () => {
 	getlocation().then(() => {
 		pickingZoneData = locationRawData.filter(d => d.locationType === 2); // 피킹존
 		palletZoneData = locationRawData.filter(d => d.locationType === 1);  // 파레트존
-		palletHeatmapData = buildHeatmapData(palletZoneData);
 		pickingHeatmapData = buildHeatmapData(pickingZoneData);
+		palletHeatmapData = buildHeatmapData(palletZoneData);
 		drawHeatmap(palletHeatmapData, "#pallet_heatmap", "Pallet_Zone");
 		drawHeatmap(pickingHeatmapData, "#picking_heatmap", "Picking_Zone");
-		// 필요한 후속 작업 수행
+		console.log("Dd",palletZoneData);
+		console.log("ff",pickingZoneData);
+		totalUsage();
 	});
 	
+	//창고정보가져오기
 	function getlocation(){
 		return ajaxGet(`/admin/dashboard/locationUse`)
 			.then((data)=>{
@@ -282,6 +285,46 @@ document.addEventListener('DOMContentLoaded', () => {
 	
 	    return Object.values(grouped);
 	}
+	
+	//존별 총사용량 체크함수
+	function calculateUsage(zoneData) {
+	    const valid = zoneData.filter(d =>
+	        Number.isFinite(d.inventoryQTY) &&
+	        Number.isFinite(d.productVolume) &&
+	        Number.isFinite(d.locationVolume) &&
+	        d.locationVolume > 0
+	    );
+	
+	    if (valid.length === 0) return 0;
+	
+	    const totalRate = valid.reduce((sum, d) => {
+	        const usedVolume = d.inventoryQTY * d.productVolume;
+	        const rate = (usedVolume / d.locationVolume) * 100;
+	        return sum + rate;
+	    }, 0);
+	
+	    return Math.round(totalRate / valid.length);
+	}
+	
+	function totalUsage(){
+		const palletUsage = calculateUsage(palletZoneData);
+		const pickingUsage = calculateUsage(pickingZoneData);
+		
+		const titleEl = document.getElementById("location_title");
+		
+		const usageInfo = document.createElement("span");
+		usageInfo.innerHTML = `
+		    <span style="margin-left: 12px; font-size: 14px; color: #555;">
+		        🟦 파레트존: <strong>${palletUsage}%</strong> |
+		        🟩 피킹존: <strong>${pickingUsage}%</strong>
+		    </span>
+		`;
+		titleEl.appendChild(usageInfo);
+		
+	}
+	
+	
+	
 	
 	//히트맵그리기
 	function drawHeatmap(data, selector, zoneLabel) {
@@ -345,8 +388,16 @@ document.addEventListener('DOMContentLoaded', () => {
 	        .attr("transform", `translate(${margin.left},${margin.top})`);
 	
 	    const colorScale = d3.scaleThreshold()
-	        .domain([30, 50, 70, 90, 100])
-	        .range(["#2196F3", "#4CAF50", "#FFEB3B", "#FF9800", "#F44336"]);
+		    .domain([30, 50, 70, 85, 95, 100]) // 세분화된 구간
+		    .range([
+		        "#2196F3", // 0–30% → 파랑
+		        "#4CAF50", // 30–50% → 초록
+		        "#CDDC39", // 50–70% → 연두
+		        "#FFEB3B", // 70–85% → 노랑
+		        "#FF9800", // 85–95% → 주황
+		        "#F44336", // 95–100% → 빨강
+		        "#6A1B9A"  // 100% 초과 → 진한 보라 (과적)
+		    ]);
 	
 	    const tooltip = d3.select("#tooltip");
 	
@@ -412,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	
 	        sorted.forEach((d, i) => {
 	            const volumeRate = Number.isFinite(d.volumeRate)
-	                ? Math.max(0, Math.min(100, d.volumeRate))
+	                ? Math.max(0, d.volumeRate)
 	                : 0;
 	
 	            const cell = group.append("g")
