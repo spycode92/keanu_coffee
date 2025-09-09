@@ -39,6 +39,7 @@
             justify-content: flex-start;
         }
         /* 모바일 대응(세로 스크롤) */
+
         @media (max-width: 768px) {
             .dashboard-charts {
                 flex-direction: column;
@@ -47,6 +48,9 @@
                 max-width: 100%;
                 min-width: auto;
             }
+   		    #heatmap-container {
+		        flex-direction: column;
+		    }
         }
     </style>
     <sec:csrfMetaTags/>
@@ -89,17 +93,20 @@
 	            <div class="chart-card">
 <!-- 	                <h3 class="card-title" id="location_title">로케이션 용적율</h3> -->
 <%-- 	                <canvas id="location_using_chart" style="width:80%; height:200px;"></canvas> --%>
-					<div id="heatmap"></div>
-					<div id="tooltip" style="
-					    position: absolute;
-					    background: rgba(0,0,0,0.8);
-					    color: white;
-					    padding: 8px;
-					    border-radius: 4px;
-					    font-size: 14px;
-					    display: none;
-					    pointer-events: none;
-					"></div>
+					<div id="heatmap-container" style="display: flex; gap: 20px;">
+				        <div id="pallet_heatmap" style="flex: 1;"></div>
+				        <div id="picking_heatmap" style="flex: 1;"></div>
+				    </div>
+				    <div id="tooltip" style="
+				        position: absolute;
+				        background: rgba(0,0,0,0.8);
+				        color: white;
+				        padding: 8px;
+				        border-radius: 4px;
+				        font-size: 14px;
+				        display: none;
+				        pointer-events: none;
+				    "></div>
 	            </div>
 	            <br>
 	            <!-- 폐기량 꺽은선차트 -->
