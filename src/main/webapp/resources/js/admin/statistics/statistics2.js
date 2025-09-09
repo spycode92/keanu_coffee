@@ -364,8 +364,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	        groupsMap.get(key).push(d);
 	    });
 	
-	    const offsetStep = Math.round(boxSize * 0.6); // 펼침 간격
-	
+	    const overlapOffsetStep = Math.round(-boxSize * 0.04); // 겹침 간격
+		const fanoutOffsetStep = Math.round(boxSize * 0.4);   // 팬아웃 간격
+		
+		const getOffset = (i, mode = "overlap") => {
+		    const step = mode === "fanout" ? fanoutOffsetStep : overlapOffsetStep;
+		    return {
+		        dx: -i * step,
+		        dy: i * step
+		    };
+		};
+		
 	    for (const [key, items] of groupsMap.entries()) {
 	        const [rack, bay, levelNumStr] = key.split("|");
 	        const xIndex = getXIndex(rack, bay);
@@ -384,16 +393,20 @@ document.addEventListener('DOMContentLoaded', () => {
 	        const group = g.append("g")
 	            .attr("transform", `translate(${baseX},${baseY})`)
 	            .on("pointerenter", function () {
+					d3.select(this).raise();
 	                d3.select(this).selectAll("g.cell")
 	                    .transition()
 	                    .duration(150)
-	                    .attr("transform", (d, i) => `translate(${i * offsetStep}, 0)`);
+	                    .attr("transform", (d, i) => `translate(${i * fanoutOffsetStep}, 0)`);
 	            })
 	            .on("pointerleave", function () {
 	                d3.select(this).selectAll("g.cell")
 	                    .transition()
 	                    .duration(150)
-	                    .attr("transform", `translate(0, 0)`);
+	                    .attr("transform", (d, i) => {
+						    const off = getOffset(i); // 겹침 간격 기준으로 복귀
+						    return `translate(${off.dx}, ${off.dy})`;
+						});
 	                tooltip.style("display", "none");
 	            });
 	
@@ -412,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	                .attr("rx", 4)
 	                .attr("ry", 4)
 	                .attr("fill", colorScale(volumeRate))
-	                .attr("fill-opacity", 1 - i * 0.15) // 겹침 순서에 따라 투명도
+//	                .attr("fill-opacity", 1 - i * 0.15) // 겹침 순서에 따라 투명도
 	                .attr("stroke", "#111")
 	                .attr("stroke-width", 1)
 	                .on("mouseover", function (event) {
@@ -434,7 +447,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	            const label = `${d.rack}-${d.bay}-${d.level}`;
 	            const centerX = boxSize / 2;
 	            const centerY = boxSize / 2 - 5;
-	
+				
+				const off = getOffset(i, "overlap");
+				cell.attr("transform", `translate(${off.dx}, ${off.dy})`);
+				
 	            const text = cell.append("text")
 	                .attr("x", centerX)
 	                .attr("y", centerY)
