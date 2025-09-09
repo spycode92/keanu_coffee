@@ -56,14 +56,12 @@
   <!-- 사이드바 -->
 	<aside id="sidebar" class="sidebar">
 		<ul>
-<%-- 			<sec:authorize access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')"> --%>
+			<sec:authorize access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')">
 			<li>
-				<a href="/admin"><span>관리자페이지</span></a>
+				<span>관리자페이지</span>
 <!-- 				<a href=""><span>물류부서관리</span></a> -->
 				<ul class="submenu">
 					<li><a href="/admin/employeeManage">사원관리</a></li>
-					<li><a href="/admin/dash">통계</a></li>
-					<li><a href="/admin/workingLog">작업관리</a></li>
 					<li><a href="/admin/preference/dept">조직관리</a></li>
 					<li><a href="/admin/preference/supplyCompany">공급업체관리</a></li>
 					<li><a href="/admin/preference/product">상품관리</a></li>
@@ -72,7 +70,7 @@
 					<li><a href="/admin/sysNoti">시스템알림</a></li>
 				</ul>
 			</li>
-<%-- 			</sec:authorize> --%>
+			</sec:authorize>
 			<sec:authorize access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')">
 			<li>
 				<a href="/inbound/main"><span>입고 관리</span></a>
@@ -128,9 +126,14 @@
 				</ul>
 			</li>
 			</sec:authorize>
-			<li>
-				<a href="/settings"><span>시스템 설정</span></a>
-			</li>
+			<sec:authorize access="isAuthenticated()">
+				<li>
+					<ul class="submenu">
+						<li><a href="/admin/dash">통계</a></li>
+						<li><a href="/admin/workingLog">작업관리</a></li>
+					</ul>
+				</li>
+			</sec:authorize>
 			<li>
 				<a href="/guide"><span>가이드페이지</span></a>
 				

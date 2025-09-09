@@ -40,189 +40,178 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/systemPreference/product")
 public class ProductController {
 	private final ProductService productService;
-	
+
 	@GetMapping("")
-	public String systemPreference(Model model, @RequestParam(defaultValue = "1") int pageNum, 
-			@RequestParam(defaultValue = "") String searchType,
-			@RequestParam(defaultValue = "") String searchKeyword,
-			@RequestParam(defaultValue = "") String orderKey,
-			@RequestParam(defaultValue = "") String orderMethod,
+	public String systemPreference(Model model, @RequestParam(defaultValue = "1") int pageNum,
+			@RequestParam(defaultValue = "") String searchType, @RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue = "") String orderKey, @RequestParam(defaultValue = "") String orderMethod,
 			@RequestParam(defaultValue = "") String filterCategoryIdx) {
-		model.addAttribute("pageNum",pageNum);
-		model.addAttribute("searchType",searchType);
-		model.addAttribute("searchKeyword",searchKeyword);
-		model.addAttribute("orderKey",orderKey);
-		model.addAttribute("orderMethod",orderMethod);
-		model.addAttribute("filterCategoryIdx",filterCategoryIdx);
-		//한페이지보여줄수
+		model.addAttribute("pageNum", pageNum);
+		model.addAttribute("searchType", searchType);
+		model.addAttribute("searchKeyword", searchKeyword);
+		model.addAttribute("orderKey", orderKey);
+		model.addAttribute("orderMethod", orderMethod);
+		model.addAttribute("filterCategoryIdx", filterCategoryIdx);
+		// 한페이지보여줄수
 		int listLimit = 10;
 		// 조회된 목록수
 		int supplierCount = productService.getProductCount(searchType, searchKeyword, filterCategoryIdx);
 		// 조회된 목록이 1개이상일때
-		if(supplierCount > 0) {
+		if (supplierCount > 0) {
 			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, supplierCount, pageNum, 3);
-			
+
 			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
 				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
 				model.addAttribute("targetURL", "/admin/customer/notice_list");
 				return "commons/result_process";
 			}
-			
+
 			model.addAttribute("pageInfo", pageInfoDTO);
-		
-		
-			List<ProductDTO> productList = productService.getProductList(
-					pageInfoDTO.getStartRow(), listLimit, searchType, searchKeyword, orderKey,orderMethod, filterCategoryIdx);
-			model.addAttribute("productList",productList);
+
+			List<ProductDTO> productList = productService.getProductList(pageInfoDTO.getStartRow(), listLimit,
+					searchType, searchKeyword, orderKey, orderMethod, filterCategoryIdx);
+			model.addAttribute("productList", productList);
 		}
-		
-		
+
 		return "/admin/system_preference/product_management";
 	}
-	
-	//카테고리목록조회
-    @GetMapping("/categories")
-    @ResponseBody
-    public List<ProductDTO> getCategories() {
-        // DB에서 카테고리 정보를 Map 리스트로 반환
-    	List<ProductDTO> categoryList = productService.getAllCategoriesAsMap();
-        return categoryList; 
-    }
-    
-    //카테고리추가
-    @PostMapping("/addCategory")
-    @ResponseBody
-    public ResponseEntity<Map<String,String>> addCategory(@RequestBody CommonCodeDTO category) {
-    	Map<String, String> response = new HashMap<>();
-    	try {
-	    	productService.addCategoryFromMap(category);
-	    	response.put("result", "success");
-	        response.put("message", "카테고리가 추가되었습니다.");
-	        return ResponseEntity.ok(response);
-    	} catch (DuplicateKeyException e) {
-            response.put("result", "fail");
-            response.put("message", "중복된 카테고리입니다.");
-            return ResponseEntity.status(409).body(response); 
-    	} catch (Exception e) {
-            response.put("result", "error");
-            response.put("message", "서버 오류가 발생했습니다.");
-            return ResponseEntity.status(500).body(response);
-    	}
-    }
-    
-    //카테고리 수정
-    @PostMapping("/modifyCategory")
-    @ResponseBody
-    public ResponseEntity<Map<String,String>> modifyCategory(@RequestBody CommonCodeDTO category) {
-    	System.out.println(category);
-    	Map<String, String> response = new HashMap<>();
-    	try {
-    		productService.modifyCategory(category);
-	    	response.put("result", "success");
-	        response.put("message", "카테고리가 수정되었습니다.");
-	        return ResponseEntity.ok(response);
-    	} catch (DuplicateKeyException e) {
-            response.put("result", "fail");
-            response.put("message", "중복된 카테고리명입니다.");
-            return ResponseEntity.status(409).body(response); 
-    	} catch (Exception e) {
-            response.put("result", "error");
-            response.put("message", "서버 오류가 발생했습니다.");
-            return ResponseEntity.status(500).body(response);
-    	}
-    }
-    
-    //카테고리 삭제
-    @PostMapping("/removeCategory")
-    @ResponseBody
-    public ResponseEntity<Map<String,String>> removeCategory(@RequestBody CommonCodeDTO category) {
-        Integer commonCodeIdx = category.getCommonCodeIdx();
-        category = productService.getCategoryInfoByCategoryIdx(commonCodeIdx);
-        // 서비스에서: 이 카테고리를 참조하는 상품이 있는지 체크
-        boolean removed = productService.removeCategoryIfUnused(category);
-        
-        Map<String, String> response = new HashMap<>();
-        if(removed) {
-        	response.put("result", "success");
-	        response.put("message", "카테고리가 삭제되었습니다.");
-	        return ResponseEntity.ok(response);
-        } else {
-        	response.put("result", "error");
-            response.put("message", "서버 오류가 발생했습니다.");
-            return ResponseEntity.ok(response);
-        }
-    }
-	
-	//상품등록
-    @PostMapping("/addProduct")
-    @ResponseBody
-    public ResponseEntity<String> addProduct(@ModelAttribute ProductDTO product) throws IOException {
-    	Boolean result = productService.addProduct(product);
-    	if(result) {
-    		return ResponseEntity.ok().header("Content-Type", "text/plain; charset=UTF-8")
-    				.body("상품이 등록되었습니다.");
-    	}
-    	
-    	return ResponseEntity.ok().header("Content-Type", "text/plain; charset=UTF-8")
-    			.body("상품등록에 실패하였습니다.");
-    }
 
-    
-    //상품상세정보
-    @GetMapping("/getProductDetail")
-    @ResponseBody
-    public ProductDTO getProductDetail(ProductDTO product) {
-    	product = productService.getProductDetail(product);
-    	
-    	return product;
-    }
-	
-    //상품수정
-    @PostMapping("/modifyProduct")
-    @ResponseBody
-    public ResponseEntity<Map<String,String>> modifyProduct(@ModelAttribute ProductDTO product) throws IOException {
-    	Boolean result = productService.modifyProduct(product);
-    	Map<String,String> res = new HashMap();
-    	
-    	if(result) {
-    		res.put("result", "success");
-    		res.put("msg", "상품정보가 수정되었습니다");
-    		return ResponseEntity.ok(res);
-    	}
-    	res.put("result", "error");
+	// 카테고리목록조회
+	@GetMapping("/categories")
+	@ResponseBody
+	public List<ProductDTO> getCategories() {
+		// DB에서 카테고리 정보를 Map 리스트로 반환
+		List<ProductDTO> categoryList = productService.getAllCategoriesAsMap();
+		return categoryList;
+	}
+
+	// 카테고리추가
+	@PostMapping("/addCategory")
+	@ResponseBody
+	public ResponseEntity<Map<String, String>> addCategory(@RequestBody CommonCodeDTO category) {
+		Map<String, String> response = new HashMap<>();
+		try {
+			productService.addCategoryFromMap(category);
+			response.put("result", "success");
+			response.put("message", "카테고리가 추가되었습니다.");
+			return ResponseEntity.ok(response);
+		} catch (DuplicateKeyException e) {
+			response.put("result", "fail");
+			response.put("message", "중복된 카테고리입니다.");
+			return ResponseEntity.status(409).body(response);
+		} catch (Exception e) {
+			response.put("result", "error");
+			response.put("message", "서버 오류가 발생했습니다.");
+			return ResponseEntity.status(500).body(response);
+		}
+	}
+
+	// 카테고리 수정
+	@PostMapping("/modifyCategory")
+	@ResponseBody
+	public ResponseEntity<Map<String, String>> modifyCategory(@RequestBody CommonCodeDTO category) {
+		System.out.println(category);
+		Map<String, String> response = new HashMap<>();
+		try {
+			productService.modifyCategory(category);
+			response.put("result", "success");
+			response.put("message", "카테고리가 수정되었습니다.");
+			return ResponseEntity.ok(response);
+		} catch (DuplicateKeyException e) {
+			response.put("result", "fail");
+			response.put("message", "중복된 카테고리명입니다.");
+			return ResponseEntity.status(409).body(response);
+		} catch (Exception e) {
+			response.put("result", "error");
+			response.put("message", "서버 오류가 발생했습니다.");
+			return ResponseEntity.status(500).body(response);
+		}
+	}
+
+	// 카테고리 삭제
+	@PostMapping("/removeCategory")
+	@ResponseBody
+	public ResponseEntity<Map<String, String>> removeCategory(@RequestBody CommonCodeDTO category) {
+		Integer commonCodeIdx = category.getCommonCodeIdx();
+		category = productService.getCategoryInfoByCategoryIdx(commonCodeIdx);
+		// 서비스에서: 이 카테고리를 참조하는 상품이 있는지 체크
+		boolean removed = productService.removeCategoryIfUnused(category);
+
+		Map<String, String> response = new HashMap<>();
+		if (removed) {
+			response.put("result", "success");
+			response.put("message", "카테고리가 삭제되었습니다.");
+			return ResponseEntity.ok(response);
+		} else {
+			response.put("result", "error");
+			response.put("message", "서버 오류가 발생했습니다.");
+			return ResponseEntity.ok(response);
+		}
+	}
+
+	// 상품등록
+	@PostMapping("/addProduct")
+	@ResponseBody
+	public ResponseEntity<String> addProduct(@ModelAttribute ProductDTO product) throws IOException {
+		Boolean result = productService.addProduct(product);
+		if (result) {
+			return ResponseEntity.ok().header("Content-Type", "text/plain; charset=UTF-8").body("상품이 등록되었습니다.");
+		}
+
+		return ResponseEntity.ok().header("Content-Type", "text/plain; charset=UTF-8").body("상품등록에 실패하였습니다.");
+	}
+
+	// 상품상세정보
+	@GetMapping("/getProductDetail")
+	@ResponseBody
+	public ProductDTO getProductDetail(ProductDTO product) {
+		product = productService.getProductDetail(product);
+
+		return product;
+	}
+
+	// 상품수정
+	@PostMapping("/modifyProduct")
+	@ResponseBody
+	public ResponseEntity<Map<String, String>> modifyProduct(@ModelAttribute ProductDTO product) throws IOException {
+		Boolean result = productService.modifyProduct(product);
+		Map<String, String> res = new HashMap();
+
+		if (result) {
+			res.put("result", "success");
+			res.put("msg", "상품정보가 수정되었습니다");
+			return ResponseEntity.ok(res);
+		}
+		res.put("result", "error");
 		res.put("msg", "잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오. ");
 		return ResponseEntity.ok(res);
-    }
-	
-    @PostMapping("/removeProduct")
-    @ResponseBody
-    public ResponseEntity<Map<String,String>> removeProduct(@RequestBody ProductDTO product) throws IOException {
-    	product = productService.getProductDetail(product);
-    	
-    	Boolean result = productService.deleteProduct(product);
-    	Map<String,String> res = new HashMap();
-    	
-    	if(result) {
-    		res.put("result", "success");
-    		res.put("msg", "상품정보가 수정되었습니다");
-    		return ResponseEntity.ok(res);
-    	}
-    	res.put("result", "error");
+	}
+
+	@PostMapping("/removeProduct")
+	@ResponseBody
+	public ResponseEntity<Map<String, String>> removeProduct(@RequestBody ProductDTO product) throws IOException {
+		product = productService.getProductDetail(product);
+
+		Boolean result = productService.deleteProduct(product);
+		Map<String, String> res = new HashMap();
+
+		if (result) {
+			res.put("result", "success");
+			res.put("msg", "상품정보가 수정되었습니다");
+			return ResponseEntity.ok(res);
+		}
+		res.put("result", "error");
 		res.put("msg", "잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오. ");
 		return ResponseEntity.ok(res);
-    }
-    
-    
-    
-    @GetMapping("/getProductList")
-    @ResponseBody
-    public List<ProductDTO> getProduct(){
-    	
-    	List<ProductDTO> productList = productService.getAllProductList();
-    	
-    	return productList; 
-    }
-    
-	
+	}
+
+	@GetMapping("/getProductList")
+	@ResponseBody
+	public List<ProductDTO> getProduct() {
+
+		List<ProductDTO> productList = productService.getAllProductList();
+
+		return productList;
+	}
 
 }

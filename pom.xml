@@ -106,6 +106,15 @@
 	        <artifactId>jackson-annotations</artifactId>
 	        <version>2.13.2</version>
 	    </dependency>
+	    
+	    <!-- Java 8 의 java.time.LocalXXX 클래스들에 대한 Jackson 의 JSON 라이브러리 변환을 지원하는 라이브러리 -->
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.datatype</groupId>
+		    <artifactId>jackson-datatype-jsr310</artifactId>
+		    <version>2.20.0</version>
+		</dependency>
+	    
 	    <!-- Gson 추가 -->
    		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
