@@ -217,6 +217,8 @@
 	    <result property="orderIds" column="order_ids"/>
 	    <result property="totalVolume" column="total_volume"/>
 	    <result property="totalQty" column="total_qty"/>
+	    <result property="franchiseManagerName" column="franchise_manager_name"/>
+	    <result property="requiresAdditional" column="requires_additional"/>
 	
 	    <!-- ✅ 지점 매핑 -->
 	    <collection property="franchises" ofType="com.itwillbs.keanu_coffee.transport.dto.DispatchStopDTO"
@@ -229,6 +231,7 @@
 	        , d.start_slot
 	        , d.status
 	        , d.urgent
+	        , d.requires_additional
 	        , e.emp_name AS driver_name
 	        , v.vehicle_idx
 	        , v.vehicle_number
@@ -238,6 +241,7 @@
 	        , ds.franchise_idx
 	        , f.franchise_name
 	        , f.region_idx
+	        , f.franchise_manager_name
 	        , c.common_code_name AS region_name
 	        , dc.delivery_confirmation_idx
 	        , dc.receiver_name
@@ -350,6 +354,7 @@
 			, c.common_code_name AS region_name 
 			, f.franchise_idx 
 			, f.franchise_name 
+			, f.franchise_manager_name
 			, da.driver_idx 
 			, e.emp_name AS driver_name 
 			, v.vehicle_idx 
@@ -490,8 +495,8 @@
 			dispatch_idx = #{dispatchIdx}
 	</select>
 	
-	<!-- 적재 완료한 기사 수 카운트 -->
-	<select id="selectCountCompletedAssignments" resultType="int">
+	<!-- 상태에 따라 완료한 기사 수 카운트 -->
+	<select id="selectCountAssignmentsByStatus" resultType="int">
 		SELECT
 			COUNT(dispatch_assignment_idx)
 		FROM
@@ -499,8 +504,42 @@
 		WHERE
 			dispatch_idx = #{dispatchIdx}
 		AND
-			status = '적재완료'
+			status = #{status}
 	</select>
+	
+	<!-- 배정된 경유지 중 제일 첫 배송지 -->
+	<select id="selectFirstStopIdx" resultType="int">
+		SELECT 
+			ds.dispatch_stop_idx
+    	FROM 
+    		DISPATCH_STOP ds
+    	WHERE 
+    		ds.dispatch_idx = #{dispatchIdx}
+      	AND 
+      		ds.dispatch_assignment_idx = (
+          		SELECT 
+          			da.dispatch_assignment_idx
+          		FROM 
+          			DISPATCH_ASSIGNMENT da
+          		WHERE 
+          			da.dispatch_idx = #{dispatchIdx}
+            	AND 
+            		da.vehicle_idx = #{vehicleIdx}
+      )
+    	ORDER BY 
+    		ds.delivery_sequence ASC
+    	LIMIT 1;
+	</select>
+	
+	<!-- 경유지 테이블 상태 변경 -->
+	<update id="updateDispatchStopStatus">
+		UPDATE
+			DISPATCH_STOP
+		SET
+			status = #{status}
+		WHERE
+			dispatch_stop_idx = #{firstStopIdx}
+	</update>
 	
 	<!-- 출고 주문 테이블 상태 변경 -->
 	<update id="updateOutboundOrderStatus" >

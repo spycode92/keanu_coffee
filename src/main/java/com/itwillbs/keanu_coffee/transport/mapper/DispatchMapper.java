@@ -76,8 +76,14 @@ public interface DispatchMapper {
 	// 같은 배차에 배정된 기사 수 카운트
 	int selectCountAssigment(Integer dispatchIdx);
 	
-	// 적재 완료한 기사 수 카운트
-	int selectCountCompletedAssignments(Integer dispatchIdx);
+	// 상태에 따라 완료한 기사 수 카운트
+	int selectCountAssignmentsByStatus(@Param("dispatchIdx") Integer dispatchIdx, @Param("status") String status);
+
+	// 배정된 경유지 중 제일 첫 배송지
+	Integer selectFirstStopIdx(@Param("dispatchIdx") Integer dispatchIdx, @Param("vehicleIdx") Integer vehicleIdx);
+
+	// 경유지 테이블 상태 변경
+	void updateDispatchStopStatus(@Param("firstStopIdx") Integer firstStopIdx, @Param("status") String status);
 
 
 }

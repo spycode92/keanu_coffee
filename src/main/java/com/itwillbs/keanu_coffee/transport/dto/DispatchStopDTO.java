@@ -14,6 +14,7 @@ public class DispatchStopDTO {
     private Integer deliverySequence;       // 배송 순서
     private Integer franchiseIdx;           // 지점 고유번호
     private String franchiseName;           // 지점명
+    private String franchiseManagerName;
     private String Status;                  // 납품 상태 (대기, 운송중, 납품완료)
     private Timestamp arrivalTime;          // 도착 시간
     private Timestamp completeTime;         // 납품 완료 시간

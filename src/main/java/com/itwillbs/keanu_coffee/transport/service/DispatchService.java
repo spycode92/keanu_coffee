@@ -183,7 +183,7 @@ public class DispatchService {
 			// 같은 배차에 배정된 기사 수 카운트
 			int totalDrivers = dispatchMapper.selectCountAssigment(request.getDispatchIdx());
 			// 적재 완료한 기사 수 카운트
-	        int completedDrivers = dispatchMapper.selectCountCompletedAssignments(request.getDispatchIdx());
+	        int completedDrivers = dispatchMapper.selectCountAssignmentsByStatus(request.getDispatchIdx(), "적재완료");
 			
 	        // 모든 기사가 적재 완료일 때 상태 변경
 	        if (totalDrivers == completedDrivers) {
@@ -194,5 +194,46 @@ public class DispatchService {
 		}
 		
 	}
+
+	// 배송 시작
+	@Transactional
+	public void updateDispatchStatusStart(DispatchRegisterRequestDTO request) {
+		request.setStatus("운행중");
+		// 차량 상태 업데이트
+		vehicleMapper.updateVehicleStatus(request);
+		// 배차 배정 업데이트
+		Integer assignmentIdx = dispatchMapper.selectAssigmentIdx(request.getDispatchIdx(), request.getVehicleIdx());
+		dispatchMapper.updateAssigmentStatus(assignmentIdx, request.getStatus());
+		
+		// 모든 기사 적재 확인
+		if (request.getRequiresAdditional() == 'Y') {
+			// 같은 배차에 배정된 기사 수 카운트
+			int totalDrivers = dispatchMapper.selectCountAssigment(request.getDispatchIdx());
+			// 적재 완료한 기사 수 카운트
+	        int completedDrivers = dispatchMapper.selectCountAssignmentsByStatus(request.getDispatchIdx(), request.getStatus());
+			
+	        // 모든 기사가 적재 완료일 때 상태 변경
+	        if (totalDrivers == completedDrivers) {
+	        	dispatchMapper.updateDispatchStatus(request.getDispatchIdx(), "운송중");
+	        	
+	        	// 배정된 경유지 중 첫 경유지
+	        	Integer firstStopIdx = dispatchMapper.selectFirstStopIdx(request.getDispatchIdx(), request.getVehicleIdx());
+	        	if (firstStopIdx != null) {
+	        		// 경유지 테이블 상태 변경
+	        		dispatchMapper.updateDispatchStopStatus(firstStopIdx, "운송중");
+	        	}
+	        }
+		} else { // 단일 기사 상태 변경
+			dispatchMapper.updateDispatchStatus(request.getDispatchIdx(), "운송중");
+			
+        	Integer firstStopIdx = dispatchMapper.selectFirstStopIdx(request.getDispatchIdx(), request.getVehicleIdx());
+        	if (firstStopIdx != null) {
+        		// 경유지 테이블 상태 변경
+        		dispatchMapper.updateDispatchStopStatus(firstStopIdx, "운송중");
+        	}
+		}
+		
+	}
+
 
 }

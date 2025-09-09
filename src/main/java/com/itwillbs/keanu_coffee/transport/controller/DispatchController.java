@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchCompleteRequest;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchDetailDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegionGroupViewDTO;
@@ -124,6 +125,20 @@ public class DispatchController {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("적재 등록 중 오류가 발생했습니다.");
+		}
+	}
+	
+	// 배송 시작
+	@PostMapping("/mypage/delivery/start")
+	public ResponseEntity<String> modifyDeliveryStatusStart(@RequestBody DispatchRegisterRequestDTO request) {
+		System.out.println(request + ">>>>>>>>>>>>>>>>>>>>>>>");
+		try {
+			dispatchService.updateDispatchStatusStart(request);
+			return ResponseEntity.ok("배송시작");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("배송 시작을 할 수 없습니다. 다시 시도해주세요.");
 		}
 	}
 }

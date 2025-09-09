@@ -20,6 +20,8 @@ public class DispatchDetailDTO {
     private String orderIds;          
     private BigDecimal totalVolume;   
     private Integer totalQty;
+    private char requiresAdditional;
+    private String franchiseManagerName;
 
     // 여러 지점 정보
     private List<DispatchFranchiseDTO> franchises;

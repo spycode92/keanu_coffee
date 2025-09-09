@@ -1,6 +1,8 @@
 const MYPAGE_DISPATCH_DETAIL_URL = "/transport/mypage/dispatch/detail";
 const MYPAGE_DISPATCH_COMPLETE_URL = "/transport/mypage/dispatch/complete";
-const MYPAGE_DISPATCH_START_URL = "";
+const MYPAGE_DISPATCH_START_URL = "/transport/mypage/delivery/start";
+
+const { token, header } = getCsrf();
 
 let franchises = [];
 
@@ -187,12 +189,15 @@ function loadCompleted() {
 					});
 				},
 				error: function(xhr) {
-					Swal.fire({ icon: "error", text: "적재 완료 처리 중 오류가 발생했습니다." });
+					Swal.fire("에러", xhr.responseText, "error");
 				}
 			});
 		}
 	})
 }
+
+// 배송 현황 관련 데이터
+let timelineData = [];
 
 $(document).on("click", ".detail-btn", function() {
 	ModalManager.openModalById('progressModal');
@@ -202,17 +207,29 @@ $(document).on("click", ".detail-btn", function() {
 	const btn = $("#detailActionBtn");
 	const dispatchIdx = row.data("dispatch-idx");
 	const vehicleIdx = row.data("vehicle-idx");
-	
+	let requiresAdditional = "";
 	
 	// --------------
 	// 화면 구현
 	$.getJSON(`${MYPAGE_DISPATCH_DETAIL_URL}/${dispatchIdx}/${vehicleIdx}`)
 	 .done(function(dispatch) {
+		$("#progMeta").text("배차일 " + formatDate(dispatch.dispatchDate));
+			console.log("dispatch", dispatch);
+		requiresAdditional = dispatch.requiresAdditional;
 		let detailHtml = "";
 		dispatch.franchises?.forEach((stop) => {
+			timelineData.push({
+				franchiseIdx: stop.franchiseIdx,
+			    franchiseName: stop.franchiseName,
+			    arrivalTime: stop.arrivalTime,
+			    completeTime: stop.completeTime,
+				status: "대기 중"
+			});
+			console.log("stop", stop);
 			const items = stop.deliveryConfirmations?.[0]?.items || [];
 			if (stop.deliveryConfirmations) {
 				stop.deliveryConfirmations.forEach((dc) => {
+					console.log(dc);
 					dc.items?.forEach((item, index) => {
 						detailHtml += `
 							<tr>
@@ -229,7 +246,7 @@ $(document).on("click", ".detail-btn", function() {
 							  	</td>
 								<td class="status-cell">${item.status || "-"}</td>
 						        ${index === 0 ? `<td rowspan="${items.length}">
-						        	<button class="complateBtn" data-franchise-idx="${stop.franchiseIdx}">
+						        	<button class="complateBtn" data-franchise-idx="${stop.franchiseIdx}" disabled>
 						              납품완료
 						            </button>
 						          </td>` : ""}
@@ -240,11 +257,26 @@ $(document).on("click", ".detail-btn", function() {
 			}
 		});
 		
+		if (dispatch.status === "운송중") {
+			$("#timeline").html(`
+			<div class="timeline-item">
+		    	<div class="timeline-point"></div>
+			    <div class="timeline-content">
+			      	<div class="font-bold">운송 시작</div>
+		    	</div>
+		  	</div>
+		  	<div class="timeline-item">
+		    	<div class="timeline-point"></div>
+		    	<div class="timeline-content">
+		      		<div class="font-bold">${timelineData[0].franchiseName} (운송 중)</div>
+		    	</div>
+		  	</div>
+		`);
+		timelineData[0].status = "운송 중";
+		}
+		
 		$("#detailItems tbody").html(detailHtml);
-		
-		
 	});
-	// --------------
 	
 	// 버튼 클릭 시 
 	if (status === "적재완료") {
@@ -252,9 +284,31 @@ $(document).on("click", ".detail-btn", function() {
 		// 운송 시작 상태 변경 
 		btn.off("click").on("click", function() {
 			$.ajax({
-				url: MYPAGE_DISPATCH_START_URL
+				url: MYPAGE_DISPATCH_START_URL,
+				type: "POST",
+				contentType: "application/json; charset=UTF-8",
+				data: JSON.stringify({
+					dispatchIdx: parseInt(dispatchIdx),
+					vehicleIdx: parseInt(vehicleIdx),
+					requiresAdditional
+				}), 
+				beforeSend(xhr) {
+		     		if (token && header) xhr.setRequestHeader(header, token);
+		     	},
+				success: function() {
+					Swal.fire("운송시작", "운행을 시작합니다.", "success").then(() => {
+						location.reload();
+					});
+					
+				},
+				error: function(xhr) {
+					Swal.fire("에러", xhr.responseText, "error");
+				}
 			})
 		});
+	} else if (status === "운송중") {
+		btn.text("복귀");
+		
 	}
 	
 });
@@ -262,6 +316,7 @@ $(document).on("click", ".detail-btn", function() {
 // 반품 수량 입력할 때 이벤트
 $(document).on("input", ".delivered-qty", function() {
 	const tr = $(this).closest("tr");
+	const tbody = $(this).closest("tbody");
 	const deliverd = parseInt($(this).val() || "0", 10);
 	const orderedQty = parseInt($(this).data("ordered-qty"), 10);
 	
@@ -271,7 +326,7 @@ $(document).on("input", ".delivered-qty", function() {
 	if (deliverd === 0) {
 		statusText = "완료";
 		statusCode = "OK";
-	} else if (deliverd < orderedQty) {
+	} else if (deliverd < orderedQty && deliverd > 0) {
 		statusText = "부분 반품";
 		statusCode = "PARTIAL_REFUND";
 	} else if (deliverd === orderedQty) {
@@ -284,8 +339,59 @@ $(document).on("input", ".delivered-qty", function() {
 	
 	// 전송할 데이터에 status도 담기 위해 data 속성 업데이트
     tr.find(".delivered-qty").data("status-code", statusCode);
- 
+
+	// 같은 지점의 반품 수량 및 상태 확인
+	let allFilled = true;
+	tbody.find("tr").each(function() {
+		const row = $(this);
+    	const returned = parseInt(row.find(".delivered-qty").val() || -1, 10);
+		const code = row.find(".delivered-qty").data("status-code");
+		
+		if (isNaN(returned) || returned < 0 || !code) {
+      		allFilled = false;
+	      	return false; // 하나라도 안 맞으면 중단
+	    }
+	});
+	
+	const btn = tbody.find(".complateBtn").first();
+	btn.prop("disabled", !allFilled);
+	
 });
+
+$(document).on("click", ".complateBtn", function() {
+	const idx = $(this).data("franchise-idx");
+	const btn = $(`.complateBtn[data-franchise-idx="${idx}"]`);
+	const stopIndex = timelineData.findIndex(s => s.franchiseIdx === idx);
+	
+	// 현재 지점 완료 처리
+  	timelineData[stopIndex].status = "납품 완료";
+  	addTimelineStep(`${timelineData[stopIndex].franchiseName} (납품 완료)`);
+
+	// 다음 지점이 있으면 운송 중 표시
+	if (stopIndex + 1 < timelineData.length) {
+		timelineData[stopIndex + 1].status = "운송 중";
+	    addTimelineStep(`${timelineData[stopIndex + 1].franchiseName} (운송 중)`);
+	} else {
+		// 모든 지점 완료 → 복귀 단계
+	    addTimelineStep("복귀");
+		btn.prop("disabled", true);
+	}
+});
+
+// 배송 현황 단계 추가 
+function addTimelineStep(label, subText = "") {
+	const html = `
+		<div class="timeline-item">
+	    	<div class="timeline-point"></div>
+	      		<div class="timeline-content">
+	        	<div class="font-bold">${label}</div>
+	        	${subText ? `<div class="text-sm text-gray-600">${subText}</div>` : ""}
+	      	</div>
+	    </div>
+	`;
+	$("#timeline").append(html);
+}
+
 
 
 // 날짜 변환
