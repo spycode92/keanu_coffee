@@ -192,7 +192,7 @@
 		            <span class="text-muted" style="font-size: 0.9em;">검색결과: 총 <strong id="resultCount"></strong>건</span>
 		        </div>
 		        <div class="d-flex gap-2">
-					<a href="/outbound/order" class="btn btn-primary btn-sm">새 출고 등록</a>
+					<a href="/order/insert" class="btn btn-primary btn-sm">새 출고 등록</a>
 		            <a href="#" class="btn btn-secondary btn-sm">엑셀 다운로드</a>
 					<a href="#" id="settings-button" class="btn btn-secondary btn-sm">설정</a>
 		            <a href="#" class="btn btn-secondary btn-sm">선택삭제</a>
@@ -220,48 +220,50 @@
 					    <!-- 출력 카운터 초기화 -->
 					    <c:set var="displayCount" value="0" />
 					
-					    <c:forEach var="order" items="${orderList}">
-					        <c:if test="${not empty order.orderNumber}">
+					    <c:forEach var="order" items="${obManagement}">
+					        <c:if test="${not empty order.outboundOrderIdx}">
 					            <tr>
 					                <!-- 체크박스 -->
 					                <td>
-					                    <input type="checkbox" name="selectedOrder" value="${order.ibwaitIdx}" />
+					                    <input type="checkbox" name="selectedOrder" value="${order.outboundOrderIdx}" />
 					                </td>
 					
-					                <!-- 발주번호 (링크) -->
+					                <!-- 출고번호 (링크) -->
 					                <td>
-					                    <c:url var="detailUrl" value="/inbound/inboundDetail">
-					                        <c:param name="orderNumber" value="${order.orderNumber}" />
-					                        <c:param name="ibwaitIdx" value="${order.ibwaitIdx}" />
+					                    <c:url var="detailUrl" value="/outbound/outboundDetail">
+					                        <c:param name="obwaitNumber" value="${order.obwaitNumber}" />
+					                        <c:param name="outboundOrderIdx" value="${order.outboundOrderIdx}" />
 					                    </c:url>
 					                    <a href="${detailUrl}" class="link-order-number">
-					                        <c:out value="${order.orderNumber}" default="-" />
+					                        <c:out value="${order.obwaitNumber}" default="-" />
 					                    </a>
 					                </td>
 					
-					                <!-- 출고번호 -->
-					                <td><c:out value="${order.ibwaitNumber}" /></td>
-					
 					                <!-- 출고일자 -->
-					                <td><c:out value="${order.arrivalDateStr}" default="-" /></td>
+					                <td><c:out value="${order.departureDate}" default="-" /></td>
 					
-					                <!-- 공급업체 -->
-					                <td><c:out value="${order.supplierName}" /></td>
-					                
+					                <!-- 출고위치 -->
+					                <td><c:out value="${order.outboundLocation}" default="-" /></td>
+					
+					                <!-- 주문프랜차이즈 -->
+					                <td><c:out value="${order.franchiseName}" default="-" /></td>
+					
 					                <!-- 상태 -->
-					                <td><c:out value="${order.inboundStatus}" /></td>
+					                <td><c:out value="${order.status}" default="-" /></td>
 					
 					                <!-- 품목수 -->
-					                <td><c:out value="${order.numberOfItems}" /></td>
+					                <td><c:out value="${order.itemCount}" default="0" /></td>
 					
 					                <!-- 출고예정수량 -->
-					                <td><c:out value="${order.quantity}" /></td>
+					                <td><c:out value="${order.totalQuantity}" default="0" /></td>
 					
 					                <!-- 담당자 -->
-					                <td><c:out value="${order.manager}" /></td>
+					                <td class="manager-cell" data-modal-target="changeManager">
+									    <c:out value="${order.manager}" default="-" />
+									</td>
 					
 					                <!-- 비고 -->
-					                <td><c:out value="${order.note}" /></td>
+					                <td><c:out value="${order.note}" default="-" /></td>
 					            </tr>
 					
 					            <!-- 출력 카운트 증가 -->
@@ -272,10 +274,11 @@
 					    <!-- 출력된 행이 하나도 없을 경우 안내문 -->
 					    <c:if test="${displayCount == 0}">
 					        <tr>
-					            <td colspan="11" class="text-center">출고 데이터가 존재하지 않습니다.</td>
+					            <td colspan="10" class="text-center">출고 데이터가 존재하지 않습니다.</td>
 					        </tr>
 					    </c:if>
 					</tbody>
+
 	<!-- ==============================================================================================================리스트 존========= -->				
 				</table>
 			</div>
@@ -294,30 +297,8 @@
 			</div>
 		</div>
 
-		<!-- 공통 설정 모달 -->
-		<div id="settings-modal" class="settings-modal" aria-hidden="true">
-			<div class="settings-content">
-				<div class="settings-header">
-					<div class="card-title">페이지 설정</div>
-					<button id="settings-close" class="settings-close" aria-label="닫기">&times;</button>
-				</div>
-				<div class="mb-3">
-					<label class="form-label">기본 정렬</label>
-					<select class="form-control">
-						<option>출고일자 최신순</option>
-						<option>출고번호 오름차순</option>
-						<option>상태순</option>
-					</select>
-				</div>
-				<div class="d-flex justify-content-between">
-					<button id="settings-cancel" class="btn btn-secondary">취소</button>
-					<button class="btn btn-primary">저장</button>
-				</div>
-			</div>
-		</div>
-
 	</section>
-
+	<jsp:include page="/WEB-INF/views/outbound/modal/changeManager.jsp"></jsp:include>
 	<script>
 		$("#adminPage").click(function(){
 			location.href="/admin/main";
@@ -364,14 +345,8 @@
 		    }
 		});
 	</script>
-	<script>
-		(function(){
-			var cntEl = document.getElementById('resultCount');
-			if(cntEl){
-				cntEl.textContent = '${displayCount}';
-			}
-		})();
-	</script>
+	
+	
 </body>
 </html>
  

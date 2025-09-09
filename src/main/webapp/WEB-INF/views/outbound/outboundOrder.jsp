@@ -28,7 +28,7 @@
 		<h2>출고 요청 생성</h2>
 		<p class="muted">가맹점/긴급여부 선택 후 품목을 추가하세요. 최종 제출 시 함께 저장됩니다.</p>
 
-		<form id="outboundForm" action="<c:url value='/outbound/order'/>" method="post">
+		<form id="outboundForm" action="<c:url value='/order/insert'/>" method="post">
 			<c:if test="${not empty _csrf}">
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 			</c:if>
