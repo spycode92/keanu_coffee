@@ -10,7 +10,7 @@
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
-	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+	
 
 	<style>
 		
@@ -299,54 +299,8 @@
 
 	</section>
 	<jsp:include page="/WEB-INF/views/outbound/modal/changeManager.jsp"></jsp:include>
-	<script>
-		$("#adminPage").click(function(){
-			location.href="/admin/main";
-		});
-
-		/* 검색 기준 토글 */
-		document.addEventListener('change', function(e) {
-			if (e.target && e.target.id === 'dateBasis') {
-				const basis = e.target.value;
-				document.querySelectorAll('.date-field').forEach(el => el.style.display = 'none');
-				if (basis === 'start') {
-					document.querySelectorAll('.date-start').forEach(el => el.style.display = '');
-				} else if (basis === 'end') {
-					document.querySelectorAll('.date-end').forEach(el => el.style.display = '');
-				} else if (basis === 'range') {
-					document.querySelectorAll('.date-range').forEach(el => el.style.display = '');
-				}
-			}
-		});
-		window.addEventListener('DOMContentLoaded', function() {
-			const sel = document.getElementById('dateBasis');
-			if (sel) sel.dispatchEvent(new Event('change'));
-		});
-		
-		document.getElementById('toggleDetailSearchBtn').addEventListener('click', function() {
-		    const detailCard = document.getElementById('detailSearchCard');
-		    if (detailCard.style.display === 'none') {
-		        detailCard.style.display = '';
-		        this.textContent = '상세검색 닫기';
-		    } else {
-		        detailCard.style.display = 'none';
-		        this.textContent = '상세검색';
-		    }
-		});
-
-		// 간단 검색 버튼 클릭 이벤트
-		document.getElementById('simpleSearchBtn').addEventListener('click', function() {
-		    const keyword = document.getElementById('simpleItemKeyword').value.trim();
-		    if (keyword) {
-		        console.log("간단검색 품목 키워드:", keyword);
-		        // TODO: 여기에 AJAX 검색 로직 추가
-		    } else {
-		        alert("품목 코드/명을 입력하세요.");
-		    }
-		});
-	</script>
-	
-	
+	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/outbound/management.js"></script>
 </body>
 </html>
  
