@@ -85,5 +85,162 @@
 			created_at DESC
 		LIMIT 1;		
 	</select>
+	
+	<select id="selectLastMonthsDemand" resultType="com.itwillbs.keanu_coffee.inventory.dto.OutboundOrderItemDTO">
+		SELECT 
+			i.product_idx, 
+		    round(sum(i.quantity) / #{daysInLastMonth}, 2) quantity
+		FROM 
+			OUTBOUND_ORDER_ITEM i 
+		LEFT JOIN
+			OUTBOUND_ORDER o 
+		ON
+			o.outbound_order_idx = i.outbound_order_idx
+		WHERE 
+			YEAR(o.requested_date) = #{year}
+		  AND MONTH(o.requested_date) = #{month}
+		GROUP BY
+			i.product_idx
+	
+	</select>
+	
+	
+	<select id="selectLastMonthsDemandItemsEveryDay" resultType="com.itwillbs.keanu_coffee.inventory.dto.OutboundOrderItemDTO">
+		SELECT 
+			i.product_idx, 
+		    i.quantity
+		FROM 
+			OUTBOUND_ORDER_ITEM i 
+		LEFT JOIN
+			OUTBOUND_ORDER o 
+		ON
+			o.outbound_order_idx = i.outbound_order_idx
+		WHERE 
+			YEAR(o.requested_date) = #{year}
+		  AND MONTH(o.requested_date) = #{month}
+	
+	</select>
+	
+	
+	<select id="seletAvgDemandSameWeekOneYearAgo" resultType="com.itwillbs.keanu_coffee.inventory.dto.OutboundOrderItemDTO">
+		SELECT 
+			i.product_idx, 
+		    round((sum(i.quantity) / 7) * #{beta}, 2) as 'quantity'
+		FROM 
+			OUTBOUND_ORDER_ITEM i 
+		LEFT JOIN
+			OUTBOUND_ORDER o 
+		ON
+			o.outbound_order_idx = i.outbound_order_idx
+		WHERE 
+			o.requested_date BETWEEN #{startDate} AND #{endDate}		
+		GROUP BY
+			i.product_idx
+	
+	</select>
+	
+	<select id="selectPercentOfWarehouseUsed" resultType="double">
+		select 
+		(SUM(CASE
+		    WHEN p.product_volume = 3 THEN 17850 * i.quantity
+		    WHEN p.product_volume = 4 THEN 17850 * i.quantity
+		    WHEN p.product_volume = 5 THEN 24108 * i.quantity
+		    WHEN p.product_volume = 6 THEN 60384 * i.quantity
+		  END) / (SELECT SUM(volume) FROM WAREHOUSE_LOCATION)) 
+		FROM INVENTORY i
+		LEFT JOIN PRODUCT p
+		ON p.product_idx = i.product_idx
+	</select>
+	
+	<select id="selectInventoryQuantity" resultType="com.itwillbs.keanu_coffee.inventory.dto.OutboundOrderItemDTO">
+		SELECT
+			product_idx,
+		    SUM(quantity) quantity
+		FROM
+			INVENTORY 
+		GROUP BY 
+			product_idx
+		
+	</select>
+	<select id="selectInboundWaitingQuantity" resultType="com.itwillbs.keanu_coffee.inventory.dto.OutboundOrderItemDTO">
+		SELECT
+			p.product_idx,
+		    SUM(i.quantity) quantity
+		FROM
+			INBOUND_WAITING i 
+		LEFT JOIN
+			PURCHASE_ORDER_ITEM p
+		ON 
+			p.order_idx = i.order_idx
+		GROUP BY 
+			product_idx;
+	</select>
+	
+	<select id="selectContracts" resultType="com.itwillbs.keanu_coffee.inventory.dto.SupplierProductContractDTO">
+		SELECT
+			product_idx,
+			min_order_quantity,
+			max_order_quantity
+		FROM
+			SUPPLIER_PRODUCT_CONTRACT
+	
+	</select>
+	
+	<select id="selectProductAndSuppplier" resultType="com.itwillbs.keanu_coffee.inventory.dto.SupplierProductContractDTO">
+		SELECT
+			product_idx,
+			supplier_idx
+		FROM
+			SUPPLIER_PRODUCT_CONTRACT
+	
+	</select>
+	<insert id="insertProductOrder">
+		INSERT INTO PURCHASE_ORDER (
+			order_idx
+			, order_number
+			, supplier_idx
+			, order_date
+			, expected_arrival_date
+		) VALUES
+		(#{orderIdx}, #{orderNumber}, #{supplierIdx}, #{orderDate}, #{expectedArrivalDate})  
+		
+	</insert>
+	
+	<insert id="insertProductOrderItem">
+		INSERT INTO PURCHASE_ORDER_ITEM (
+			order_idx
+			, product_idx
+			, quantity			
+		) VALUES
+		(#{orderIdx}, #{productIdx}, #{quantity}) 
+		
+	</insert>
+
+	<insert id="insertInboundWaiting">
+		INSERT INTO INBOUND_WAITING (
+			ibwait_number
+			, order_idx
+			, quantity
+			, number_of_items
+			, expected_arrival_date			
+		) VALUES
+		(#{inboundWaitingNumber}, #{orderIdx}, #{quantity}, #{numberOfItems}, #{expectedArrivalDate})
+	</insert>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 </mapper>

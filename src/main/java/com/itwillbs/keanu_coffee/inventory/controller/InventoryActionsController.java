@@ -104,6 +104,11 @@ public class InventoryActionsController {
 	}
 	
 	
+	//move inventory
+	// when all inventory from one location is moved the inventory row needs to be deleted
+	// I need to make a default location for the inbound area
+	
+	
 	
 	
 	
