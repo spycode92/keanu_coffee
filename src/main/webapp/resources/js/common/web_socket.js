@@ -2,12 +2,6 @@
 $(function() {
 	// 웹소켓 연결 요청
 	connectWebSocket();
-	
-	// 알림아이콘 클릭 시 뱃지 끄고 알림으로 이동
-	$("#alarm-image").click(function() {
-		$("#alarm-badge").css("display", "none");
-		window.location.href = "/alarm";
-	});
 });
 
 // ===========================
@@ -201,6 +195,121 @@ function processNotification(msg) {
 
 
 
+let notiButton = null; 
+let isAllRead = true;
+function notification() {
+//	notiButton.style.display = (notiButton.style.display === 'block') ? 'none' : 'block';
+	
+	fetch("/alarm/getAlarm")
+	  .then(res => res.json())
+	  .then(data => {
+		  notificationList(data);
+	  })
+	  .catch(err => console.log("알림 조회 실패"));
+}
+
+function changeNotiColor(e) {
+	e.currentTarget.style.backgroundColor = "#f0f0f0";
+}
+
+function notificationList(data) {
+	const ul = document.querySelector("#notification-list");
+	ul.innerHTML = "";
+	
+	if (data.length === 0) {
+		ul.innerHTML = "<li class='no-notification'>알림이 없습니다.</li>"
+		return
+	}
+	
+	data.forEach((noti) => {
+		isAllRead = true;
+		const li = document.createElement("li");
+		const status = getReadStatus(noti.empAlarmReadStatus);
+		if(noti.empAlarmReadStatus == 1){
+			isAllRead = false;
+		}
+		
+		li.dataset.alarmIdx = noti.alarmIdx;
+		li.dataset.link = noti.empAlarmLink;
+		
+		li.innerHTML = '<span class="noti-message">' + noti.empAlarmMessage + '</span>' + '<span class="read-status">' + status + '</span>';
+		li.addEventListener("mouseover", changeNotiColor);
+		li.addEventListener("click", () => handleNotiClick(li))
+		ul.appendChild(li);
+	});
+	
+	console.log("다시검사해보기");
+	if(!isAllRead){
+		$("#alarm-badge").css("display", "block");
+	} else {
+		$("#alarm-badge").css("display", "none");
+	}
+}
+
+function handleNotiClick(li) {
+	const alarmIdx = li.dataset.alarmIdx;
+	const link = li.dataset.link || "";
+	
+	const readSpan = li.querySelector(".read-status");
+	
+	if (readSpan) {
+		readSpan.innerHTML = getReadStatus(0);
+	}
+//	
+//	markAsRead(alarmIdx)
+//		.then(() => {
+//			if (link && link.trim() !== "" && link !== "null") {
+//                window.location.href = link;
+//            }
+//			notification();
+//			console.log("이동안함");
+//		})
+//		.catch(err => console.log(err));
+	ajaxPost("/alarm/status/" + alarmIdx + "/read")
+	.then(() => {
+		console.log("여기까지");
+		if (link && link.trim() !== "" && link !== "null") {
+            window.location.href = link;
+        }
+		notification();
+		console.log("이동안함");
+	})
+	.catch(err => console.log(err));
+}
+
+function markAsRead(alarmIdx) {
+	return ajaxPost("/alarm/status/" + alarmIdx + "/read");
+}
+
+
+// 알림 확인
+function getReadStatus(status) {
+	
+	return status === 1 
+        ? '<span class="circle unread"></span>'
+        : '<span class="circle read"></span>';
+}
+
+// 전체 읽음
+function readAll() {
+	fetch("/user/notification/all-read", {
+		method: "PATCH",
+		header: {
+			"Content-Type": "application/json"
+		}
+	})
+	  .then((res) => res.json())
+	  .then((data) => {
+		  if (data.result === "모든 알림을 읽음 처리했습니다") {
+			  document.querySelectorAll(".read-status").forEach(span => {
+		          span.innerHTML = getReadStatus(1);
+		      }); 
+		  } else {
+			  alert("더 이상 읽을 알림이 없습니다.");
+		  }
+	  })
+	    .catch((err) => console.error("전체 읽음 오류:", err));
+}
 
 
 
@@ -209,5 +318,11 @@ function processNotification(msg) {
 
 //문서 로딩후 실행
 document.addEventListener("DOMContentLoaded", function() {
+	notiButton = document.getElementById('notification-box');
+	// 알림아이콘 클릭시 알림내용 표시
+	notification();
+	$("#alarm-image").click(function() {
+		notiButton.style.display = (notiButton.style.display === 'block') ? 'none' : 'block';
+	});
 });
 
