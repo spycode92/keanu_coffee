@@ -79,6 +79,7 @@ public class InboundController {
 	// 입고검수
 	@GetMapping("/inboundInspection")
 	public String showInboundInspection() {
+		
 		return "/inbound/inboundInspection";
 	}
 	

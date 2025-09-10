@@ -43,8 +43,6 @@
 	        <artifactId>easy-captcha</artifactId>
 	        <version>1.6.2</version>
 	    </dependency>
-	
-	    <!-- 카카오결제 필요 라이브러리 / Spring-core/libs는 별도 필요없음 -->
 	   
 		<!-- Spring MVC 웹 컨트롤러, 요청/응답 처리 및 뷰 관리에 필요 -->
 	    <dependency>
@@ -106,6 +104,15 @@
 	        <artifactId>jackson-annotations</artifactId>
 	        <version>2.13.2</version>
 	    </dependency>
+	    
+	    <!-- Java 8 의 java.time.LocalXXX 클래스들에 대한 Jackson 의 JSON 라이브러리 변환을 지원하는 라이브러리 -->
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.datatype</groupId>
+		    <artifactId>jackson-datatype-jsr310</artifactId>
+		    <version>2.20.0</version>
+		</dependency>
+	    
 	    <!-- Gson 추가 -->
    		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
@@ -288,7 +295,7 @@
 	        <scope>test</scope>
 	    </dependency>
 	    
-<!-- 	    qr code scanner maker -->
+		<!-- 	    qr code scanner maker -->
 		<!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
 		<dependency>
 		    <groupId>com.google.zxing</groupId>
@@ -301,6 +308,7 @@
 		    <artifactId>javase</artifactId>
 		    <version>3.5.3</version>
 		</dependency>
+		
 		<!-- 스프링시큐리티라이브러리 -->
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
 		<dependency>
@@ -352,6 +360,23 @@
 		    <artifactId>itext-core</artifactId>
 		    <version>9.2.0</version>
 		    <type>pom</type>
+		</dependency>
+		
+		<!-- 14. 웹소켓 라이브러리 -->
+		<!-- 1) Spring Websocket 라이브러리 -->
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-websocket -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-websocket</artifactId>
+		    <version>${org.springframework-version}</version>
+		</dependency>
+		
+		<!-- 2) STOMP 활용하여 메세지 처리를 위한 Spring Messaging 라이브러리 -->
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-messaging -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-messaging</artifactId>
+		    <version>${org.springframework-version}</version>
 		</dependency>
 		
 	</dependencies>
