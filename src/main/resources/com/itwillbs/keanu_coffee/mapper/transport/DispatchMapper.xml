@@ -157,7 +157,7 @@
 	
 	<!-- 배차 상제 정보(적재 완료 후) -->
 	<!-- 수주 확인서 품목 매핑 -->
-	<resultMap id="deliveryConfirmationItemMap" type="com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationItemDTO">
+	<resultMap id="deliveryConfirmationItemMap" type="DeliveryConfirmationItemDTO">
 	    <id property="confirmationItemIdx" column="confirmation_item_idx"/>
 	    <result property="confirmationIdx" column="delivery_confirmation_idx"/>
 	    <result property="productIdx" column="product_idx"/>
@@ -169,7 +169,7 @@
 	</resultMap>
 	
 	<!-- 수주 확인서 매핑 -->
-	<resultMap id="deliveryConfirmationMap" type="com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO">
+	<resultMap id="deliveryConfirmationMap" type="DeliveryConfirmationDTO">
 	    <id property="deliveryConfirmationIdx" column="delivery_confirmation_idx"/>
 	    <result property="dispatchAssignmentIdx" column="dispatch_assignment_idx"/>
 	    <result property="dispatchStopIdx" column="dispatch_stop_idx"/>
@@ -179,12 +179,12 @@
 	    <result property="note" column="note"/>
 	
 	    <!-- 자식: 수주확인서 품목 -->
-	    <collection property="items" ofType="com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationItemDTO"
+	    <collection property="items" ofType="DeliveryConfirmationItemDTO"
 	                resultMap="deliveryConfirmationItemMap"/>
 	</resultMap>
 	
 	<!-- 경유지 매핑 -->
-	<resultMap id="dispatchStopMap" type="com.itwillbs.keanu_coffee.transport.dto.DispatchStopDTO">
+	<resultMap id="dispatchStopMap" type="DispatchStopDTO">
 	    <id property="dispatchStopIdx" column="dispatch_stop_idx"/>
 	    <result property="dispatchIdx" column="dispatch_idx"/>
 	    <result property="dispatchAssignmentIdx" column="dispatch_assignment_idx"/>
@@ -193,18 +193,18 @@
 	    <result property="franchiseName" column="franchise_name"/>
 	    <result property="regionIdx" column="region_idx"/>
 	    <result property="regionName" column="common_code_name"/>
-	    <result property="status" column="status"/>
+	    <result property="dispatchStopStatus" column="status"/>
 	    <result property="arrivalTime" column="arrival_time"/>
 	    <result property="completeTime" column="complete_time"/>
 	    <result property="note" column="note"/>
 	
 	    <!-- 자식: 수주확인서 리스트 -->
-	    <collection property="deliveryConfirmations" ofType="com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO"
+	    <collection property="deliveryConfirmations" ofType="DeliveryConfirmationDTO"
 	                resultMap="deliveryConfirmationMap"/>
 	</resultMap>
 	
 	<!-- 최상위 Dispatch 상세 -->
-	<resultMap id="dispatchDetailMap" type="com.itwillbs.keanu_coffee.transport.dto.DispatchDetailDTO">
+	<resultMap id="dispatchDetailMap" type="DispatchDetailDTO">
 	    <id property="dispatchIdx" column="dispatch_idx"/>
 	    <result property="dispatchDate" column="dispatch_date"/>
 	    <result property="driverName" column="driver_name"/> 
@@ -221,7 +221,7 @@
 	    <result property="requiresAdditional" column="requires_additional"/>
 	
 	    <!-- ✅ 지점 매핑 -->
-	    <collection property="franchises" ofType="com.itwillbs.keanu_coffee.transport.dto.DispatchStopDTO"
+	    <collection property="franchises" ofType="DispatchStopDTO"
 	                resultMap="dispatchStopMap"/>
 	</resultMap>
 	<select id="selectDispatchDetail" resultMap="dispatchDetailMap">
@@ -229,7 +229,6 @@
 	        d.dispatch_idx
 	        , d.dispatch_date
 	        , d.start_slot
-	        , d.status
 	        , d.urgent
 	        , d.requires_additional
 	        , e.emp_name AS driver_name
@@ -244,6 +243,7 @@
 	        , f.franchise_manager_name
 	        , c.common_code_name AS region_name
 	        , dc.delivery_confirmation_idx
+	        , dc.outbound_order_idx AS outbound_order_idx
 	        , dc.receiver_name
 	        , dc.confirmation_time
 	        , dc.note
@@ -254,6 +254,9 @@
 	        , dci.delivered_qty
 	        , dci.status AS item_status
 	        , da.dispatch_assignment_idx
+	        , ds.arrival_time
+	        , ds.complete_time
+	        , ds.status
 	    FROM 
 	    	DISPATCH d
 	    JOIN 
@@ -333,7 +336,7 @@
 			<result property="franchisePhone" column="franchise_phone"/> 
 			<result property="franchiseManagerName" column="franchise_manager_name"/> 
 			<result property="status" column="franchise_status"/> 
-			<collection property="items" ofType="com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderItemDTO"> 
+			<collection property="items" ofType="OutboundOrderItemDTO"> 
 				<id property="outboundOrderItemIdx" column="outbound_order_item_idx"/> 
 				<result property="outboundOrderIdx" column="outbound_order_idx"/> 
 				<result property="productIdx" column="product_idx"/> 
@@ -360,7 +363,7 @@
 			, v.vehicle_idx 
 			, v.vehicle_number 
 			, v.capacity 
-			, o.outbound_order_idx 
+			, o.outbound_order_idx  AS outbound_order_idx
 			, oi.outbound_order_item_idx 
 			, p.product_idx 
 			, p.product_name 
@@ -539,6 +542,40 @@
 			status = #{status}
 		WHERE
 			dispatch_stop_idx = #{firstStopIdx}
+	</update>
+	
+	<!-- 경유지 테이블 업데이트(상태 및 시간) -->
+	<update id="updateDispatchStopCompleted">
+		UPDATE
+			DISPATCH_STOP
+		SET
+			status = #{status}
+			, arrival_time = NOW()
+			, complete_time = NOW()
+		WHERE
+			dispatch_stop_idx = #{dispatchStopIdx}
+	</update>
+	
+	<!-- 수주확인서 업데이트 -->
+	<update id="updateDeliveryConfirmation">
+		UPDATE
+			DELIVERY_CONFIRMATION
+		SET
+			confirmation_time = NOW()
+			, receiver_name = #{receiverName}
+		WHERE
+			delivery_confirmation_idx = #{deliveryConfirmationIdx}
+	</update>
+	
+	<!-- 수주확인서 품목 업데이트 -->
+	<update id="updateDeliveryConfirmationItem">
+		UPDATE
+			DISPATCH_STOPDELIVERY_CONFIRMATION_ITEM
+		SET
+			delivered_qty = #{deliveredQty}
+			, status = #{status}
+		WHERE
+			confirmation_item_idx = #{confirmationItemIdx}
 	</update>
 	
 	<!-- 출고 주문 테이블 상태 변경 -->

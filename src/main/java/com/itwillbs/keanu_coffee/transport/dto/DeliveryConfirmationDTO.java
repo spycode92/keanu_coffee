@@ -14,6 +14,7 @@ public class DeliveryConfirmationDTO {
 	   private Timestamp confirmationTime;       // 수주확인 시간
 	   private String receiverName;              // 수령자
 	   private String note;                      // 비고
+	   private char requiresAdditional;
 	   
 	   private List<DeliveryConfirmationItemDTO> items;
 }

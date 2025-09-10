@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchCompleteRequest;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchDetailDTO;
@@ -131,7 +132,6 @@ public class DispatchController {
 	// 배송 시작
 	@PostMapping("/mypage/delivery/start")
 	public ResponseEntity<String> modifyDeliveryStatusStart(@RequestBody DispatchRegisterRequestDTO request) {
-		System.out.println(request + ">>>>>>>>>>>>>>>>>>>>>>>");
 		try {
 			dispatchService.updateDispatchStatusStart(request);
 			return ResponseEntity.ok("배송시작");
@@ -139,6 +139,32 @@ public class DispatchController {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("배송 시작을 할 수 없습니다. 다시 시도해주세요.");
+		}
+	}
+	
+	// 납품 완료
+	@PostMapping("/mypage/delivery/completed")
+	public ResponseEntity<String> modifyDeliveryCompleted(@RequestBody DeliveryConfirmationDTO request) {
+		try {
+			dispatchService.updateDeliveryCompleted(request);
+			return ResponseEntity.ok("납품완료");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("납품 완료를 할 수 없습니다. 다시 시도해주세요.");
+		}
+	}
+	
+	// 기사 복귀
+	@PostMapping("/mypage/delivery/return")
+	public ResponseEntity<String> modifyDeliveryReturn(@RequestBody DispatchAssignmentDTO request) {
+		try {
+			dispatchService.updateDeliveryReturn(request);
+			return ResponseEntity.ok("복귀완료");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("다시 시도해주세요.");
 		}
 	}
 }

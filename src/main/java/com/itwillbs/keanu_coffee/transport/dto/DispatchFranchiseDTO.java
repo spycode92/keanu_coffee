@@ -2,8 +2,6 @@ package com.itwillbs.keanu_coffee.transport.dto;
 
 import java.util.List;
 
-import com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderItemDTO;
-
 import lombok.Data;
 
 @Data

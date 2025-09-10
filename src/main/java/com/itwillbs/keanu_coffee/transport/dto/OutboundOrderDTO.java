@@ -1,4 +1,4 @@
-package com.itwillbs.keanu_coffee.outbound.dto;
+package com.itwillbs.keanu_coffee.transport.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;

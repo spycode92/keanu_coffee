@@ -22,15 +22,16 @@ public class DispatchCompleteRequest {
     
     @Data
     public static class ItemComplete {
-        private Integer productIdx;       // 품목 고유번호
-        private String itemName;          // 품목 이름
-        private Integer orderedQty;       // 주문 수량
-        private Integer deliveredQty;     // 실제 납품 수량
-        private String Status;            // 납품 상태
-        private String note;              // 비고
+    	private Integer productIdx;
+        private Integer confirmationItemIdx;       // 품목 고유번호
+        private String itemName;                   // 품목 이름
+        private Integer orderedQty;                // 주문 수량
+        private Integer deliveredQty;              // 실제 납품 수량
+        private String Status;                     // 납품 상태
+        private String note;                       // 비고
     }
     
-    // 내부ㅠ enum 선언
+    // 내부 enum 선언
     public enum Status {
     	 OK,
          REFUND,

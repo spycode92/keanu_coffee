@@ -15,4 +15,5 @@ public class DispatchAssignmentDTO {
 	private Integer vehicleIdx;
 	private Integer empIdx;
 	private String status; // 예약, 적재완료, 운행중, 완료, 취소
+	private char requiresAdditional; 
 }

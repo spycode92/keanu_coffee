@@ -85,5 +85,14 @@ public interface DispatchMapper {
 	// 경유지 테이블 상태 변경
 	void updateDispatchStopStatus(@Param("firstStopIdx") Integer firstStopIdx, @Param("status") String status);
 
+	// 경유지 테이블 업데이트(상태 및 시간)
+	void updateDispatchStopCompleted(@Param("dispatchStopIdx") Integer dispatchStopIdx, @Param("status") String status);
+
+	// 수주확인서 업데이트
+	void updateDeliveryConfirmation(@Param("deliveryConfirmationIdx") Integer deliveryConfirmationIdx, @Param("receiverName") String receiverName);
+
+	// 수주확인서 품목 업데이트
+	void updateDeliveryConfirmationItem(DeliveryConfirmationItemDTO item);
+
 
 }

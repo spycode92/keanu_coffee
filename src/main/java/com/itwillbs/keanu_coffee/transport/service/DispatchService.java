@@ -152,7 +152,7 @@ public class DispatchService {
 			dispatchStop.setDispatchAssignmentIdx(assigmentIdx);
 			dispatchStop.setFranchiseIdx(stopReq.getFranchiseIdx());
 			dispatchStop.setDeliverySequence(route.getDeliverySequence());
-			dispatchStop.setStatus("대기");
+			dispatchStop.setDispatchStopStatus("대기");
 			dispatchStop.setUrgent('N');
 			
 			// 경유지 데이터 등록
@@ -235,5 +235,47 @@ public class DispatchService {
 		
 	}
 
+	// 납품 완료 
+	@Transactional
+	public void updateDeliveryCompleted(DeliveryConfirmationDTO request) {
+		// 출고 테이블 상태 변경 (운송 완료)
+		dispatchMapper.updateOutboundOrderStatus(request.getOutboundOrderIdx(), "운송완료");
+		
+		// 경유지 테이블 업데이트
+		dispatchMapper.updateDispatchStopCompleted(request.getDispatchStopIdx(), "납품완료");
+		
+		// 수주확인서 업데이트
+		dispatchMapper.updateDeliveryConfirmation(request.getDeliveryConfirmationIdx(), request.getReceiverName());
+		
+		// 수주확인서 품목 업데이트
+		for (DeliveryConfirmationItemDTO item : request.getItems()) {
+			dispatchMapper.updateDeliveryConfirmationItem(item);
+		}
+	}
 
+	// 기사 복귀
+	@Transactional
+	public void updateDeliveryReturn(DispatchAssignmentDTO request) {
+		request.setStatus("대기");
+		// 차량 상태 대기로 변경
+		vehicleMapper.updateVehicleStatus(request);
+		
+		Integer assignmentIdx = dispatchMapper.selectAssigmentIdx(request.getDispatchIdx(), request.getVehicleIdx());
+		// 배차배정 상태 변경
+		dispatchMapper.updateAssigmentStatus(assignmentIdx, "완료");
+		
+		if (request.getRequiresAdditional() == 'Y') {
+			// 같은 배차에 배정된 기사 수 카운트
+			int totalDrivers = dispatchMapper.selectCountAssigment(request.getDispatchIdx());
+			// 적재 완료한 기사 수 카운트
+	        int completedDrivers = dispatchMapper.selectCountAssignmentsByStatus(request.getDispatchIdx(), request.getStatus());
+	        
+	        // 모든 기사의 상태가 완료일 때 상태 변경
+	        if (totalDrivers == completedDrivers) {
+	        	dispatchMapper.updateDispatchStatus(request.getDispatchIdx(), "완료");
+	        }
+		} else {
+			dispatchMapper.updateDispatchStatus(request.getDispatchIdx(), "완료");
+		}
+	}
 }
