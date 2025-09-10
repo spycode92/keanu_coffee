@@ -306,29 +306,81 @@
 	    
 	    <!-- ✅ 페이징 -->
 		<div class="pagination" style="text-align:center; margin:20px 0;">
-		    <!-- 처음 / 이전 -->
-		    <c:if test="${pageInfo.pageNum > 1}">
-		        <a href="?pageNum=1" class="btn btn-secondary">« 처음</a>
-		        <a href="?pageNum=${pageInfo.pageNum - 1}" class="btn btn-secondary">‹ 이전</a>
-		    </c:if>
-		
-		    <!-- 페이지 번호 -->
-		    <c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
-		        <c:choose>
-		            <c:when test="${i == pageInfo.pageNum}">
-		                <span class="btn btn-primary">${i}</span>
-		            </c:when>
-		            <c:otherwise>
-		                <a href="?pageNum=${i}" class="btn btn-secondary">${i}</a>
-		            </c:otherwise>
-		        </c:choose>
-		    </c:forEach>
-		
-		    <!-- 다음 / 끝 -->
-		    <c:if test="${pageInfo.pageNum < pageInfo.maxPage}">
-		        <a href="?pageNum=${pageInfo.pageNum + 1}" class="btn btn-secondary">다음 ›</a>
-		        <a href="?pageNum=${pageInfo.maxPage}" class="btn btn-secondary">끝 »</a>
-		    </c:if>
+			<!-- 처음 / 이전 -->
+			<c:if test="${pageInfo.pageNum > 1}">
+			    <a href="?pageNum=1
+			        &keyword=${keyword}
+			        &location=${location}
+			        &locationType=${locationType}
+			        &mfgDate=${mfgDate}
+			        &expDate=${expDate}
+			        &stockStatus=${stockStatus}
+			        &outboundStatus=${outboundStatus}
+			        &sortOption=${sortOption}
+			        &qtySort=${qtySort}"
+			       class="btn btn-secondary">« 처음</a>
+			
+			    <a href="?pageNum=${pageInfo.pageNum - 1}
+			        &keyword=${keyword}
+			        &location=${location}
+			        &locationType=${locationType}
+			        &mfgDate=${mfgDate}
+			        &expDate=${expDate}
+			        &stockStatus=${stockStatus}
+			        &outboundStatus=${outboundStatus}
+			        &sortOption=${sortOption}
+			        &qtySort=${qtySort}"
+			       class="btn btn-secondary">‹ 이전</a>
+			</c:if>
+			
+			<!-- 페이지 번호 -->
+			<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
+			    <c:choose>
+			        <c:when test="${i == pageInfo.pageNum}">
+			            <span class="btn btn-primary">${i}</span>
+			        </c:when>
+			        <c:otherwise>
+			            <a href="?pageNum=${i}
+			                &keyword=${keyword}
+			                &location=${location}
+			                &locationType=${locationType}
+			                &mfgDate=${mfgDate}
+			                &expDate=${expDate}
+			                &stockStatus=${stockStatus}
+			                &outboundStatus=${outboundStatus}
+			                &sortOption=${sortOption}
+			                &qtySort=${qtySort}"
+			               class="btn btn-secondary">${i}</a>
+			        </c:otherwise>
+			    </c:choose>
+			</c:forEach>
+			
+			<!-- 다음 / 끝 -->
+			<c:if test="${pageInfo.pageNum < pageInfo.maxPage}">
+			    <a href="?pageNum=${pageInfo.pageNum + 1}
+			        &keyword=${keyword}
+			        &location=${location}
+			        &locationType=${locationType}
+			        &mfgDate=${mfgDate}
+			        &expDate=${expDate}
+			        &stockStatus=${stockStatus}
+			        &outboundStatus=${outboundStatus}
+			        &sortOption=${sortOption}
+			        &qtySort=${qtySort}"
+			       class="btn btn-secondary">다음 ›</a>
+			
+			    <a href="?pageNum=${pageInfo.maxPage}
+			        &keyword=${keyword}
+			        &location=${location}
+			        &locationType=${locationType}
+			        &mfgDate=${mfgDate}
+			        &expDate=${expDate}
+			        &stockStatus=${stockStatus}
+			        &outboundStatus=${outboundStatus}
+			        &sortOption=${sortOption}
+			        &qtySort=${qtySort}"
+			       class="btn btn-secondary">끝 »</a>
+			</c:if>
 		</div>
 	</div>
 
@@ -415,6 +467,7 @@
 	        <div class="modal-foot">
 	            <button class="btn btn-secondary" onclick="ModalManager.closeModal(document.getElementById('lotModal'))">닫기</button>
 	        </div>
+	    	</div>
 	    </div>
 	</div>
     <!-- ========================= /LOT 상세 모달 ========================= -->

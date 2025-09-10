@@ -54,7 +54,7 @@
 	            AND r.expiration_date = #{expDate}
 	        </if>
 	
-	        <!-- 재고 상태 필터 -->
+	        <!-- 재고 상태 필터 (영문 코드 기준) -->
 	        <if test="stockStatus != null and stockStatus != '' and stockStatus != '전체'">
 	            <choose>
 	                <when test="stockStatus == 'EXPIRED'">
@@ -65,6 +65,10 @@
 	                </when>
 	                <when test="stockStatus == 'OK'">
 	                    AND r.expiration_date &gt; DATE_ADD(NOW(), INTERVAL 7 DAY)
+	                    AND i.quantity &gt; 0
+	                </when>
+	                <when test="stockStatus == 'DISPOSED'">
+	                    AND i.quantity = 0
 	                </when>
 	            </choose>
 	        </if>
@@ -104,6 +108,7 @@
 	        w.location_type,
 	        s.supplier_name,
 	        CASE
+	            WHEN i.quantity = 0 THEN 'DISPOSED'
 	            WHEN r.expiration_date &lt; NOW() THEN 'EXPIRED'
 	            WHEN DATEDIFF(r.expiration_date, NOW()) BETWEEN 0 AND 7 THEN 'WARN'
 	            ELSE 'OK'
@@ -134,6 +139,25 @@
 	        </if>
 	        <if test="expDate != null and expDate != ''">
 	            AND r.expiration_date = #{expDate}
+	        </if>
+	
+	        <!-- 재고 상태 필터 (영문 코드 기준) -->
+	        <if test="stockStatus != null and stockStatus != '' and stockStatus != '전체'">
+	            <choose>
+	                <when test="stockStatus == 'EXPIRED'">
+	                    AND r.expiration_date &lt; NOW()
+	                </when>
+	                <when test="stockStatus == 'WARN'">
+	                    AND DATEDIFF(r.expiration_date, NOW()) BETWEEN 0 AND 7
+	                </when>
+	                <when test="stockStatus == 'OK'">
+	                    AND r.expiration_date &gt; DATE_ADD(NOW(), INTERVAL 7 DAY)
+	                    AND i.quantity &gt; 0
+	                </when>
+	                <when test="stockStatus == 'DISPOSED'">
+	                    AND i.quantity = 0
+	                </when>
+	            </choose>
 	        </if>
 	
 	        <!-- 출고 여부 필터 -->
