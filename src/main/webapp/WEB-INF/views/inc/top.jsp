@@ -1,8 +1,35 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<style>
+	#alarm-wrapper {
+		position: relative;
+		display: inline-block;
+	}
+	
+	#alarm-image {
+		width: 25px;
+		height: 25px;
+		vertical-align: bottom;
+	}
+	
+	/* 알람 아이콘 뱃지 */
+	#alarm-badge {
+		position: absolute;
+		/* 우측 하단 고정 */
+		bottom: 0;
+		right: 0;
+		width: 8px;
+		height: 8px;
+		background-color: red;
+		border-radius: 50%; /* 원형 */
+		display: none; /* 처음 로딩 시 숨김 */
+	}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/common/web_socket.js"></script>
 <c:if test="${not empty accessDeniedMessage }">
 	<script type="text/javascript">
 		Swal.fire({
@@ -27,8 +54,7 @@
 <nav class="top-nav">
 	<jsp:include page="/WEB-INF/views/inc/change_info.jsp"></jsp:include> 
 	<button id="sidebar-toggle" class="sidebar-toggle">&#9776;</button>
-	<span class="site-title">물류관리 ERP</span>
-  
+	<span class="site-title">물류관리 ERP </span>
 	<div class="top-nav-actions" style="margin-left:auto; display:flex; align-items:center; gap:16px;">
 		<div class="profile-wrapper">
 			<a id="profile" href="javascript:void(0)" >
@@ -36,7 +62,6 @@
 				<sec:authentication property="principal.empName"/>
 			</a>
 			<div id="employeeInfo" class="profile-popover" role="menu" aria-hidden="true" >
-				<span class="top-user">${sessionScope.sName }</span>
 				<span class="changeInfo"><button type="button" class="btn btn-link" data-modal-target="change-info-modal"> 정보 변경</button></span>
 				<span class="logout" >
 					<button type="button" class="btn btn-secondary" data-action="logout">로그아웃</button>
@@ -47,6 +72,10 @@
 				</div>				
 			</div>
 		</div>
+		<div id="alarm-wrapper">
+			<img src="/resources/images/alarm.png" id="alarm-image" />
+			<span id="alarm-badge"></span>			
+		</div>			
 	</div>
 </nav>
 
@@ -56,14 +85,12 @@
   <!-- 사이드바 -->
 	<aside id="sidebar" class="sidebar">
 		<ul>
-<%-- 			<sec:authorize access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')"> --%>
+			<sec:authorize access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')">
 			<li>
-				<a href="/admin"><span>관리자페이지</span></a>
+				<span>관리자페이지</span>
 <!-- 				<a href=""><span>물류부서관리</span></a> -->
 				<ul class="submenu">
 					<li><a href="/admin/employeeManage">사원관리</a></li>
-					<li><a href="/admin/dash">통계</a></li>
-					<li><a href="/admin/workingLog">작업관리</a></li>
 					<li><a href="/admin/preference/dept">조직관리</a></li>
 					<li><a href="/admin/preference/supplyCompany">공급업체관리</a></li>
 					<li><a href="/admin/preference/product">상품관리</a></li>
@@ -72,7 +99,7 @@
 					<li><a href="/admin/sysNoti">시스템알림</a></li>
 				</ul>
 			</li>
-<%-- 			</sec:authorize> --%>
+			</sec:authorize>
 			<sec:authorize access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')">
 			<li>
 				<a href="/inbound/main"><span>입고 관리</span></a>
@@ -128,9 +155,14 @@
 				</ul>
 			</li>
 			</sec:authorize>
-			<li>
-				<a href="/settings"><span>시스템 설정</span></a>
-			</li>
+			<sec:authorize access="isAuthenticated()">
+				<li>
+					<ul class="submenu">
+						<li><a href="/admin/dash">통계</a></li>
+						<li><a href="/admin/workingLog">작업관리</a></li>
+					</ul>
+				</li>
+			</sec:authorize>
 			<li>
 				<a href="/guide"><span>가이드페이지</span></a>
 				

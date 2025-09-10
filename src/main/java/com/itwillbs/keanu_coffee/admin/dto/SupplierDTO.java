@@ -25,5 +25,7 @@ public class SupplierDTO {
 	private String supplierAddress2;
 	private String status; //ENUM 활성 비활성 삭제
 	
+	private String supplierEmail;
+	
 	
 }

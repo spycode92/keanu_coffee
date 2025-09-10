@@ -135,7 +135,7 @@
 		            </div>
 		        </form>    
 		    </div>
-            <div class="table-responsive" style="max-height:300px; overflow-y:auto;">
+            <div class="table-responsive" style="overflow-y:auto;">
                 <table id="franchiseTable" class="table franchise-table mb-0">
                     <thead>
                         <tr>

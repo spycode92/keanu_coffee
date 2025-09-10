@@ -116,26 +116,26 @@
 	
 		    <!-- 총 재고 수량 -->
 		    <div class="card">
-		        <h3>총 재고 수량</h3>
-		        <p style="font-size: 28px; font-weight: bold;">3,150개</p>
-		    </div>
+			    <h3>총 재고 수량</h3>
+			    <p id="totalStock" style="font-size: 28px; font-weight: bold;">0개</p>
+			</div>
 	
 		    <!-- 입고/출고 현황 -->
 		    <div class="card">
-		        <h3>입고/출고 현황</h3>
-		        <p>오늘 입고: <strong>15건</strong></p>
-		        <p>오늘 출고: <strong>10건</strong></p>
-		    </div>
+			    <h3>입고/출고 현황</h3>
+			    <p>금일 입고: <strong id="todayInbound">0건</strong></p>
+			    <p>금일 출고: <strong id="todayOutbound">0건</strong></p>
+			</div>
 	
-		    <!-- 로케이션 용적률 (같은 줄) -->
-		    <div class="card" style="height: 200px;">
-		        <h3>로케이션 용적률</h3>
-		        <canvas id="locationChart" style="width:100%; height:120px;"></canvas>
-		    </div>
+		    <!-- 로케이션 용적률 -->
+			<div class="card" style="height: 200px;">
+			    <h3>로케이션 용적률</h3>
+			    <canvas id="locationChart" style="width:100%; height:120px;"></canvas>
+			</div>
 	
-		    <!-- 상품별 재고 현황 (아래 가로 전체) -->
+		    <!-- 카테고리별 재고 현황 -->
 		    <div class="card" style="grid-column: 1 / -1;">
-		        <h3>상품별 재고 현황</h3>
+		        <h3>카테고리별 재고 현황</h3>
 		        <canvas id="stockChart" style="width: 100%; height: 260px;"></canvas> <!-- [변경] 조금 더 키움 -->
 		    </div>
 		</div>
@@ -143,46 +143,107 @@
 	</main>
 	
 	<script>
-	    // 상품별 재고 차트
-	    const stockCtx = document.getElementById('stockChart').getContext('2d');
-	    new Chart(stockCtx, {
-	        type: 'bar',
-	        data: {
-	            labels: ['컵 3호', '컵 4호', '컵 5호', '설탕 시럽', '헤이즐넛 시럽', '빨대(큰거)', '빨대(작은거)', '원두(다크)', '원두(디카페인)', '냅킨'],
-	            datasets: [{
-	                label: '재고 수량',
-	                data: [500, 400, 300, 250, 230, 180, 170, 200, 150, 270],
-	                backgroundColor: '#4e73df',
-	                hoverBackgroundColor: 'rgba(200, 0, 200, 1)' // ← 마우스 오버 시 색상
-	            }]
-	        },
-	        options: {
-	            responsive: true,
-	            plugins: { legend: { display: false }, title: { display: false } },
-	            scales: { y: { beginAtZero: true } }
-	        }
-	    });
+		// ================ 총 재고 수량 불러오기 ================
+		function loadTotalStock() {
+		    $.getJSON('${pageContext.request.contextPath}/inventory/api/total-stock', function(data) {
+		        $('#totalStock').text(data.totalStock + '개');
+		    });
+		}
+	
+		// 페이지 로딩 시 실행
+		$(document).ready(function() {
+		    loadTotalStock();
+		})
+		
+		// ================ 금일 입고/출고 현황 불러오기 ================
+		function loadTodayInOut() {
+		    $.getJSON('${pageContext.request.contextPath}/inventory/api/today-inout', function(data) {
+		        $('#todayInbound').text(data.inbound + '건');
+		        $('#todayOutbound').text(data.outbound + '건');
+		    });
+		}
 
-	    // 로케이션 용적률 차트
-	    const locationCtx = document.getElementById('locationChart').getContext('2d');
-	    new Chart(locationCtx, {
-	        type: 'bar',
-	        data: {
-	            labels: ['A-1', 'A-2', 'B-1', 'B-2', 'C-1'],
-	            datasets: [{
-	                label: '용적률 (%)',
-	                data: [90, 70, 100, 60, 50],
-	                backgroundColor: 'rgba(28, 200, 138, 1)',
-	                hoverBackgroundColor: 'rgba(200, 0, 200, 1)'
-	            }]
-	        },
-	        options: {
-	            responsive: true,
-	            plugins: { legend: { display: false } },
-	            scales: { y: { beginAtZero: true, max: 100 } }
-	        }
-	    });
-
+		$(document).ready(function() {
+		    loadTodayInOut();
+		});
+		
+		// ================ 로케이션 용적률 ================
+	    function loadLocationUsage() {
+		    $.getJSON('${pageContext.request.contextPath}/inventory/api/location-usage', function(data) {
+		        console.log(data); // 확인용
+		
+		        const labels = data.map(item => item.location_name); // ✅ 로케이션명
+		        const values = data.map(item => item.usage_rate);    // ✅ 용적률(%)
+		
+		        const ctx = document.getElementById('locationChart').getContext('2d');
+		        new Chart(ctx, {
+		            type: 'bar',
+		            data: {
+		                labels: labels,
+		                datasets: [{
+		                    label: '용적률 (%)',
+		                    data: values,
+		                    backgroundColor: 'rgba(28, 200, 138, 1)'
+		                }]
+		            },
+		            options: {
+		                responsive: true,
+		                plugins: { legend: { display: false } },
+		                scales: { y: { beginAtZero: true, max: 100 } }
+		            }
+		        });
+		    });
+		}
+		
+		// 페이지 로드 시 실행
+		$(document).ready(function() {
+		    loadLocationUsage();
+		});
+			
+	    // ================ 카테고리별 재고 차트 (카테고리 기준) ================
+		const stockCtx = document.getElementById('stockChart').getContext('2d');
+		let stockChart;
+		
+		function loadCategoryStock() {
+		    $.getJSON('${pageContext.request.contextPath}/inventory/api/category-stock', function(data) {
+		        const labels = data.labels; // 카테고리 이름들 (예: 식품, 시럽, 소모품)
+		        const values = data.values; // 각 카테고리별 재고 수량
+		
+		        if (stockChart) {
+		            // 이미 차트가 있으면 데이터만 업데이트
+		            stockChart.data.labels = labels;
+		            stockChart.data.datasets[0].data = values;
+		            stockChart.update();
+		        } else {
+		            // 처음 로딩 시 차트 생성
+		            stockChart = new Chart(stockCtx, {
+		                type: 'bar',
+		                data: {
+		                    labels: labels,
+		                    datasets: [{
+		                        label: '카테고리별 재고 수량',
+		                        data: values,
+		                        backgroundColor: '#4e73df',
+		                        hoverBackgroundColor: 'rgba(200, 0, 200, 1)',
+		                        barPercentage: 0.5,       // ✅ 막대 두께 줄이기 (기본 0.9)
+		                        categoryPercentage: 0.6   // ✅ 카테고리별 간격 조정 (기본 0.8)
+		                    }]
+		                },
+		                options: {
+		                    responsive: true,
+		                    plugins: { legend: { display: false } },
+		                    scales: { y: { beginAtZero: true } }
+		                }
+		            });
+		        }
+		    });
+		}
+		
+		// 페이지 로드되면 자동 실행
+		$(document).ready(function() {
+		    loadCategoryStock();
+		});
+	
 	    // 새로고침 버튼 동작
 	    $('#refreshBtn').on('click', function(){
 	        // TODO: 데이터 갱신 로직
