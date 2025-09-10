@@ -41,46 +41,43 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/systemPreference/supplyContract")
 public class SupplyContractController {
 	private final SupplyContractService supplyContractService;
-	
-    // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-    // 공급계약목록
+
+	// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	// 공급계약목록
 	@GetMapping("")
-	public String systemPreference(Model model, @RequestParam(defaultValue = "1") int pageNum, 
-			@RequestParam(defaultValue = "") String searchType,
-			@RequestParam(defaultValue = "") String searchKeyword,
-			@RequestParam(defaultValue ="") String orderKey,
-			@RequestParam(defaultValue ="") String orderMethod,
-			@RequestParam(defaultValue ="") String filterStatus) {
-		model.addAttribute("pageNum",pageNum);
-		model.addAttribute("searchType",searchType);
-		model.addAttribute("searchKeyword",searchKeyword);
-		model.addAttribute("orderKey",orderKey);
-		model.addAttribute("orderMethod",orderMethod);
-		model.addAttribute("filterStatus",filterStatus);
+	public String systemPreference(Model model, @RequestParam(defaultValue = "1") int pageNum,
+			@RequestParam(defaultValue = "") String searchType, @RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue = "") String orderKey, @RequestParam(defaultValue = "") String orderMethod,
+			@RequestParam(defaultValue = "") String filterStatus) {
+		model.addAttribute("pageNum", pageNum);
+		model.addAttribute("searchType", searchType);
+		model.addAttribute("searchKeyword", searchKeyword);
+		model.addAttribute("orderKey", orderKey);
+		model.addAttribute("orderMethod", orderMethod);
+		model.addAttribute("filterStatus", filterStatus);
 		int listLimit = 10;
 		int contractListCount = supplyContractService.getContractListCount(searchType, searchKeyword, filterStatus);
-		
+
 		if (contractListCount > 0) {
 			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, contractListCount, pageNum, 3);
-			
+
 			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
 				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
 				model.addAttribute("targetURL", "/admin/customer/notice_list");
 				return "commons/result_process";
 			}
-			
+
 			model.addAttribute("pageInfo", pageInfoDTO);
-		
+
 			List<SupplyContractDTO> supplyContractList = supplyContractService.getsupplyContractInfo(
-					pageInfoDTO.getStartRow(), listLimit, searchType, searchKeyword, orderKey, orderMethod, filterStatus);
+					pageInfoDTO.getStartRow(), listLimit, searchType, searchKeyword, orderKey, orderMethod,
+					filterStatus);
 			model.addAttribute("supplyCotractList", supplyContractList);
 		}
-		
-		
-		
+
 		return "/admin/system_preference/supply_contract_management";
 	}
-	
+
 //    @GetMapping("/getContractList")
 //    @ResponseBody
 //    public List<SupplyContractDTO> getContractList() {
@@ -89,54 +86,53 @@ public class SupplyContractController {
 //
 //    	return supplyContractList;
 //    }
-    
-    //공급계약등록
-    @PostMapping("/addContract")
-    @ResponseBody
-    public SupplyContractDTO addContract(SupplyContractDTO supplyContract) {
-    	
-    	boolean result = supplyContractService.addContract(supplyContract);
-    	
-    	return supplyContract;
-    }
-	
-    // 공급계약상세정보
-    @GetMapping("/getContractDetail")
-    @ResponseBody
-    public SupplyContractDTO getContractDetail(SupplyContractDTO supplyContract) {
-    	SupplyContractDTO contractDetail = supplyContractService.getContractDetail(supplyContract);
-    	return contractDetail;
-    }
-    
-    //공급계약수정
-    @PostMapping("/updateContractDetail")
-    @ResponseBody
-    public SupplyContractDTO updateContractDetail(@RequestBody SupplyContractDTO contract) {
-    	SupplyContractDTO saved = supplyContractService.updateContractDetail(contract);
-    	
-    	return contract;
-    }
-    
-    //공급계약삭제
-    @PostMapping("/deleteContractDetail")
-    @ResponseBody
-    @SystemLog(target = SystemLogTarget.SUPPLIER_PRODUCT_CONTRACT)
-    public ResponseEntity<Map<String,String>> deleteContractDetail(@RequestBody SupplyContractDTO contract) {
-    	boolean result = supplyContractService.deleteContractDetail(contract);
-    	Map<String,String> response = new HashMap<>();
-        if (result) {
-        	response.put("title", "성공");
-        	response.put("msg", "공급계약 삭제 완료");
-            response.put("result", "success");
-            return ResponseEntity.ok(response);
-        } else {
-        	response.put("title", "실패");
-            response.put("msg", "공급계약 삭제 실패");
-            response.put("result", "error");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-    
-    }
-	
+
+	// 공급계약등록
+	@PostMapping("/addContract")
+	@ResponseBody
+	public SupplyContractDTO addContract(SupplyContractDTO supplyContract) {
+
+		boolean result = supplyContractService.addContract(supplyContract);
+
+		return supplyContract;
+	}
+
+	// 공급계약상세정보
+	@GetMapping("/getContractDetail")
+	@ResponseBody
+	public SupplyContractDTO getContractDetail(SupplyContractDTO supplyContract) {
+		SupplyContractDTO contractDetail = supplyContractService.getContractDetail(supplyContract);
+		return contractDetail;
+	}
+
+	// 공급계약수정
+	@PostMapping("/updateContractDetail")
+	@ResponseBody
+	public SupplyContractDTO updateContractDetail(@RequestBody SupplyContractDTO contract) {
+		SupplyContractDTO saved = supplyContractService.updateContractDetail(contract);
+
+		return contract;
+	}
+
+	// 공급계약삭제
+	@PostMapping("/deleteContractDetail")
+	@ResponseBody
+	@SystemLog(target = SystemLogTarget.SUPPLIER_PRODUCT_CONTRACT)
+	public ResponseEntity<Map<String, String>> deleteContractDetail(@RequestBody SupplyContractDTO contract) {
+		boolean result = supplyContractService.deleteContractDetail(contract);
+		Map<String, String> response = new HashMap<>();
+		if (result) {
+			response.put("title", "성공");
+			response.put("msg", "공급계약 삭제 완료");
+			response.put("result", "success");
+			return ResponseEntity.ok(response);
+		} else {
+			response.put("title", "실패");
+			response.put("msg", "공급계약 삭제 실패");
+			response.put("result", "error");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		}
+
+	}
 
 }

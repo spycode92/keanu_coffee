@@ -232,24 +232,22 @@
 					                <td>
 					                    <c:url var="detailUrl" value="/inbound/inboundDetail">
 					                        <c:param name="orderNumber" value="${order.orderNumber}" />
-					                        <c:param name="orderIdx" value="${order.ibwaitIdx}" />
+					                        <c:param name="ibwaitIdx" value="${order.ibwaitIdx}" />
 					                    </c:url>
 					                    <a href="${detailUrl}" class="link-order-number">
-					                        <c:out value="${order.orderNumber}" />
+					                        <c:out value="${order.orderNumber}" default="-" />
 					                    </a>
 					                </td>
 					
 					                <!-- 입고번호 -->
-					                <td><c:out value="${order.ibwaitIdx}" /></td>
+					                <td><c:out value="${order.ibwaitNumber}" /></td>
 					
 					                <!-- 입고일자 -->
-					                <td>
-									    <c:out value="${order.arrivalDateStr}" default="-" />
-									</td>
+					                <td><c:out value="${order.arrivalDateStr}" default="-" /></td>
 					
 					                <!-- 공급업체 -->
 					                <td><c:out value="${order.supplierName}" /></td>
-					
+					                
 					                <!-- 상태 -->
 					                <td><c:out value="${order.inboundStatus}" /></td>
 					

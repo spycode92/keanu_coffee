@@ -8,7 +8,8 @@
 	<!-- ResultMap: SQL 결과를 DTO에 매핑 -->
     <resultMap id="InboundManagementResultMap" type="com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO">
         <result column="발주번호" property="orderNumber" />
-        <result column="입고번호" property="ibwaitIdx" />
+        <result column="입고Idx" property="ibwaitIdx" />
+        <result column="입고번호" property="ibwaitNumber" />
         <result column="입고일자" property="arrivalDate" />
         <result column="공급업체" property="supplierName" />
         <result column="상태" property="inboundStatus" />
@@ -19,117 +20,70 @@
     </resultMap>
 
     <!-- SELECT: 입고관리 리스트 조회 -->
-    <select id="selectAllInboundWaitingInfo" resultMap="InboundManagementResultMap">
+    <select id="selectInboundWaitingInfo" resultMap="InboundManagementResultMap">
         SELECT 
             po.order_number                          AS 발주번호,
-            iw.ibwait_idx                            AS 입고번호,
+            iw.ibwait_idx                            AS 입고Idx,
+            iw.ibwait_number                         AS 입고번호,
             iw.arrival_date                          AS 입고일자,
             s.supplier_name                          AS 공급업체,
             iw.inbound_status                        AS 상태,
             COUNT(DISTINCT poi.product_idx)          AS 품목수량,
             SUM(poi.quantity)                        AS 입고예정수량,
             iw.manager                               AS 담당자,
-            iw.note                                   AS 비고
+            iw.note                                  AS 비고
         FROM PURCHASE_ORDER po
         JOIN INBOUND_WAITING iw ON po.order_idx = iw.order_idx
         JOIN PURCHASE_ORDER_ITEM poi ON po.order_idx = poi.order_idx
         JOIN SUPPLIER s ON po.supplier_idx = s.supplier_idx
-        GROUP BY po.order_number, iw.ibwait_idx, iw.arrival_date, iw.manager, iw.note, iw.inbound_status, s.supplier_name
+        GROUP BY po.order_number, iw.ibwait_idx, iw.ibwait_number, iw.arrival_date, iw.manager, iw.note, iw.inbound_status, s.supplier_name
         ORDER BY po.order_date DESC
     </select>
 	
 	
 	<!-- inbound upgrade -->
-	<select id="getInboundDetailData" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO">
+	<select id="selectInboundDetailData" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO">
 		SELECT 
-		    iw.ibwait_idx                          		AS ibwaitIdx,
-		    iw.arrival_date                      		AS arrivalDate,
-		    po.order_number                        		AS orderNumber,
-		    po.inbound_classification             		AS inboundClassification,
-		    s.supplier_name                        		AS supplierName,
-		    iw.manager                           		AS managerName,
-		    iw.inbound_location                   		AS inboundLocation,
-		    iw.number_of_items                    		AS numberOfItems,
-		    iw.quantity                            		AS quantity,
-		    SUM(poi.quantity * poi.unit_price * 1.1) 	AS totalPrice,
-		    iw.note                               		AS note
+		    iw.ibwait_idx                            AS ibwaitIdx,
+		    iw.ibwait_number                         AS ibwaitNumber,
+		    iw.arrival_date                          AS arrivalDate,
+		    po.order_number                          AS orderNumber,
+		    po.inbound_classification                AS inboundClassification,
+		    s.supplier_name                          AS supplierName,
+		    iw.manager                               AS managerName,
+		    iw.inbound_location                      AS inboundLocation,
+		    iw.number_of_items                       AS numberOfItems,
+		    iw.quantity                              AS quantity,
+		    iw.inbound_status                        AS inboundStatus,
+		    SUM(poi.quantity * poi.unit_price * 1.1) AS totalPrice,
+		    iw.note                                  AS note
 		FROM INBOUND_WAITING iw
 		JOIN PURCHASE_ORDER po ON iw.order_idx = po.order_idx
 		JOIN SUPPLIER s ON po.supplier_idx = s.supplier_idx
 		JOIN PURCHASE_ORDER_ITEM poi ON po.order_idx = poi.order_idx
-		WHERE iw.ibwait_idx = #{ibwaitIdx}
-		GROUP BY iw.ibwait_idx, iw.arrival_date, po.order_number, po.inbound_classification,
+		WHERE iw.ibwait_idx = #{ibwaitIdx }
+		GROUP BY iw.ibwait_idx, iw.ibwait_number, iw.arrival_date, po.order_number, po.inbound_classification,
 		         s.supplier_name, iw.manager, iw.inbound_location, iw.number_of_items,
-		         iw.quantity, iw.note
+		         iw.quantity, iw.inbound_status, iw.note;
 	</select>
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<select id="searchOrderIdx" resultType="int">
-		SELECT 	order_idx
-		FROM	PURCHASE_ORDER
-		WHERE	order_number = #{orderNumber}
-	</select>
-	
-	<select id="searchProductIdx" resultType="PurchaseOrderItemDTO">
-		SELECT	product_idx
-		FROM	PURCHASE_ORDER_ITEM
-		WHERE	order_idx = #{orderIdx}	
-	</select>
-	
-	<select id="searchProductDetail" parameterType="java.util.List"
-          resultType="com.itwillbs.keanu_coffee.admin.dto.ProductDTO">
-	    
-	    <!-- 안전: 전달된 리스트가 비었거나 null이면 빈 결과를 반환 -->
-	    <if test="list == null or list.size() == 0">
-			SELECT
-		        p.product_idx,
-		        p.product_name,
-		        p.product_volume,
-		        p.product_from,
-		        p.note
-			FROM PRODUCT p
-			WHERE 1 = 0
-	    </if>
-	
-	    <if test="list != null and list.size() &gt; 0">
-			SELECT
-		        p.product_idx,
-		        p.product_name,
-		        p.product_volume,
-		        p.product_from,
-		        p.note
-			FROM PRODUCT p
-			WHERE p.product_idx IN
-			<foreach collection="list" item="item" open="(" separator="," close=")">
-				#{item.productIdx}
-			</foreach>
-		</if>
-
-	</select>
-	
-	<!-- 사원명검색 -->
-	<select id="getInboundStaffNameList" parameterType="java.util.List" resultType="com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO">
-		SELECT 	emp_name
-		FROM	EMPLOYEE_INFO
-		WHERE	department_idx = 2 AND role_idx = 2
-	</select>
-	
-	<!--  -->
-	<select id="getSupplierName">
-		SELECT	supplier_name
-		FROM	SUPPLIER
-		WHERE	supplier_idx = #{supplierIdx }
+	<!-- Detail 상품 정보 조회 -->
+	<select id="selectInboundProductDetail" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundProductDetailDTO">
+		SELECT 
+		    p.product_idx,
+		    poi.lot_number,
+		    p.product_name,
+		    p.product_volume,
+		    poi.quantity,
+		    poi.unit_price,
+		    (poi.quantity * poi.unit_price) AS amount,
+		    (poi.quantity * poi.unit_price * 0.1) AS tax,
+		    (poi.quantity * poi.unit_price * 1.1) AS totalPrice
+		FROM PURCHASE_ORDER_ITEM poi
+		JOIN PRODUCT p ON poi.product_idx = p.product_idx
+		JOIN PURCHASE_ORDER po ON poi.order_idx = po.order_idx
+		WHERE po.order_number = #{orderNumber}
+		ORDER BY p.product_name ASC;
 	</select>
 	
 	

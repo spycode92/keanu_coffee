@@ -171,7 +171,72 @@
 		WHERE
 			franchise_idx = #{franchiseIdx}
 	</update>
+	
+	<!-- 행정구역 정보 조회 -->
+	<select id="selectAdministartiveRegionInfo" resultType="AdministrativeRegionDTO">
+		SELECT *
+		FROM ADMINISTRATIVE_REGION
+		WHERE bcode = #{administrativeRegion.bcode}
+	</select>
+	
+	<!-- 행정구역과 맵핑된 구역정보 가져오기 -->
+	<select id="selectMappingInfoWithAdministrativeRegionIdx" resultType="MappingDTO">
+		SELECT *
+		FROM REGION_ADMINISTRATIVE_MAP
+		WHERE bcode = #{bcode}
+	</select>
+	
+	
+	<!-- 비코드에 엮인 프렌차이즈 지점수 확인 -->
+	<select id="selectCountBcode" resultType="int">
+		SELECT COUNT(*)
+		FROM FRANCHISE
+		where bcode = #{bocde}
+	</select>
+	
+	<!-- 맵핑테이블 삭제 -->
+	<delete id="deleteMapping" >
+		DELETE FROM REGION_ADMINISTRATIVE_MAP
+		WHERE bcode = #{bcode}
+	</delete>
+	
+	<delete id="deleteRoute">
+		DELETE FROM ROUTE
+		WHERE franchise_idx = #{franchiseIdx}
+	</delete>
+	
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

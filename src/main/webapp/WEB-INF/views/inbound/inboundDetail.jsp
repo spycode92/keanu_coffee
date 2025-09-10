@@ -78,6 +78,49 @@
 			.inbound-detail .timeline { flex-wrap:wrap; justify-content:flex-start; }
 		}
 	</style>
+	
+	<!-- ============================================ 가격 계산 ============================================ -->
+	<script>
+		function formatCurrency(value) {
+		    return "₩ " + Number(value).toLocaleString();
+		}
+		
+		function recalculate(index) {
+		    const qtyInput = document.querySelector(`input.quantity[data-index='${index}']`);
+		    const priceInput = document.querySelector(`input.unitPrice[data-index='${index}']`);
+		
+		    const quantity = parseFloat(qtyInput.value) || 0;
+		    const unitPrice = parseFloat(priceInput.value) || 0;
+		
+		    const amount = quantity * unitPrice;
+		    const tax = amount * 0.1;
+		    const total = amount + tax;
+		
+		    document.querySelector(`.amount[data-index='${index}']`).textContent = formatCurrency(amount);
+		    document.querySelector(`.tax[data-index='${index}']`).textContent = formatCurrency(tax);
+		    document.querySelector(`.totalPrice[data-index='${index}']`).textContent = formatCurrency(total);
+		
+		    updateGrandTotal(); // 전체 합계도 갱신
+		}
+		
+		function updateGrandTotal() {
+		    let total = 0;
+		    document.querySelectorAll(".totalPrice").forEach(cell => {
+		        const text = cell.textContent.replace(/[^\d]/g, "");
+		        total += parseInt(text) || 0;
+		    });
+		    document.getElementById("grandTotalCell").textContent = formatCurrency(total);
+		}
+		
+		// 이벤트 연결
+		document.querySelectorAll("input.quantity, input.unitPrice").forEach(input => {
+		    input.addEventListener("input", () => {
+		        const index = input.getAttribute("data-index");
+		        recalculate(index);
+		    });
+		});
+	</script>
+	<!-- ============================================ 가격 계산 ============================================ -->
 </head>
  
 <body>
@@ -92,115 +135,73 @@
 			<div class="page-actions">
 				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
 				<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
-				<button id="btnEdit" class="btn btn-primary btn-sm">수정</button>
+				<button id="btnEdit" class="btn btn-primary btn-sm">검수</button>
 				<button id="btnConfirm" class="btn btn-primary btn-sm">입고확정</button>
 			</div>
 		</div>
-	<!-- ========== 계산 블록: totalQty 초기화/누적  ===================================================================================== -->
-		<c:set var="totalQty" value="0" scope="page" />
-		
-		<c:if test="${not empty product}">
-			<c:forEach var="prod" items="${product}">
-				<c:set var="item" value="${itemMap[prod.productIdx]}" />
-		
-				<c:choose>
-					<c:when test="${not empty item and item.quantity != null}">
-			       		<!-- quantity가 숫자형(또는 숫자 문자열)인 경우 누적 -->
-			        	<c:set var="totalQty" value="${totalQty + item.quantity}" scope="page" />
-			      	</c:when>
-					<c:otherwise>
-						-
-					</c:otherwise>
-				</c:choose>
-			</c:forEach>
-		</c:if>
-		
-	<!-- ========== 계산 블록: grandTotal 초기화/누적 ===== -->
-		<c:set var="grandTotal" value="0" scope="page" />
-		
-		<c:if test="${not empty product and not empty orderItems}">
-			<c:forEach var="prod" items="${product}">
-				<c:set var="item" value="${itemMap[prod.productIdx]}" />
-		
-			    <c:choose>
-			      <c:when test="${not empty item}">
-			        <c:set var="unitPrice" value="${item.unitPrice}" />
-			        <c:set var="quantity" value="${item.quantity}" />
-			      </c:when>
-			      <c:otherwise>
-			        <c:set var="unitPrice" value="0" />
-			        <c:set var="quantity" value="0" />
-			      </c:otherwise>
-			    </c:choose>
-		
-			    <c:set var="amount" value="${unitPrice * quantity}" />
-			    <c:set var="tax" value="${amount * 0.1}" />
-			    <c:set var="total" value="${amount + tax}" />
-				<c:set var="grandTotal" value="${grandTotal + total}" scope="page" />
-			</c:forEach>
-		</c:if>
-	<!-- ========== 계산 블록 끝 ========================================================================================================= -->
 		
 		<!-- 상단 기본정보 카드 -->
 		<div class="card mb-3">
 			<div class="card-header d-flex justify-content-between align-items-center">
 				<div class="card-title">기본 정보</div>
-				<div class="text-muted">상태: <span class="badge badge-pending">-</span></div>
+				<div class="text-muted">상태: 	<span class="badge badge-pending">
+													<c:out value="${inboundDetailData.inboundStatus}" default="-"/>
+												</span></div>
 			</div>
 			<div class="kv-grid">
 				<div class="kv-item">
 					<div class="kv-label">입고번호</div>
 					<div class="kv-value" style="display:flex; align-items:center; gap:.5rem;">
 				        <a id="inboundLink" class="inbound-link">
-							<c:out value="${inboundDetailData.ibwaitIdx}" default="-"/>
+							<c:out value="${sessionScope.inboundDetailData.ibwaitNumber}" default="-"/>
 				        </a>
 				    </div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고일자</div>
-					<div class="kv-value"><c:out value="${inboundDetailData.arrivalDate}" default="-"/></div>
+					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.arrivalDate}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">발주번호</div>
-					<div class="kv-value"><c:out value="${inboundDetailData.orderNumber}" default="-"/></div>
+					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.orderNumber}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고구분</div>
-					<div class="kv-value">-</div>
+					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.inboundClassification}" default="-"/></div>
 				</div>
 
 				<div class="kv-item">
 					<div class="kv-label">공급업체</div>
-					<div class="kv-value"><c:out value="${inboundDetailData.supplierName}" default="-"/></div>
+					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.supplierName}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">담당자</div>
-					<div class="kv-value"><c:out value="${inboundDetailData.managerName}" default="담당자 미정"/></div>
+					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.managerName}" default="담당자 미정"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">발주번호(PO)</div>
-					<div class="kv-value"><c:out value="${inboundDetailData.orderNumber}" default="-"/></div>
+					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.orderNumber}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고위치</div>
-					<div class="kv-value"><c:out value="${inboundDetailData.inboundLocation}" default="-"/></div>
+					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.inboundLocation}" default="-"/></div>
 				</div>
 
 				<div class="kv-item">
 					<div class="kv-label">총 품목 수</div>
-					<div class="kv-value"><c:out value="${inboundDetailData.numberOfItems}" default="-"/></div>
+					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.numberOfItems}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">총 수량</div>
-					<div class="kv-value"><c:out value="${inboundDetailData.quantity}" default="-"/></div>
+					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.quantity}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">총 금액</div>
-					<div class="kv-value"><c:out value="${inboundDetailData.totalPrice}" default="-"/></div>
+					<div class="kv-value"><fmt:formatNumber value="${sessionScope.inboundDetailData.totalPrice}" pattern="₩ #,##0" /></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">비고</div>
-					<div class="kv-value"><c:out value="${inboundDetailData.note}" default="-"/></div>
+					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.note}" default="-"/></div>
 				</div>
 			</div>
 		</div>
@@ -228,7 +229,8 @@
 				</div>
 			</div>
 		</div>
-
+		
+			
 		<!-- 품목 목록 -->
 		<div class="card mb-3">
 			<div class="card-header d-flex justify-content-between align-items-center">
@@ -240,91 +242,89 @@
 				<table id="itemsTable" class="table">
 					<thead>
 						<tr>
-							<th style="width:40px;">No</th>
-							<th>품목명 / 규격</th>
-							<th style="width:80px;">수량</th>
-							<th style="width:100px;">단위</th>
-							<th style="width:120px;">단가</th>
-							<th style="width:140px;">공급가액</th>
-							<th style="width:120px;">부가세</th>
-							<th style="width:140px;">총액</th>
-							<th style="width:120px;">LOT번호</th>
+							<th>No</th>
+							<th colspan="2">품목명 / 규격</th>
+							<th>LOT번호</th>
+							<th>수량</th>
+							<th>단위</th>
+							<th>단가</th>
+							<th>공급가액</th>
+							<th>부가세</th>
+							<th>총액</th>
 						</tr>
 					</thead>
 	<!-- ==============================================================================================================리스트 존========= -->
 					<tbody>
-						<c:choose>
-							<c:when test="${not empty product and not empty orderItems}">
-								<c:forEach var="prod" items="${product}" varStatus="vs">
-									<tr>
-										<c:set var="item" value="${itemMap[prod.productIdx]}" />	
-										<c:set var="amount" value="${item.unitPrice * item.quantity}" />
-							            <c:set var="tax" value="${amount * 0.1}" />
-							            <c:set var="total" value="${amount + tax}" />
+					    <c:choose>
+					        <c:when test="${not empty sessionScope.ibProductDetail}">
+					            <c:forEach var="item" items="${sessionScope.ibProductDetail}" varStatus="vs">
+					                <tr>
+					                    <!-- No. -->
+					                    <td>
+					                        <c:out value="${vs.index + 1}" />
+					                    </td>
+					
+					                    <!-- 상품명 -->
+					                    <td colspan="2">
+					                        <c:out value="${item.productName}" />
+					                    </td>
 										
-										<!-- No. -->
-										<td>
-											<c:out value="${vs.index + 1}" />
-										</td>
+										<!-- LOT넘버 -->
+					                    <td><c:out value="${item.lotNumber}" /></td>
 										
-										<!-- 상품명 자리(현재 -) -->
-										<td>
-											<c:out value="${prod.productName}" />
-										</td>       
-										  
-										<!-- 수량 -->
-										<td>
-											<fmt:formatNumber value="${item.quantity}" pattern="#개,##0" />
-										</td>         
-										 
-										<!-- 단위 -->
-										<td>
-											<fmt:formatNumber value="${prod.productVolume}" pattern="#호"/>
-										</td>                                   
-										
-										<!-- 단가 -->
-										<td>
-											<fmt:formatNumber value="${item.unitPrice}" pattern="₩ #,##0" />
-										</td>                     
-										
-										<!-- 금액 -->
-										<td>
-											<fmt:formatNumber value="${amount}" pattern="₩ #,##0" />
-										</td>                     
-										
-										<!-- 세액 -->
-										<td>
-											<fmt:formatNumber value="${tax}" pattern="₩ #,##0" />
-										</td>                     
-										
-										<!-- 합계 -->
-										<td>
-											<fmt:formatNumber value="${total}" pattern="₩ #,##0" />
-										</td>                     
-										
-										<!-- 상태 -->
-										<td>
-											-
-										</td>                                   
-									</tr>
-								</c:forEach>
-							</c:when>
-							<c:otherwise>
-								<tr>
-									<td colspan="9" class="text-center">product 리스트가 비어있습니다.</td>
-								</tr>
-							</c:otherwise>
-						</c:choose>
+					                    <!-- 수량 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.quantity}" pattern="#개,##0" />
+					                    </td>
+					
+					                    <!-- 단위 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.productVolume}" pattern="#호" />
+					                    </td>
+					
+					                    <!-- 단가 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.unitPrice}" pattern="₩ #,##0" />
+					                    </td>
+					
+					                    <!-- 공급가액 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.amount}" pattern="₩ #,##0" />
+					                    </td>
+					
+					                    <!-- 부가세 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.tax}" pattern="₩ #,##0" />
+					                    </td>
+					
+					                    <!-- 총액 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.totalPrice}" pattern="₩ #,##0" />
+					                    </td>
+					
+					                    
+					                </tr>
+					            </c:forEach>
+					        </c:when>
+					        <c:otherwise>
+					            <tr>
+					                <td colspan="10" class="text-center">입고 품목 정보가 없습니다.</td>
+					            </tr>
+					        </c:otherwise>
+					    </c:choose>
 					</tbody>
+					
+					<c:set var="grandTotal" value="0" />
+					<c:forEach var="item" items="${sessionScope.ibProductDetail}">
+					    <c:set var="grandTotal" value="${grandTotal + item.totalPrice}" />
+					</c:forEach>
+					
 					<tfoot>
-						<tr>
-							<td colspan="4"></td>
-							<td>합계</td>
-							<td>-</td>
-							<td>-</td>
-							<td> <fmt:formatNumber value="${grandTotal}" pattern="₩ #,##0" /></td>
-							<td></td>
-						</tr>
+					    <tr>
+					        <td colspan="8"></td>
+					        <td>합계</td>
+					        <td><fmt:formatNumber value="${grandTotal}" pattern="₩ #,##0" /></td>
+					    </tr>
 					</tfoot>
 	<!-- ==============================================================================================================리스트 존========= -->
 				</table>
@@ -389,12 +389,12 @@
 		document.getElementById("btnPrint").addEventListener("click", function(e){
 			e.preventDefault(); window.print();
 		});
-		document.getElementById("btnEdit").addEventListener("click", function(e){
-			e.preventDefault(); alert("편집 모드로 이동(구현 필요)");
-		});
 		document.getElementById("btnConfirm").addEventListener("click", function(e){
 			e.preventDefault(); alert("입고확정 처리(모의)");
 		});
+		document.getElementById("btnEdit").addEventListener("click", function() {
+	        window.location.href = "/inbound/inboundInspection";
+	    });
 	</script>
 	
 
