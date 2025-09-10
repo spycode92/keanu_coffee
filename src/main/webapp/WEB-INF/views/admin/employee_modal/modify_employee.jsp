@@ -44,7 +44,7 @@
                 <div style="display:flex; gap:2rem; margin-bottom:1rem;">
                     <div class="field" style="flex:1;">
                         <label class="form-label">이메일</label>
-                        <input type="email" name="empEmail" required class="form-control">
+                        <input type="text" name="empEmail" required class="form-control">
                     </div>
                     <div class="field" style="flex:1;">
                         <label class="form-label">연락처</label>
