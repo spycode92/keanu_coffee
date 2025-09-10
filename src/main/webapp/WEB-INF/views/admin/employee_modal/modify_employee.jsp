@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <div id="modifyEmployeeModal" class="modal" >
     <div class="modal-card sm">
@@ -8,6 +9,7 @@
               enctype="multipart/form-data"
               id="modifyEmployeeForm"
               class="modal-form">
+            <sec:csrfInput/>
             <div class="modal-head">
                 <h5 id="modifyEmployeeModalLabel">직원 정보수정</h5>
                 <button type="button"
@@ -42,7 +44,7 @@
                 <div style="display:flex; gap:2rem; margin-bottom:1rem;">
                     <div class="field" style="flex:1;">
                         <label class="form-label">이메일</label>
-                        <input type="email" name="empEmail" required class="form-control">
+                        <input type="text" name="empEmail" required class="form-control">
                     </div>
                     <div class="field" style="flex:1;">
                         <label class="form-label">연락처</label>

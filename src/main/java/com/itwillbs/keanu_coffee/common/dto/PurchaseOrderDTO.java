@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+//@NoArgsConstructor
 @AllArgsConstructor
 public class PurchaseOrderDTO implements Serializable {
 	
@@ -28,4 +28,5 @@ public class PurchaseOrderDTO implements Serializable {
     private LocalDateTime updatedAt;              // updated_at
     
     private List<PurchaseOrderItemDTO> items;
+    
 }

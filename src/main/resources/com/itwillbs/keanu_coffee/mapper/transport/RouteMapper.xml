@@ -61,6 +61,7 @@
 		AND
 			franchise_idx = #{franchiseIdx}
 	</update>
+
 	
 	<!-- 경로 조회 -->
 	<select id="selectFranchise" resultType="RouteDTO">
@@ -70,4 +71,12 @@
 		WHERE
 			franchise_idx = #{franchiseIdx}
 	</select>
+
+	<!-- 맵핑테이블 삭제 -->
+	<delete id="deleteMapping" >
+		DELETE FROM REGION_ADMINISTRATIVE_MAP
+		WHERE bcode = #{bcode}
+		
+	</delete>
+
 </mapper>

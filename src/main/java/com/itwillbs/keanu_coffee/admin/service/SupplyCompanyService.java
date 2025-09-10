@@ -14,6 +14,9 @@ import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyCompanyMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
+import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
+import com.itwillbs.keanu_coffee.common.dto.CustomBusinessException;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.utils.FileUtils;
@@ -44,6 +47,7 @@ public class SupplyCompanyService {
 	}
 	
 	//공급업체등록
+	@SystemLog(target = SystemLogTarget.SUPPLIER)
 	public SupplierDTO addSupplier(SupplierDTO supplierDTO) {
 		supplyCompanyMapper.insertSupplier(supplierDTO);
 		
@@ -64,15 +68,16 @@ public class SupplyCompanyService {
 	}
 	
 	//공급업체삭제
-	public boolean removeSupplierByIdx(Long supplierIdx) {
-		int activeContractCount = supplyCompanyMapper.countActiveContractsBySupplier(supplierIdx);
-		if (activeContractCount > 0) {
-            // 계약이 남아있어서 삭제 불가
-            return false;
-        }
-		// 실제 삭제 수행 (0이면 실패/예외처리)
-        int deletedCnt = supplyCompanyMapper.deleteSupplierByIdx(supplierIdx);
-        return deletedCnt > 0;
+	@SystemLog(target = SystemLogTarget.SUPPLIER)
+	public boolean deleteSupplier(SupplierDTO supplier) {
+		int contractCount = supplyContractMapper.selectContractWithSupplierIdx(supplier.getSupplierIdx());
+		
+		if(contractCount > 0) {
+			throw new CustomBusinessException("등록된 계약이 있어 삭제할 수 없습니다.");
+		}
+		
+		int deleteCount = supplyCompanyMapper.deleteSupplierByIdx(supplier);
+		return deleteCount > 0;
 	}
 	
 	//공급업체 상세보기
@@ -83,11 +88,8 @@ public class SupplyCompanyService {
 	}
 	
 	//공급업체 정보변경
+	@SystemLog(target = SystemLogTarget.SUPPLIER)
 	public int modifySupplier(SupplierDTO supplier) {
-		if(supplier.getStatus().equals("삭제")) {
-			int contractCount = supplyContractMapper.selectContractWithSupplierIdx(supplier.getSupplierIdx());
-			if(contractCount > 0) {return 0;}
-		}
 		return supplyCompanyMapper.updateSupplier(supplier);
 	}
 	// 공급업체 목록조회
@@ -95,6 +97,7 @@ public class SupplyCompanyService {
 	public List<SupplierDTO> getSupplierList() {
 		return supplyCompanyMapper.selectAllSupplier();
 	}
+
 	
 	
 

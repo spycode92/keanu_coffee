@@ -41,7 +41,6 @@ $(function(){
 		const searchProductModal = document.getElementById('searchProduct');
 		$("#productSearch").val('');
 		ModalManager.openModal(searchProductModal);
-debugger;
 	});
 	
 	//상품 검색 모달 검색창입력이벤트
@@ -359,9 +358,8 @@ debugger;
             Swal.fire('성공', '계약 정보가 저장되었습니다.', 'success').then(()=>{
                 const detailModal = document.getElementById('contractDetailModal');
                 ModalManager.closeModal(detailModal);
-                setTimeout(function() {
-                    openContractDetailModal(currentContractIdx);
-                }, 500);
+				window.location.reload();
+
 			});
         }).catch(function() {
             Swal.fire('오류', '저장 중 오류가 발생했습니다.', 'error');
@@ -378,14 +376,14 @@ debugger;
             cancelButtonText: '취소'
         }).then((result) => {
             if (result.isConfirmed) {
-                const dataToDelete = { idx: currentContractIdx, status: '삭제' };
+                const dataToDelete = { supplyContractIdx: currentContractIdx, status: '삭제' };
                 ajaxPost('/admin/systemPreference/supplyContract/deleteContractDetail',
                     dataToDelete
-				).then(function() {
-                        Swal.fire('삭제 완료', '계약 정보가 삭제되었습니다.', 'success');
+				).then(function(response) {
+                        Swal.fire(response.title, response.msg, response.result);
                         const detailModal = document.getElementById('contractDetailModal');
+						window.location.reload();
                         ModalManager.closeModal(detailModal);
-                        loadSupplierProductContracts();
                     }).catch(function() {
                         Swal.fire('오류', '삭제 중 오류가 발생했습니다.', 'error');
                 });
@@ -399,5 +397,6 @@ debugger;
         const modal = document.getElementById(modalId);
         ModalManager.closeModal(modal);
     });
-
+	
+	
 });

@@ -15,7 +15,10 @@ import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.ProductMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
+import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
+import com.itwillbs.keanu_coffee.common.dto.CustomBusinessException;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.utils.FileUtils;
@@ -52,24 +55,27 @@ public class ProductService {
 
 	
 	// 카테고리 추가
+	@SystemLog(target =SystemLogTarget.COMMON_CODE )
 	public void addCategoryFromMap(CommonCodeDTO category) {
 		
-		productMapper.insertCategory(category.getCommonCodeName());
+		productMapper.insertCategory(category);
 
 	}
 	
 	//카테고리수정
+	@SystemLog(target = SystemLogTarget.COMMON_CODE)
 	public void modifyCategory(CommonCodeDTO category) {
 		productMapper.updateCategory(category);		
 	}
 	
 	//카테고리삭제
-	public boolean removeCategoryIfUnused(Integer commonCodeIdx) {
+	@SystemLog(target = SystemLogTarget.COMMON_CODE)
+	public boolean removeCategoryIfUnused(CommonCodeDTO category) {
 		//상품 테이블에 해당 카테고리 idx를 참조하는 상품이 있는지 검사
-		int productCount = productMapper.countProductByCategoryIdx(commonCodeIdx);
+		int productCount = productMapper.countProductByCategoryIdx(category.getCommonCodeIdx());
 
 		if(productCount == 0) {
-			productMapper.deleteCategory(commonCodeIdx);
+			productMapper.deleteCategory(category);
 			return true;
 		}
 		return false;
@@ -77,6 +83,7 @@ public class ProductService {
 	
 	//상품등록
 	@Transactional
+	@SystemLog(target = SystemLogTarget.PRODUCT)
 	public Boolean addProduct(ProductDTO product) throws IOException {
 		//상품DB등록
 		int insertCount = productMapper.insertProduct(product);
@@ -100,13 +107,8 @@ public class ProductService {
 	
 	//상품정보수정
 	@Transactional
+	@SystemLog(target = SystemLogTarget.PRODUCT)
 	public Boolean modifyProduct(ProductDTO product) throws IOException {
-		//상태를 삭제로 변경할때 
-		if(product.getStatus().equals("삭제")){
-			int productWithContract = supplyContractMapper.selectContractWithproductIdx(product.getProductIdx());
-			if(productWithContract > 0 ) { return false;}
-		}
-		
 		// 현재 product에 들어있는  파일 저장
 		product.setProductIdx(product.getProductIdx());
 		List<FileDTO> fileList = FileUtils.uploadFile(product, session);
@@ -133,10 +135,18 @@ public class ProductService {
 		return updateCount > 0;
 	}
 	
-	//상품상태 삭제변경
-	public boolean changeProductStatus(Integer productIdx, String status) {
-		int updateCount = productMapper.updateProductStatus(productIdx, status);
-		return updateCount > 0;
+	//상품상태 삭제로변경
+	@SystemLog(target = SystemLogTarget.PRODUCT)
+	public Boolean deleteProduct(ProductDTO product) {
+		int productWithContract = supplyContractMapper.selectContractWithproductIdx(product.getProductIdx());
+		if(productWithContract > 0 ) {
+//				return false;
+			throw new CustomBusinessException("등록된 계약이 있어 삭제할 수 없습니다.");
+		}
+		int deleteProductCount = productMapper.deleteProduct(product);
+		
+		
+		return deleteProductCount > 0;
 	}
 	
 	// 상품 목록 가져오기
@@ -144,6 +154,12 @@ public class ProductService {
 	public List<ProductDTO> getAllProductList() {
 		return productMapper.selectAllProduct();
 	}
+	
+	//단일카테고리정보가져오기
+	public CommonCodeDTO getCategoryInfoByCategoryIdx(Integer commonCodeIdx) {
+		return productMapper.selectCategoryByIdx(commonCodeIdx);
+	}
+	
 
 	
 	

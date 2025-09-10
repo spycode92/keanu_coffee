@@ -20,73 +20,69 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
-	
-	//관리자페이지 메인
+
+	// 관리자페이지 메인
 	@GetMapping("")
-	public String adminMain(HttpSession session, Model model, Authentication authentication) {
-		String id = authentication.getName();
-		if(!id.equals("admin")) {
-			model.addAttribute("msg", "권한이 없습니다.");
-			model.addAttribute("targetURL", "/"); 
-			return "/commons/result_process";
-		}
-		
+	public String adminMain() {
+
 		return "/admin/admin_main";
 	}
-	//직원관리
+
+	// 직원관리
 	@GetMapping("/employeeManage")
-	public String employeeManagement(RedirectAttributes redirectAttributes) {
-		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "알림", "이미 로그인 되어 있습니다.");
+	public String employeeManagement() {
 		return "redirect:/admin/employeeManagement";
 	}
-	//조직관리
+
+	// 조직관리
 	@GetMapping("/preference/dept")
 	public String systemPreference_organization() {
-		
+
 		return "redirect:/admin/systemPreference/dept";
 	}
-	//공급업체관리
+
+	// 공급업체관리
 	@GetMapping("/preference/supplyCompany")
 	public String systemPreference_supplyCompany() {
-		
+
 		return "redirect:/admin/systemPreference/supplyCompany";
 	}
-	//상품관리
+
+	// 상품관리
 	@GetMapping("/preference/product")
 	public String systemPreference_product() {
-		
+
 		return "redirect:/admin/systemPreference/product";
 	}
-	//공급업체관리
+
+	// 공급업체관리
 	@GetMapping("/preference/supplyContract")
 	public String systemPreference_supplyContract() {
-		
+
 		return "redirect:/admin/systemPreference/supplyContract";
 	}
-	
-	//지점관리
+
+	// 지점관리
 	@GetMapping("/preference/franchise")
 	public String systemPreference_franchise() {
 		return "redirect:/admin/systemPreference/franchise";
 	}
-	
-	//로그
+
+	// 로그
 	@GetMapping("/log")
 	public String workingTree() {
 		return "redirect:/admin/workingLog";
 	}
-	
-	//대시보드
+
+	// 대시보드
 	@GetMapping("/dash")
 	public String dashboard() {
-		return "redirect:/admin/dashboard";
+		return "redirect:/admin/statistics1";
 	}
-	
-	//
-	@GetMapping("/moveInventory")
-	public String moveInventory() {
-		return "/admin/employee_management/move_inventory";
+
+	@GetMapping("/sysNoti")
+	public String systemNotification() {
+		return "redirect:/admin/systemnotification";
 	}
-	
-	
+
 }

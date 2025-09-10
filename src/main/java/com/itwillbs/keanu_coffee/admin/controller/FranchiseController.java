@@ -29,109 +29,74 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/systemPreference/franchise")
 public class FranchiseController {
 	private final FranchiseService franchiseService;
-	
+
 	@GetMapping("")
-	public String franchiseManagement(Model model, @RequestParam(defaultValue = "1") int pageNum, 
-			@RequestParam(defaultValue = "") String searchType,
-			@RequestParam(defaultValue = "") String searchKeyword,
-			@RequestParam(defaultValue = "") String orderKey,
-			@RequestParam(defaultValue = "") String orderMethod) {
-		
-		model.addAttribute("pageNum",pageNum);
-		model.addAttribute("searchType",searchType);
-		model.addAttribute("searchKeyword",searchKeyword);
-		model.addAttribute("sortKey",orderKey);
-		model.addAttribute("sortMethod",orderMethod);
-		
-		//한페이지보여줄수
+	public String franchiseManagement(Model model, @RequestParam(defaultValue = "1") int pageNum,
+			@RequestParam(defaultValue = "") String searchType, @RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue = "") String orderKey, @RequestParam(defaultValue = "") String orderMethod) {
+
+		model.addAttribute("pageNum", pageNum);
+		model.addAttribute("searchType", searchType);
+		model.addAttribute("searchKeyword", searchKeyword);
+		model.addAttribute("sortKey", orderKey);
+		model.addAttribute("sortMethod", orderMethod);
+
+		// 한페이지보여줄수
 		int listLimit = 10;
 		// 조회된 목록수
 		int franchiseCount = franchiseService.getFranchiseCount(searchType, searchKeyword);
 		// 조회된 목록이 1개이상일때
-		if(franchiseCount > 0) {
+		if (franchiseCount > 0) {
 			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, franchiseCount, pageNum, 3);
-			
+
 			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
 				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
 				model.addAttribute("targetURL", "/admin/customer/notice_list");
 				return "commons/result_process";
 			}
-			
+
 			model.addAttribute("pageInfo", pageInfoDTO);
-		
-			List<FranchiseDTO> franchiseList = franchiseService.getFranchiseList(
-				pageInfoDTO.getStartRow(), listLimit, searchType, searchKeyword, orderKey,orderMethod);
-			model.addAttribute("franchiseList",franchiseList);
+
+			List<FranchiseDTO> franchiseList = franchiseService.getFranchiseList(pageInfoDTO.getStartRow(), listLimit,
+					searchType, searchKeyword, orderKey, orderMethod);
+			model.addAttribute("franchiseList", franchiseList);
 		}
-		
+
 		return "/admin/system_preference/franchise_management";
 	}
-	
-	//지점 등록
+
+	// 지점 등록
 	@PostMapping("/addFranchise")
 	@ResponseBody
 	public FranchiseDTO addFranchiseInfo(@RequestBody FranchiseDTO franchise) {
 		franchiseService.addFranchiseInfo(franchise);
 		return franchise;
 	}
-	
-	//지점상세보기
+
+	// 지점상세보기
 	@GetMapping("/{franchiseIdx}")
 	@ResponseBody
 	public FranchiseDTO getFranchiseDetail(@PathVariable Integer franchiseIdx) {
 		FranchiseDTO franchise = franchiseService.getFranchiseDetail(franchiseIdx);
 		return franchise;
 	}
-	
-	//지점정보 업데이트
+
+	// 지점정보 업데이트
 	@PostMapping("/modifyFranchise")
 	@ResponseBody
-	public ResponseEntity<Map<String,String>> modifyFranchiseInfo(@RequestBody FranchiseDTO franchise) {
+	public ResponseEntity<Map<String, String>> modifyFranchiseInfo(@RequestBody FranchiseDTO franchise) {
 		Map<String, String> resultMap = new HashMap<String, String>();
 		int updateCount = franchiseService.modifyFranchiseInfo(franchise);
-		if(updateCount == 0) {
+		if (updateCount == 0) {
 			resultMap.put("result", "failure");
-            resultMap.put("msg", "지점 정보 수정실패!");
-            return ResponseEntity.badRequest().body(resultMap);
+			resultMap.put("msg", "지점 정보 수정실패!");
+			return ResponseEntity.badRequest().body(resultMap);
 		}
 
 		resultMap.put("result", "success");
 		resultMap.put("msg", "지점 정보 수정 완료!");
 		return ResponseEntity.ok(resultMap);
-		
+
 	}
-	
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

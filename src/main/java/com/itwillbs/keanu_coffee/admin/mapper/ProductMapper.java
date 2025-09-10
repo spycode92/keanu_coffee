@@ -23,23 +23,25 @@ public interface ProductMapper {
 	//카테고리목록
 	List<ProductDTO> selectAllCategoriesAsMap();
 	//카테고리추가
-	void insertCategory(String categoryName);
+	void insertCategory(CommonCodeDTO category);
 	// 카테고리수정
 	void updateCategory(CommonCodeDTO category);
 	//카테고리에 제품이있나 확인
 	int countProductByCategoryIdx(Integer commonCodeIdx);
 	// 카테고리삭제
-	void deleteCategory(Integer idx);
+	void deleteCategory(CommonCodeDTO category);
 	//상품등록
 	int insertProduct(ProductDTO product);
 	//상품상세정보
 	ProductDTO selectProductByProductIdx(Integer productIdx);
 	// 상품정보 수정
 	int updateProduct(ProductDTO product);
-	// 상품상태 수정
-	int updateProductStatus(@Param("productIdx") Integer productIdx, @Param("status")String status);
+	//상품삭제
+	int deleteProduct(ProductDTO product);
 	// 상품리스트 선택
 	List<ProductDTO> selectAllProduct();
+	//단일카테고리정보가져오기
+	CommonCodeDTO selectCategoryByIdx(Integer commonCodeIdx);
 
 	
 }

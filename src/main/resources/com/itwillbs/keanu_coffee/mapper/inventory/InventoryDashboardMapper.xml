@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.inventory.mapper.InventoryDashboardMapper">
+	
+	<!-- 총 재고 수량 조회 -->
+	<select id="selectTotalStock" resultType="int">
+		SELECT IFNULL(SUM(quantity), 0) 
+    	FROM INVENTORY
+	</select>
+	
+	<!-- 금일 입고 건수 조회 -->
+	<select id="selectTodayInboundCount" resultType="int">
+	    SELECT COUNT(*)
+	    FROM RECEIPT_PRODUCT
+	    WHERE
+			DATE(received_at) = CURDATE()
+	</select>
+	
+	<!-- 금일 출고 건수 조회 -->
+	<select id="selectTodayOutboundCount" resultType="int">
+	    SELECT COUNT(*)
+	    FROM OUTBOUND_ORDER
+	    WHERE
+	    	DATE(created_at) = CURDATE()
+	</select>
+	
+	<!-- 로케이션 용적률 조회 -->
+    <select id="selectLocationUsage" resultType="map">
+	    SELECT 
+	        w.location_name,
+	        IFNULL(SUM(i.quantity), 0) AS used_qty,                             -- 현재 사용중 수량
+	        w.volume,                                                           -- 로케이션 총 용량
+	        ROUND((IFNULL(SUM(i.quantity), 0) / w.volume) * 100, 1) AS usage_rate
+	    FROM WAREHOUSE_LOCATION w
+	    LEFT JOIN INVENTORY i 
+	      ON w.location_idx = i.location_idx
+	    GROUP BY w.location_idx, w.location_name, w.volume
+	</select>
+	
+	<!-- 카테고리별 재고 합계 조회 -->
+	<select id="selectCategoryStock" resultType="map">
+	    SELECT 
+	        c.common_code_name AS categoryName,   
+	        SUM(i.quantity) AS totalQuantity      
+	    FROM INVENTORY i
+	    JOIN PRODUCT p ON i.product_idx = p.product_idx
+	    JOIN COMMON_CODE c ON p.category_idx = c.common_code_idx
+	    WHERE
+			c.group_code = 'CATEGORY'
+	    GROUP BY c.common_code_name
+	    ORDER BY c.common_code_name
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+

@@ -38,102 +38,101 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/systemPreference/supplyCompany")
 public class SupplyCompanyController {
 	private final SupplyCompanyService supplyCompanyService;
-	
-	//공급업체관리 목록조회
+
+	// 공급업체관리 목록조회
 	@GetMapping("")
-	public String systemPreference(Model model, @RequestParam(defaultValue = "1") int pageNum, 
-			@RequestParam(defaultValue = "") String searchType,
-			@RequestParam(defaultValue = "") String searchKeyword,
-			@RequestParam(defaultValue = "") String orderKey,
-			@RequestParam(defaultValue = "") String orderMethod) {
-		model.addAttribute("pageNum",pageNum);
-		model.addAttribute("searchType",searchType);
-		model.addAttribute("searchKeyword",searchKeyword);
-		model.addAttribute("sortKey",orderKey);
-		model.addAttribute("sortMethod",orderMethod);
-		//한페이지보여줄수
+	public String systemPreference(Model model, @RequestParam(defaultValue = "1") int pageNum,
+			@RequestParam(defaultValue = "") String searchType, @RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue = "") String orderKey, @RequestParam(defaultValue = "") String orderMethod) {
+		model.addAttribute("pageNum", pageNum);
+		model.addAttribute("searchType", searchType);
+		model.addAttribute("searchKeyword", searchKeyword);
+		model.addAttribute("sortKey", orderKey);
+		model.addAttribute("sortMethod", orderMethod);
+		// 한페이지보여줄수
 		int listLimit = 10;
 		// 조회된 목록수
 		int supplierCount = supplyCompanyService.getSupplierCount(searchType, searchKeyword);
 		// 조회된 목록이 1개이상일때
-		if(supplierCount > 0) {
+		if (supplierCount > 0) {
 			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, supplierCount, pageNum, 3);
-			
+
 			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
 				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
 				model.addAttribute("targetURL", "/admin/customer/notice_list");
 				return "commons/result_process";
 			}
-			
+
 			model.addAttribute("pageInfo", pageInfoDTO);
-		
-		
-			List<SupplierDTO> supplierList = supplyCompanyService.getSuppliersInfo(
-				pageInfoDTO.getStartRow(), listLimit, searchType, searchKeyword, orderKey,orderMethod);
-			model.addAttribute("supplierList",supplierList);
+
+			List<SupplierDTO> supplierList = supplyCompanyService.getSuppliersInfo(pageInfoDTO.getStartRow(), listLimit,
+					searchType, searchKeyword, orderKey, orderMethod);
+			model.addAttribute("supplierList", supplierList);
 		}
-		
+
 		return "/admin/system_preference/supply_company_management";
 	}
-	
-	
+
 	// 공급계약관리
 	// 공급업체등록
 	@PostMapping("/addSupplier")
 	@ResponseBody
 	public SupplierDTO addSupplier(@RequestBody SupplierDTO supplierDto) {
-	    // service로 저장, id/idx 반영된 저장 결과 반환
+		// service로 저장, id/idx 반영된 저장 결과 반환
 		SupplierDTO savedSupplier = supplyCompanyService.addSupplier(supplierDto);
-		
-	    // 바로 프론트로 등록된 객체 전달 (or 새로 조회하여 보낼수도 있음)
-	    return savedSupplier;
+
+		// 바로 프론트로 등록된 객체 전달 (or 새로 조회하여 보낼수도 있음)
+		return savedSupplier;
 	}
-	
-	// 공급업체삭제
-	@PostMapping("/removeSupplier")
-	@ResponseBody
-	public ResponseEntity<?> removeSupplier(@RequestBody Map<String, Long> param) {
-	    Long idx = param.get("idx");
-	    boolean removed = supplyCompanyService.removeSupplierByIdx(idx);
-	    if(removed) {
-	        return ResponseEntity.ok().body("삭제되었습니다");
-	    } else {
-	        return ResponseEntity.status(HttpStatus.CONFLICT).body("삭제 불가능합니다. 계약이 남아있는지 확인하십시오.");
-	    }
-	}
-	
-	//공급업체상세보기
+
+	// 공급업체상세보기
 	@GetMapping("/supplier/{idx}")
 	@ResponseBody
 	public SupplierDTO getSupplierDetail(@PathVariable Long idx) {
-	    return supplyCompanyService.selectSupplierByIdx(idx);
+		return supplyCompanyService.selectSupplierByIdx(idx);
 	}
-	
-	//공급업체정보수정
+
+	// 공급업체정보수정
 	@PostMapping("/modifySupplier")
 	@ResponseBody
 	public String modifySupplier(@RequestBody SupplierDTO supplier) {
-		
-	    int updateCount = supplyCompanyService.modifySupplier(supplier);
-	    if (updateCount > 0) {
-	        return new Gson().toJson("success");
-	    } else {
-	        return new Gson().toJson("fail");
-	    }
+
+		int updateCount = supplyCompanyService.modifySupplier(supplier);
+		if (updateCount > 0) {
+			return new Gson().toJson("success");
+		} else {
+			return new Gson().toJson("fail");
+		}
 	}
-	
-	//공급처목록 조회 AJAX
+
+	// 공급처삭제
+	@PostMapping("/removeSupplier")
+	@ResponseBody
+	public ResponseEntity<Map<String, String>> removeSuppleir(@RequestBody SupplierDTO supplier) {
+		Map<String, String> res = new HashMap();
+		supplier = supplyCompanyService.selectSupplierByIdx((long) supplier.getSupplierIdx());
+
+		boolean result = supplyCompanyService.deleteSupplier(supplier);
+
+		if (result) {
+			res.put("result", "success");
+			res.put("msg", "상품정보가 수정되었습니다");
+			return ResponseEntity.ok(res);
+		}
+		res.put("result", "error");
+		res.put("msg", "잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오. ");
+		return ResponseEntity.ok(res);
+	}
+
+	// 공급처목록 조회 AJAX
 	@GetMapping("/suppliers")
 	@ResponseBody
 	public List<SupplierDTO> getSupplierList() {
-		
+
 		List<SupplierDTO> supplierList = supplyCompanyService.getSupplierList();
-		
-		return supplierList; 
-		
+
+		return supplierList;
+
 	}
-	
-	
-	
 
 }
