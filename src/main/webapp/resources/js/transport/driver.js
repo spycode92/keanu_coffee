@@ -39,7 +39,10 @@ function driverDetail() {
 			} else {
 				$("#vehicleAssignBtn").prop('disabled', isModify).removeClass("disabled");
 			}
-		})	
+		})
+		.fail(() => {
+			Swal.fire({icon:'error', text:'기사 정보를 불러오지 못했습니다. 다시 시도해주세요.'});
+		})
 }
 
 // 차량 배정 버튼 클릭 시

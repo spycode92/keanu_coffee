@@ -40,7 +40,7 @@
 	</select>
 	
 	<!-- 운전자 리스트 -->
-	<select id="selectDriverList" resultType="com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO">
+	<select id="selectDriverList" resultType="DriverVehicleDTO">
 		SELECT
 			e.emp_idx
 			, e.emp_no
@@ -88,7 +88,7 @@
 	</select>
 	
 	<!-- 운전자 상세정보 -->
-	<select id="selectDriver" resultType="com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO">
+	<select id="selectDriver" resultType="DriverVehicleDTO">
 		SELECT
 			e.emp_idx
 			, e.emp_no
@@ -108,5 +108,26 @@
 			v.emp_idx = e.emp_idx
 		WHERE
 			e.emp_idx = #{idx}
+	</select>
+	
+	<!-- 가용 가능한 기사 목록 -->
+	<select id="selectAvailableDrivers" resultType="DriverVehicleDTO">
+		SELECT 
+			e.emp_name
+			, e.emp_no
+			, e.emp_idx
+			, v.vehicle_idx
+			, v.vehicle_number
+			, v.vehicle_type
+			, v.capacity
+			, v.volume
+		FROM
+			EMPLOYEE_INFO e
+		JOIN
+			VEHICLE v
+		ON 
+			v.emp_idx = e.emp_idx
+		WHERE
+			v.status = '대기'
 	</select>
 </mapper>
