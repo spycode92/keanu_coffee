@@ -26,6 +26,8 @@
 	        ON i.receipt_product_idx = r.receipt_product_idx
 	    LEFT JOIN SUPPLIER s 
 	        ON r.supplier_idx = s.supplier_idx
+	    LEFT JOIN WAREHOUSE_LOCATION w
+	        ON i.location_idx = w.location_idx   <!-- ✅ 로케이션 조인 추가 -->
 	    <where>
 	        <!-- 검색 키워드 -->
 	        <if test="keyword != null and keyword != ''">
@@ -41,7 +43,7 @@
 	
 	        <!-- 로케이션 유형 -->
 	        <if test="locationType != null and locationType != '' and locationType != '전체'">
-	            AND i.location_idx = #{locationType}
+	            AND w.location_type = #{locationType}   <!-- ✅ 수정 -->
 	        </if>
 	
 	        <!-- 제조일자 -->

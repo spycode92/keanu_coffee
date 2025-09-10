@@ -168,7 +168,7 @@
 		        <div class="interval">
 		            <label class="form-label">로케이션</label>
 		            <input class="form-control" name="location" id="locSearch" 
-		                   placeholder="예: A-01" value="${location}">
+		                   placeholder="예: A-1-a1" value="${location}">
 		        </div>
 		        <div class="interval">
 		            <label class="form-label">로케이션 유형</label>
@@ -289,15 +289,15 @@
 						    <td class="dday-cell" data-exp="${item.expiration_date}"></td>
 						    <td class="status-cell" data-exp="${item.expiration_date}"></td>
 						    <td>
-						        <c:choose>
-						            <c:when test="${item.quantity > 0}">
-						                <span class="ship-badge ship-yes">가능</span>
-						            </c:when>
-						            <c:otherwise>
-						                <span class="ship-badge ship-no">불가능</span>
-						            </c:otherwise>
-						        </c:choose>
-						    </td>
+							    <c:choose>
+							        <c:when test="${item.stockStatus eq 'EXPIRED' or item.stockStatus eq 'DISPOSED'}">
+							            <span class="ship-badge ship-no">불가능</span>
+							        </c:when>
+							        <c:otherwise>
+							            <span class="ship-badge ship-yes">가능</span>
+							        </c:otherwise>
+							    </c:choose>
+							</td>
 						</tr>
 				    </c:forEach>
 				</tbody>
@@ -306,81 +306,93 @@
 	    
 	    <!-- ✅ 페이징 -->
 		<div class="pagination" style="text-align:center; margin:20px 0;">
-			<!-- 처음 / 이전 -->
-			<c:if test="${pageInfo.pageNum > 1}">
-			    <a href="?pageNum=1
-			        &keyword=${keyword}
-			        &location=${location}
-			        &locationType=${locationType}
-			        &mfgDate=${mfgDate}
-			        &expDate=${expDate}
-			        &stockStatus=${stockStatus}
-			        &outboundStatus=${outboundStatus}
-			        &sortOption=${sortOption}
-			        &qtySort=${qtySort}"
-			       class="btn btn-secondary">« 처음</a>
-			
-			    <a href="?pageNum=${pageInfo.pageNum - 1}
-			        &keyword=${keyword}
-			        &location=${location}
-			        &locationType=${locationType}
-			        &mfgDate=${mfgDate}
-			        &expDate=${expDate}
-			        &stockStatus=${stockStatus}
-			        &outboundStatus=${outboundStatus}
-			        &sortOption=${sortOption}
-			        &qtySort=${qtySort}"
-			       class="btn btn-secondary">‹ 이전</a>
-			</c:if>
-			
-			<!-- 페이지 번호 -->
-			<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
-			    <c:choose>
-			        <c:when test="${i == pageInfo.pageNum}">
-			            <span class="btn btn-primary">${i}</span>
-			        </c:when>
-			        <c:otherwise>
-			            <a href="?pageNum=${i}
-			                &keyword=${keyword}
-			                &location=${location}
-			                &locationType=${locationType}
-			                &mfgDate=${mfgDate}
-			                &expDate=${expDate}
-			                &stockStatus=${stockStatus}
-			                &outboundStatus=${outboundStatus}
-			                &sortOption=${sortOption}
-			                &qtySort=${qtySort}"
-			               class="btn btn-secondary">${i}</a>
-			        </c:otherwise>
-			    </c:choose>
-			</c:forEach>
-			
-			<!-- 다음 / 끝 -->
-			<c:if test="${pageInfo.pageNum < pageInfo.maxPage}">
-			    <a href="?pageNum=${pageInfo.pageNum + 1}
-			        &keyword=${keyword}
-			        &location=${location}
-			        &locationType=${locationType}
-			        &mfgDate=${mfgDate}
-			        &expDate=${expDate}
-			        &stockStatus=${stockStatus}
-			        &outboundStatus=${outboundStatus}
-			        &sortOption=${sortOption}
-			        &qtySort=${qtySort}"
-			       class="btn btn-secondary">다음 ›</a>
-			
-			    <a href="?pageNum=${pageInfo.maxPage}
-			        &keyword=${keyword}
-			        &location=${location}
-			        &locationType=${locationType}
-			        &mfgDate=${mfgDate}
-			        &expDate=${expDate}
-			        &stockStatus=${stockStatus}
-			        &outboundStatus=${outboundStatus}
-			        &sortOption=${sortOption}
-			        &qtySort=${qtySort}"
-			       class="btn btn-secondary">끝 »</a>
-			</c:if>
+		
+		    <!-- 처음 / 이전 -->
+		    <c:if test="${pageInfo.pageNum > 1}">
+		        <c:url var="firstPageUrl" value="/inventory/stockCheck">
+		            <c:param name="pageNum" value="1"/>
+		            <c:param name="keyword" value="${keyword}"/>
+		            <c:param name="location" value="${location}"/>
+		            <c:param name="locationType" value="${locationType}"/>
+		            <c:param name="mfgDate" value="${mfgDate}"/>
+		            <c:param name="expDate" value="${expDate}"/>
+		            <c:param name="stockStatus" value="${stockStatus}"/>
+		            <c:param name="outboundStatus" value="${outboundStatus}"/>
+		            <c:param name="sortOption" value="${sortOption}"/>
+		            <c:param name="qtySort" value="${qtySort}"/>
+		        </c:url>
+		        <a href="${firstPageUrl}" class="btn btn-secondary">« 처음</a>
+		
+		        <c:url var="prevPageUrl" value="/inventory/stockCheck">
+		            <c:param name="pageNum" value="${pageInfo.pageNum - 1}"/>
+		            <c:param name="keyword" value="${keyword}"/>
+		            <c:param name="location" value="${location}"/>
+		            <c:param name="locationType" value="${locationType}"/>
+		            <c:param name="mfgDate" value="${mfgDate}"/>
+		            <c:param name="expDate" value="${expDate}"/>
+		            <c:param name="stockStatus" value="${stockStatus}"/>
+		            <c:param name="outboundStatus" value="${outboundStatus}"/>
+		            <c:param name="sortOption" value="${sortOption}"/>
+		            <c:param name="qtySort" value="${qtySort}"/>
+		        </c:url>
+		        <a href="${prevPageUrl}" class="btn btn-secondary">‹ 이전</a>
+		    </c:if>
+		
+		    <!-- 페이지 번호 -->
+		    <c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
+		        <c:choose>
+		            <c:when test="${i == pageInfo.pageNum}">
+		                <span class="btn btn-primary">${i}</span>
+		            </c:when>
+		            <c:otherwise>
+		                <c:url var="pageUrl" value="/inventory/stockCheck">
+		                    <c:param name="pageNum" value="${i}"/>
+		                    <c:param name="keyword" value="${keyword}"/>
+		                    <c:param name="location" value="${location}"/>
+		                    <c:param name="locationType" value="${locationType}"/>
+		                    <c:param name="mfgDate" value="${mfgDate}"/>
+		                    <c:param name="expDate" value="${expDate}"/>
+		                    <c:param name="stockStatus" value="${stockStatus}"/>
+		                    <c:param name="outboundStatus" value="${outboundStatus}"/>
+		                    <c:param name="sortOption" value="${sortOption}"/>
+		                    <c:param name="qtySort" value="${qtySort}"/>
+		                </c:url>
+		                <a href="${pageUrl}" class="btn btn-secondary">${i}</a>
+		            </c:otherwise>
+		        </c:choose>
+		    </c:forEach>
+		
+		    <!-- 다음 / 끝 -->
+		    <c:if test="${pageInfo.pageNum < pageInfo.maxPage}">
+		        <c:url var="nextPageUrl" value="/inventory/stockCheck">
+		            <c:param name="pageNum" value="${pageInfo.pageNum + 1}"/>
+		            <c:param name="keyword" value="${keyword}"/>
+		            <c:param name="location" value="${location}"/>
+		            <c:param name="locationType" value="${locationType}"/>
+		            <c:param name="mfgDate" value="${mfgDate}"/>
+		            <c:param name="expDate" value="${expDate}"/>
+		            <c:param name="stockStatus" value="${stockStatus}"/>
+		            <c:param name="outboundStatus" value="${outboundStatus}"/>
+		            <c:param name="sortOption" value="${sortOption}"/>
+		            <c:param name="qtySort" value="${qtySort}"/>
+		        </c:url>
+		        <a href="${nextPageUrl}" class="btn btn-secondary">다음 ›</a>
+		
+		        <c:url var="lastPageUrl" value="/inventory/stockCheck">
+		            <c:param name="pageNum" value="${pageInfo.maxPage}"/>
+		            <c:param name="keyword" value="${keyword}"/>
+		            <c:param name="location" value="${location}"/>
+		            <c:param name="locationType" value="${locationType}"/>
+		            <c:param name="mfgDate" value="${mfgDate}"/>
+		            <c:param name="expDate" value="${expDate}"/>
+		            <c:param name="stockStatus" value="${stockStatus}"/>
+		            <c:param name="outboundStatus" value="${outboundStatus}"/>
+		            <c:param name="sortOption" value="${sortOption}"/>
+		            <c:param name="qtySort" value="${qtySort}"/>
+		        </c:url>
+		        <a href="${lastPageUrl}" class="btn btn-secondary">끝 »</a>
+		    </c:if>
+		
 		</div>
 	</div>
 
