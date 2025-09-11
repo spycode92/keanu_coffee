@@ -143,7 +143,13 @@ public class EmployeeManagementService {
 		
 		return updateCount;
 	}
-
+	
+	//직책별 직원정보 구하기
+	public List<EmployeeInfoDTO> selectEmpInfoByRole(String roleName){
+		List<EmployeeInfoDTO> employeeList = employeeManagementMapper.selectEmpInfoByRole(roleName);
+		
+		return employeeList;
+	}
 
 
 

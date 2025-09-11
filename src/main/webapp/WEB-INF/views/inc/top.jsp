@@ -237,7 +237,6 @@
 			</a>
 			<script type="text/javascript">
 				const role = "${pageContext.request.userPrincipal.principal.role.roleName}";
-				console.log("ㅇㅇㅇㅇㅇ", role);
 			</script>
 			<div id="employeeInfo" class="profile-popover" role="menu" aria-hidden="true" >
 				<span class="changeInfo"><button type="button" class="btn btn-link" data-modal-target="change-info-modal"> 정보 변경</button></span>

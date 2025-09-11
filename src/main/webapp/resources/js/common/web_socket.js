@@ -64,7 +64,7 @@ function connectWebSocket() {
 		pendingMessages = [];
 		
 		// 알림을 받기 위한 새로운 구독("/topic/noti") 생성 후 subscriptions 객체에 저장
-		subscribeRoom("noti");
+		subscribeRoom(role);
 				
 	}, function(error){ // 서버 연결(접속) 실패 
 		showSnackbar("서버 연결 실패! 재연결 시도중...");
@@ -114,7 +114,7 @@ function subscribeRoom(roomId, callback) { // 파라미터로 룸ID 와 콜백�
 		// => 따라서, main.jsp 페이지에서 구독 시 전달한 콜백함수를 호출하여 JSON 형태의 메세지를 전달 => 채팅창에 메세지 표시됨
 		// --------------------------------------------------------------------------------------
 		// roomId가 "noti"일 경우 processNotification 함수, 아니면 calllback 함수 호출
-		if(roomId == "noti"){
+		if(roomId == role){
 			processNotification(JSON.parse(outputMsg.body));
 		} else {
 			callback(JSON.parse(outputMsg.body));
@@ -164,18 +164,11 @@ function sendMessage(roomId, messageContent) {
 	}
 }
 
-function processNotification(msg) {
-	$("#alarm-badge").css("display", "block");
-	
-	// 메세지 타입에 따라 서로 다른 처리
-//	if(msg.messageType == "CHAT_IN"){
-//		let chatArea = $("#chatArea");
-//		if(chatArea.length){
-//			$("#chatArea").append("<div class='chat_system_msg'> &gt;&gt;" + msg.message + "&lt;&lt;</div>");
-//		}
-//	} 
+//알림처리
+function processNotification(message){
+	notification();
+	return;
 }
-
 
 
 
@@ -199,6 +192,7 @@ function processNotification(msg) {
 
 let notiButton = null; 
 let isAllRead = true;
+
 function notification() {
 //	notiButton.style.display = (notiButton.style.display === 'block') ? 'none' : 'block';
 	
@@ -260,7 +254,7 @@ function handleNotiClick(li) {
 	markAsRead(alarmIdx)
 		.then(() => {
 			if (link && link.trim() !== "" && link !== "null") {
-                window.location.href = link;
+//                window.location.href = link;
             }
 			notification();
 			console.log("이동안함");

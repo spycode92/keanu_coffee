@@ -23,7 +23,13 @@
 		WHERE 
 			alarm_idx = #{alaramIdx}
 	</update>
-
+	
+	<insert id="insertAlarm" useGeneratedKeys="true" keyProperty="alarmIdx">
+		INSERT INTO ALARM
+		(emp_idx, emp_alarm_message, emp_alarm_link)
+		VALUES
+		(#{empIdx}, #{empAlarmMessage}, #{empAlarmLink})
+	</insert>
 
 
 </mapper>

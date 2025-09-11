@@ -1,6 +1,7 @@
 package com.itwillbs.keanu_coffee.admin.controller;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,9 +23,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
+import com.itwillbs.keanu_coffee.common.dto.AlarmDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.dto.SweetAlertIcon;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
+import com.itwillbs.keanu_coffee.common.service.AlarmService;
 import com.itwillbs.keanu_coffee.common.utils.MakeAlert;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 
@@ -34,6 +38,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/employeeManagement")
 public class EmployeeManagementController {
 	private final EmployeeManagementService employeeManagementService;
+	private final SimpMessagingTemplate messagingTemplate;
+	private final AlarmService alarmService;
 
 	// 직원관리페이지
 	@GetMapping("")
@@ -76,6 +82,19 @@ public class EmployeeManagementController {
 					listLimit, searchType, searchKeyword, orderKey, orderMethod);
 			model.addAttribute("employeeList", employeeList);
 		}
+		
+		//알림 입력
+		AlarmDTO alarm = new AlarmDTO();
+		
+		alarm.setRoleName("입고관리자");
+		alarm.setEmpAlarmMessage("알림메세지테스트");
+		
+		alarmService.insertAlarmByRole(alarm);
+		
+		Map<String, String> payload = new HashMap<>();
+		payload.put("message", "새알림이 도착하였습니다.");
+		messagingTemplate.convertAndSend("/topic/" + alarm.getRoleName(), payload);
+
 		return "/admin/employee_management";
 	}
 
