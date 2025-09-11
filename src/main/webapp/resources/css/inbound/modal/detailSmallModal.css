@@ -1,0 +1,32 @@
+/* === 작은 모달 공통(이 페이지 한정) === */
+#modal-assign-manager.modal,
+#modal-assign-location.modal {
+	position: fixed;
+	inset: 0;
+	padding: 16px;
+	z-index: 1000;
+}
+#modal-assign-manager .modal-card,
+#modal-assign-location .modal-card {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 420px;
+	max-width: min(420px, 96vw);
+	max-height: calc(100vh - 48px);
+	overflow: auto;
+	border-radius: 12px;
+}
+#modal-assign-manager .modal-body,
+#modal-assign-location .modal-body {
+	max-height: calc(100vh - 200px);
+	overflow: auto;
+}
+#modal-assign-manager .form-control,
+#modal-assign-location .form-control {
+	height: 34px;
+	padding: .25rem .5rem;
+	font-size: .9rem;
+	line-height: 1.2;
+}
