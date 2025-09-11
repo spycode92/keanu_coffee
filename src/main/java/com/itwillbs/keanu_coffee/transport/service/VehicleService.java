@@ -3,7 +3,9 @@ package com.itwillbs.keanu_coffee.transport.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
 import com.itwillbs.keanu_coffee.transport.dto.VehicleDTO;
 import com.itwillbs.keanu_coffee.transport.mapper.VehicleMapper;
 
@@ -20,6 +22,7 @@ public class VehicleService {
 	}
 	
 	// 차량 리스트
+	@Transactional(readOnly = true)
 	public List<VehicleDTO> getVehicleList(int startRow, int listLimit, String filter, String searchKeyword) {
 		return vehicleMapper.selectVehicleList(startRow, listLimit, filter, searchKeyword);
 	}
@@ -30,6 +33,7 @@ public class VehicleService {
 	}
 
 	// 차량 상세정보
+	@Transactional(readOnly = true)
 	public VehicleDTO findByIdx(int idx) {
 		return vehicleMapper.selectByIdx(idx);
 	}
@@ -40,6 +44,7 @@ public class VehicleService {
 	}
 
 	// 배정 가능한 차량 목록
+	@Transactional(readOnly = true)
 	public List<VehicleDTO> getAvailableList(String status) {
 		return vehicleMapper.selectAvailableList(status);
 	}

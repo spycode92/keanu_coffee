@@ -30,8 +30,8 @@ import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class FileUtils {
-//	private static String uploadPath = "/usr/local/tomcat/upload"; // 서버 업로드용
-	private static String uploadPath = "/resources/upload"; // 로컬 작업용
+	private static String uploadPath = "/usr/local/tomcat/upload"; // 서버 업로드용
+//	private static String uploadPath = "/resources/upload"; // 로컬 작업용
 	
 //	private static Path absolutePath = Paths.get(uploadPath).toAbsolutePath().normalize();
 	

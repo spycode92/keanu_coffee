@@ -36,6 +36,9 @@
 		<intercept-url pattern="/inventory/**" access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')" />
 		<intercept-url pattern="/inventoryAction/**" access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')" />
 		<intercept-url pattern="/transport/**" access="hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')" />
+		<intercept-url pattern="/trigger" access="permitAll" />
+    	<intercept-url pattern="/**" access="isAuthenticated()" />
+		
 		
 		<intercept-url pattern="/alarm/**" access="isAuthenticated()" />
 		<intercept-url pattern="/ws-chat/**" access="isAuthenticated()" />	

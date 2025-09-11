@@ -45,6 +45,12 @@ public class VehicleController {
 		
 		vehicleDTO.setVehicleNumber(normalized);
 		
+		if (vehicleDTO.getCapacity() == 1000) {
+			vehicleDTO.setVolume(3000);
+		} else {
+			vehicleDTO.setVolume(4500);
+		}
+		
 		boolean success = vehicleService.addVehicle(vehicleDTO);
 		
 		if (success) {

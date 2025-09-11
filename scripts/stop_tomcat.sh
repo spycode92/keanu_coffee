@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo systemctl stop tomcat9
+sudo systemctl stop tomcat

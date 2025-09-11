@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 
 		<!-- 등록 모달 -->
@@ -12,6 +13,7 @@
 				</div>
 				<div class="modal-body">
 					<form class="form" id="createForm" action="/transport/addVehicle" method="post">
+						<sec:csrfInput/>
 						<input type="hidden" name="vehicleIdx" id="vehicleIdx"/>
 						<div class="row">
 							<div class="field">
