@@ -6,8 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundManagementDTO;
+import com.itwillbs.keanu_coffee.outbound.dto.OutboundProductDetailDTO;
 import com.itwillbs.keanu_coffee.outbound.service.OutboundService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,7 +39,18 @@ public class OutboundController {
 	
 	// 출고상세페이지
 	@GetMapping("/outboundDetail")
-	public String showOutboundDetail() {
+	public String showOutboundDetail(@RequestParam("obwaitNumber") String obwaitNumber,
+	        						@RequestParam("outboundOrderIdx") Long outboundOrderIdx,
+	        						Model model) {
+
+	    // 출고 기본정보 조회
+	    OutboundManagementDTO obDetail = outboundService.getOutboundDetail(obwaitNumber, outboundOrderIdx);
+	    model.addAttribute("obDetail", obDetail);
+
+	    // 출고 품목 리스트 조회
+	    List<OutboundProductDetailDTO> obProductList = outboundService.getOutboundProductDetail(outboundOrderIdx);
+	    model.addAttribute("obProductList", obProductList);
+
 	    return "/outbound/outboundDetail";
 	}
 	
