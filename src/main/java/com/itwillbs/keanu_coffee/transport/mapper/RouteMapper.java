@@ -24,4 +24,7 @@ public interface RouteMapper {
 	// 배송 순서 변경
 	void updateSequence(RegionFranchiseRouteDTO dto);
 
+	// 경로 조회
+	RouteDTO selectFranchise(Integer franchiseIdx);
+
 }

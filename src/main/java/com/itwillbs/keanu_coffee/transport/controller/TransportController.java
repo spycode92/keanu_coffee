@@ -2,6 +2,7 @@ package com.itwillbs.keanu_coffee.transport.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,11 +11,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
+import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 import com.itwillbs.keanu_coffee.transport.dto.AdministrativeRegionDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DispatchRegionGroupViewDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO;
 import com.itwillbs.keanu_coffee.transport.dto.RegionFranchiseRouteDTO;
 import com.itwillbs.keanu_coffee.transport.dto.VehicleDTO;
+import com.itwillbs.keanu_coffee.transport.mapper.DispatchMapper;
+import com.itwillbs.keanu_coffee.transport.service.DispatchService;
 import com.itwillbs.keanu_coffee.transport.service.DriverService;
 import com.itwillbs.keanu_coffee.transport.service.RegionService;
 import com.itwillbs.keanu_coffee.transport.service.RouteService;
@@ -29,6 +34,7 @@ public class TransportController {
 	private final VehicleService vehicleService;
 	private final DriverService driverService;
 	private final RegionService regionService;
+	private final DispatchService dispatchService;
 	
 	// 운송 대시보드
 	@GetMapping("")
@@ -98,13 +104,59 @@ public class TransportController {
 	
 	// 배차 관리 페이지
 	@GetMapping("/dispatches")
-	public String dispatcheList() {
+	public String getAllDispatch(@RequestParam(defaultValue = "1") int pageNum, 
+			@RequestParam(defaultValue = "전체") String filter,
+			@RequestParam(defaultValue = "") String searchKeyword,
+			Model model) {
+		
+		int listLimit = 10;
+		int listCount = dispatchService.getDispatchCount(filter, searchKeyword);
+		
+		if (listCount > 0) {
+			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, listCount, pageNum, 10);
+			
+			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
+				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+				model.addAttribute("targetURL", "/transport/vehicle");
+				return "commons/result_process";
+			}
+			
+			model.addAttribute("pageInfo", pageInfoDTO);
+			
+			List<DispatchRegionGroupViewDTO> dispatchList = dispatchService.selectAllDispatch(pageInfoDTO.getStartRow(), listLimit, filter, searchKeyword);
+			
+			model.addAttribute("dispatchList", dispatchList );
+		}
+		
 		return "/transport/dispatche";
 	}
 	
 	// 기사 마이페이지
 	@GetMapping("/mypage")
-	public String mypage() {
+	public String mypage(Authentication authentication, Model model) {
+		EmployeeDetail empDetail = (EmployeeDetail)authentication.getPrincipal();
+		
+		// 기사 정보
+		DriverVehicleDTO driverInfo = driverService.getDriver(empDetail.getEmpIdx());
+		
+		if (driverInfo == null) {
+			model.addAttribute("msg", "기사 정보를 불러올 수 없습니다.");
+			model.addAttribute("targetURL", "/transport/mypage");
+			return "commons/result_process";
+		}
+		
+		// 배차 정보 
+		List<DispatchRegionGroupViewDTO> dispatchInfo = dispatchService.selectDispatchByVehicleIdx(driverInfo.getVehicleIdx());
+		
+		if (dispatchInfo == null) {
+			model.addAttribute("msg", "배차 정보를 불러올 수 없습니다.");
+			model.addAttribute("targetURL", "/transport/mypage");
+			return "commons/result_process";
+		}
+		
+		model.addAttribute("driverInfo", driverInfo);
+		model.addAttribute("dispatchInfo", dispatchInfo);
+		
 		return "/transport/mypage";
 	}
 	
@@ -116,7 +168,7 @@ public class TransportController {
 		
 		if (regionList == null) {
 			model.addAttribute("msg", "지역 정보를 불러올 수 없습니다.");
-			model.addAttribute("targetURL", "/region");
+			model.addAttribute("targetURL", "/transport/region");
 			return "commons/result_process";
 		}
 		

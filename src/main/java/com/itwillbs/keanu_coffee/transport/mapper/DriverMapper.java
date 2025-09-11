@@ -21,4 +21,7 @@ public interface DriverMapper {
 	// 운전자 상세정보
 	DriverVehicleDTO selectDriver(Integer idx);
 
+	// 가용 가능한 기사 목록
+	List<DriverVehicleDTO> selectAvailableDrivers();
+
 }

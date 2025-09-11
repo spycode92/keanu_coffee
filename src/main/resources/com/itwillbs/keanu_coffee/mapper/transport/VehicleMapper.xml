@@ -89,6 +89,7 @@
 			, null
 			, current_timestamp
 			, null
+			, #{volume}
 		)
 	</insert>
 	
@@ -171,6 +172,16 @@
 			, capacity = #{capacity}
 			, manufacture_year = #{manufactureYear}
 			, manufacturer_model = #{manufacturerModel}
+		WHERE
+			vehicle_idx = #{vehicleIdx}
+	</update>
+	
+	<!-- 차량 상태 업데이트 -->
+	<update id="updateVehicleStatus">
+		UPDATE
+			VEHICLE
+		SET
+			status = #{status}
 		WHERE
 			vehicle_idx = #{vehicleIdx}
 	</update>

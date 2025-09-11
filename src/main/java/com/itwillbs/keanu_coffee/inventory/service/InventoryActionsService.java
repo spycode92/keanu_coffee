@@ -7,7 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.itwillbs.keanu_coffee.inventory.dto.CreateWarehouseDTO;
+import com.itwillbs.keanu_coffee.inventory.dto.WarehouseLocationDTO;
 import com.itwillbs.keanu_coffee.inventory.mapper.InventoryActionsMapper;
 
 @Service
@@ -20,11 +20,15 @@ public class InventoryActionsService {
 		this.inventoryActionsMapper = inventoryActionsMapper;
 	}
 
-	@Transactional
 	@PreAuthorize("hasAnyAuthority('INVENTORY_WRITE')")
-	public void registWarehouse(CreateWarehouseDTO createWarehouseDTO) {
-		
-		inventoryActionsMapper.insertWarehouse(createWarehouseDTO);
+	@Transactional
+	public void registWarehouse(WarehouseLocationDTO warehouseLocationDTO) {
+		inventoryActionsMapper.insertWarehouse(warehouseLocationDTO);
+	}
+
+	public String getLastCurrentLocation() {
+		// TODO Auto-generated method stub
+		return inventoryActionsMapper.selectLastCurrentLocation();
 	}
 	
 }
