@@ -6,7 +6,7 @@
 	
 	<insert id="insertWarehouse" >
 			INSERT INTO 
-				WAREHOUSE_LOCATION (location_name, rack, bay, level_position, width, depth, height)
+				WAREHOUSE_LOCATION (location_name, rack, bay, level_position, width, depth, height, location_type)
 			VALUES (
 				#{locationName},
 	            #{rack},
@@ -14,7 +14,8 @@
 	            #{levelPosition},
 	            #{width},
 	            #{depth},
-	            #{height}
+	            #{height},
+	            #{locationType}
 			)	
 	</insert>
 	
@@ -34,6 +35,16 @@
             #{expectOutboundDate}
         )
     </insert>
+    
+    <select id="selectLastCurrentLocation" resultType="String">
+    	Select
+    		location_name
+    	FROM
+    		WAREHOUSE_LOCATION
+    	ORDER BY location_idx desc
+    	LIMIT 1
+    		
+    </select>
 
 
 
