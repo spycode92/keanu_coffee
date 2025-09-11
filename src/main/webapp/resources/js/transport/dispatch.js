@@ -221,7 +221,7 @@ function cancelDispatch() {
 		contentType: "application/json; charset=UTF-8",
 		data: JSON.stringify({
 			orderIds: request.orderIds,
-			status: request.status
+			status: request.status,
 		}),		
 		beforeSend(xhr) {
      		if (token && header) xhr.setRequestHeader(header, token);
@@ -246,7 +246,6 @@ $(document).on("click", ".dispatchInfo", function() {
 	
 	$.getJSON((`${DISPATCH_DETAIL_URL}/${dispatchIdx}/${vehicleIdx}`))
 		.done(function(dispatch) {
-			console.log(dispatch);
 			$("#detailDriver").val(`${dispatch.driverName} / ${dispatch.vehicleNumber} / ${dispatch.capacity === 1000 ? "1.0t" : "1.5t"}`);
 			if (dispatch.status === "예약" || dispatch.status === "취소") {
 				$("#detail").hide();
@@ -277,7 +276,7 @@ $(document).on("click", ".dispatchInfo", function() {
 				                            <td>${stop.franchiseName}</td>
 				                            <td>${item.itemName || "-"}</td>
 				                            <td class="text-right">${item.deliveredQty ?? 0} / ${item.orderedQty}</td>
-				                            <td>${item.status || "대기"}</td>
+				                            <td>${stop.completeTime == null ? "대기" : item.status ===  "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전체반품"|| "-"}</td>
 				                        </tr>
 				                    `;
 				                });
@@ -315,10 +314,6 @@ $(document).on("click", ".dispatchInfo", function() {
 				                <div class="timeline-point"></div>
 				                <div class="timeline-content">
 				                    <div class="font-bold">${stop.franchiseName} (${stepLabel})</div>
-				                    <div class="text-sm text-gray-600">
-				                        ${stop.arrivalTime ? `도착: ${formatDate(stop.arrivalTime)}` : ""}
-				                        ${stop.completeTime ? `완료: ${formatDate(stop.completeTime)}` : ""}
-				                    </div>
 				                </div>
 				            </div>
 				        	`;
@@ -351,7 +346,7 @@ function dispatchRequestData() {
 	
 	// 기사 배열화
 	const drivers = assignedDrivers.map((driver) => ({
-		vehicleIdx: driver.vehicleIdx,
+		vehicleIdx: driver.vehicleIdx || row.data("vehicle-idx"),
 		empIdx: driver.empIdx
 	}));
 	

@@ -94,5 +94,17 @@ public interface DispatchMapper {
 	// 수주확인서 품목 업데이트
 	void updateDeliveryConfirmationItem(DeliveryConfirmationItemDTO item);
 
+	// 배정된 기사의 상태
+	String selectDispatchAssignment(@Param("dispatchIdx") Integer dispatchIdx, @Param("vehicleIdx") Integer vehicleIdx);
+
+	// 배차에 배정된 차량 목록 조회
+	List<Integer> selectAllVehicleIdx(Integer dispatchIdx);
+
+	// 배차idx로 Assignment 상태 변경
+	void updateAssigmentStatusByDispatchIdx(@Param("dispatchIdx") Integer dispatchIdx, @Param("status") String status);
+
+	// 배차 매핑 테이블 삭제
+	void deleteMapping(Integer dispatchIdx);
+
 
 }

@@ -30,6 +30,7 @@
         <section class="card">
             <h2>프로필</h2>
             <div class="kv">
+            	<input type="hidden" value="${driverInfo.capacity}" id="capacity" />
                 <div class="muted">사번</div><div id="pf_no">${driverInfo.empNo}</div>
                 <div class="muted">이름</div><div id="pf_name">${driverInfo.empName}</div>
                 <div class="muted">연락처</div><div id="pf_phone">${driverInfo.empPhone}</div>
