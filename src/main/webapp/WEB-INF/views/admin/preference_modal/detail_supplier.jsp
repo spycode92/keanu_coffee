@@ -30,12 +30,12 @@
                     <label class="form-label">연락처</label>
                     <input type="text" class="form-control" id="detailSupplierManagerPhone" name="supplierManagerPhone" readonly>
                 </div>
-                <div class="field">
-                    <label class="form-label">이메일</label>
-                    <input type="text" class="form-control" id="detailSupplierManageremail1" name="supplierManagerPhone" readonly>
-                    @
-                    <select></select>
-                </div>
+<!--                 <div class="field"> -->
+<!--                     <label class="form-label">이메일</label> -->
+<!--                     <input type="text" class="form-control" id="detailSupplierManageremail1" name="supplierManagerPhone" readonly> -->
+<!--                     @ -->
+<!--                     <select></select> -->
+<!--                 </div> -->
                 <div class="field">
                     <label class="form-label">우편번호</label>
                     <div style="display: flex; gap: 0.5rem; align-items: center;">

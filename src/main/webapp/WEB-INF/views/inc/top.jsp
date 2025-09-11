@@ -276,7 +276,7 @@
 				<span>관리자페이지</span>
 <!-- 				<a href=""><span>물류부서관리</span></a> -->
 				<ul class="submenu">
-					<li><a href="/admin/employeeManage">사원관리</a></li>
+					<li><a href="/admin/employeeManage">직원관리</a></li>
 					<li><a href="/admin/preference/dept">조직관리</a></li>
 					<li><a href="/admin/preference/supplyCompany">공급업체관리</a></li>
 					<li><a href="/admin/preference/product">상품관리</a></li>

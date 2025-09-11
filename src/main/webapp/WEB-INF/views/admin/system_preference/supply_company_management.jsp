@@ -10,7 +10,7 @@
     <style type="text/css">
     /* 검색/필터 바 */
 	.filters {
-		width: 70em;
+		width: 100%;
     
 	    border: 1px solid var(--border);
 	    border-radius: 12px;
@@ -152,7 +152,14 @@
 	                        	<td>${supplier.supplierIdx }</td>
 	                        	<td>${supplier.supplierName }</td>
 	                        	<td>${supplier.supplierManager }</td>
-	                        	<td>${supplier.status }</td>
+	                        	<td>
+		                        	<span class="badge
+								        ${supplier.status eq '활성'   ? 'badge-confirmed' :
+								          supplier.status eq '비활성' ? 'badge-warning'   :
+								                                       'badge-urgent'}">
+								        ${supplier.status}
+								    </span>
+							    </td>
 	                        </tr>
 	                    </c:forEach>
                         

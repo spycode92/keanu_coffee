@@ -20,26 +20,12 @@
 	    color: #999;
 	    padding: 10px;
 	}
-	
-	.circle {
-	    display: inline-block;
-	    width: 10px;
-	    height: 10px;
-	    border-radius: 50%;
-	    margin-left: 5px;
-	}
-	.circle.read {
-	    background-color: #ccc; 
-	}
-	.circle.unread {
-	    background-color: red;
-	}
-	.noti-message {
+	.noti-messages {
 	  flex: 1;
 	  white-space: nowrap;
 	  overflow: hidden;
 	  text-overflow: ellipsis;
-	  color: #333;
+	  color: var(--foreground);
 	}
 	/* 페이징(.pager: 앞서 만든 공용 클래스가 있다면 그대로 사용) */
 	.pager{
@@ -117,7 +103,7 @@
 								    <fmt:formatDate value="${alarm.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/>
 								</td>
 	                            <td>
-	                                <span class="noti-message">${alarm.empAlarmMessage}</span>
+	                                <span class="noti-messages">${alarm.empAlarmMessage}</span>
 	                            </td>
 	                            <td>
 	                                <c:if test="${alarm.empAlarmReadStatus == 1}">
