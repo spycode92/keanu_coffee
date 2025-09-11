@@ -11,12 +11,12 @@ import com.itwillbs.keanu_coffee.inventory.service.WarehouseSlottingLogicService
 
 @Controller
 public class WarehouseSlottingLogicController {
-	private final WarehouseSlottingLogicService wslService;
+//	private final WarehouseSlottingLogicService wslService;
 	
 	
-	public WarehouseSlottingLogicController(WarehouseSlottingLogicService wslService) {
-		this.wslService = wslService;
-	}
+//	public WarehouseSlottingLogicController(WarehouseSlottingLogicService wslService) {
+//		this.wslService = wslService;
+//	}
 
 // pallet zone default sizes (does not include unusable space):
 // rack size - depth: 110cm height 600cm width: 1100 -   One rack is 1 pallet deep many pallets wide and 4 pallets tall
