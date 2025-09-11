@@ -30,7 +30,7 @@ function renderTable(list) {
 		tbody.append(`
 			<tr id="fr-${row.franchiseIdx}">
 		        <td>${row.franchiseName}</td>
-		    	<td class="seq">${row.deliverySequence}</td>
+		    	<td class="seq">${index + 1}</td>
 		    </tr>
 		`);
 	});

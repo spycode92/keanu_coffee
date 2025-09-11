@@ -26,7 +26,7 @@ public class DriverController {
 	// 차량 배정 가능한 운전기사 요청 API
 	@GetMapping("/assignDriver")
 	@ResponseBody
-	public ResponseEntity<List<EmployeeInfoDTO>> assignDriverList() {
+	public ResponseEntity<List<EmployeeInfoDTO>> getAllAssignDriver() {
 		List<EmployeeInfoDTO> driverDTO = driverService.getDriverList();
 		
 		return ResponseEntity.ok(driverDTO == null ? List.of() : driverDTO);
@@ -35,7 +35,7 @@ public class DriverController {
 	// 기사 상세 정보
 	@GetMapping("/drivers/detail")
 	@ResponseBody
-	public ResponseEntity<DriverVehicleDTO> driverDetail(@RequestParam Integer idx) {
+	public ResponseEntity<DriverVehicleDTO> getDriver(@RequestParam Integer idx) {
 		DriverVehicleDTO driver = driverService.getDriver(idx);
 		
 		if (driver == null) {

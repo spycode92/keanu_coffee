@@ -9,5 +9,4 @@ public class RouteDTO {
 	private Integer deliverySequence;
 	private Integer franchiseIdx;
 	private String note;
-;
 }

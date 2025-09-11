@@ -35,4 +35,9 @@ public class DriverService {
 		return driverMapper.selectDriver(idx);
 	}
 
+	// 가용 가능한 기사 목록
+	public List<DriverVehicleDTO> getAvailableDrivers() {
+		return driverMapper.selectAvailableDrivers();
+	}
+
 }
