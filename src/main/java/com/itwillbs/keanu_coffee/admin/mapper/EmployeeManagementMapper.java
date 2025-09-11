@@ -43,6 +43,9 @@ public interface EmployeeManagementMapper {
 	
 	// 시큐리티정보조회
 	Optional<EmployeeDetail> selectEmployeeDetailByEmpNo(String empNo);
+	
+	//직원정보 구하기 직책이름으로
+	List<EmployeeInfoDTO> selectEmpInfoByRole(String roleName);
 
 
 

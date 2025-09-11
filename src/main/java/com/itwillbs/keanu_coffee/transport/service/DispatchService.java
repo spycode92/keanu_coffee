@@ -1,10 +1,15 @@
 package com.itwillbs.keanu_coffee.transport.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itwillbs.keanu_coffee.common.dto.AlarmDTO;
+import com.itwillbs.keanu_coffee.common.service.AlarmService;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationItemDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
@@ -26,6 +31,8 @@ public class DispatchService {
 	private final DispatchMapper dispatchMapper;
 	private final VehicleMapper vehicleMapper;
 	private final RouteMapper routeMapper;
+	private final SimpMessagingTemplate messagingTemplate;
+	private final AlarmService alarmService;
 	
 	// 페이징을 위한 배차 수
 	@Transactional(readOnly = true)
@@ -84,6 +91,18 @@ public class DispatchService {
 			
 			// 출고 주문 테이블 상태 변경
 			dispatchMapper.updateOutboundOrderStatus(outboundOrderIdx, "배차완료");
+			
+			//알림 입력
+			AlarmDTO alarm = new AlarmDTO();
+			
+			alarm.setRoleName("출고관리자");
+			alarm.setEmpAlarmMessage(outboundOrderIdx + "번 주문에 대한 배차등록이 완료되었습니다.");
+			
+			alarmService.insertAlarmByRole(alarm);
+			
+			Map<String, String> payload = new HashMap<>();
+			payload.put("message", "새알림이 도착하였습니다.");
+			messagingTemplate.convertAndSend("/topic/" + alarm.getRoleName(), payload);
 		}
 	}
 
@@ -96,6 +115,21 @@ public class DispatchService {
 		for (Integer outboundOrderIdx : orderIdList) {
 			// 출고주문idx로 배차 idx 조회
 			Integer dispatchIdx = dispatchMapper.selectByorderIdList(outboundOrderIdx);
+			
+			// 출고테이블 배차대기 상태로 변경
+			dispatchMapper.updateOutboundOrderStatus(outboundOrderIdx, "배차대기");
+			
+			// 배차배정 테이블에서 배차idx로 차량idx 조회
+			List<Integer> vehicleIds = dispatchMapper.selectAllVehicleIdx(dispatchIdx);
+			
+			vehicleMapper.updateStatus(vehicleIds, "대기");
+			
+			for (int i = 0; i < vehicleIds.size(); i++) {
+				dispatchMapper.updateAssigmentStatusByDispatchIdx(dispatchIdx, "취소");
+			}
+			
+			// 배차 매핑 테이블 데이터 삭제
+			dispatchMapper.deleteMapping(dispatchIdx);
 			
 			dispatchMapper.updateDispatchStatus(dispatchIdx, request.getStatus());
 		}
@@ -277,5 +311,10 @@ public class DispatchService {
 		} else {
 			dispatchMapper.updateDispatchStatus(request.getDispatchIdx(), "완료");
 		}
+	}
+
+	// 배정된 기사의 상태
+	public String selectDispatchAssignment(Integer dispatchIdx, Integer vehicleIdx) {
+		return dispatchMapper.selectDispatchAssignment(dispatchIdx, vehicleIdx);
 	}
 }
