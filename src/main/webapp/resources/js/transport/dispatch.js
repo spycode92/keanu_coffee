@@ -77,6 +77,8 @@ $(document).on("click", "input[name='dispatchPick']", function() {
 
 // 기사 배정 버튼 클릭 시
 
+let isDispatchAvailable = true;
+
 function assignBtn() {
 	const selected = $("#primaryDriverSelect option:selected");
 	const vehicleIdx = selected.val();
@@ -113,8 +115,10 @@ function assignBtn() {
 	// 가용 용량 초과 시 추가 배차 안내 문구 출력
 	if (totalVolume > totalCapacity) {
 		$("#extraDriverBlock").show();
+		isDispatchAvailable = false;
 	} else {
 		$("#extraDriverBlock").hide();
+		isDispatchAvailable = true;
 	}	
 }
 
@@ -173,7 +177,13 @@ function addDispatch() {
 		return;
 	}
 	
+	if (!isDispatchAvailable) {
+		Swal.fire({icon:'error', text:'기사를 추가 배정 후 배차가 가능합니다!'}); 
+		return;
+	}
+	
 	const { token, header } = getCsrf();
+	
 	
 	// 등록 요청
 	$.ajax({
