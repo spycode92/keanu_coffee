@@ -56,14 +56,14 @@ public class OrganizationController {
 	// 부서 선택시 팀, 직책 목록 보여주기
 	@GetMapping("/getTeamsAndRoles")
 	@ResponseBody
-	public ResponseEntity<Map<String, List>> getTeamsAndRoles(DepartmentDTO departmentDTO) {
+	public ResponseEntity<Map<String, Object>> getTeamsAndRoles(DepartmentDTO departmentDTO) {
 		Integer departmentIdx = departmentDTO.getDepartmentIdx();
 
 		// 부서고유번호를 이용하여 팀, 직책 정보 불러오기
 		List<TeamDTO> teamList = organizationService.getTeamsByDepartmentIdx(departmentIdx); // departmentIdx
 		List<RoleDTO> roleList = organizationService.getRolesByDepartmentIdx(departmentIdx); // departmentIdx
 
-		Map<String, List> result = new HashMap<>();
+		Map<String, Object> result = new HashMap<>();
 
 		result.put("teams", teamList);
 		result.put("roles", roleList);

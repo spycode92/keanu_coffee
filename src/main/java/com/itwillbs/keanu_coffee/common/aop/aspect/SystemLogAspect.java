@@ -1,16 +1,11 @@
 package com.itwillbs.keanu_coffee.common.aop.aspect;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -31,7 +26,6 @@ import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.SystemLogDTO;
 import com.itwillbs.keanu_coffee.common.mapper.LogMapper;
-import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.TimeUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -41,6 +35,7 @@ import lombok.extern.log4j.Log4j2;
 @Component
 @Log4j2
 @RequiredArgsConstructor
+@SuppressWarnings("unchecked")
 public class SystemLogAspect {
 	private final EmployeeManagementMapper employeeManagementMapper;
 	private final OrganizationMapper organizationMapper;
@@ -355,13 +350,13 @@ public class SystemLogAspect {
 
 	        //조직관리 - 직책에 부여한 권한수정
 	        if ("modifyRoleAutho".equals(methodName)) {
-	        	Map<String,Object> data = (Map) args[0];
+				Map<String,Object> data = (Map<String,Object>) args[0];
 	        	//직책이름 구하기
 	    		Integer roleIdx = (Integer) data.get("roleIdx");
 	        	RoleDTO role = organizationMapper.selectRole(roleIdx);
 	        	String roleName = role.getRoleName();
 	        	//추가삭제 권한 이름 구하기
-	    		List<Integer> addAuthoritiesIdx = (List<Integer>) data.get("addedAuthorities");
+				List<Integer> addAuthoritiesIdx = (List<Integer>) data.get("addedAuthorities");
 	        	List<Integer> removedAuthoritiesIdx = (List<Integer>) data.get("removedAuthorities");
 	        	// 추가권한 메세지 작성
 	        	List<CommonCodeDTO> addAuthoList = organizationMapper.selectAuthoByAuthoIdx(addAuthoritiesIdx);
@@ -443,7 +438,7 @@ public class SystemLogAspect {
 //	        
 	        //조직관리 - 권한 이름 수정
 	        if ("modifyAuthoName".equals(methodName)) {
-	        	Map<String, Object> data = (Map)args[0];
+				Map<String, Object> data = (Map<String, Object>)args[0];
 	        	Integer authoIdx = (Integer)data.get("authoIdx");
 	        	String authoName = (String)data.get("authoName");
 	        	slog.setSection("시스템설정");
