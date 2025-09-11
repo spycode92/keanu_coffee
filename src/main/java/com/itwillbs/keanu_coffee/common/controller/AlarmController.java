@@ -59,11 +59,6 @@ public class AlarmController {
 		} else {
 			model.addAttribute("알림이 존재하지 않습니다");
 		}
-		
-		
-		
-		
-		
 		return "commons/alarm";
 	}
 	
@@ -98,6 +93,31 @@ public class AlarmController {
 		
 		return ResponseEntity.ok(result);
 	}
+	
+	//전체 알림 읽음처리
+	@PostMapping("/readAll")
+	public ResponseEntity<Map<String, String>> alarmReadAll(Authentication authentication){
+		EmployeeInfoDTO employee = new EmployeeInfoDTO();
+		EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
+		String empNo = authentication.getName();
+		Integer empIdx = empDetail.getEmpIdx();
+		
+		Boolean update = alarmService.modifyAllAlarmStatus(empIdx);
+		
+		Map<String, String> result = new HashMap<>();
+		if(update) {
+			result.put("message", "알림읽음 처리 완료");
+			result.put("title", "성공");
+			result.put("icon", "success");
+		} else {
+			result.put("message", "알림 읽음 처리 실패");
+			result.put("title", "실패");
+			result.put("icon", "fail");
+		}
+		
+		return ResponseEntity.ok(result);
+	}
+	
 	
 	
 	

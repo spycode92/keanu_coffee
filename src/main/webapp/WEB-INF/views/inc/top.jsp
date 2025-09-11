@@ -257,7 +257,6 @@
 					<h3>알림</h3>
 					<div>
 						<a href="/alarm">전체보기</a>
-						<div onclick="readAll()">전체읽음</div>
 					</div>
 				</div>
 				<ul id="notification-list"></ul>

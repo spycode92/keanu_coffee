@@ -52,5 +52,13 @@
 		ORDER BY created_at desc
 		LIMIT 10;
 	</select>
+	
+	<update id="updateAllAlarmStatus" >
+		UPDATE ALARM
+		SET
+			emp_alarm_read_status = 0
+		WHERE
+			emp_idx = #{empIdx}
+	</update>
 
 </mapper>

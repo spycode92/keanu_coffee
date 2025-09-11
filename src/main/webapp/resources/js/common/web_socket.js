@@ -280,26 +280,7 @@ function getReadStatus(status) {
         : '<span class="circle read"></span>';
 }
 
-// 전체 읽음
-function readAll() {
-	fetch("/user/notification/all-read", {
-		method: "PATCH",
-		header: {
-			"Content-Type": "application/json"
-		}
-	})
-	  .then((res) => res.json())
-	  .then((data) => {
-		  if (data.result === "모든 알림을 읽음 처리했습니다") {
-			  document.querySelectorAll(".read-status").forEach(span => {
-		          span.innerHTML = getReadStatus(1);
-		      }); 
-		  } else {
-			  alert("더 이상 읽을 알림이 없습니다.");
-		  }
-	  })
-	    .catch((err) => console.error("전체 읽음 오류:", err));
-}
+
 
 
 

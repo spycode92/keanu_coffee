@@ -58,5 +58,11 @@ public class AlarmService {
 
 		return alarmMapper.selectAlarmInAjax(empIdx);
 	}
+	//모든알림 읽음처리
+	public Boolean modifyAllAlarmStatus(Integer empIdx) {
+		
+		int updateCount = alarmMapper.updateAllAlarmStatus(empIdx);
+		return updateCount > 0;
+	}
 
 }
