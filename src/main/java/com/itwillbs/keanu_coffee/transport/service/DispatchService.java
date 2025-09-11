@@ -116,6 +116,21 @@ public class DispatchService {
 			// 출고주문idx로 배차 idx 조회
 			Integer dispatchIdx = dispatchMapper.selectByorderIdList(outboundOrderIdx);
 			
+			// 출고테이블 배차대기 상태로 변경
+			dispatchMapper.updateOutboundOrderStatus(outboundOrderIdx, "배차대기");
+			
+			// 배차배정 테이블에서 배차idx로 차량idx 조회
+			List<Integer> vehicleIds = dispatchMapper.selectAllVehicleIdx(dispatchIdx);
+			
+			vehicleMapper.updateStatus(vehicleIds, "대기");
+			
+			for (int i = 0; i < vehicleIds.size(); i++) {
+				dispatchMapper.updateAssigmentStatusByDispatchIdx(dispatchIdx, "취소");
+			}
+			
+			// 배차 매핑 테이블 데이터 삭제
+			dispatchMapper.deleteMapping(dispatchIdx);
+			
 			dispatchMapper.updateDispatchStatus(dispatchIdx, request.getStatus());
 		}
 		
@@ -296,5 +311,10 @@ public class DispatchService {
 		} else {
 			dispatchMapper.updateDispatchStatus(request.getDispatchIdx(), "완료");
 		}
+	}
+
+	// 배정된 기사의 상태
+	public String selectDispatchAssignment(Integer dispatchIdx, Integer vehicleIdx) {
+		return dispatchMapper.selectDispatchAssignment(dispatchIdx, vehicleIdx);
 	}
 }
