@@ -23,11 +23,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
-import com.itwillbs.keanu_coffee.common.dto.AlarmDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.dto.SweetAlertIcon;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
-import com.itwillbs.keanu_coffee.common.service.AlarmService;
 import com.itwillbs.keanu_coffee.common.utils.MakeAlert;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 
@@ -38,8 +36,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/employeeManagement")
 public class EmployeeManagementController {
 	private final EmployeeManagementService employeeManagementService;
-	private final SimpMessagingTemplate messagingTemplate;
-	private final AlarmService alarmService;
 
 	// 직원관리페이지
 	@GetMapping("")
@@ -81,19 +77,7 @@ public class EmployeeManagementController {
 			List<EmployeeInfoDTO> employeeList = employeeManagementService.getEmployeeList(pageInfoDTO.getStartRow(),
 					listLimit, searchType, searchKeyword, orderKey, orderMethod);
 			model.addAttribute("employeeList", employeeList);
-		}
-		
-		//알림 입력
-		AlarmDTO alarm = new AlarmDTO();
-		
-		alarm.setRoleName("입고관리자");
-		alarm.setEmpAlarmMessage("알림메세지테스트");
-		
-		alarmService.insertAlarmByRole(alarm);
-		
-		Map<String, String> payload = new HashMap<>();
-		payload.put("message", "새알림이 도착하였습니다.");
-		messagingTemplate.convertAndSend("/topic/" + alarm.getRoleName(), payload);
+		}	
 
 		return "/admin/employee_management";
 	}
