@@ -711,6 +711,16 @@
 
 	        window.location.href = "${pageContext.request.contextPath}/inventory/stockCheck?pageNum=1";
 	    });
+	    
+	    $(document).ready(function(){
+	        const urlParams = new URLSearchParams(window.location.search);
+	        const lotNumber = urlParams.get('keyword');
+	        if (lotNumber) {
+	            $("#tbodyRealtime tr").filter(function() {
+	                return $(this).find("td:nth-child(3)").text().trim() === lotNumber;
+	            }).css("background-color", "#fff3cd"); // 노란색 강조
+	        }
+	    });
 	</script>
 </body>
 </html>

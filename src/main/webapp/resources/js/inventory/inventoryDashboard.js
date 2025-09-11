@@ -478,9 +478,9 @@ function drawHeatmap(data, selector, zoneLabel) {
 ======================================================================== */
 subscribeRoom("inventory", function(message) {
     console.log("📦 새 재고 이벤트 발생!");
-    console.log("   roomId :", message.roomId);
-    console.log("   sender :", message.sender);
-    console.log("   text   :", message.message);
+//    console.log("   roomId :", message.roomId);
+//    console.log("   sender :", message.sender);
+//    console.log("   text   :", message.message);
 
     // ✅ KPI 카드 새로고침
     loadKpiData();

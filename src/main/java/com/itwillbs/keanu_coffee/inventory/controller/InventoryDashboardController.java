@@ -62,23 +62,23 @@ public class InventoryDashboardController {
         return inventoryDashboardService.selectLocationDashData();
     }
     
-    /* =======================================================================
-	    🚨 테스트용 API (안전하게 재고 대시보드 웹소켓 발사 확인)
-	    - URL : /inventory/api/test-websocket
-	    - 기능 : /topic/inventory 채널로 임시 메시지 전송
-	    - 발표/운영 시 반드시 삭제
-	 ======================================================================= */
-     @GetMapping(value = "/test-websocket", produces = "text/plain;charset=UTF-8")
-	 @ResponseBody
-	 public String testWebSocket() {
-	     WebSocketDTO msg = new WebSocketDTO();
-	     msg.setRoomId("inventory");
-	     msg.setSender("system"); // or 로그인 사용자
-	     msg.setMessage("재고 변경 발생!");
-
-	     simpMessagingTemplate.convertAndSend("/topic/inventory", msg);
-	     return "웹소켓 메시지 발사 완료!";
-	 }
+//    /* =======================================================================
+//	    🚨 테스트용 API (안전하게 재고 대시보드 웹소켓 발사 확인)
+//	    - URL : /inventory/api/test-websocket
+//	    - 기능 : /topic/inventory 채널로 임시 메시지 전송
+//	    - 발표/운영 시 반드시 삭제
+//	 ======================================================================= */
+//     @GetMapping(value = "/test-websocket", produces = "text/plain;charset=UTF-8")
+//	 @ResponseBody
+//	 public String testWebSocket() {
+//	     WebSocketDTO msg = new WebSocketDTO();
+//	     msg.setRoomId("inventory");
+//	     msg.setSender("system"); // or 로그인 사용자
+//	     msg.setMessage("재고 변경 발생!");
+//
+//	     simpMessagingTemplate.convertAndSend("/topic/inventory", msg);
+//	     return "웹소켓 메시지 발사 완료!";
+//	 }
 	 
 }
 
