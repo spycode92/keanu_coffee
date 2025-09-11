@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
-<title>재고현황 대시보드</title>
+<title>재고현황</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
@@ -96,22 +96,28 @@
 	<!-- 메인 내용 -->
     <section class="content">
         <div class="card">
-        	<h1 align="center">재고 - 대시보드</h1>
+        	<h1 align="center">재고현황 - 대시보드</h1>
         
         	<!-- KPI 카드 -->
-			<div class="dashboard-kpi" style="display: flex; justify-content: center; margin-bottom: 20px;">
-			    <div class="kpi-card" style="flex:1; text-align:center; padding:20px; background:#f8f9fa; border-radius:8px;">
-			        <div id="kpi-value" class="kpi-value" style="font-size:2rem; font-weight:bold;">--</div>
-			        <div class="kpi-label" style="font-size:1rem; color:#666;">현재 재고</div>
-			        <div id="kpi-change" class="kpi-change" style="font-size:0.9rem; margin-top:8px;">--</div>
-			    </div>
+        	<div class="chart-card">
+	        	<h3 class="card-title" align="center">현재 재고</h3>
+				<hr>
+				<div class="dashboard-kpi" style="display: flex; justify-content: center; margin-bottom: 20px;">
+				    <div class="kpi-card" style="flex:1; text-align:center; padding:20px; background:#f8f9fa; border-radius:8px;">
+				        <div id="kpi-value" class="kpi-value" style="font-size:2rem; font-weight:bold;">--</div>
+<!-- 				        <div class="kpi-label" style="font-size:1rem; color:#666;">현재 재고</div> -->
+				        <div id="kpi-change" class="kpi-change" style="font-size:0.9rem; margin-top:8px;">--</div>
+				    </div>
+				</div>
 			</div>
+	        
+	        <br>
 	        
             <div class="dashboard-charts">
                 <!-- 📌 재고현황 -->
 				<div class="chart-card">
-				    <h3 class="card-title">재고현황</h3>
-				    <hr/> <!-- 제목 밑에 선 -->
+				    <h3 class="card-title" align="center">카테고리별 재고 현황</h3>
+				    <hr> <!-- 제목 밑에 선 -->
 				
 				    <div style="display: flex; gap: 20px;">
 				        <div class="chart-wrapper">
@@ -127,17 +133,17 @@
 
                 <!-- 로케이션 용적률 -->
                 <div class="chart-card">
-                    <h3 class="card-title" id="location_title">로케이션 용적률</h3>
+                    <h3 class="card-title" id="location_title" align="center">로케이션 용적률</h3>
                     <hr>
                     <!--?Pallet Zone -->
 				    <div style="margin-bottom: 10px;">
-					    <h4 class="heatmap-title">Pallet Zone</h4>
+					    <h4 class="heatmap-title" align="center">Pallet Zone</h4>
 					    <div id="pallet_heatmap" class="heatmap-scroll"></div>
 					</div>
 				
 				    <!-- Picking Zone -->
 				    <div>
-					    <h4 class="heatmap-title">Picking Zone</h4>
+					    <h4 class="heatmap-title" align="center">Picking Zone</h4>
 					    <div id="picking_heatmap" class="heatmap-scroll"></div>
 					</div>
 				    

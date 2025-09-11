@@ -58,7 +58,7 @@ function loadKpiData() {
                 changeEl.textContent = "+" + changeQty + " BOX";
                 changeEl.style.color = "green";
             } else {
-                changeEl.textContent = "0 BOX";
+                changeEl.textContent = "전날 출고/폐기 : 0 BOX";
                 changeEl.style.color = "#666";
             }
         })
@@ -275,21 +275,24 @@ function totalUsage(palletZoneData, pickingZoneData) {
 }
 
 /* =========================
-   📌 히트맵 (D3.js)
-   👉 팀장님 statistics2.js 코드 그대로 이식
+   📌 히트맵 (D3.js) - 최종정리본 + 그룹 단위 hover
+   👉 rack(E/F/G…) = Y축, bay(1,2,3…) = X축
+   👉 개선: hover 시 해당 그룹만 오른쪽으로 fan-out (버벅임 방지)
 ========================= */
 function drawHeatmap(data, selector, zoneLabel) {
     const boxSize = 50;
-    const gap = 10;
-    const margin = { top: 60, right: 40, bottom: 40, left: 60 };
+    const gap = 20; 
+    const margin = { top: 60, right: 400, bottom: 40, left: 80 }; // ✅ 오른쪽 공간 확보
 
     if (!Array.isArray(data) || data.length === 0) return;
 
+    // 📌 level(층) 숫자 뽑기
     const getLevelNumber = (level) => {
         const m = String(level ?? "").match(/\d+/);
         return m ? Number(m[0]) : 0;
     };
 
+    // 📌 문자열 natural sort
     const toKeyParts = (v) => {
         const s = String(v ?? "");
         const m = s.match(/^([A-Za-z]+)?(\d+)?$/);
@@ -299,57 +302,49 @@ function drawHeatmap(data, selector, zoneLabel) {
             raw: s
         };
     };
-
     const naturalCompare = (a, b) => {
-        const A = toKeyParts(a);
-        const B = toKeyParts(b);
+        const A = toKeyParts(a), B = toKeyParts(b);
         if (A.prefix !== B.prefix) return A.prefix.localeCompare(B.prefix);
-        const aHasNum = !Number.isNaN(A.num);
-        const bHasNum = !Number.isNaN(B.num);
+        const aHasNum = !Number.isNaN(A.num), bHasNum = !Number.isNaN(B.num);
         if (aHasNum && bHasNum) return A.num - B.num;
         if (aHasNum) return -1;
         if (bHasNum) return 1;
         return A.raw.localeCompare(B.raw);
     };
 
+    // 📌 rack = Y축, bay = X축
     const rackOrder = [...new Set(data.map(d => d.rack))].sort(naturalCompare);
-    const bayOrder = [...new Set(data.map(d => d.bay))].sort(naturalCompare);
-    const levelNumberOrder = [...new Set(data.map(d => getLevelNumber(d.level)))].sort((a, b) => a - b);
+    const bayOrder  = [...new Set(data.map(d => d.bay))].sort(naturalCompare);
 
-    const cols = rackOrder.length * bayOrder.length;
-    const rows = levelNumberOrder.length;
-    const svgWidth = margin.left + cols * (boxSize + gap) - gap + margin.right;
-    const svgHeight = margin.top + rows * (boxSize + gap) - gap + margin.bottom;
+    const cols = bayOrder.length;
+    const rows = rackOrder.length;
+
+    const contentWidth  = cols * (boxSize + gap) - gap;
+    const contentHeight = rows * (boxSize + gap) - gap;
+
+    const svgWidth  = margin.left + contentWidth  + margin.right;
+    const svgHeight = margin.top  + contentHeight + margin.bottom;
 
     const svg = d3.select(selector)
-        .append("svg")
-        .attr("width", svgWidth)
-        .attr("height", svgHeight);
-
-//    svg.append("text")
-//        .attr("x", svgWidth / 2)
-//        .attr("y", margin.top - 40)
-//        .attr("text-anchor", "middle")
-//        .attr("fill", "#333")
-//        .attr("font-size", 16)
-//        .attr("font-weight", "bold")
-//        .text(zoneLabel);
+	    .append("svg")
+	    .attr("width", svgWidth)
+	    .attr("height", svgHeight);
 
     const g = svg.append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
+    // 📌 색상 스케일
     const colorScale = d3.scaleThreshold()
         .domain([30, 50, 70, 80, 90, 100])
         .range(["#2196F3","#4CAF50","#CDDC39","#FFEB3B","#FF9800","#F44336","#6A1B9A"]);
 
     const tooltip = d3.select("#tooltip");
 
-    const getXIndex = (rack, bay) => {
-        const rIdx = rackOrder.indexOf(rack);
-        const bIdx = bayOrder.indexOf(bay);
-        return rIdx * bayOrder.length + bIdx;
-    };
+    // 📌 좌표계 (bay=X, rack=Y)
+    const getXIndex = (bay)  => bayOrder.indexOf(bay);
+    const getYIndex = (rack) => rackOrder.indexOf(rack);
 
+    // 📌 그룹핑
     const positionKey = (d) => `${d.rack}|${d.bay}|${getLevelNumber(d.level)}`;
     const groupsMap = new Map();
     data.forEach(d => {
@@ -358,18 +353,21 @@ function drawHeatmap(data, selector, zoneLabel) {
         groupsMap.get(key).push(d);
     });
 
-    const overlapOffsetStep = Math.round(-boxSize * 0.04);
-    const fanoutOffsetStep = Math.round(boxSize * 0.4);
-
+    // 📌 fan-out offset
+    const overlapOffsetStep = Math.round(-boxSize * 0.05);
+    const fanoutOffsetStep  = Math.round(boxSize + 4); // ✅ 오른쪽으로 펼침
     const getOffset = (i, mode = "overlap") => {
-        const step = mode === "fanout" ? fanoutOffsetStep : overlapOffsetStep;
-        return { dx: -i * step, dy: i * step };
+        return { dx: i * (mode === "fanout" ? fanoutOffsetStep : overlapOffsetStep), dy: 0 };
     };
 
+    // 📌 라벨 저장
+    const bayLabels = new Map();
+    const rackLabels = new Map();
+
+    // 📌 각 그룹(칸) 처리
     for (const [key, items] of groupsMap.entries()) {
-        const [rack, bay, levelNumStr] = key.split("|");
-        const xIndex = getXIndex(rack, bay);
-        const yIndex = levelNumberOrder.indexOf(Number(levelNumStr));
+        const [rack, bay] = key.split("|");
+        const xIndex = getXIndex(bay), yIndex = getYIndex(rack);
         if (xIndex < 0 || yIndex < 0) continue;
 
         const baseX = xIndex * (boxSize + gap);
@@ -381,90 +379,92 @@ function drawHeatmap(data, selector, zoneLabel) {
             return ap.localeCompare(bp);
         });
 
+        // ✅ 그룹(g) 단위로 hover 이벤트만 받음
         const group = g.append("g")
             .attr("transform", `translate(${baseX},${baseY})`)
-            .on("pointerenter", function () {
+            .on("mouseenter", function () {
                 d3.select(this).raise();
                 d3.select(this).selectAll("g.cell")
                     .transition().duration(150)
-                    .attr("transform", (d, i) => `translate(${i * fanoutOffsetStep}, 0)`);
+                    .attr("transform", (d, i) => {
+                        const off = getOffset(i, "fanout");
+                        return `translate(${off.dx}, ${off.dy})`;
+                    });
+                // 라벨 강조
+                bayLabels.get(bay).attr("fill", "#000").attr("font-weight", "bold");
+                rackLabels.get(rack).attr("fill", "#000").attr("font-weight", "bold");
             })
-            .on("pointerleave", function () {
+            .on("mouseleave", function () {
                 d3.select(this).selectAll("g.cell")
                     .transition().duration(150)
                     .attr("transform", (d, i) => {
-                        const off = getOffset(i);
+                        const off = getOffset(i, "overlap");
                         return `translate(${off.dx}, ${off.dy})`;
                     });
                 tooltip.style("display", "none");
+                // 라벨 복귀
+                bayLabels.get(bay).attr("fill", "#555").attr("font-weight", "normal");
+                rackLabels.get(rack).attr("fill", "#555").attr("font-weight", "normal");
             });
 
+        // 📌 셀(카드) 그리기
         sorted.forEach((d, i) => {
             const volumeRate = Number.isFinite(d.volumeRate) ? Math.max(0, d.volumeRate) : 0;
-
-            const cell = group.append("g")
-                .attr("class", "cell")
-                .attr("transform", `translate(0, 0)`);
+            const cell = group.append("g").attr("class", "cell");
 
             cell.append("rect")
                 .attr("width", boxSize).attr("height", boxSize)
                 .attr("rx", 4).attr("ry", 4)
                 .attr("fill", colorScale(volumeRate))
                 .attr("stroke", "#111").attr("stroke-width", 1)
-                .on("mouseover", function () {
-                    const itemList = (d.items || [])
-                        .map(item => `${item.name} (${item.quantity}개)`)
-                        .join('<br/>');
+                .on("mousemove", function (event) {
+                    const itemList = (d.items || []).map(item => `${item.name} (${item.quantity}개)`).join('<br/>');
                     tooltip.style("display", "block")
                         .html(`<strong>${d.rack}-${d.bay}-${d.level}</strong><br/>
                                용적률: ${volumeRate}%<br/>
-                               물품:<br/>${itemList}`);
-                })
-                .on("mousemove", function (event) {
-                    tooltip.style("left", (event.pageX + 10) + "px")
-                           .style("top", (event.pageY + 10) + "px");
+                               물품:<br/>${itemList}`)
+                        .style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY + 10) + "px");
                 });
 
-            const label = `${d.rack}-${d.bay}-${d.level}`;
-            const centerX = boxSize / 2;
-            const centerY = boxSize / 2 - 5;
-
+            // 초기 위치 (겹쳐진 상태)
             const off = getOffset(i, "overlap");
             cell.attr("transform", `translate(${off.dx}, ${off.dy})`);
 
+            // 텍스트 라벨
+            const label = `${d.rack}-${d.bay}-${d.level}`;
+            const centerX = boxSize / 2, centerY = boxSize / 2 - 5;
             const text = cell.append("text")
                 .attr("x", centerX).attr("y", centerY)
                 .attr("text-anchor", "middle")
                 .attr("dominant-baseline", "middle")
                 .attr("fill", "white").attr("font-size", 11);
-
             text.append("tspan").attr("x", centerX).text(label);
             text.append("tspan").attr("x", centerX).attr("dy", "1.2em").text(`${volumeRate}%`);
         });
     }
 
-    // 상단 rack-bay 라벨
-    rackOrder.forEach((rack, rIdx) => {
-        bayOrder.forEach((bay, bIdx) => {
-            const colIndex = rIdx * bayOrder.length + bIdx;
-            const x = margin.left + colIndex * (boxSize + gap);
-            const y = margin.top - 20;
-            svg.append("text")
-                .attr("x", x + boxSize / 2).attr("y", y)
-                .attr("text-anchor", "middle")
-                .attr("fill", "#555").attr("font-size", 11)
-                .text(`${rack}-${bay}`);
-        });
+    // 📌 상단 bay 라벨 (가로)
+    bayOrder.forEach((bay, bIdx) => {
+        const x = margin.left + bIdx * (boxSize + gap);
+        const y = margin.top - 20;
+        const lbl = svg.append("text")
+            .attr("x", x + boxSize / 2).attr("y", y)
+            .attr("text-anchor", "middle")
+            .attr("fill", "#555").attr("font-size", 12)
+            .text(`${bay}`);
+        bayLabels.set(bay, lbl);
     });
 
-    // 좌측 level 라벨
-    levelNumberOrder.forEach((lvNum, rowIdx) => {
-        const x = margin.left - 10;
-        const y = margin.top + rowIdx * (boxSize + gap) + boxSize / 2;
-        svg.append("text")
+    // 📌 좌측 rack 라벨 (세로)
+    rackOrder.forEach((rack, rIdx) => {
+        const x = margin.left - 25;
+        const y = margin.top + rIdx * (boxSize + gap) + boxSize / 2;
+        const lbl = svg.append("text")
             .attr("x", x).attr("y", y)
             .attr("text-anchor", "end")
-            .attr("fill", "#555").attr("font-size", 11)
-            .text(`${lvNum}`);
+            .attr("fill", "#555").attr("font-size", 12)
+            .text(`${rack}`);
+        rackLabels.set(rack, lbl);
     });
 }
