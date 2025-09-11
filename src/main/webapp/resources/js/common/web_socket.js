@@ -201,11 +201,11 @@ function notification() {
 //	notiButton.style.display = (notiButton.style.display === 'block') ? 'none' : 'block';
 	
 	fetch("/alarm/getAlarm")
-	  .then(res => res.json())
-	  .then(data => {
-		  notificationList(data);
-	  })
-	  .catch(err => console.log("알림 조회 실패"));
+		.then(res => res.json()).then(data => {
+			isAllRead = true;
+			notificationList(data);
+		})
+		.catch(err => console.log("알림 조회 실패"));
 }
 
 function changeNotiColor(e) {
@@ -222,7 +222,6 @@ function notificationList(data) {
 	}
 	
 	data.forEach((noti) => {
-		isAllRead = true;
 		const li = document.createElement("li");
 		const status = getReadStatus(noti.empAlarmReadStatus);
 		if(noti.empAlarmReadStatus == 1){
@@ -256,25 +255,25 @@ function handleNotiClick(li) {
 		readSpan.innerHTML = getReadStatus(0);
 	}
 //	
-//	markAsRead(alarmIdx)
-//		.then(() => {
+	markAsRead(alarmIdx)
+		.then(() => {
+			if (link && link.trim() !== "" && link !== "null") {
+                window.location.href = link;
+            }
+			notification();
+			console.log("이동안함");
+		})
+		.catch(err => console.log(err));
+//	ajaxPost("/alarm/status/" + alarmIdx + "/read")
+//		.then((d) => {
+//			console.log("여기까지");
 //			if (link && link.trim() !== "" && link !== "null") {
-//                window.location.href = link;
-//            }
+//	            window.location.href = link;
+//	        }
 //			notification();
 //			console.log("이동안함");
 //		})
 //		.catch(err => console.log(err));
-	ajaxPost("/alarm/status/" + alarmIdx + "/read")
-	.then(() => {
-		console.log("여기까지");
-		if (link && link.trim() !== "" && link !== "null") {
-            window.location.href = link;
-        }
-		notification();
-		console.log("이동안함");
-	})
-	.catch(err => console.log(err));
 }
 
 function markAsRead(alarmIdx) {

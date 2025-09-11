@@ -1,7 +1,9 @@
 package com.itwillbs.keanu_coffee.common.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,21 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/alarm")
 public class AlarmController {
 	private final AlarmService alarmService;
+	//알림 페이지이동
+	@GetMapping("")
+	public String alarmPage(Model model, Authentication authentication) {
+		EmployeeInfoDTO employee = new EmployeeInfoDTO();
+		EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
+		String empNo = authentication.getName();
+		Integer empIdx = empDetail.getEmpIdx();
+		List<AlarmDTO> alarmList = alarmService.getAlarm(empIdx);
+		
+		model.addAttribute("alarmList", alarmList);
+		
+		return "commons/alarm";
+	}
+	
+	
 	//본인알림조회
 	@GetMapping("/getAlarm")
 	public ResponseEntity<List<AlarmDTO>> alarm(Authentication authentication) {
@@ -37,21 +54,21 @@ public class AlarmController {
 		
 		return ResponseEntity.ok(alarmList);
 	}
+	
 	//알림상태변경
 	@PostMapping("/status/{alarmIdx}/read")
-	public ResponseEntity<String> alarmRead(@PathVariable Integer alarmIdx, Authentication authentication) {
+	public ResponseEntity<Map<String, String>> alarmRead(@PathVariable Integer alarmIdx, Authentication authentication) {
 		EmployeeInfoDTO employee = new EmployeeInfoDTO();
 		EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
 		String empNo = authentication.getName();
 		Integer empIdx = empDetail.getEmpIdx();
 		
 		Boolean update = alarmService.modifyAlarmStatus(alarmIdx);
-		
-		String result = ""; 
+		Map<String, String> result = new HashMap<>();
 		if(update) {
-			result = "알림읽음 처리 완료";
+			result.put("message", "알림읽음 처리 완료");
 		} else {
-			result = "알림 읽음 처리 실패";
+			result.put("message", "알림 읽음 처리 실패");
 		}
 		
 		return ResponseEntity.ok(result);

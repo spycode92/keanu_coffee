@@ -188,6 +188,7 @@
 		display: flex;
 		gap: 20px;
 		cursor: pointer;
+		color: black;
 	}
 	
 	
