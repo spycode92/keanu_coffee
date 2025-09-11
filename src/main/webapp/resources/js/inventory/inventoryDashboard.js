@@ -468,3 +468,41 @@ function drawHeatmap(data, selector, zoneLabel) {
         rackLabels.set(rack, lbl);
     });
 }
+
+/* ========================================================================
+   🚨 [웹소켓 구독 코드 추가됨] 🚨
+   - 작성자: (너 이름)
+   - 목적 : 재고현황 대시보드 실시간 갱신
+   - topic : /topic/inventory
+   - 설명 : 서버에서 메시지 브로드캐스트 시 KPI/차트/히트맵 자동 새로고침
+======================================================================== */
+subscribeRoom("inventory", function(message) {
+    console.log("📦 새 재고 이벤트 발생!");
+    console.log("   roomId :", message.roomId);
+    console.log("   sender :", message.sender);
+    console.log("   text   :", message.message);
+
+    // ✅ KPI 카드 새로고침
+    loadKpiData();
+
+    // ✅ 카테고리별 재고 현황 차트 새로고침
+    getInventory().then(() => {
+        const inventoryChartData = processInventoryData(inventoryRawData);
+        drawInventoryChart(inventoryChartData);
+    });
+
+    // ✅ 로케이션 용적률 히트맵 새로고침
+    getLocation().then(() => {
+        const palletData = locationRawData.filter(d => d.locationType === 1);
+        const pickingData = locationRawData.filter(d => d.locationType === 2);
+
+        const palletHeatmapData = buildHeatmapData(palletData);
+        const pickingHeatmapData = buildHeatmapData(pickingData);
+
+        drawHeatmap(palletHeatmapData, "#pallet_heatmap", "Pallet Zone");
+        drawHeatmap(pickingHeatmapData, "#picking_heatmap", "Picking Zone");
+        totalUsage(palletData, pickingData);
+    });
+});
+
+

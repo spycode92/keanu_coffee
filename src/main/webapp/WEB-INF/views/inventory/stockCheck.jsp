@@ -539,7 +539,7 @@
 		}
 	
 	    /* 고정 임박 기준값 */
-	    const FIXED_THRESHOLD = 7;
+	    const FIXED_THRESHOLD = 60;
 	
 	    function makeStatusAndDday(expDate, threshold){
 	        const d = diffDaysFromToday(expDate);
