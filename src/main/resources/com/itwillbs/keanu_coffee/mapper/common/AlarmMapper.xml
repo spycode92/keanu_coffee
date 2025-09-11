@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.common.mapper.AlarmMapper">
+	
+	<select id="selectAlarm" resultType="AlarmDTO">
+		SELECT
+			alarm_idx 
+			, emp_alarm_message
+			, emp_alarm_read_status
+			, emp_alarm_link
+			, created_at
+		FROM ALARM
+		WHERE emp_idx = #{empIdx}
+		ORDER BY created_at desc
+	</select>
+	
+	<update id="updateAlarmStatus">
+		UPDATE ALARM 
+		SET
+			emp_alarm_read_status = 0
+		WHERE 
+			alarm_idx = #{alaramIdx}
+	</update>
+	
+	<insert id="insertAlarm" useGeneratedKeys="true" keyProperty="alarmIdx">
+		INSERT INTO ALARM
+		(emp_idx, emp_alarm_message, emp_alarm_link)
+		VALUES
+		(#{empIdx}, #{empAlarmMessage}, #{empAlarmLink})
+	</insert>
+
+
+</mapper>

@@ -259,7 +259,14 @@
 				e.emp_no = #{empNo} 
 	</select>
 	
-
+	<!-- 직책을가진 직원구하기 -->
+	<select id="selectEmpInfoByRole" resultType="EmployeeInfoDTO">
+		select emp_idx
+		FROM EMPLOYEE_INFO e
+		LEFT JOIN ROLE r
+		ON e.role_idx = r.role_idx
+		where r.role_name = #{roleName}
+	</select>
 	
 	
 	

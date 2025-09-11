@@ -1,10 +1,15 @@
 package com.itwillbs.keanu_coffee.transport.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itwillbs.keanu_coffee.common.dto.AlarmDTO;
+import com.itwillbs.keanu_coffee.common.service.AlarmService;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationItemDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
@@ -26,6 +31,8 @@ public class DispatchService {
 	private final DispatchMapper dispatchMapper;
 	private final VehicleMapper vehicleMapper;
 	private final RouteMapper routeMapper;
+	private final SimpMessagingTemplate messagingTemplate;
+	private final AlarmService alarmService;
 	
 	// 페이징을 위한 배차 수
 	@Transactional(readOnly = true)
@@ -84,6 +91,18 @@ public class DispatchService {
 			
 			// 출고 주문 테이블 상태 변경
 			dispatchMapper.updateOutboundOrderStatus(outboundOrderIdx, "배차완료");
+			
+			//알림 입력
+			AlarmDTO alarm = new AlarmDTO();
+			
+			alarm.setRoleName("출고관리자");
+			alarm.setEmpAlarmMessage(outboundOrderIdx + "번 주문에 대한 배차등록이 완료되었습니다.");
+			
+			alarmService.insertAlarmByRole(alarm);
+			
+			Map<String, String> payload = new HashMap<>();
+			payload.put("message", "새알림이 도착하였습니다.");
+			messagingTemplate.convertAndSend("/topic/" + alarm.getRoleName(), payload);
 		}
 	}
 
