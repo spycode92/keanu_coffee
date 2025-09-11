@@ -59,7 +59,8 @@ public class WarehouseSlottingLogicController {
 	
 //     percent of warehouse volume currently being used
   double pctWarehouseUsed = purchaseOrderService.getPercentOfWarehouseUsed();
-  System.out.println("percent of warehouse used: " + pctWarehouseUsed);
+  
+//  System.out.println("percent of warehouse used: " + pctWarehouseUsed);
 	
 	
 //  Date[] lastMonth = DateUtils.getPreviousMonthRange();
@@ -74,9 +75,11 @@ public class WarehouseSlottingLogicController {
   
   //get available
   
+//  4호(340 x 250 x 210) = 17,850cm, 5호(410 x 310 x 280) = 24,108cm, 6호(480 x 370 x 340) = 60,384cm
   Slot pallet = new Slot();
   Box box4 = new Box("4호", 34, 25, 21);
   Box box5 = new Box("5호", 41, 31, 28);
+  Box box6 = new Box("6호", 48, 37, 34);
 
   boolean result = addBoxToSlot(pallet, box4); // Adds first box
   boolean result2 = addBoxToSlot(pallet, box5); // Tries to add second box
