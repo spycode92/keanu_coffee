@@ -14,6 +14,9 @@
 		FROM ALARM
 		WHERE emp_idx = #{empIdx}
 		ORDER BY created_at desc
+		LIMIT
+			#{startRow}
+			, #{listLimit}
 	</select>
 	
 	<update id="updateAlarmStatus">
@@ -30,6 +33,24 @@
 		VALUES
 		(#{empIdx}, #{empAlarmMessage}, #{empAlarmLink})
 	</insert>
+	
+	<select id="selectAlarmCount">
+		SELECT COUNT(*)
+		FROM ALARM
+		WHERE emp_idx = #{empIdx}
+	</select>
 
+	<select id="selectAlarmInAjax" resultType="AlarmDTO">
+		SELECT
+			alarm_idx 
+			, emp_alarm_message
+			, emp_alarm_read_status
+			, emp_alarm_link
+			, created_at
+		FROM ALARM
+		WHERE emp_idx = #{empIdx}
+		ORDER BY created_at desc
+		LIMIT 10;
+	</select>
 
 </mapper>

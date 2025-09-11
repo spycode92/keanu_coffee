@@ -255,20 +255,10 @@
        		<div id="notification-box">
 				<div id="notification-header">
 					<h3>알림</h3>
-					<c:choose>
-						<c:when test="${sUT eq 1 }">
-							<div>
-								<a href="/myPage/notification">전체보기</a>
-								<div onclick="readAll()">전체읽음</div>
-							</div>
-						</c:when>
-						<c:otherwise>
-							<div>
-								<a href="/company/myPage/notification">전체보기</a>
-								<div onclick="readAll()">전체읽음</div>
-							</div>
-						</c:otherwise>
-					</c:choose>
+					<div>
+						<a href="/alarm">전체보기</a>
+						<div onclick="readAll()">전체읽음</div>
+					</div>
 				</div>
 				<ul id="notification-list"></ul>
        		</div>			
