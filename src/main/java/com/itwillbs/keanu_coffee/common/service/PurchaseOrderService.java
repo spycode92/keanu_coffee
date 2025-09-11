@@ -21,9 +21,9 @@ public class PurchaseOrderService {
 	private final PurchaseOrderMapper purchaseOrderMapper;
 	
 	
-	public List<PurchaseWithSupplierDTO> orderDetail() {
-		return purchaseOrderMapper.orderDetail();
-	}
+//	public List<PurchaseWithSupplierDTO> orderDetail() {
+//		return purchaseOrderMapper.orderDetail();
+//	}
 
 	public String getTodaysPurchaseOrderNumbersInOrderToMakeNewPurchaseOrderNumber() {
 		
