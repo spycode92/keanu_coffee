@@ -58,7 +58,7 @@ public class WarehouseSlottingLogicController {
 	PurchaseOrderService purchaseOrderService;
 	
 //     percent of warehouse volume currently being used
-  double pctWarehouseUsed = purchaseOrderService.getPercentOfWarehouseUsed();
+//  double pctWarehouseUsed = purchaseOrderService.getPercentOfWarehouseUsed();
   
 //  System.out.println("percent of warehouse used: " + pctWarehouseUsed);
 	
@@ -73,7 +73,9 @@ public class WarehouseSlottingLogicController {
 //	palletZoneShelvesCloseToPickingZone = racks  asc from e
   
   
-  //get available
+  //get list of warehouse locations that have available space (at least 10% available)
+  
+  
   
 //  4호(340 x 250 x 210) = 17,850cm, 5호(410 x 310 x 280) = 24,108cm, 6호(480 x 370 x 340) = 60,384cm
   Slot pallet = new Slot();
