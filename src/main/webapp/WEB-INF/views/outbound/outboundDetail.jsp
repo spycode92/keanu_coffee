@@ -7,12 +7,16 @@
 <html lang="ko">
 <head>
 	<meta charset="UTF-8" />
+	<meta name="_csrf" content="${_csrf.token}" />
+    <meta name="_csrf_header" content="${_csrf.headerName}" />
+    
 	<title>출고 상세</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet" />
 	<link href="${pageContext.request.contextPath}/resources/css/outbound/outboundDetail.css" rel="stylesheet" />
+	<link href="${pageContext.request.contextPath}/resources/css/inbound/modal/detailSmallModal.css" rel="stylesheet" />
 </head>
 
 <body data-context="${pageContext.request.contextPath}">
@@ -28,6 +32,7 @@
 				<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
 				<button id="btnAssignManager" class="btn btn-primary btn-sm">담당자지정</button>
 				<button id="btnAssignLocation" class="btn btn-primary btn-sm">출고위치지정</button>
+				<button id="btnOutboundComplete" class="btn btn-primary btn-sm">출고확정</button>
 				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
 			</div>
 		</div>
@@ -134,10 +139,13 @@
 					<thead>
 						<tr>
 							<th>No</th>
-							<th>상품명</th>
+							<th colspan="2">LOT번호</th>
+							<th colspan="2">상품명</th>
 							<th>규격/단위</th>
-							<th>LOT번호</th>
+							<th>폐기</th>
 							<th>출고수량</th>
+							<th colspan="2">비고</th>							
+							<th>수정버튼</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -146,16 +154,19 @@
 								<c:forEach var="item" items="${obProductList}" varStatus="vs">
 									<tr>
 										<td><c:out value="${vs.index + 1}" /></td>
-										<td><c:out value="${item.productName}" /></td>
-										<td><c:out value="${item.productVolume}" /></td>
-										<td><c:out value="${item.lotNumber}" /></td>
+										<td colspan="2"><c:out value="${item.lotNumber}" /></td>
+										<td colspan="2"><c:out value="${item.productName}" /></td>
+										<td><fmt:formatNumber value="${item.productVolume}" pattern="#호" /></td>
+										<td><c:out value="-" /></td>
 										<td><fmt:formatNumber value="${item.quantity}" pattern="#,##0" /></td>
+										<td colspan="2"><c:out value="-" /></td>
+									    <td class="modify"><input type="button" value="수정"></td>
 									</tr>
 								</c:forEach>
 							</c:when>
 							<c:otherwise>
 								<tr>
-									<td colspan="5" class="text-center">출고 품목 정보가 없습니다.</td>
+									<td colspan="6" class="text-center">출고 품목 정보가 없습니다.</td>
 								</tr>
 							</c:otherwise>
 						</c:choose>
@@ -213,13 +224,13 @@
 		</div>
 	</section>
 
-<%-- 	<jsp:include page="/WEB-INF/views/inbound/modal/modifyManager.jsp" /> --%>
-<%-- 	<jsp:include page="/WEB-INF/views/inbound/modal/modifyLocation.jsp" /> --%>
+	<jsp:include page="/WEB-INF/views/inbound/modal/modifyManager.jsp" />
+	<jsp:include page="/WEB-INF/views/inbound/modal/modifyLocation.jsp" />
 
 	<!-- JS 모음 -->
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
-	<script src="${pageContext.request.contextPath}/resources/js/outbound/modal/modify.js"></script>
-	<script src="${pageContext.request.contextPath}/resources/js/outbound/outboundDetail.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/modify.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/outbound/detail.js"></script>
 </body>
-<link href="${pageContext.request.contextPath}/resources/css/outbound/modal/detailSmallModal.css" rel="stylesheet" />
+
 </html>

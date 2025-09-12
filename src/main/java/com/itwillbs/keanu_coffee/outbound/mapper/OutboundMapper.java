@@ -22,5 +22,10 @@ public interface OutboundMapper {
 
     // 출고 품목 리스트 조회
     List<OutboundProductDetailDTO> selectOutboundProductDetail(@Param("outboundOrderIdx") Long outboundOrderIdx);
+    
+    // 출고 상태변경(대기 -> 출고준비)
+    int updateStatusReady(@Param("orderIdxList") List<Long> orderIdxList);
+
+    int updateStatusDispatchWait(@Param("obwaitNumber") String obwaitNumber, @Param("outboundOrderIdx") Long outboundOrderIdx);
 	
 }
