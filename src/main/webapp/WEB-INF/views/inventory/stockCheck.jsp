@@ -149,7 +149,8 @@
 </head>
 <body>
 
-    <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
+    <!-- 상단/사이드 레이아웃 -->
+	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 
     <div class="card" style="margin:20px;">
         <div class="card-header">

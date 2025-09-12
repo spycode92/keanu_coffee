@@ -22,14 +22,14 @@ import lombok.RequiredArgsConstructor;
 public class InventoryDashboardController {
 	private final InventoryDashboardService inventoryDashboardService;
 	
-	// ✅ 웹소켓 발사용 (테스트 용도)
-    private final SimpMessagingTemplate simpMessagingTemplate;
+	// 웹소켓 발사용 (테스트 용도)
+//    private final SimpMessagingTemplate simpMessagingTemplate;
 	
-	// 대시보드 JSP 열기
-    @GetMapping("/dashboard")
-    public String getDashboard() {
-        return "inventory/inventoryDashboard"; // inventoryDashboard.jsp
-    }
+//	// 대시보드 JSP 열기
+//    @GetMapping("/dashboard")
+//    public String getDashboard() {
+//        return "inventory/inventoryDashboard"; // inventoryDashboard.jsp
+//    }
     
     // 현재 재고 KPI (총 재고 - (전날 출고 + 전날 출고폐기))
     @GetMapping("/kpi")
