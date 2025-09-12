@@ -88,7 +88,8 @@ public class PurchaseOrderController {
 
 //	@GetMapping("/trigger")
 //	public void triggerManually() throws IOException {
-	@Scheduled(cron = "0 * * * * *") // every minute
+//	@Scheduled(cron = "0 0 * * * *") // every hour
+//	@Scheduled(cron = "0 * * * * *") // every minute
 	public void triggerAutomatically() throws IOException {
 	    // your logic here
 	
