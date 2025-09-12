@@ -45,6 +45,55 @@
     	LIMIT 1
     		
     </select>
+    
+    <select id="selectQuantity">
+    	SELECT
+    		 *
+    	from
+    		INVENTORY
+    	where 
+    		inventory_idx = #{inventoryIdx} 
+    
+    </select>
+    <delete id="deleteRowInInventory">
+    	DELETE FROM
+    		INVENTORY
+    	WHERE
+    		inventory_idx = #{inventoryId}
+    </delete>
+    <update id="updateQuantitydecrease">
+    	UPDATE 
+    		INVENTORY
+		SET 
+			quantity = #{qty}
+		WHERE 
+			inventory_idx = #{inventoryId}
+    	
+    </update>
+    
+    <update id="updateLocationOfInventory">
+	    UPDATE 
+    		INVENTORY
+		SET 
+			quantity = #{qtyMoving},
+			location_idx = #{employeeId},
+			location_name = #{employeeId}
+		WHERE 
+			inventory_idx = #{inventoryId}
+    
+    </update>
+    
+<!--     inventory_idx -->
+<!-- receipt_product_idx -->
+<!-- location_idx -->
+<!-- location_name -->
+<!-- product_idx -->
+<!-- quantity -->
+<!-- lot_number -->
+<!-- manufacture_date -->
+<!-- expiration_date -->
+<!-- created_at -->
+<!-- updated_at -->
 
 
 

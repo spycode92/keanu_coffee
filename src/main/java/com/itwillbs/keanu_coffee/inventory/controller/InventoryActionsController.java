@@ -5,10 +5,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
 import com.itwillbs.keanu_coffee.inventory.dto.WarehouseLocationDTO;
 import com.itwillbs.keanu_coffee.inventory.service.InventoryActionsService;
 
@@ -168,6 +170,35 @@ public class InventoryActionsController {
 	//move inventory
 	// when all inventory from one location is moved the inventory row needs to be deleted
 	// I need to make a default location for the inbound area
+	@PostMapping("/updateWarehouse")
+	public String updateWarehouse( @RequestParam("employee_id") int employeeId, 
+			@RequestParam("inventoryId") int inventoryId,
+			@RequestParam("qtyMoving") int qtyMoving,
+			@RequestParam("destinationType") int destinationType, 
+			@RequestParam("destinationName") String destinationName, 
+			@RequestParam("moveType") String moveType) {
+		
+		InventoryDTO inventoryDTO = inventoryActionsService.getquantity(inventoryId);
+		
+		if(moveType == "pickUp") {
+			
+			if(qtyMoving == inventoryDTO.getQuantity()) {
+				inventoryActionsService.removeRowInInventory(inventoryId);
+			} else {
+				inventoryActionsService.modifyLocationOfInventory(inventoryId, qtyMoving, employeeId);
+				inventoryActionsService.modifyQuantitydecrease(inventoryId, inventoryDTO.getQuantity() - qtyMoving);
+			}
+			
+			//need to finish this
+		} else {
+			
+			
+		}
+		
+		
+		
+		return "inventoryAction/updateWarehouse";
+	}
 	
 	
 	

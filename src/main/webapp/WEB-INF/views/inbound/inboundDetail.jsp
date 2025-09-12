@@ -12,72 +12,8 @@
 
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet" />
-	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
-
-	<style>
-		/* ===== inbound detail page 전용 오버라이드 (공통 CSS 유지) ===== */
-		.inbound-detail {
-			font-variant-numeric: tabular-nums;
-		}
-
-		.inbound-detail .card { padding: 1rem; }
-		.inbound-detail .card-header { margin-bottom: .75rem; padding-bottom: .5rem; }
-		.inbound-detail .card-title { margin: 0; }
-
-		/* 읽기전용 느낌: label / value 그리드 */
-		.inbound-detail .kv-grid {
-			display: grid;
-			grid-template-columns: repeat(4, minmax(160px, 1fr));
-			gap: .5rem 1rem;
-			align-items: center;
-		}
-		.inbound-detail .kv-item { min-width: 0; }
-		.inbound-detail .kv-label { font-size: .9rem; color: var(--muted-foreground); margin-bottom: .25rem; }
-		.inbound-detail .kv-value { padding: .45rem .6rem; background: var(--input-background); border: 1px solid var(--border); border-radius: var(--radius); }
-
-		/* 상단 버튼 그룹 */
-		.inbound-detail .page-actions { display:flex; gap:.5rem; align-items:center; }
-
-		/* timeline */
-		.inbound-detail .timeline {
-			display:flex;
-			gap:1rem;
-			align-items:center;
-			padding: .5rem 0;
-		}
-		.inbound-detail .timeline-step {
-			display:flex;
-			flex-direction:column;
-			align-items:center;
-			gap:.25rem;
-			text-align:center;
-			min-width:90px;
-		}
-		.inbound-detail .timeline-dot {
-			width:18px;
-			height:18px;
-			border-radius:50%;
-			background:var(--muted);
-			border:2px solid var(--border);
-		}
-		.inbound-detail .timeline-step.active .timeline-dot { background:var(--primary); border-color:var(--primary); }
-
-		/* items table */
-		.inbound-detail #itemsTable { table-layout: fixed; width:100%; }
-		.inbound-detail .table th, .inbound-detail .table td { padding: .55rem .6rem; vertical-align: middle; }
-		.inbound-detail .table thead th { background: var(--accent); color: var(--foreground); position: sticky; top:0; z-index:1; }
-		.inbound-detail .table .right { text-align:right; }
-
-		/* attachments */
-		.inbound-detail .attachments { display:flex; flex-direction:column; gap:.4rem; }
-		.inbound-detail .attachment-item { padding:.5rem; background:var(--card); border:1px solid var(--border); border-radius:.375rem; }
-
-		/* responsive */
-		@media (max-width: 980px) {
-			.inbound-detail .kv-grid { grid-template-columns: 1fr 1fr; }
-			.inbound-detail .timeline { flex-wrap:wrap; justify-content:flex-start; }
-		}
-	</style>
+	<link href="${pageContext.request.contextPath}/resources/css/inbound/inboundDetailAndInspection.css" rel="stylesheet" />
+	
 	
 	<!-- ============================================ 가격 계산 ============================================ -->
 	<script>
@@ -121,22 +57,25 @@
 		});
 	</script>
 	<!-- ============================================ 가격 계산 ============================================ -->
+	
 </head>
  
-<body>
+<body data-context="${pageContext.request.contextPath}">
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 
-	<section class="content inbound-detail">
+	<section class="content inbound-detail" data-app-root="1">
 		<!-- 헤더 / 액션 -->
 		<div class="d-flex justify-content-between align-items-center mb-3">
 			<div>
 				<h1 class="card-title">입고 상세</h1>
 			</div>
 			<div class="page-actions">
-				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
 				<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
-				<button id="btnEdit" class="btn btn-primary btn-sm">검수</button>
-				<button id="btnConfirm" class="btn btn-primary btn-sm">입고확정</button>
+				<button id="btnAssignManager" class="btn btn-primary btn-sm">담당자지정</button>
+				<button id="btnAssignLocation" class="btn btn-primary btn-sm">입고위치지정</button>
+				<button id="btnEdit" class="btn btn-primary btn-sm" data-ibwait-idx="${inboundDetailData.ibwaitIdx}"
+						data-order-number="${inboundDetailData.orderNumber}">검수</button>
+				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
 			</div>
 		</div>
 		
@@ -153,55 +92,66 @@
 					<div class="kv-label">입고번호</div>
 					<div class="kv-value" style="display:flex; align-items:center; gap:.5rem;">
 				        <a id="inboundLink" class="inbound-link">
-							<c:out value="${sessionScope.inboundDetailData.ibwaitNumber}" default="-"/>
+							<c:out value="${inboundDetailData.ibwaitNumber}" default="-"/>
 				        </a>
 				    </div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고일자</div>
-					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.arrivalDate}" default="-"/></div>
+					<div class="kv-value"><c:out value="${inboundDetailData.arrivalDate}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">발주번호</div>
-					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.orderNumber}" default="-"/></div>
+					<div class="kv-value"><c:out value="${inboundDetailData.orderNumber}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고구분</div>
-					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.inboundClassification}" default="-"/></div>
+					<div class="kv-value"><c:out value="${inboundDetailData.inboundClassification}" default="-"/></div>
 				</div>
 
 				<div class="kv-item">
 					<div class="kv-label">공급업체</div>
-					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.supplierName}" default="-"/></div>
+					<div class="kv-value"><c:out value="${inboundDetailData.supplierName}" default="-"/></div>
 				</div>
+				
 				<div class="kv-item">
 					<div class="kv-label">담당자</div>
-					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.managerName}" default="담당자 미정"/></div>
+					<div class="kv-value">
+						<span id="fieldManagerName">
+							<c:out value="${inboundDetailData.managerName}" default="-"/>
+						</span>
+					</div>
 				</div>
+				
 				<div class="kv-item">
 					<div class="kv-label">발주번호(PO)</div>
-					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.orderNumber}" default="-"/></div>
+					<div class="kv-value"><c:out value="${inboundDetailData.orderNumber}" default="-"/></div>
 				</div>
+				
 				<div class="kv-item">
 					<div class="kv-label">입고위치</div>
-					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.inboundLocation}" default="-"/></div>
+					<div class="kv-value">
+						<span id="fieldInboundLocation">
+							<c:out value="${inboundDetailData.inboundLocation}" default="-"/>
+						</span>
+					</div>
 				</div>
 
 				<div class="kv-item">
 					<div class="kv-label">총 품목 수</div>
-					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.numberOfItems}" default="-"/></div>
+					<div class="kv-value"><c:out value="${inboundDetailData.numberOfItems}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">총 수량</div>
-					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.quantity}" default="-"/></div>
+					<div class="kv-value"><c:out value="${inboundDetailData.quantity}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">총 금액</div>
-					<div class="kv-value"><fmt:formatNumber value="${sessionScope.inboundDetailData.totalPrice}" pattern="₩ #,##0" /></div>
+					<div class="kv-value"><fmt:formatNumber value="${inboundDetailData.totalPrice}" pattern="₩ #,##0" /></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">비고</div>
-					<div class="kv-value"><c:out value="${sessionScope.inboundDetailData.note}" default="-"/></div>
+					<div class="kv-value"><c:out value="${inboundDetailData.note}" default="-"/></div>
 				</div>
 			</div>
 		</div>
@@ -256,8 +206,8 @@
 	<!-- ==============================================================================================================리스트 존========= -->
 					<tbody>
 					    <c:choose>
-					        <c:when test="${not empty sessionScope.ibProductDetail}">
-					            <c:forEach var="item" items="${sessionScope.ibProductDetail}" varStatus="vs">
+					        <c:when test="${not empty ibProductDetail}">
+					            <c:forEach var="item" items="${ibProductDetail}" varStatus="vs">
 					                <tr>
 					                    <!-- No. -->
 					                    <td>
@@ -315,7 +265,7 @@
 					</tbody>
 					
 					<c:set var="grandTotal" value="0" />
-					<c:forEach var="item" items="${sessionScope.ibProductDetail}">
+					<c:forEach var="item" items="${ibProductDetail}">
 					    <c:set var="grandTotal" value="${grandTotal + item.totalPrice}" />
 					</c:forEach>
 					
@@ -377,26 +327,12 @@
 			</div>
 		</div>
 	</section>
-
-	<script>
-		// 뒤로가기 버튼
-		document.getElementById("btnBack").addEventListener("click", function(e){
-			e.preventDefault();
-			history.back();
-		});
-
-		// 간단 UI: 인쇄, 편집(화살표만)
-		document.getElementById("btnPrint").addEventListener("click", function(e){
-			e.preventDefault(); window.print();
-		});
-		document.getElementById("btnConfirm").addEventListener("click", function(e){
-			e.preventDefault(); alert("입고확정 처리(모의)");
-		});
-		document.getElementById("btnEdit").addEventListener("click", function() {
-	        window.location.href = "/inbound/inboundInspection";
-	    });
-	</script>
-	
-
+	<jsp:include page="/WEB-INF/views/inbound/modal/modifyManager.jsp" />
+	<jsp:include page="/WEB-INF/views/inbound/modal/modifyLocation.jsp" />
+	<!-- ============================================================================================================ js 모음 -->
+	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/modify.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/inboundDetail.js"></script>
 </body>
+<link href="${pageContext.request.contextPath}/resources/css/inbound/modal/detailSmallModal.css" rel="stylesheet" />
 </html>

@@ -4,55 +4,65 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.inventory.mapper.InventoryDashboardMapper">
 	
-	<!-- 총 재고 수량 조회 -->
+	<!-- 현재 재고 KPI (총 재고 - (전날 출고 + 전날 출고폐기)) -->
+	<!-- 오늘 총 재고 -->
 	<select id="selectTotalStock" resultType="int">
-		SELECT IFNULL(SUM(quantity), 0) 
-    	FROM INVENTORY
+	    SELECT COALESCE(SUM(quantity), 0)
+	    FROM INVENTORY
 	</select>
 	
-	<!-- 금일 입고 건수 조회 -->
-	<select id="selectTodayInboundCount" resultType="int">
-	    SELECT COUNT(*)
-	    FROM RECEIPT_PRODUCT
-	    WHERE
-			DATE(received_at) = CURDATE()
+	<!-- 전날 출고 수량 -->
+	<select id="selectYesterdayOutbound" resultType="int">
+	    SELECT COALESCE(SUM(oi.quantity), 0)
+	    FROM OUTBOUND_ORDER_ITEM oi
+	    JOIN OUTBOUND_ORDER o 
+	      ON oi.outbound_order_idx = o.outbound_order_idx
+	    WHERE DATE(o.created_at) = CURDATE() - INTERVAL 1 DAY
 	</select>
 	
-	<!-- 금일 출고 건수 조회 -->
-	<select id="selectTodayOutboundCount" resultType="int">
-	    SELECT COUNT(*)
-	    FROM OUTBOUND_ORDER
-	    WHERE
-	    	DATE(created_at) = CURDATE()
+	<!-- 전날 출고 폐기 수량 -->
+	<select id="selectYesterdayOutboundDisposal" resultType="int">
+	    SELECT COALESCE(SUM(d.disposal_amount), 0)
+	    FROM DISPOSAL d
+	    WHERE d.section = 'OUTBOUND'
+	      AND DATE(d.created_at) = CURDATE() - INTERVAL 1 DAY
 	</select>
+	<!-- =========================================================== -->
 	
-	<!-- 로케이션 용적률 조회 -->
-    <select id="selectLocationUsage" resultType="map">
-	    SELECT 
-	        w.location_name,
-	        IFNULL(SUM(i.quantity), 0) AS used_qty,                             -- 현재 사용중 수량
-	        w.volume,                                                           -- 로케이션 총 용량
-	        ROUND((IFNULL(SUM(i.quantity), 0) / w.volume) * 100, 1) AS usage_rate
-	    FROM WAREHOUSE_LOCATION w
-	    LEFT JOIN INVENTORY i 
-	      ON w.location_idx = i.location_idx
-	    GROUP BY w.location_idx, w.location_name, w.volume
-	</select>
-	
-	<!-- 카테고리별 재고 합계 조회 -->
-	<select id="selectCategoryStock" resultType="map">
-	    SELECT 
-	        c.common_code_name AS categoryName,   
-	        SUM(i.quantity) AS totalQuantity      
-	    FROM INVENTORY i
-	    JOIN PRODUCT p ON i.product_idx = p.product_idx
-	    JOIN COMMON_CODE c ON p.category_idx = c.common_code_idx
-	    WHERE
-			c.group_code = 'CATEGORY'
-	    GROUP BY c.common_code_name
-	    ORDER BY c.common_code_name
-	</select>
-	
+	<!-- 재고현황 (카테고리별/상품별) 조회 -->
+    <select id="selectInventoryDashData" resultType="TotalDashBoardDTO">
+        SELECT
+            c.common_code_name AS categoryName,
+            p.product_name AS productName,
+            i.quantity AS inventoryQTY
+        FROM INVENTORY i
+        LEFT JOIN PRODUCT p 
+            ON i.product_idx = p.product_idx
+        LEFT JOIN COMMON_CODE c 
+            ON p.category_idx = c.common_code_idx
+        ORDER BY inventoryQTY
+    </select>
+
+    <!-- 로케이션 용적률 조회 -->
+    <select id="selectLocationDashData" resultType="TotalDashBoardDTO">
+        SELECT 
+            l.location_idx,
+            l.rack,
+            l.bay,
+            l.level_position AS levelPosition,
+            l.location_type AS locationType,
+            l.volume AS locationVolume,
+            SUM(i.quantity) AS inventoryQTY,
+            p.product_name AS productName,
+            p.product_volume AS productVolume
+        FROM WAREHOUSE_LOCATION l
+        LEFT JOIN INVENTORY i 
+            ON l.location_idx = i.location_idx
+        LEFT JOIN PRODUCT p 
+            ON p.product_idx = i.product_idx
+        GROUP BY l.location_idx, l.rack, l.bay, l.level_position, l.location_type, l.volume, p.product_name, p.product_volume
+    </select>
+    
 </mapper>
 
 

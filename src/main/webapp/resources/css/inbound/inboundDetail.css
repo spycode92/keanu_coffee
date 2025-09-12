@@ -1,0 +1,65 @@
+.inbound-detail {
+	font-variant-numeric: tabular-nums;
+}
+
+.inbound-detail .card { padding: 1rem; }
+.inbound-detail .card-header { margin-bottom: .75rem; padding-bottom: .5rem; }
+.inbound-detail .card-title { margin: 0; }
+
+.inbound-detail .kv-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(160px, 1fr));
+	gap: .5rem 1rem;
+	align-items: center;
+}
+.inbound-detail .kv-item { min-width: 0; }
+.inbound-detail .kv-label { font-size: .9rem; color: var(--muted-foreground); margin-bottom: .25rem; }
+.inbound-detail .kv-value { padding: .45rem .6rem; background: var(--input-background); border: 1px solid var(--border); border-radius: var(--radius); }
+
+.inbound-detail .page-actions { display:flex; gap:.5rem; align-items:center; }
+
+.inbound-detail .timeline {
+	display:flex;
+	gap:1rem;
+	align-items:center;
+	padding: .5rem 0;
+}
+.inbound-detail .timeline-step {
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	gap:.25rem;
+	text-align:center;
+	min-width:90px;
+}
+.inbound-detail .timeline-dot {
+	width:18px;
+	height:18px;
+	border-radius:50%;
+	background:var(--muted);
+	border:2px solid var(--border);
+}
+.inbound-detail .timeline-step.active .timeline-dot { background:var(--primary); border-color:var(--primary); }
+
+.inbound-detail #itemsTable { table-layout: fixed; width:100%; }
+.inbound-detail .table th, .inbound-detail .table td { padding: .55rem .6rem; vertical-align: middle; }
+.inbound-detail .table thead th { background: var(--accent); color: var(--foreground); position: sticky; top:0; z-index:1; }
+.inbound-detail .table .right { text-align:right; }
+
+.inbound-detail .attachments { display:flex; flex-direction:column; gap:.4rem; }
+.inbound-detail .attachment-item { padding:.5rem; background:var(--card); border:1px solid var(--border); border-radius:.375rem; }
+
+@media (max-width: 980px) {
+	.inbound-detail .kv-grid { grid-template-columns: 1fr 1fr; }
+	.inbound-detail .timeline { flex-wrap:wrap; justify-content:flex-start; }
+}
+
+/* No 열 고정폭 (두 자리 숫자 기준) */
+.inbound-detail #itemsTable th:first-child,
+.inbound-detail #itemsTable td:first-child {
+  width: 4ch;              /* '00' + 약간의 여유 */
+  text-align: center;      /* 숫자 가운데 정렬 */
+  padding-left: .25rem;    /* 기존 .6rem보다 좁게 */
+  padding-right: .25rem;   /* 좌우 패딩 줄여서 폭 절약 */
+  white-space: nowrap;     /* 줄바꿈 방지 */
+}

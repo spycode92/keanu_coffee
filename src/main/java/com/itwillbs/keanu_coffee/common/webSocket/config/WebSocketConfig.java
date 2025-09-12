@@ -21,6 +21,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
 		registry.enableSimpleBroker("/topic"); // 메세지 브로커가 "/topic/**" 로 발생된 메세지를 구독자에게 전달
+		
 		registry.setApplicationDestinationPrefixes("/app"); // 클라이언트가 "/app/**" 으로 보낸 메세지를 @MessagingMapping 어노테이션으로 라우팅
 	}
 }

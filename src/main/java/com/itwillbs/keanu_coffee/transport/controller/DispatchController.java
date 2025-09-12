@@ -102,13 +102,11 @@ public class DispatchController {
 	// 기사 마이페이지 배차 상세 정보
 	@GetMapping("/mypage/dispatch/detail/{dispatchIdx}/{vehicleIdx}")
 	public ResponseEntity<DispatchDetailDTO> getMyDispatchInfo(@PathVariable Integer dispatchIdx, @PathVariable Integer vehicleIdx) {
-		DispatchDetailDTO dispatchInfo = dispatchService.selectMyDispatchInfo(dispatchIdx, vehicleIdx);
+		// 배정된 기사의 상태
+		String dispatchStatus = dispatchService.selectDispatchAssignment(dispatchIdx, vehicleIdx);
 		
-		if (dispatchInfo == null) {
-			return ResponseEntity.notFound().build();
-		}
-		
-		if (dispatchInfo.getStatus().equals("예약") || dispatchInfo.getStatus().equals("취소")) {
+		if (dispatchStatus.equals("예약") || dispatchStatus.equals("취소")) {
+			DispatchDetailDTO dispatchInfo = dispatchService.selectMyDispatchInfo(dispatchIdx, vehicleIdx);
 			return ResponseEntity.ok(dispatchInfo);
 		} else {
 			DispatchDetailDTO detail = dispatchService.selectDispatchDetail(dispatchIdx, vehicleIdx);
