@@ -63,7 +63,7 @@ public class WarehouseSlottingLogicController {
 	
 	
 	
-	List<AvailableWarehouseSpaceDTO> openLocationsInPickingZone = wslService.getOpenLocationFromPickingZone();
+//	List<AvailableWarehouseSpaceDTO> openLocationsInPickingZone = wslService.getOpenLocationFromPickingZone();
 	
 	
 //	@GetMapping("locationForItemsInPurchaseOrder")
