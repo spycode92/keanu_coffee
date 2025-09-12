@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.outbound.mapper.OrderMapper">
+
+	<!-- OUTBOUND_ORDER -->
+	<insert id="insertOutboundOrder"
+			parameterType="com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderDTO"
+			useGeneratedKeys="true" keyProperty="outboundOrderIdx">
+		INSERT INTO OUTBOUND_ORDER
+		( franchise_idx
+		, status
+		, urgent
+		, requested_date
+		, expect_outbound_date
+		, created_at
+		, updated_at
+		)
+		VALUES
+		( #{franchiseIdx}
+		, #{status}
+		, #{urgent}
+		, NOW()
+		, DATE_ADD(NOW(), INTERVAL 2 DAY)
+		, NOW()
+		, NOW()
+		)
+	</insert>
+
+	<!-- (기존) OUTBOUND_ORDER_ITEM 단건 -->
+	<insert id="insertOutboundOrderItem"
+			parameterType="com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderItemDTO"
+			useGeneratedKeys="true" keyProperty="outboundOrderItemIdx">
+		INSERT INTO OUTBOUND_ORDER_ITEM
+		( outbound_order_idx
+		, product_idx
+		, receipt_product_idx
+		, quantity
+		)
+		VALUES
+		( #{outboundOrderIdx}
+		, #{productIdx}
+		, NULL
+		, #{quantity}
+		)
+	</insert>
+
+	<!-- FEFO(유통기한 오름차순) 자동 배분 INSERT -->
+	<insert id="insertOutboundItemsFefo" parameterType="map">
+		/* FEFO 기반 로트별 가용수량에서 필요한 수량 만큼 분할 INSERT (MySQL 8+) */
+		INSERT INTO OUTBOUND_ORDER_ITEM
+		( outbound_order_idx
+		, product_idx
+		, receipt_product_idx
+		, quantity
+		)
+		WITH lot AS (
+			SELECT
+				rp.receipt_product_idx										AS rp_idx,
+				CAST(rp.receipt_product_idx AS CHAR)							AS rp_idx_vc,
+				rp.expiration_date											AS exp_date,
+				SUM(inv.quantity)											AS available_qty
+			FROM INVENTORY inv
+			JOIN RECEIPT_PRODUCT rp
+				ON rp.receipt_product_idx = inv.receipt_product_idx
+			WHERE inv.product_idx = #{productIdx}
+			  AND inv.quantity > 0
+			GROUP BY rp.receipt_product_idx, rp.expiration_date
+		),
+		lot_cum AS (
+			SELECT
+				rp_idx,
+				rp_idx_vc,
+				exp_date,
+				available_qty,
+				COALESCE(
+					SUM(available_qty) OVER (
+						ORDER BY (exp_date IS NULL), exp_date, rp_idx
+						ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING
+					),
+					0
+				) AS cum_before
+			FROM lot
+		),
+		alloc AS (
+			SELECT
+				rp_idx_vc													AS receipt_product_idx,
+				LEAST(
+					available_qty,
+					GREATEST(0, #{requiredQty} - cum_before)
+				)															AS alloc_qty
+			FROM lot_cum
+			WHERE GREATEST(0, #{requiredQty} - cum_before) > 0
+		)
+		SELECT
+			#{outboundOrderIdx}												AS outbound_order_idx,
+			#{productIdx}													AS product_idx,
+			a.receipt_product_idx											AS receipt_product_idx,
+			a.alloc_qty														AS quantity
+		FROM alloc a
+		WHERE a.alloc_qty > 0
+	</insert>
+
+	<!-- OUTBOUND_WAITING -->
+	<insert id="insertOutboundWaiting"
+			parameterType="com.itwillbs.keanu_coffee.outbound.dto.OutboundWaitingDTO"
+			useGeneratedKeys="true" keyProperty="obwaitIdx">
+		INSERT INTO OUTBOUND_WAITING
+		( obwait_number
+		, outbound_order_idx
+		, departure_date
+		, outbound_quantity
+		, outbound_classification
+		, manager
+		, outbound_location
+		, note
+		, created_at
+		, updated_at
+		)
+		VALUES
+		( #{obwaitNumber}
+		, #{outboundOrderIdx}
+		, DATE_ADD(NOW(), INTERVAL 2 DAY)
+		, #{outboundQuantity}
+		, #{outboundClassification}
+		, #{manager}
+		, #{outboundLocation}
+		, #{note}
+		, NOW()
+		, NOW()
+		)
+	</insert>
+
+	<!-- Advisory Lock -->
+	<select id="getLock" resultType="int">
+		SELECT GET_LOCK(#{lockName}, #{timeout})
+	</select>
+
+	<select id="releaseLock" resultType="int">
+		SELECT RELEASE_LOCK(#{lockName})
+	</select>
+
+	<select id="selectMaxSuffixForDate" resultType="int">
+		SELECT COALESCE(
+			MAX(CAST(SUBSTRING(obwait_number, 12) AS UNSIGNED))
+		, 0)
+		FROM OUTBOUND_WAITING
+		WHERE obwait_number LIKE CONCAT('OB', #{dateStr}, '-%')
+	</select>
+
+</mapper>
