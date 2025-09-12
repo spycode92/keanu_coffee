@@ -301,7 +301,7 @@
 			</sec:authorize>
 			<sec:authorize access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')">
 			<li>
-				<a href="/outbound"><span>출고 관리</span></a>
+				<a href="/outbound/main"><span>출고 관리</span></a>
 				<ul class="submenu">
 			        <li><a href="/outbound/main">대시보드</a></li>
 			        <li><a href="/outbound/outboundManagement">출고조회</a></li>

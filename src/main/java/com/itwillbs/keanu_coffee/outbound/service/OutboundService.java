@@ -38,5 +38,34 @@ public class OutboundService {
     // 출고 품목 리스트 조회
     public List<OutboundProductDetailDTO> getOutboundProductDetail(Long outboundOrderIdx) {
     	return outboundMapper.selectOutboundProductDetail(outboundOrderIdx);
-    };;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // 출고 상태 변경(대기 -> 출고준비)
+    @Transactional
+	public int updateStatusReady(List<Long> orderIdxList) {
+		if(orderIdxList == null || orderIdxList.isEmpty()) {
+			return 0;
+		}
+		return outboundMapper.updateStatusReady(orderIdxList);
+	}
+    
+    // 출고 상태 변경(출고준비 -> 배차대기)
+    @Transactional
+	public int updateStatusDispatchWait(String obwaitNumber, Long outboundOrderIdx) {
+//		if(obwaitNumber == null || obwaitNumber.isBlank() || outboundOrderIdx == null) {
+//			return 0;
+//		}
+		return outboundMapper.updateStatusDispatchWait(obwaitNumber.trim(), outboundOrderIdx);
+	}
 }
