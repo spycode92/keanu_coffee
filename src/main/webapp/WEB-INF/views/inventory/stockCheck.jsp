@@ -291,7 +291,7 @@
 						    <td class="status-cell" data-exp="${item.expiration_date}"></td>
 						    <td>
 							    <c:choose>
-							        <c:when test="${item.stockStatus eq 'EXPIRED' or item.stockStatus eq 'DISPOSED'}">
+							        <c:when test="${item.outbound_status eq '불가능'}">
 							            <span class="ship-badge ship-no">불가능</span>
 							        </c:when>
 							        <c:otherwise>

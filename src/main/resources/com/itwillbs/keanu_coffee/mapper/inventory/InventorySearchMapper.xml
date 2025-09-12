@@ -114,7 +114,12 @@
 	            WHEN r.expiration_date &lt; NOW() THEN 'EXPIRED'
 	            WHEN DATEDIFF(r.expiration_date, NOW()) BETWEEN 0 AND 7 THEN 'WARN'
 	            ELSE 'OK'
-	        END AS stockStatus
+	        END AS stockStatus,
+	        CASE
+			    WHEN r.expiration_date &lt; NOW() THEN '불가능'   -- 만료
+			    WHEN i.quantity = 0 THEN '불가능'                 -- 폐기(재고 0)
+			    ELSE '가능'
+			END AS outbound_status
 	    FROM INVENTORY i
 	    JOIN RECEIPT_PRODUCT r 
 	        ON i.receipt_product_idx = r.receipt_product_idx
@@ -143,7 +148,7 @@
 	            AND r.expiration_date = #{expDate}
 	        </if>
 	
-	        <!-- 재고 상태 필터 (영문 코드 기준) -->
+	        <!-- 재고 상태 필터 -->
 	        <if test="stockStatus != null and stockStatus != '' and stockStatus != '전체'">
 	            <choose>
 	                <when test="stockStatus == 'EXPIRED'">
@@ -179,7 +184,7 @@
 	        </if>
 	    </where>
 	
-	    <!-- ✅ 정렬 조건 -->
+	    <!-- 정렬 조건 -->
 	    <choose>
 	        <when test="sortOption == 'manufactureAsc'">
 	            ORDER BY r.manufacture_date ASC
