@@ -46,4 +46,7 @@ public interface VehicleMapper {
 
 	// 차량 상태 업데이트(DispatchRegisterRequestDTO)
 	void updateVehicleStatus(DispatchRegisterRequestDTO request);
+
+	// 기사 idx 가져오기
+	List<Integer> selectEmpIds(List<Integer> vehicleIds);
 }

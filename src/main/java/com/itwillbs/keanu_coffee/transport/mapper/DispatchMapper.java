@@ -34,11 +34,8 @@ public interface DispatchMapper {
 	void insertDispatchOrderMap(@Param("outboundOrderIdx") Integer outboundOrderIdx,
 			@Param("dispatchIdx") Integer dispatchIdx);
 
-	// 출고 주문 테이블 상태 변경
-	void updateOutboundOrderStatus(@Param("outboundOrderIdx") Integer outboundOrderIdx, @Param("status") String status);
-
 	// 출고Idx로 배차idx 조회
-	Integer selectByorderIdList(Integer outboundOrderIdx);
+	List<Integer> selectByorderIdList(Integer outboundOrderIdx);
 
 	// 배차 상태 취소로 변경
 	void updateDispatchStatus(@Param("dispatchIdx") Integer dispatchIdx, @Param("status") String status);
@@ -97,14 +94,21 @@ public interface DispatchMapper {
 	// 배정된 기사의 상태
 	String selectDispatchAssignment(@Param("dispatchIdx") Integer dispatchIdx, @Param("vehicleIdx") Integer vehicleIdx);
 
-	// 배차에 배정된 차량 목록 조회
-	List<Integer> selectAllVehicleIdx(Integer dispatchIdx);
-
 	// 배차idx로 Assignment 상태 변경
 	void updateAssigmentStatusByDispatchIdx(@Param("dispatchIdx") Integer dispatchIdx, @Param("status") String status);
 
 	// 배차 매핑 테이블 삭제
 	void deleteMapping(Integer dispatchIdx);
+	
+	// 배차에 배정된 차량 목록 조회
+	List<Integer> selectAllVehicleIdx(Integer dispatchIdx);
 
+	// 출고 idx 조회
+	List<Integer> selectOutboundOrderIdx(Integer dispatchIdx);
 
+	// 출고 주문 테이블 상태 변경
+	void updateOutboundOrderStatus(@Param("outboundOrderIdx") Integer outboundOrderIdx, @Param("status") String status);
+	
+	// 출고 대기 시간 변경
+	void updateOutboundWaiting(Integer outboundOrderIdx);
 }
