@@ -23,7 +23,7 @@ public class InventoryController {
 	}
 
 	// 재고현황 페이지 - 대시보드
-	@GetMapping("")
+	@GetMapping("/main")
 	public String inventoryDashboard() {
 		return "inventory/inventoryDashboard";
 	}

@@ -315,7 +315,7 @@
 			</sec:authorize>
 			<sec:authorize access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')">
 			<li>
-				<a href="/inventory"><span>재고 현황</span></a>
+				<a href="/inventory/main"><span>재고 현황</span></a>
 			    <ul class="submenu">
 			        <li><a href="/inventory/stockCheck">재고 조회/검수</a></li>
 			        <li><a href="/inventory/productHistory">제품 위치 기록</a></li>
@@ -327,7 +327,6 @@
 
               <li><a href="/inventory/qrScanner">QR 스캐너</a></li>
               <li><a href="/inventory/locationType">로케이션 지정</a></li>
-              <li><a href="/inventory/stockCheck">재고 조회/검수</a></li>
 			  </ul>
 			</li>
 			</sec:authorize>
