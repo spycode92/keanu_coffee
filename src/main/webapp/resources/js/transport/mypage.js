@@ -246,7 +246,6 @@ $(document).on("click", ".detail-btn", function() {
 	// 화면 구현
 	$.getJSON(`${MYPAGE_DISPATCH_DETAIL_URL}/${dispatchIdx}/${vehicleIdx}`)
 		.done(function(dispatch) {
-			console.log(dispatch);
 			$("#progMeta").text("배차일 " + formatDate(dispatch.dispatchDate));
 			requiresAdditional = dispatch.requiresAdditional;
 			let detailHtml = "";
@@ -272,7 +271,6 @@ $(document).on("click", ".detail-btn", function() {
 								receiverName: dispatch.franchiseManagerName,
 								items: []
 							};
-							console.log("stop", stop);
 							detailHtml += `
 							<tr data-confirmation-item-idx="${item.confirmationItemIdx}">
 								${index === 0 ? `<td rowspan="${items.length}">${stop.franchiseName}</td>` : ""}
