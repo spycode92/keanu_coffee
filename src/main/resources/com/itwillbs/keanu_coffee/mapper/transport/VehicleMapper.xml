@@ -207,6 +207,20 @@
 		AND 
 			vehicle_idx != #{vehicleIdx}
 	</select>
+	
+	<!-- 기사 idx 가져오기 -->
+	<select id="selectEmpIds" resultType="int">
+		SELECT
+			emp_idx
+		FROM	
+			VEHICLE
+		WHERE 
+			vehicle_idx
+		IN
+			<foreach collection="list" item="vehicleIdx" open="(" separator="," close=")">
+				#{vehicleIdx}
+			</foreach>
+	</select>
 </mapper>
 
 
