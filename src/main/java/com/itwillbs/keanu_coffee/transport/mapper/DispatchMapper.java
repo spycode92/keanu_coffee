@@ -111,4 +111,7 @@ public interface DispatchMapper {
 	
 	// 출고 대기 시간 변경
 	void updateOutboundWaiting(Integer outboundOrderIdx);
+
+	// 적재 상태 확인
+	String selectOutboundOrderStatus(Integer outboundOrderIdx);
 }

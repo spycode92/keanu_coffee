@@ -650,4 +650,14 @@
 		WHERE
 			outbound_order_idx = #{outboundOrderIdx}
 	</update>
+	
+	<!-- 출고 테이블 상태 확인 -->
+	<select id="selectOutboundOrderStatus" resultType="string">
+		SELECT
+			status
+		FROM
+			OUTBOUND_ORDER
+		WHERE
+			outbound_order_idx = #{outboundOrderIdx}
+	</select>
 </mapper>

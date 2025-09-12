@@ -201,6 +201,12 @@ public class DispatchService {
 		
 		// 선택한 지점별 처리
 		for (DispatchCompleteRequest.StopComplete stopReq: request.getStops()) {
+			String currentStatus = dispatchMapper.selectOutboundOrderStatus(stopReq.getOutboundOrderIdx());
+			
+			if ("적재완료".equals(currentStatus)) {
+				throw new IllegalStateException("이미 적재 완료된 주문입니다. 주문번호: " + stopReq.getOutboundOrderIdx());
+			}
+			
 			dispatchMapper.updateOutboundOrderStatus(stopReq.getOutboundOrderIdx(), "적재완료");
 			
 			// 경로 조회
