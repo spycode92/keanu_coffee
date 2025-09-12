@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.inventory.mapper.WarehouseSlottingLogicMapper">
+	
+	<select id="selectOpenLocationFromPickingZone" resultType="com.itwillbs.keanu_coffee.inventory.dto.AvailableWarehouseSpaceDTO">
+		SELECT
+		   wl.location_idx, 
+		   wl.location_name, 
+		   wl.rack, 
+		   wl.bay, 
+		   wl.level_position,
+		   (SELECT i.product_idx
+	        FROM INVENTORY i
+	        WHERE wl.location_idx = i.location_idx
+	        LIMIT 1 ) AS productIdx1,
+	        (SELECT i.product_idx
+	        FROM INVENTORY i
+	        WHERE wl.location_idx = i.location_idx
+	        LIMIT 1 OFFSET 1) AS productIdx2,
+	        (SELECT i.product_idx
+	        FROM INVENTORY i
+	        WHERE wl.location_idx = i.location_idx
+	        LIMIT 1 OFFSET 2) AS productIdx3,
+		   wl.volume AS total_volume,
+	       COALESCE(used.used_volume, 0) AS used_volume,
+	       wl.volume - COALESCE(used.used_volume, 0) AS available_volume,
+	       ROUND((wl.volume - COALESCE(used.used_volume, 0)) / wl.volume * 100, 2) AS available_percent
+		FROM 
+			WAREHOUSE_LOCATION wl
+		LEFT JOIN (
+		    SELECT i.location_idx,
+		           SUM(
+		               CASE
+		                   WHEN p.product_volume = 3 THEN 17850 * i.quantity
+		                   WHEN p.product_volume = 4 THEN 17850 * i.quantity
+		                   WHEN p.product_volume = 5 THEN 24108 * i.quantity
+		                   WHEN p.product_volume = 6 THEN 60384 * i.quantity
+		                   ELSE 0
+		               END
+		           ) AS used_volume
+		    FROM 
+		    	INVENTORY i
+		    JOIN 
+		    	PRODUCT p 
+		    ON i.product_idx = p.product_idx
+		    GROUP BY i.location_idx
+		) used 
+		ON wl.location_idx = used.location_idx
+		WHERE (wl.volume - COALESCE(used.used_volume, 0)) / wl.volume >= 0.1
+		AND wl.location_type = 2
+		
+	
+	</select>
+	
+	<select id="selectOpenLocationFromPalletZone" resultType="com.itwillbs.keanu_coffee.inventory.dto.AvailableWarehouseSpaceDTO">
+		SELECT
+		   wl.location_idx, 
+		   wl.location_name, 
+		   wl.rack, 
+		   wl.bay, 
+		   wl.level_position,
+		   (SELECT i.product_idx
+	        FROM INVENTORY i
+	        WHERE wl.location_idx = i.location_idx
+	        LIMIT 1 ) AS productIdx1,
+	        (SELECT i.product_idx
+	        FROM INVENTORY i
+	        WHERE wl.location_idx = i.location_idx
+	        LIMIT 1 OFFSET 1) AS productIdx2,
+	        (SELECT i.product_idx
+	        FROM INVENTORY i
+	        WHERE wl.location_idx = i.location_idx
+	        LIMIT 1 OFFSET 2) AS productIdx3,
+		   wl.volume AS total_volume,
+	       COALESCE(used.used_volume, 0) AS used_volume,
+	       wl.volume - COALESCE(used.used_volume, 0) AS available_volume,
+	       ROUND((wl.volume - COALESCE(used.used_volume, 0)) / wl.volume * 100, 2) AS available_percent
+		FROM 
+			WAREHOUSE_LOCATION wl
+		LEFT JOIN (
+		    SELECT i.location_idx,
+		           SUM(
+		               CASE
+		                   WHEN p.product_volume = 3 THEN 17850 * i.quantity
+		                   WHEN p.product_volume = 4 THEN 17850 * i.quantity
+		                   WHEN p.product_volume = 5 THEN 24108 * i.quantity
+		                   WHEN p.product_volume = 6 THEN 60384 * i.quantity
+		                   ELSE 0
+		               END
+		           ) AS used_volume
+		    FROM 
+		    	INVENTORY i
+		    JOIN 
+		    	PRODUCT p 
+		    ON i.product_idx = p.product_idx
+		    GROUP BY i.location_idx
+		) used 
+		ON wl.location_idx = used.location_idx
+		WHERE (wl.volume - COALESCE(used.used_volume, 0)) / wl.volume >= 0.1
+		AND wl.location_type = 1
+		
+	
+	</select>
+	<select id="selectInboundProductThatNeedLocation">
+		
+		
+		
+	
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

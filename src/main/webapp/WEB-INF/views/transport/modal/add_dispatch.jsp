@@ -9,7 +9,7 @@
                 <strong id="assignTitle">배차 등록/수정</strong>
                 <button class="modal-close-btn" >✕</button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="overflow: auto; height: 500px;	">
                 <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px;">
                     <!-- 좌: 대기/추가 필요 리스트 -->
                     <div>

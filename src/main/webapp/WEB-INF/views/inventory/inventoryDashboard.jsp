@@ -5,96 +5,87 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>재고현황 대시보드</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<title>재고현황</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
-<style>
-	/* !!! 추가: 대시보드 폭 고정용 래퍼 */
-	.dash-wrap {
-		padding: 20px;
-	}
-	
-	.dash-inner {
-		max-width: 1200px;   /* 필요시 1280~1360px로 조정 */
-		margin: 0 auto;
-		width: 100%;
-	}
-	
-	.dashboard-container {
-	    display: grid;
-	    grid-template-columns: repeat(3, minmax(0, 1fr)); /* !!! 변경: minmax로 폭 안정화 */
-	    gap: 20px;
-	    /* margin: 20px; → !!! 변경: 바깥 여백은 dash-wrap에 위임 */
-	}
-	
-	/* !!! 추가: 제목 바 전체 폭 차지 */
-	.page-bar {
-	    grid-column: 1 / -1;
-	    display: flex;
-	    align-items: center;
-	    justify-content: space-between;
-	    margin: 0 0 6px 0;
-	}
-	
-	.page-bar h2 {
-	    margin: 0;
-	}
-	
-	.card {
-	    border: 1px solid #ccc;
-	    border-radius: 10px;
-	    padding: 20px;
-	    box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-	    background: rgba(255,255,255,0.18); /* !!! 추가: 가이드 톤 반투명 */
-	    backdrop-filter: blur(2px);          /* !!! 추가: 유리 느낌 */
-	}
-	
-	.card h3 {
-		margin-bottom: 10px;
-	}
-	
-	table {
-		width: 100%;
-		border-collapse: collapse;
-		margin-top: 10px;
-	}
-	
-	th, td {
-		border: 1px solid #ddd;
-		padding: 8px;
-		text-align: center;
-	}
-	
-	th {
-		background-color: #f8f8f8;
-	}
-	
-	canvas {
-		max-width: 100%;
-	}
 
-	.refresh-btn {
-	    border: none; background: none; cursor: pointer;
-	    font-size: 20px; color: #4e73df; padding: 4px;
-	    transition: transform 0.2s ease;
-	}
-	.refresh-btn:hover { 
-		transform: rotate(90deg);
-	}
-	
-	/* !!! 추가: KPI 카드 높이 통일 */
-	.kpi { min-height: 220px; }
-	
-	/* !!! 추가: 반응형 그리드 */
-	@media (max-width: 1024px) {
-		.dashboard-container { grid-template-columns: repeat(2, minmax(0,1fr)); }
+<!-- Chart.js & 플러그인 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+<!-- D3.js -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+	.card-title {
+	    font-size: 1.3rem;
+	    font-weight: bold;
+	    margin-bottom: 5px;
 	}
 	
-	@media (max-width: 640px) {
-		.dashboard-container { grid-template-columns: 1fr; }
+	.chart-card hr {
+	    border: none;
+	    border-bottom: 2px solid #666;
+	    margin-bottom: 15px;
 	}
+    .chart-card {
+        flex: 1 1 300px;
+        min-width: 280px;
+        width: 100%;
+        background-color: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem;
+        color: var(--card-foreground);
+        box-sizing: border-box;
+    }
+    .chart-wrapper {
+        width: 100%;
+        max-width: 40%;
+        height: 400px;
+        position: relative;
+    }
+    .chart-wrapper canvas {
+        width: 100% !important;
+        height: 100% !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    @media (max-width: 768px) {
+        .dashboard-charts { flex-direction: column; }
+        .chart-card { max-width: 100%; min-width: auto; }
+        #heatmap-container { flex-direction: column; }
+    }
+	#pallet_heatmap, #picking_heatmap {
+	    width: 100%;
+	    overflow-x: auto;       /* 가로 스크롤 가능 */
+	    overflow-y: hidden;     /* 세로 스크롤 막기 */
+	    white-space: nowrap;    /* 줄바꿈 방지 */
+	    padding: 10px;
+	    background: #fff;
+	    border-radius: 6px;
+	    box-sizing: border-box;
+	}
+	.heatmap-scroll {
+	    width: 100%;
+	    overflow-x: auto;   /* 가로 스크롤 */
+	    overflow-y: hidden;
+	    white-space: nowrap; /* 줄바꿈 방지 */
+	    padding: 10px;
+	    background: #fff;
+	    border-radius: 6px;
+	    box-sizing: border-box;
+	}
+	/* Pallet Zone / Picking Zone 제목 스타일 */
+	.heatmap-title {
+	    font-size: 20px;       /* 글자 크기 키움 (기본 16px → 20px) */
+	    font-weight: bold;     /* 굵게 */
+	    margin: 8px 0;         /* 위아래 여백 */
+	    color: #333;           /* 글자색 진하게 */
+	}	
 </style>
 </head>
 <body>
@@ -102,154 +93,81 @@
 	<!-- 상단/사이드 레이아웃 -->
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	
-	<!-- !!! 추가: 폭 고정 래퍼 -->
-	<main class="dash-wrap">
-	<div class="dash-inner">
-	
-		<!-- 제목: 그래프/대시보드 바로 위 -->
-		<div class="dashboard-container">
-			<!-- [추가] 대시보드 상단 제목 바 (그래프/카드 '위') -->
-			<div class="page-bar">
-				<h2>재고현황 대시보드</h2>
-				<button id="refreshBtn" class="refresh-btn" title="새로고침">&#x21bb;</button>
+	<!-- 메인 내용 -->
+    <section class="content">
+        <div class="card">
+        	<h1 align="center">재고현황 - 대시보드</h1>
+        
+        	<!-- KPI 카드 -->
+        	<div class="chart-card">
+	        	<h3 class="card-title" align="center">현재 재고</h3>
+				<hr>
+				<div class="dashboard-kpi" style="display: flex; justify-content: center; margin-bottom: 20px;">
+				    <div class="kpi-card" style="flex:1; text-align:center; padding:20px; background:#f8f9fa; border-radius:8px;">
+				        <div id="kpi-value" class="kpi-value" style="font-size:2rem; font-weight:bold;">--</div>
+<!-- 				        <div class="kpi-label" style="font-size:1rem; color:#666;">현재 재고</div> -->
+				        <div id="kpi-change" class="kpi-change" style="font-size:0.9rem; margin-top:8px;">--</div>
+				    </div>
+				</div>
 			</div>
-	
-		    <!-- 총 재고 수량 -->
-		    <div class="card">
-			    <h3>총 재고 수량</h3>
-			    <p id="totalStock" style="font-size: 28px; font-weight: bold;">0개</p>
-			</div>
-	
-		    <!-- 입고/출고 현황 -->
-		    <div class="card">
-			    <h3>입고/출고 현황</h3>
-			    <p>금일 입고: <strong id="todayInbound">0건</strong></p>
-			    <p>금일 출고: <strong id="todayOutbound">0건</strong></p>
-			</div>
-	
-		    <!-- 로케이션 용적률 -->
-			<div class="card" style="height: 200px;">
-			    <h3>로케이션 용적률</h3>
-			    <canvas id="locationChart" style="width:100%; height:120px;"></canvas>
-			</div>
-	
-		    <!-- 카테고리별 재고 현황 -->
-		    <div class="card" style="grid-column: 1 / -1;">
-		        <h3>카테고리별 재고 현황</h3>
-		        <canvas id="stockChart" style="width: 100%; height: 260px;"></canvas> <!-- [변경] 조금 더 키움 -->
-		    </div>
-		</div>
-	</div>
-	</main>
-	
-	<script>
-		// ================ 총 재고 수량 불러오기 ================
-		function loadTotalStock() {
-		    $.getJSON('${pageContext.request.contextPath}/inventory/api/total-stock', function(data) {
-		        $('#totalStock').text(data.totalStock + '개');
-		    });
-		}
-	
-		// 페이지 로딩 시 실행
-		$(document).ready(function() {
-		    loadTotalStock();
-		})
-		
-		// ================ 금일 입고/출고 현황 불러오기 ================
-		function loadTodayInOut() {
-		    $.getJSON('${pageContext.request.contextPath}/inventory/api/today-inout', function(data) {
-		        $('#todayInbound').text(data.inbound + '건');
-		        $('#todayOutbound').text(data.outbound + '건');
-		    });
-		}
+	        
+	        <br>
+	        
+            <div class="dashboard-charts">
+                <!-- 📌 재고현황 -->
+				<div class="chart-card">
+				    <h3 class="card-title" align="center">카테고리별 재고 현황</h3>
+				    <hr> <!-- 제목 밑에 선 -->
+				
+				    <div style="display: flex; gap: 20px;">
+				        <div class="chart-wrapper">
+				            <canvas id="inventory_chart"></canvas>
+				        </div>
+				        <div class="chart-wrapper">
+				            <canvas id="inventory_detail_chart"></canvas>
+				        </div>
+				    </div>
+				</div>
 
-		$(document).ready(function() {
-		    loadTodayInOut();
-		});
-		
-		// ================ 로케이션 용적률 ================
-	    function loadLocationUsage() {
-		    $.getJSON('${pageContext.request.contextPath}/inventory/api/location-usage', function(data) {
-		        console.log(data); // 확인용
-		
-		        const labels = data.map(item => item.location_name); // ✅ 로케이션명
-		        const values = data.map(item => item.usage_rate);    // ✅ 용적률(%)
-		
-		        const ctx = document.getElementById('locationChart').getContext('2d');
-		        new Chart(ctx, {
-		            type: 'bar',
-		            data: {
-		                labels: labels,
-		                datasets: [{
-		                    label: '용적률 (%)',
-		                    data: values,
-		                    backgroundColor: 'rgba(28, 200, 138, 1)'
-		                }]
-		            },
-		            options: {
-		                responsive: true,
-		                plugins: { legend: { display: false } },
-		                scales: { y: { beginAtZero: true, max: 100 } }
-		            }
-		        });
-		    });
-		}
-		
-		// 페이지 로드 시 실행
-		$(document).ready(function() {
-		    loadLocationUsage();
-		});
-			
-	    // ================ 카테고리별 재고 차트 (카테고리 기준) ================
-		const stockCtx = document.getElementById('stockChart').getContext('2d');
-		let stockChart;
-		
-		function loadCategoryStock() {
-		    $.getJSON('${pageContext.request.contextPath}/inventory/api/category-stock', function(data) {
-		        const labels = data.labels; // 카테고리 이름들 (예: 식품, 시럽, 소모품)
-		        const values = data.values; // 각 카테고리별 재고 수량
-		
-		        if (stockChart) {
-		            // 이미 차트가 있으면 데이터만 업데이트
-		            stockChart.data.labels = labels;
-		            stockChart.data.datasets[0].data = values;
-		            stockChart.update();
-		        } else {
-		            // 처음 로딩 시 차트 생성
-		            stockChart = new Chart(stockCtx, {
-		                type: 'bar',
-		                data: {
-		                    labels: labels,
-		                    datasets: [{
-		                        label: '카테고리별 재고 수량',
-		                        data: values,
-		                        backgroundColor: '#4e73df',
-		                        hoverBackgroundColor: 'rgba(200, 0, 200, 1)',
-		                        barPercentage: 0.5,       // ✅ 막대 두께 줄이기 (기본 0.9)
-		                        categoryPercentage: 0.6   // ✅ 카테고리별 간격 조정 (기본 0.8)
-		                    }]
-		                },
-		                options: {
-		                    responsive: true,
-		                    plugins: { legend: { display: false } },
-		                    scales: { y: { beginAtZero: true } }
-		                }
-		            });
-		        }
-		    });
-		}
-		
-		// 페이지 로드되면 자동 실행
-		$(document).ready(function() {
-		    loadCategoryStock();
-		});
-	
-	    // 새로고침 버튼 동작
-	    $('#refreshBtn').on('click', function(){
-	        // TODO: 데이터 갱신 로직
-	        alert('대시보드 데이터를 새로 불러옵니다.');
-	    	console.log("새로고침됨");
-	    });
-	</script>
+                <br>
+
+                <!-- 로케이션 용적률 -->
+                <div class="chart-card">
+                    <h3 class="card-title" id="location_title" align="center">로케이션 용적률</h3>
+                    <hr>
+                    <!--?Pallet Zone -->
+				    <div style="margin-bottom: 10px;">
+					    <h4 class="heatmap-title" align="center">Pallet Zone</h4>
+					    <div id="pallet_heatmap" class="heatmap-scroll"></div>
+					</div>
+				
+				    <!-- Picking Zone -->
+				    <div>
+					    <h4 class="heatmap-title" align="center">Picking Zone</h4>
+					    <div id="picking_heatmap" class="heatmap-scroll"></div>
+					</div>
+				    
+				     <!-- 범례 -->
+                    <div id="heatmap-legend" style="display: flex; align-items: center; gap: 8px; margin-top: 16px; padding-left: 4px; font-size: 12px; color: #333;">
+                        <span>Empty</span>
+                        <div style="width: 20px; height: 20px; background: #2196F3;"></div>
+                        <div style="width: 20px; height: 20px; background: #4CAF50;"></div>
+                        <div style="width: 20px; height: 20px; background: #CDDC39;"></div>
+                        <div style="width: 20px; height: 20px; background: #FFEB3B;"></div>
+                        <div style="width: 20px; height: 20px; background: #FF9800;"></div>
+                        <div style="width: 20px; height: 20px; background: #F44336;"></div>
+                        <div style="width: 20px; height: 20px; background: #6A1B9A;"></div>
+                        <span>Full</span>
+                    </div>
+                    
+                    <!-- ?히트맵 툴팁 -->
+                    <div id="tooltip" style="position: absolute; background: rgba(0,0,0,0.8); color: white; padding: 8px; border-radius: 4px; font-size: 14px; display: none; pointer-events: none;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 별도 JS 파일 -->
+    <script src="${pageContext.request.contextPath}/resources/js/inventory/inventoryDashboard.js"></script>
 </body>
 </html>

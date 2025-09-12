@@ -22,12 +22,3 @@
         </div>
     </div>
 </div>
-📌 4. JS 모달 열기/닫기 (공용)
-javascript
-function openModal(id) {
-    document.getElementById(id).classList.add("open");
-}
-
-function closeModal(id) {
-    document.getElementById(id).classList.remove("open");
-}

@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.dto.TotalDashBoardDTO;
 import com.itwillbs.keanu_coffee.common.dto.AlarmDTO;
+import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.service.AlarmService;
+import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,15 +32,33 @@ public class AlarmController {
 	private final AlarmService alarmService;
 	//알림 페이지이동
 	@GetMapping("")
-	public String alarmPage(Model model, Authentication authentication) {
+	public String alarmPage(Model model, Authentication authentication,
+			@RequestParam(defaultValue = "1") int pageNum) {
+		model.addAttribute("pageNum", pageNum);
 		EmployeeInfoDTO employee = new EmployeeInfoDTO();
 		EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
 		String empNo = authentication.getName();
 		Integer empIdx = empDetail.getEmpIdx();
-		List<AlarmDTO> alarmList = alarmService.getAlarm(empIdx);
 		
-		model.addAttribute("alarmList", alarmList);
+		int listLimit = 10;
+		int alarmCount = alarmService.getAlarmCount(empIdx);
 		
+		if(alarmCount > 0) {
+			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, alarmCount, pageNum, 3);
+
+			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
+				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+				model.addAttribute("targetURL", "/admin/customer/notice_list");
+				return "commons/result_process";
+			}
+
+			model.addAttribute("pageInfo", pageInfoDTO);
+			List<AlarmDTO> alarmList = alarmService.getAlarm(empIdx, pageInfoDTO.getStartRow(),
+					listLimit);
+			model.addAttribute("alarmList", alarmList);
+		} else {
+			model.addAttribute("알림이 존재하지 않습니다");
+		}
 		return "commons/alarm";
 	}
 	
@@ -50,7 +70,7 @@ public class AlarmController {
 		EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
 		String empNo = authentication.getName();
 		Integer empIdx = empDetail.getEmpIdx();
-		List<AlarmDTO> alarmList = alarmService.getAlarm(empIdx);
+		List<AlarmDTO> alarmList = alarmService.getAlarmInAjax(empIdx);
 		
 		return ResponseEntity.ok(alarmList);
 	}
@@ -73,6 +93,31 @@ public class AlarmController {
 		
 		return ResponseEntity.ok(result);
 	}
+	
+	//전체 알림 읽음처리
+	@PostMapping("/readAll")
+	public ResponseEntity<Map<String, String>> alarmReadAll(Authentication authentication){
+		EmployeeInfoDTO employee = new EmployeeInfoDTO();
+		EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
+		String empNo = authentication.getName();
+		Integer empIdx = empDetail.getEmpIdx();
+		
+		Boolean update = alarmService.modifyAllAlarmStatus(empIdx);
+		
+		Map<String, String> result = new HashMap<>();
+		if(update) {
+			result.put("message", "알림읽음 처리 완료");
+			result.put("title", "성공");
+			result.put("icon", "success");
+		} else {
+			result.put("message", "알림 읽음 처리 실패");
+			result.put("title", "실패");
+			result.put("icon", "fail");
+		}
+		
+		return ResponseEntity.ok(result);
+	}
+	
 	
 	
 	

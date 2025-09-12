@@ -50,8 +50,8 @@
 
     <!-- 메인 내용 -->
     <section class="content">
-    	<input type="button" value="입출고폐기" class="btn-primary" id="statistics1"/>
-    	<input type="button" value="재고" class="btn-secondary" id="statistics2"/>
+<!--     	<input type="button" value="입출고폐기" class="btn-primary" id="statistics1"/> -->
+<!--     	<input type="button" value="재고" class="btn-secondary" id="statistics2"/> -->
 	    <div class="card">
 	        <div class="card-header d-flex justify-content-between align-items-center">
 			    <!-- 왼쪽: 제목 + 날짜 선택기 -->

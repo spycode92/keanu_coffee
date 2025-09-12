@@ -120,7 +120,7 @@
 			<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
 		    	<form class="filters" aria-label="검색 및 필터">
 		    		<div class="field">
-			    		<select name="searchType" class="form-control" >
+			    		<select name="searchType" >
 							<option value="">전체</option>
 		                    <option value="운영" <c:if test="${searchType eq '운영' }">selected</c:if>>운영</option>
 		                    <option value="휴점" <c:if test="${searchType eq '휴점' }">selected</c:if>>휴점</option>
@@ -153,7 +153,14 @@
                         		<td>${franchise.franchiseName }</td>
                         		<td>${franchise.franchiseManagerName }</td>
                         		<td>${franchise.franchisePhone }</td>
-                        		<td>${franchise.status }</td>
+                        		<td>
+                        			<span class="badge
+						                  ${franchise.status eq '운영'   ? 'badge-confirmed' :
+						                    franchise.status eq '휴점' ? 'badge-warning'   :
+						                                                'badge-urgent'}">
+						                  ${franchise.status}
+									</span>
+                        		</td>
                         	</tr>
                         </c:forEach>
                     </tbody>

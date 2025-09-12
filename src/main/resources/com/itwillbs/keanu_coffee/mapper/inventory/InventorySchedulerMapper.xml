@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.inventory.mapper.InventorySchedulerMapper">
+	
+	<!-- 임박 재고 조회 -->
+    <select id="selectImminentStock" resultType="com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO">
+        SELECT 
+            inventory_idx,
+            receipt_product_idx,
+            location_idx,
+            location_name,
+            product_idx,
+            quantity,
+            lot_number,
+            manufacture_date,
+            expiration_date,
+            created_at,
+            updated_at
+        FROM INVENTORY
+        WHERE DATEDIFF(expiration_date, CURDATE()) BETWEEN 0 AND 60
+    </select>
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+

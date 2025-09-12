@@ -80,6 +80,18 @@ public class DispatchService {
 			
 			// 차량 상태 업데이트
 			vehicleMapper.updateVehicleStatus(assignment);
+			
+			//알림 입력
+			AlarmDTO alarm = new AlarmDTO();
+			alarm.setEmpIdx(assignment.getEmpIdx());
+			alarm.setRoleName("운송기사");
+			alarm.setEmpAlarmMessage(assignment.getDispatchIdx() + "에 대한 배차등록이 완료되었습니다.");
+			
+			alarmService.insertAlarm(alarm);
+			
+			Map<String, String> payload = new HashMap<>();
+			payload.put("message", "새알림이 도착하였습니다.");
+			messagingTemplate.convertAndSend("/topic/" + alarm.getRoleName(), payload);
 		}
 		
 		
@@ -112,27 +124,44 @@ public class DispatchService {
 		request.setStatus("취소");
 		
 		for (Integer outboundOrderIdx : orderIdList) {
-			// 출고주문idx로 배차 idx 조회
-			Integer dispatchIdx = dispatchMapper.selectByorderIdList(outboundOrderIdx);
-			
 			// 출고테이블 배차대기 상태로 변경
 			dispatchMapper.updateOutboundOrderStatus(outboundOrderIdx, "배차대기");
 			
-			// 배차배정 테이블에서 배차idx로 차량idx 조회
-			List<Integer> vehicleIds = dispatchMapper.selectAllVehicleIdx(dispatchIdx);
+			// 출고주문idx로 배차 idx 조회
+			List<Integer> dispatchIds = dispatchMapper.selectByorderIdList(outboundOrderIdx);
 			
-			vehicleMapper.updateStatus(vehicleIds, "대기");
-			
-			for (int i = 0; i < vehicleIds.size(); i++) {
-				dispatchMapper.updateAssigmentStatusByDispatchIdx(dispatchIdx, "취소");
+			for (Integer dispatchIdx : dispatchIds) {
+				// 배차배정 테이블에서 배차idx로 차량idx 조회
+				List<Integer> vehicleIds = dispatchMapper.selectAllVehicleIdx(dispatchIdx);
+				List<Integer> empIds = vehicleMapper.selectEmpIds(vehicleIds);
+				
+				for (Integer empidx : empIds) {
+					//알림 입력
+					AlarmDTO alarm = new AlarmDTO();
+					
+					alarm.setEmpIdx(empidx);
+					alarm.setRoleName("운송기사");
+					alarm.setEmpAlarmMessage(dispatchIdx + "에 대한 배차가 취소되었습니다.");
+					
+					alarmService.insertAlarm(alarm);
+					
+					Map<String, String> payload = new HashMap<>();
+					payload.put("message", "새알림이 도착하였습니다.");
+					messagingTemplate.convertAndSend("/topic/" + alarm.getRoleName(), payload);
+				}
+				
+				vehicleMapper.updateStatus(vehicleIds, "대기");
+				
+				for (int i = 0; i < vehicleIds.size(); i++) {
+					dispatchMapper.updateAssigmentStatusByDispatchIdx(dispatchIdx, "취소");
+				}
+				
+				// 배차 매핑 테이블 데이터 삭제
+				dispatchMapper.deleteMapping(dispatchIdx);
+				
+				dispatchMapper.updateDispatchStatus(dispatchIdx, request.getStatus());
 			}
-			
-			// 배차 매핑 테이블 데이터 삭제
-			dispatchMapper.deleteMapping(dispatchIdx);
-			
-			dispatchMapper.updateDispatchStatus(dispatchIdx, request.getStatus());
 		}
-		
 	}
 	
 	// 배차 상태 조회
@@ -171,6 +200,12 @@ public class DispatchService {
 		
 		// 선택한 지점별 처리
 		for (DispatchCompleteRequest.StopComplete stopReq: request.getStops()) {
+			String currentStatus = dispatchMapper.selectOutboundOrderStatus(stopReq.getOutboundOrderIdx());
+			
+			if ("적재완료".equals(currentStatus)) {
+				throw new IllegalStateException("이미 적재 완료된 주문입니다. 주문번호: " + stopReq.getOutboundOrderIdx());
+			}
+			
 			dispatchMapper.updateOutboundOrderStatus(stopReq.getOutboundOrderIdx(), "적재완료");
 			
 			// 경로 조회
@@ -234,9 +269,19 @@ public class DispatchService {
 		request.setStatus("운행중");
 		// 차량 상태 업데이트
 		vehicleMapper.updateVehicleStatus(request);
-		// 배차 배정 업데이트
+		// 배차 배정 idx
 		Integer assignmentIdx = dispatchMapper.selectAssigmentIdx(request.getDispatchIdx(), request.getVehicleIdx());
+		// 출고idx 조회
+		List<Integer> outboundOrderIds = dispatchMapper.selectOutboundOrderIdx(request.getDispatchIdx());
+		
+		// 배차 배정 업데이트
 		dispatchMapper.updateAssigmentStatus(assignmentIdx, request.getStatus());
+		
+		// 배송 시작 시 출고 대기 테이블 및 출고 테이블 변경
+		for (Integer outboundOrderIdx : outboundOrderIds) {
+			dispatchMapper.updateOutboundWaiting(outboundOrderIdx);
+			dispatchMapper.updateOutboundOrderStatus(outboundOrderIdx, "출고완료");
+		}
 		
 		// 모든 기사 적재 확인
 		if (request.getRequiresAdditional() == 'Y') {

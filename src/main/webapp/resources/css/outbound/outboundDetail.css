@@ -1,0 +1,2747 @@
+콘텐츠로 건너뛰기
+나의 말:
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: 서버 버전 이름:    Apache Tomcat/9.0.89
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: Server 빌드 시각:  May 3 2024 20:22:11 UTC
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: Server 버전 번호:  9.0.89.0
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: 운영체제 이름:     Windows 11
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: 운영체제 버전:     10.0
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: 아키텍처:          amd64
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: 자바 홈:           C:\Program Files\ojdkbuild\java-11-openjdk-11.0.15-1
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: JVM 버전:          11.0.15+9-LTS
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: JVM 벤더:          ojdkbuild
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: CATALINA_BASE:     C:\Users\ITWILL\Documents\2. BackEnd\workspace_Spring\.metadata\.plugins\org.eclipse.wst.server.core\tmp1
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: CATALINA_HOME:     C:\Program Files\Apache Software Foundation\Tomcat 9.0
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: 명령 행 아규먼트:  -Dcatalina.base=C:\Users\ITWILL\Documents\2. BackEnd\workspace_Spring\.metadata\.plugins\org.eclipse.wst.server.core\tmp1
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: 명령 행 아규먼트:  -Dcatalina.home=C:\Program Files\Apache Software Foundation\Tomcat 9.0
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: 명령 행 아규먼트:  -Dwtp.deploy=C:\Users\ITWILL\Documents\2. BackEnd\workspace_Spring\.metadata\.plugins\org.eclipse.wst.server.core\tmp1\wtpwebapps
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: 명령 행 아규먼트:  --add-opens=java.base/java.lang=ALL-UNNAMED
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: 명령 행 아규먼트:  --add-opens=java.base/java.io=ALL-UNNAMED
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: 명령 행 아규먼트:  --add-opens=java.base/java.util=ALL-UNNAMED
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: 명령 행 아규먼트:  --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: 명령 행 아규먼트:  --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.VersionLoggerListener log
+정보: 명령 행 아규먼트:  -Dfile.encoding=UTF-8
+9월 12, 2025 10:28:30 오전 org.apache.catalina.core.AprLifecycleListener lifecycleEvent
+정보: 프로덕션 환경들에서 최적의 성능을 제공하는, APR 기반 Apache Tomcat Native 라이브러리가, 다음 java.library.path에서 발견되지 않습니다: [C:\Program Files\ojdkbuild\java-11-openjdk-11.0.15-1\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:/Program Files/ojdkbuild/java-11-openjdk-11.0.15-1/bin/server;C:/Program Files/ojdkbuild/java-11-openjdk-11.0.15-1/bin;C:\app\ITWILL\product\21c\dbhomeXE\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Bandizip\;C:\Program Files\ojdkbuild\java-11-openjdk-11.0.15-1\bin;C:\Program Files\MySQL\MySQL Server 8.0\bin;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Program Files\Amazon\AWSCLIV2\;C:\Program Files\MySQL\MySQL Server 8.0\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Bandizip\;C:\Program Files\ojdkbuild\java-11-openjdk-11.0.15-1\bin;C:\Users\ITWILL\AppData\Local\Microsoft\WindowsApps;C:\Users\ITWILL\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\Prince\engine\bin\;C:\Users\ITWILL\AppData\Roaming\npm;C:\sts-bundle\sts-3.9.18.RELEASE;;.]
+9월 12, 2025 10:28:30 오전 org.apache.coyote.AbstractProtocol init
+정보: 프로토콜 핸들러 ["http-nio-8081"]을(를) 초기화합니다.
+9월 12, 2025 10:28:30 오전 org.apache.catalina.startup.Catalina load
+정보: [444] 밀리초 내에 서버가 초기화되었습니다.
+9월 12, 2025 10:28:30 오전 org.apache.catalina.core.StandardService startInternal
+정보: 서비스 [Catalina]을(를) 시작합니다.
+9월 12, 2025 10:28:30 오전 org.apache.catalina.core.StandardEngine startInternal
+정보: 서버 엔진을 시작합니다: [Apache Tomcat/9.0.89]
+9월 12, 2025 10:28:32 오전 org.apache.jasper.servlet.TldScanner scanJars
+정보: 적어도 하나의 JAR가 TLD들을 찾기 위해 스캔되었으나 아무 것도 찾지 못했습니다. 스캔했으나 TLD가 없는 JAR들의 전체 목록을 보시려면, 로그 레벨을 디버그 레벨로 설정하십시오. 스캔 과정에서 불필요한 JAR들을 건너뛰면, 시스템 시작 시간과 JSP 컴파일 시간을 단축시킬 수 있습니다.
+9월 12, 2025 10:28:32 오전 org.apache.catalina.core.ApplicationContext log
+정보: No Spring WebApplicationInitializer types detected on classpath
+9월 12, 2025 10:28:32 오전 org.apache.catalina.core.ApplicationContext log
+정보: Initializing Spring root WebApplicationContext
+2025-09-12 10:28:33 INFO : [org.springframework.security.core.SpringSecurityCoreVersion] - You are running with Spring Security Core 5.8.16
+2025-09-12 10:28:33 INFO : [org.springframework.security.config.SecurityNamespaceHandler] - Spring Security 'config' module version is 5.8.16
+2025-09-12 10:28:33 INFO : [org.springframework.security.config.http.FilterInvocationSecurityMetadataSourceParser] - Creating access control expression attribute 'permitAll' for /
+2025-09-12 10:28:33 INFO : [org.springframework.security.config.http.FilterInvocationSecurityMetadataSourceParser] - Creating access control expression attribute 'isAuthenticated()' for /main
+2025-09-12 10:28:33 INFO : [org.springframework.security.config.http.FilterInvocationSecurityMetadataSourceParser] - Creating access control expression attribute 'hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')' for /admin/**
+2025-09-12 10:28:33 INFO : [org.springframework.security.config.http.FilterInvocationSecurityMetadataSourceParser] - Creating access control expression attribute 'hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')' for /inbound/**
+2025-09-12 10:28:33 INFO : [org.springframework.security.config.http.FilterInvocationSecurityMetadataSourceParser] - Creating access control expression attribute 'hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')' for /outbound/**
+2025-09-12 10:28:33 INFO : [org.springframework.security.config.http.FilterInvocationSecurityMetadataSourceParser] - Creating access control expression attribute 'hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')' for /inventory/**
+2025-09-12 10:28:33 INFO : [org.springframework.security.config.http.FilterInvocationSecurityMetadataSourceParser] - Creating access control expression attribute 'hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')' for /inventoryAction/**
+2025-09-12 10:28:33 INFO : [org.springframework.security.config.http.FilterInvocationSecurityMetadataSourceParser] - Creating access control expression attribute 'hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')' for /transport/**
+2025-09-12 10:28:33 INFO : [org.springframework.security.config.http.FilterInvocationSecurityMetadataSourceParser] - Creating access control expression attribute 'permitAll' for /trigger
+2025-09-12 10:28:33 INFO : [org.springframework.security.config.http.FilterInvocationSecurityMetadataSourceParser] - Creating access control expression attribute 'isAuthenticated()' for /**
+2025-09-12 10:28:33 INFO : [org.springframework.security.config.http.FilterInvocationSecurityMetadataSourceParser] - Creating access control expression attribute 'isAuthenticated()' for /alarm/**
+2025-09-12 10:28:33 INFO : [org.springframework.security.config.http.FilterInvocationSecurityMetadataSourceParser] - Creating access control expression attribute 'isAuthenticated()' for /ws-chat/**
+2025-09-12 10:28:33 INFO : [org.springframework.security.config.http.FilterInvocationSecurityMetadataSourceParser] - Creating access control expression attribute 'isAuthenticated()' for /chat/**
+2025-09-12 10:28:34 INFO : [org.springframework.security.config.http.HttpSecurityBeanDefinitionParser] - Checking sorted filter chain: [Root bean: class [org.springframework.security.web.session.DisableEncodeUrlFilter]; scope=; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 100, Root bean: class [org.springframework.security.web.context.SecurityContextPersistenceFilter]; scope=; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 400, Root bean: class [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter]; scope=; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 600, Root bean: class [org.springframework.security.web.header.HeaderWriterFilter]; scope=; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 700, Root bean: class [org.springframework.security.web.csrf.CsrfFilter]; scope=; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1100, Root bean: class [org.springframework.security.web.authentication.logout.LogoutFilter]; scope=; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1300, <org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter#0>, order = 2100, Root bean: class [org.springframework.security.web.authentication.www.BasicAuthenticationFilter]; scope=; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 2700, Root bean: class [org.springframework.security.web.savedrequest.RequestCacheAwareFilter]; scope=; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 2800, Root bean: class [null]; scope=; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=org.springframework.security.config.http.HttpConfigurationBuilder$SecurityContextHolderAwareRequestFilterBeanFactory#0; factoryMethodName=getBean; initMethodName=null; destroyMethodName=null, order = 2900, Root bean: class [org.springframework.security.web.authentication.AnonymousAuthenticationFilter]; scope=; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 3200, Root bean: class [org.springframework.security.web.session.SessionManagementFilter]; scope=; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 3500, Root bean: class [org.springframework.security.web.access.ExceptionTranslationFilter]; scope=; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 3600, <org.springframework.security.web.access.intercept.FilterSecurityInterceptor#0>, order = 3700]
+2025-09-12 10:28:36 INFO : [org.springframework.security.web.DefaultSecurityFilterChain] - Will not secure Ant [pattern='/resources/**']
+2025-09-12 10:28:36 INFO : [org.springframework.security.web.DefaultSecurityFilterChain] - Will not secure Ant [pattern='/.well-known/**']
+2025-09-12 10:28:36 INFO : [org.springframework.security.web.DefaultSecurityFilterChain] - Will not secure Ant [pattern='/favicon.ico']
+2025-09-12 10:28:37 DEBUG: [org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource] - Adding web access control expression [permitAll] for Ant [pattern='/']
+2025-09-12 10:28:37 DEBUG: [org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource] - Adding web access control expression [isAuthenticated()] for Ant [pattern='/main']
+2025-09-12 10:28:37 DEBUG: [org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource] - Adding web access control expression [hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')] for Ant [pattern='/admin/**']
+2025-09-12 10:28:37 DEBUG: [org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource] - Adding web access control expression [hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')] for Ant [pattern='/inbound/**']
+2025-09-12 10:28:37 DEBUG: [org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource] - Adding web access control expression [hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')] for Ant [pattern='/outbound/**']
+2025-09-12 10:28:37 DEBUG: [org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource] - Adding web access control expression [hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')] for Ant [pattern='/inventory/**']
+2025-09-12 10:28:37 DEBUG: [org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource] - Adding web access control expression [hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')] for Ant [pattern='/inventoryAction/**']
+2025-09-12 10:28:37 DEBUG: [org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource] - Adding web access control expression [hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')] for Ant [pattern='/transport/**']
+2025-09-12 10:28:37 DEBUG: [org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource] - Adding web access control expression [permitAll] for Ant [pattern='/trigger']
+2025-09-12 10:28:37 DEBUG: [org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource] - Adding web access control expression [isAuthenticated()] for any request
+2025-09-12 10:28:37 DEBUG: [org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource] - Adding web access control expression [isAuthenticated()] for Ant [pattern='/alarm/**']
+2025-09-12 10:28:37 DEBUG: [org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource] - Adding web access control expression [isAuthenticated()] for Ant [pattern='/ws-chat/**']
+2025-09-12 10:28:37 DEBUG: [org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource] - Adding web access control expression [isAuthenticated()] for Ant [pattern='/chat/**']
+2025-09-12 10:28:37 INFO : [org.springframework.security.web.DefaultSecurityFilterChain] - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2ee6196f, org.springframework.security.web.context.SecurityContextPersistenceFilter@1baab1b1, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1c833e78, org.springframework.security.web.header.HeaderWriterFilter@7effdd04, org.springframework.security.web.csrf.CsrfFilter@604c8ed5, org.springframework.security.web.authentication.logout.LogoutFilter@2e259c54, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@2bd01716, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@2bc7e895, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2ff9e11e, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2d3c0f89, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@67fd59f, org.springframework.security.web.session.SessionManagementFilter@12680685, org.springframework.security.web.access.ExceptionTranslationFilter@72f9e4c7, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@3ff4ed56]
+2025-09-12 10:28:37 INFO : [org.springframework.security.config.http.DefaultFilterChainValidator] - Checking whether login URL '/' is accessible with your configuration
+9월 12, 2025 10:28:37 오전 org.apache.catalina.core.ApplicationContext log
+정보: Initializing Spring DispatcherServlet 'appServlet'
+2025-09-12 10:28:38 WARN : [org.springframework.web.context.support.XmlWebApplicationContext] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'warehouseSlottingLogicController' defined in file [C:\Users\ITWILL\Documents\2. BackEnd\workspace_Spring\.metadata\.plugins\org.eclipse.wst.server.core\tmp1\wtpwebapps\keanu_coffee\WEB-INF\classes\com\itwillbs\keanu_coffee\inventory\controller\WarehouseSlottingLogicController.class]: Bean instantiation via constructor failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.itwillbs.keanu_coffee.inventory.controller.WarehouseSlottingLogicController]: Constructor threw exception; nested exception is java.lang.NullPointerException
+2025-09-12 10:28:38 ERROR: [org.springframework.web.servlet.DispatcherServlet] - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'warehouseSlottingLogicController' defined in file [C:\Users\ITWILL\Documents\2. BackEnd\workspace_Spring\.metadata\.plugins\org.eclipse.wst.server.core\tmp1\wtpwebapps\keanu_coffee\WEB-INF\classes\com\itwillbs\keanu_coffee\inventory\controller\WarehouseSlottingLogicController.class]: Bean instantiation via constructor failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.itwillbs.keanu_coffee.inventory.controller.WarehouseSlottingLogicController]: Constructor threw exception; nested exception is java.lang.NullPointerException
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:306)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:287)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1372)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1222)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:336)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:334)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:209)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:932)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:591)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:702)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:716)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:591)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:530)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:170)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:143)
+	at org.apache.catalina.core.StandardWrapper.initServlet(StandardWrapper.java:984)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:941)
+	at org.apache.catalina.core.StandardWrapper.load(StandardWrapper.java:838)
+	at org.apache.catalina.core.StandardContext.loadOnStartup(StandardContext.java:4182)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4482)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:140)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:721)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:140)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:211)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:415)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:878)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.startup.Catalina.start(Catalina.java:735)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:345)
+	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:473)
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.itwillbs.keanu_coffee.inventory.controller.WarehouseSlottingLogicController]: Constructor threw exception; nested exception is java.lang.NullPointerException
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:226)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:117)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:302)
+	... 52 more
+Caused by: java.lang.NullPointerException
+	at com.itwillbs.keanu_coffee.inventory.controller.WarehouseSlottingLogicController.<init>(WarehouseSlottingLogicController.java:66)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490)
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:213)
+	... 54 more
+9월 12, 2025 10:28:38 오전 org.apache.catalina.core.ApplicationContext log
+심각: 서블릿 [appServlet]을(를) 위한 Servlet.init() 호출이 예외를 발생시켰습니다.
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'warehouseSlottingLogicController' defined in file [C:\Users\ITWILL\Documents\2. BackEnd\workspace_Spring\.metadata\.plugins\org.eclipse.wst.server.core\tmp1\wtpwebapps\keanu_coffee\WEB-INF\classes\com\itwillbs\keanu_coffee\inventory\controller\WarehouseSlottingLogicController.class]: Bean instantiation via constructor failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.itwillbs.keanu_coffee.inventory.controller.WarehouseSlottingLogicController]: Constructor threw exception; nested exception is java.lang.NullPointerException
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:306)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:287)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1372)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1222)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:336)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:334)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:209)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:932)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:591)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:702)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:716)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:591)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:530)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:170)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:143)
+	at org.apache.catalina.core.StandardWrapper.initServlet(StandardWrapper.java:984)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:941)
+	at org.apache.catalina.core.StandardWrapper.load(StandardWrapper.java:838)
+	at org.apache.catalina.core.StandardContext.loadOnStartup(StandardContext.java:4182)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4482)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:140)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:721)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:140)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:211)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:415)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:878)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.startup.Catalina.start(Catalina.java:735)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:345)
+	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:473)
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.itwillbs.keanu_coffee.inventory.controller.WarehouseSlottingLogicController]: Constructor threw exception; nested exception is java.lang.NullPointerException
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:226)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:117)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:302)
+	... 52 more
+Caused by: java.lang.NullPointerException
+	at com.itwillbs.keanu_coffee.inventory.controller.WarehouseSlottingLogicController.<init>(WarehouseSlottingLogicController.java:66)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490)
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:213)
+	... 54 more
+
+9월 12, 2025 10:28:38 오전 org.apache.catalina.core.StandardContext loadOnStartup
+심각: 웹 애플리케이션 [/keanu_coffee] 내의 서블릿 [appServlet]이(가) load() 예외를 발생시켰습니다.
+java.lang.NullPointerException
+	at com.itwillbs.keanu_coffee.inventory.controller.WarehouseSlottingLogicController.<init>(WarehouseSlottingLogicController.java:66)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490)
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:213)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:117)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:302)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:287)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1372)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1222)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:336)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:334)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:209)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:932)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:591)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:702)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.createWebApplicationContext(FrameworkServlet.java:716)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:591)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:530)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:170)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:143)
+	at org.apache.catalina.core.StandardWrapper.initServlet(StandardWrapper.java:984)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:941)
+	at org.apache.catalina.core.StandardWrapper.load(StandardWrapper.java:838)
+	at org.apache.catalina.core.StandardContext.loadOnStartup(StandardContext.java:4182)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4482)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:140)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:721)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:140)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:211)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:415)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:878)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.startup.Catalina.start(Catalina.java:735)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:345)
+	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:473)
+
+9월 12, 2025 10:28:38 오전 org.apache.coyote.AbstractProtocol start
+정보: 프로토콜 핸들러 ["http-nio-8081"]을(를) 시작합니다.
+9월 12, 2025 10:28:38 오전 org.apache.catalina.startup.Catalina start
+정보: 서버가 [7792] 밀리초 내에 시작되었습니다.
+ChatGPT의 말:
+원인 분석 (로그 요약)
+
+WarehouseSlottingLogicController의 66번째 줄에서 NullPointerException이 발생했습니다.
+
+Spring이 컨트롤러 Bean을 생성할 때, 생성자 실행 중 널 객체에 접근해서 초기화가 실패한 상황입니다.
+
+Tomcat 및 Spring Security 설정은 정상적으로 초기화되었고, 문제는 Controller 생성자 내부 코드 또는 주입된 의존성입니다.
+
+1단계: 문제 위치 확인
+WarehouseSlottingLogicController.java의 66번 줄을 확인하세요.
+
+해당 줄에서 사용된 객체(예: service, repository, 또는 다른 Bean)가 null인지 확인합니다.
+
+생성자에서 다음과 같은 코드 패턴이 있는지 확인:
+
+public WarehouseSlottingLogicController(WarehouseSlottingService service) {
+    this.service = service;
+    // ↓ 66번째 줄에서 service를 사용하고 있을 가능성
+    service.initLogic(); // service가 아직 주입되지 않았으면 NPE
+}
+2단계: Spring DI 설정 검증
+의존성 주입 방식 확인
+
+생성자 주입이라면 @Autowired 또는 @RequiredArgsConstructor가 붙어 있는지 확인합니다.
+
+@Controller와 @Service 모두 Spring Bean으로 등록되어 있는지 확인합니다. (@ComponentScan 범위 포함 여부도 중요)
+
+예:
+
+@Controller
+@RequiredArgsConstructor
+public class WarehouseSlottingLogicController {
+    private final WarehouseSlottingService slottingService;
+}
+Config 또는 XML에서 해당 Service를 Bean으로 등록했는지 확인하세요.
+
+3단계: 잘못된 생성자 로직 점검
+생성자에서 Bean 주입이 완료되기 전에 메서드를 실행하지 않도록 합니다.
+
+필요한 초기화는 @PostConstruct를 사용하거나 @EventListener(ContextRefreshedEvent.class) 등으로 지연 실행하세요.
+
+@PostConstruct
+public void init() {
+    // Bean이 모두 주입된 후 실행
+    slottingService.initLogic();
+}
+4단계: 점검 체크리스트
+체크 항목	설명
+1	@Controller 또는 @RestController 붙어 있는지 확인
+2	@Autowired/@RequiredArgsConstructor 등으로 의존성이 주입되고 있는지 확인
+3	Bean 등록 경로가 @ComponentScan 범위 안에 있는지 확인
+4	생성자 내에서 즉시 의존성 메서드를 호출하고 있지 않은지 점검
+5	Service, Repository 등 주입 대상 Bean이 ApplicationContext에 정상 등록되었는지 로그/디버깅으로 확인
+5단계: 빠른 진단 방법
+66번 줄을 주석 처리하거나 로그만 찍어보고 서버를 다시 실행 → NPE가 사라지면 해당 줄의 객체가 null.
+
+Service Bean 이름이나 패키지 스캔 범위가 맞는지 @ComponentScan(basePackages = "...") 확인.
+
+의존성 주입 방식 변경: 생성자 주입 대신 필드 주입으로 잠시 변경해 테스트.
+
+Spring DevTools 또는 Eclipse 캐시 문제일 수 있으므로 프로젝트 Clean & Rebuild, Tomcat 재시작 후 테스트.
+
+✅ 정리:
+
+문제는 Spring Bean 생성자에서 주입되지 않은 객체에 접근한 것이 원인.
+
+66번째 줄에서 사용된 객체를 확인하고, 주입 순서와 @ComponentScan 범위를 점검하세요.
+
+필요한 경우 초기화 코드를 @PostConstruct로 이동하면 해결됩니다.
+
+나의 말:
+jsp
+ <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>출고 관리</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+	<link href="${pageContext.request.contextPath}/resources/css/outbound/management.css" rel="stylesheet" />
+
+</head>
+<body>
+	<!-- 상단/사이드 레이아웃 -->
+	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
+
+	<!-- 반드시 content 안에서 시작 -->
+	<section class="content">
+
+		<!-- 페이지 타이틀 -->
+		<div class="d-flex justify-content-between align-items-center mb-2">
+		     <h1 class="card-title" style="margin:0;">출고관리</h1>
+		</div>
+
+		<!-- 간단 검색바 -->
+		<div class="card mb-3 inbound-simple-search d-flex align-items-center p-3 gap-2">
+		    <input type="text" class="form-control" id="simpleItemKeyword" placeholder="품목 코드/명 검색" />
+		    <button class="btn btn-primary btn-sm" id="simpleSearchBtn">검색</button>
+		    <button class="btn btn-secondary btn-sm" id="toggleDetailSearchBtn">상세검색</button>
+		</div>
+		
+		<!-- 검색/필터 -->
+		<div class="card mb-4 inbound-filters" id="detailSearchCard" style="display:none;">
+			<div class="card-header d-flex justify-content-between align-items-center">
+				<div class="card-title">검색 / 필터</div>
+			</div>
+
+			<!-- 날짜 + 기준 -->
+			<div class="row">
+				<div class="col-md-3">
+					<label class="form-label">검색 기준</label>
+					<select class="form-control search-select" id="dateBasis">
+						<option value="start" selected>시작일 기준</option>
+						<option value="end">종료일(완료일) 기준</option>
+						<option value="range">기간 기준</option>
+					</select>
+				</div>
+
+				<div class="col-md-3 date-field date-start">
+					<label class="form-label">출고 시작일</label>
+					<input type="date" class="form-control search-input" id="inStartDate" />
+				</div>
+
+				<div class="col-md-3 date-field date-end" style="display:none;">
+					<label class="form-label">출고 종료일(완료일)</label>
+					<input type="date" class="form-control search-input" id="inEndDate" />
+				</div>
+
+				<div class="col-md-3 date-field date-range" style="display:none;">
+					<label class="form-label">기간(시작)</label>
+					<input type="date" class="form-control search-input" id="inRangeStart" />
+				</div>
+				<div class="col-md-3 date-field date-range" style="display:none;">
+					<label class="form-label">기간(종료)</label>
+					<input type="date" class="form-control search-input" id="inRangeEnd" />
+				</div>
+			</div>
+
+			<!-- 1줄: 창고 · 상태 · 품목 -->
+			<div class="row">
+				<div class="col-md-3">
+					<label class="form-label">창고</label>
+					<select class="form-control search-select" id="warehouse">
+						<option value="">전체</option>
+						<option>중앙창고</option>
+						<option>동부창고</option>
+						<option>서부창고</option>
+					</select>
+				</div>
+				<div class="col-md-3">
+					<label class="form-label">상태</label>
+					<select class="form-control search-select" id="status">
+						<option value="">전체</option>
+						<option value="PENDING">대기</option>
+						<option value="CONFIRMED">확정</option>
+						<option value="COMPLETED">완료</option>
+					</select>
+				</div>
+				<div class="col-md-3">
+					<label class="form-label">품목 코드/명</label>
+					<input type="text" class="form-control search-input" placeholder="예) SKU-0001" id="itemKeyword" />
+				</div>
+				<div class="col-md-3"></div>
+			</div>
+
+			<!-- 2줄: 공급업체만 -->
+			<div class="row">
+				<div class="col-md-3">
+					<label class="form-label">공급업체</label>
+					<input type="text" class="form-control search-input" placeholder="업체명/코드 검색" id="vendorKeyword" />
+				</div>
+				<div class="col-md-9"></div>
+			</div>
+
+			<!-- 버튼 -->
+			<div class="row">
+				<div class="col-md-12 d-flex align-items-center gap-2 mt-3">
+					<button class="btn btn-primary btn-search">검색</button>
+					<button class="btn btn-secondary btn-reset">초기화</button>
+				</div>
+			</div>
+		</div>
+
+		
+		<!-- 액션 바 (rail로 좌우 여백 통일) -->
+		<div class="card">
+		    <div class="card-header d-flex justify-content-between align-items-center">
+		        <div class="card-title">
+		            출고 목록
+		            <span class="text-muted" style="font-size: 0.9em;">검색결과: 총 <strong id="resultCount"></strong>건</span>
+		        </div>
+		        <div class="d-flex gap-2">
+					<a href="/order/insert" class="btn btn-primary btn-sm">새 출고 등록</a>
+					<a href="#" id="btnReadyOutbound" class="btn btn-primary btn-sm">출고준비 처리</a>
+		            <a href="#" class="btn btn-secondary btn-sm">엑셀 다운로드</a>
+					<a href="#" id="settings-button" class="btn btn-secondary btn-sm">설정</a>
+		            <a href="#" class="btn btn-secondary btn-sm">선택삭제</a>
+		        </div>
+		    </div>
+			<div class="table-responsive">
+				<table class="table">
+					<thead>
+						<tr>
+							<th style="width:36px;"><input type="checkbox" class="select-all" /></th>
+							<th>출고번호</th>
+							<th>출고일자</th>
+							<th>출고위치</th>
+							<th>프렌차이즈 업체</th>
+							<th>상태</th>
+							<th>품목수</th>
+<!-- 							<th>총수량</th> -->
+							<th>출고예정수량</th>
+							<th>담당자</th>
+							<th>비고</th>
+						</tr>
+					</thead>
+	<!-- ==============================================================================================================리스트 존========= -->				
+					<tbody>
+					    <!-- 출력 카운터 초기화 -->
+					    <c:set var="displayCount" value="0" />
+					
+					    <c:forEach var="order" items="${obManagement}">
+					        <c:if test="${not empty order.outboundOrderIdx}">
+					            <tr>
+					                <!-- 체크박스 -->
+					                <td>
+					                    <input type="checkbox" name="selectedOrder" value="${order.outboundOrderIdx}" />
+					                </td>
+					
+					                <!-- 출고번호 (링크) -->
+					                <td>
+					                    <c:url var="detailUrl" value="/outbound/outboundDetail">
+					                        <c:param name="obwaitNumber" value="${order.obwaitNumber}" />
+					                        <c:param name="outboundOrderIdx" value="${order.outboundOrderIdx}" />
+					                    </c:url>
+					                    <a href="${detailUrl}" class="link-order-number">
+					                        <c:out value="${order.obwaitNumber}" default="-" />
+					                    </a>
+					                </td>
+					
+					                <!-- 출고일자 -->
+					                <td><c:out value="${order.departureDate}" default="-" /></td>
+					
+					                <!-- 출고위치 -->
+					                <td><c:out value="${order.outboundLocation}" default="-" /></td>
+					
+					                <!-- 주문프랜차이즈 -->
+					                <td><c:out value="${order.franchiseName}" default="-" /></td>
+					
+					                <!-- 상태 -->
+					                <td><c:out value="${order.status}" default="-" /></td>
+					
+					                <!-- 품목수 -->
+					                <td><c:out value="${order.itemCount}" default="0" /></td>
+					
+					                <!-- 출고예정수량 -->
+					                <td><c:out value="${order.totalQuantity}" default="0" /></td>
+					
+					                <!-- 담당자 -->
+					                <td class="manager-cell" data-modal-target="changeManager">
+									    <c:out value="${order.manager}" default="-" />
+									</td>
+					
+					                <!-- 비고 -->
+					                <td><c:out value="${order.note}" default="-" /></td>
+					            </tr>
+					
+					            <!-- 출력 카운트 증가 -->
+					            <c:set var="displayCount" value="${displayCount + 1}" />
+					        </c:if>
+					    </c:forEach>
+					
+					    <!-- 출력된 행이 하나도 없을 경우 안내문 -->
+					    <c:if test="${displayCount == 0}">
+					        <tr>
+					            <td colspan="10" class="text-center">출고 데이터가 존재하지 않습니다.</td>
+					        </tr>
+					    </c:if>
+					</tbody>
+
+	<!-- ==============================================================================================================리스트 존========= -->				
+				</table>
+			</div>
+	
+			<div class="d-flex justify-content-between align-items-center p-3">
+				<div class="text-muted">페이지 1 / 13</div>
+				<div class="d-flex gap-2">
+					<a href="#" class="btn btn-secondary btn-sm">« 처음</a>
+					<a href="#" class="btn btn-secondary btn-sm">‹ 이전</a>
+					<a href="#" class="btn btn-primary btn-sm">1</a>
+					<a href="#" class="btn btn-secondary btn-sm">2</a>
+					<a href="#" class="btn btn-secondary btn-sm">3</a>
+					<a href="#" class="btn btn-secondary btn-sm">다음 ›</a>
+					<a href="#" class="btn btn-secondary btn-sm">끝 »</a>
+				</div>
+			</div>
+		</div>
+
+	</section>
+	<jsp:include page="/WEB-INF/views/outbound/modal/changeManager.jsp"></jsp:include>
+	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/outbound/management.js"></script>
+</body>
+</html>
+ 
+
+js
+$(document).ready(function () {
+	// 출고준비 버튼 클릭 이벤트
+	$("#btnReadyOutbound").on("click", function (e) {
+		e.preventDefault();
+
+		// 체크된 체크박스 값(= outbound_order_idx) 수집
+		const selected = $("input[name='selectedOrder']:checked")
+			.map(function () {
+				return $(this).val();
+			})
+			.get();
+
+		if (selected.length === 0) {
+			showWarning("출고준비 처리할 출고건을 선택하세요.");
+			return;
+		}
+
+		// AJAX 요청 보내기
+		ajaxPost("/outbound/updateStatusReady", { orderIdxList: selected })
+			.done(function (res) {
+				if (res.ok) {
+					showSuccess("선택된 출고건이 출고준비 상태로 변경되었습니다.");
+					location.reload(); // 새로고침으로 반영
+				} else {
+					showError("처리 실패: " + (res.message || "알 수 없는 오류"));
+				}
+			})
+			.fail(function (xhr) {
+				showError("서버 오류 발생! 관리자에게 문의하세요.");
+				console.error(xhr);
+			});
+	});
+});
+
+버튼이 작동을 안해 체크해줘
+ChatGPT의 말:
+
+1m 13s 동안 생각함
+스킬라, 증상상 “클릭 자체가 먹지 않거나(A) / 클릭은 되는데 AJAX가 실패(B)” 둘 중 하나예요. 아래 순서대로 점검+패치하면 바로 잡힙니다.
+
+1단계: 콘솔로 즉시 진단
+크롬 콘솔에서 아래 3가지만 확인해봐요.
+
+jQuery 로딩 확인
+
+$.fn.jquery   // => "3.6.0" 같이 버전 나오면 OK
+스크립트/핸들러 로딩 확인
+
+typeof ajaxPost // => "function" 이면 common.js 문제 없음 (아니면 undefined)
+$('#btnReadyOutbound').length // => 1 이상이어야 정상
+클릭 바인딩이 실제로 되는지
+
+$('#btnReadyOutbound').on('click', ()=>console.log('clicked'));
+→ 클릭했을 때 콘솔에 clicked가 안 찍히면 이벤트 바인딩 문제(A), 찍히는데 이후 에러가 뜨면 전송 포맷/엔드포인트 불일치(B) 입니다.
+
+2단계: 이벤트 바인딩을 “위임형”으로 고정
+DOM 교체/지연 로드/중복 바인딩 이슈를 회피하려면 $(document).on('click', …)가 가장 안전합니다. 아래처럼 management.js를 교체하세요.
+
+// /resources/js/outbound/management.js
+(function($, w, d){
+	'use strict';
+
+	function postJson(url, payload){
+		return $.ajax({
+			url: url,
+			method: 'POST',
+			data: JSON.stringify(payload),
+			contentType: 'application/json; charset=utf-8',
+			dataType: 'json'
+		});
+	}
+	function postForm(url, params){
+		return $.ajax({
+			url: url,
+			method: 'POST',
+			data: params,              // x-www-form-urlencoded
+			traditional: true,         // 배열 직렬화: orderIdxList=1&orderIdxList=2 …
+			dataType: 'json'
+		});
+	}
+
+	// 위임형 바인딩 (가장 안전)
+	$(d).on('click', '#btnReadyOutbound', function(e){
+		e.preventDefault();
+
+		var $btn = $(this);
+		var selected = $("input[name='selectedOrder']:checked")
+			.map(function(){ return $(this).val(); })
+			.get();
+
+		if(selected.length === 0){
+			(typeof w.showWarning === 'function' ? showWarning : alert)('출고준비 처리할 출고건을 선택하세요.');
+			return;
+		}
+
+		$btn.prop('disabled', true).attr('aria-busy', 'true');
+
+		// 서버에 JSON or FORM 둘 다 대응
+		var payload = { orderIdxList: selected.map(Number) };
+		var req;
+
+		if(typeof w.ajaxPost === 'function'){
+			// 프로젝트 공통 헬퍼가 있으면 우선 사용
+			req = w.ajaxPost('/outbound/updateStatusReady', payload);
+		}else{
+			// 1) JSON 시도 → 415/400이면 2) FORM으로 재시도
+			req = postJson('/outbound/updateStatusReady', payload).fail(function(xhr){
+				if(xhr.status === 415 || xhr.status === 400){
+					return postForm('/outbound/updateStatusReady', { 'orderIdxList': selected });
+				}
+				return $.Deferred().reject(xhr);
+			});
+		}
+
+		req.done(function(res){
+			if(res && res.ok){
+				(typeof w.showSuccess === 'function' ? showSuccess : alert)('선택된 출고건이 출고준비 상태로 변경되었습니다.');
+				w.location.reload();
+			}else{
+				var msg = (res && (res.message || res.error)) || '알 수 없는 오류';
+				(typeof w.showError === 'function' ? showError : alert)('처리 실패: ' + msg);
+			}
+		}).fail(function(xhr){
+			(typeof w.showError === 'function' ? showError : alert)('서버 오류: ' + (xhr.status || '') );
+			console.error('[updateStatusReady] fail', xhr);
+		}).always(function(){
+			$btn.prop('disabled', false).removeAttr('aria-busy');
+		});
+	});
+
+	// 로딩 시 요소 탐색 로그 (개발용)
+	if(!$('#btnReadyOutbound').length){
+		console.warn('[management.js] #btnReadyOutbound not found at load time');
+	}
+})(jQuery, window, document);
+포인트
+
+위임형 바인딩으로 DOM 변경·중복 로드에도 안전
+
+traditional: true로 @RequestParam List<Long> orderIdxList 바인딩 호환
+
+공통 헬퍼(ajaxPost)가 없을 때도 자동 폴백(JSON → FORM)
+
+3단계: 서버 엔드포인트 “소비 타입” 일치시키기
+프론트가 아무리 잘 보내도, 서버의 시그니처와 consumes가 안 맞으면 415/400 납니다. 둘 중 하나로 확정하세요.
+
+(A) FORM 방식 (@RequestParam)
+@PostMapping(path="/outbound/updateStatusReady", produces="application/json")
+@ResponseBody
+public Map<String,Object> updateStatusReady(@RequestParam("orderIdxList") List<Long> orderIdxList){
+	outboundService.markReady(orderIdxList);
+	return Map.of("ok", true, "count", orderIdxList.size());
+}
+(B) JSON 방식 (@RequestBody)
+@PostMapping(path="/outbound/updateStatusReady", consumes="application/json", produces="application/json")
+@ResponseBody
+public Map<String,Object> updateStatusReady(@RequestBody UpdateStatusReq req){
+	outboundService.markReady(req.getOrderIdxList());
+	return Map.of("ok", true, "count", req.getOrderIdxList().size());
+}
+
+@Getter @Setter
+public static class UpdateStatusReq {
+	private List<Long> orderIdxList;
+}
+이미 컨벤션상 JSON을 쓰고 있다면 **(B)**로 맞추고, 프론트는 contentType:'application/json'로 고정하세요.
+반대로 간단히 가려면 (A) + traditional:true가 제일 쉬워요.
+
+4단계: HTML/JSP 체크 3가지
+체크박스 name/value:
+<input type="checkbox" name="selectedOrder" value="${order.outboundOrderIdx}" /> ✅ (이미 OK)
+
+버튼 id 중복 금지: 페이지에 id="btnReadyOutbound" 딱 1개 확인
+
+스크립트 로드 순서: jQuery → common.js → management.js (현재 JSP 하단 순서가 맞습니다)
+
+5단계: 자주 나는 함정
+management.js 404: 네트워크 탭에서 200인지 확인
+
+ajaxPost 미정의: 공통 js가 빠졌거나 로딩 실패 → 위 코드가 자동 폴백
+
+CORS/보안 리다이렉트: 로그인 세션 만료 등으로 /login HTML이 JSON 대신 응답되는 경우 → fail에서 콘솔로 응답 본문 확인
+
+위 1~2단계 적용 후에도 콘솔에서 클릭 로그가 안 찍히면 top.jsp 안에서 이벤트를 막는 오버레이/disabled 스타일, 또는 동명이 id 충돌을 의심해볼게요.
+1단계가 완료되면 알려줘 — 다음은 서버 시그니처/응답 형식을 함께 맞추자!
+
+나의 말:
+다시검사해보기
+management.js:30 {readyState: 4, getResponseHeader: ƒ, getAllResponseHeaders: ƒ, setRequestHeader: ƒ, overrideMimeType: ƒ, …}abort: ƒ (e)always: ƒ ()catch: ƒ (e)done: ƒ ()fail: ƒ ()getAllResponseHeaders: ƒ ()getResponseHeader: ƒ (e)overrideMimeType: ƒ (e)pipe: ƒ ()progress: ƒ ()promise: ƒ (e)readyState: 4responseText: " \r\n\r\n\r\n\r\n<!DOCTYPE html>\r\n<html>\r\n<head>\r\n\t<meta charset=\"UTF-8\">\r\n\t<title>출고 관리</title>\r\n\t<script src=\"https://code.jquery.com/jquery-3.6.0.min.js\"></script>\r\n\r\n\t<link href=\"/resources/css/common/common.css\" rel=\"stylesheet\">\r\n\t<link href=\"/resources/css/outbound/management.css\" rel=\"stylesheet\" />\r\n\r\n</head>\r\n<body>\r\n\t<!-- 상단/사이드 레이아웃 -->\r\n\t\r\n\r\n\r\n<style>\r\n\t#alarm-wrapper {\r\n\t\tposition: relative;\r\n\t\tdisplay: inline-block;\r\n\t}\r\n\t\r\n\t#alarm-image {\r\n\t\twidth: 25px;\r\n\t\theight: 25px;\r\n\t\tvertical-align: bottom;\r\n\t}\r\n\t\r\n\t/* 알람 아이콘 뱃지 */\r\n\t#alarm-badge {\r\n\t\tposition: absolute;\r\n\t\t/* 우측 하단 고정 */\r\n\t\tbottom: 0;\r\n\t\tright: 0;\r\n\t\twidth: 8px;\r\n\t\theight: 8px;\r\n\t\tbackground-color: red;\r\n\t\tborder-radius: 50%; /* 원형 */\r\n\t\tdisplay: none; /* 처음 로딩 시 숨김 */\r\n\t}\r\n\t\r\n\t#noti:hover {\r\n\t    transform: translateY(-2px);\r\n\t    transition: background-color 0.3s ease, transform 0.3s ease;\r\n\t}\r\n\t#noti:active {\r\n\t    transform: translateY(0);\r\n\t    transition: background-color 0.1s ease, transform 0.1s ease;\r\n\t}\r\n\t\r\n\t/* \t\t\t\t\tnotification button */\r\n\t#notification-box {\r\n\t\tdisplay: none;\r\n\t\tposition: absolute;\r\n\t\twidth: 300px;\r\n\t\tborder-radius: 20px;\r\n\t\tbox-shadow: 0 3.2px 16.2px rgba(0, 0, 0, 0.3);\r\n\t\tmargin-top: 200px;\r\n\t\tright: 20px;\r\n\t\tbackground-color: #fff;\r\n\t\tpadding: 20px;\r\n\t}\r\n\t\r\n\t#notification-box > ul > li:nth-child(odd) {\r\n\t\tbackground-color: #d9d9d9;\r\n\t}\r\n\t#notification-box > h3 {\r\n\t\tpadding: 5px;\r\n\t\tborder-bottom: #333 solid 2px;\r\n\t}\r\n\t#notification-box > ul > span {\r\n\t\tfloat: right;\r\n\t\tmargin-left: auto;\r\n\t}\r\n\t#notification-box > ul > li {\r\n\t\tmargin-top: 5px;\r\n\t}\r\n\t#small-menu {\r\n\t\tdisplay:none;\r\n\t}\r\n\t\r\n\t/* notification */\r\n\t#notification-box {\r\n\t    position: absolute;\r\n\t    top: 100%; \r\n\t    right: 240px;  \r\n\t    margin-top: 0.5em; \r\n\t    width: 420px;\r\n\t    max-height: 300px;\r\n\t    overflow-y: auto;\r\n\t    border: 1px solid #ccc;\r\n\t    border-radius: 8px;\r\n\t    background: white;\r\n\t    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);\r\n\t    display: none;\r\n\t    z-index: 100;\r\n\t    padding-top: 0;\r\n\t}\r\n\t\r\n\t#notification-list {\r\n\t    list-style: none;\r\n\t    margin: 0;\r\n\t    padding: 0;\r\n\t    position: relative;\r\n\t}\r\n\t\r\n\t#notification-list li {\r\n\t    padding: 10px;\r\n\t    cursor: pointer;\r\n\t    display: flex;\r\n\t    justify-content: space-between;\r\n\t    align-items: center;\r\n\t    border-bottom: 1px solid #eee;\r\n\t    transition: background 0.2s;\r\n\t}\r\n\t\r\n\t#notification-list li:hover {\r\n\t    background: #f9f9f9;\r\n\t}\r\n\t\r\n\t#notification-list li .dot {\r\n\t    font-size: 14px;\r\n\t}\r\n\t\r\n\t#notification-header {\r\n\t\tdisplay: flex; \r\n\t\tjustify-content: space-between; \r\n\t\talign-items: center;\r\n\t\tborder-bottom: 1px solid #ddd;\r\n\t\tposition: sticky;\r\n\t\ttop: 0;\r\n\t\tbackground: white;\r\n\t\twidth: 370px;\r\n\t\tz-index: 999;\r\n\t}\r\n\t\r\n\t#notification-header a {\r\n\t\tcolor: black;\r\n\t}\r\n\t\r\n\t.no-notification {\r\n\t    padding: 10px;\r\n\t    color: #888;\r\n\t    text-align: center;\r\n\t}\r\n\t\r\n\t#notification-box #notification-list li {\r\n\t    padding: 10px;\r\n\t    cursor: pointer;\r\n\t    display: flex;\r\n\t    justify-content: space-between;\r\n\t    align-items: center;\r\n\t    border-bottom: 1px solid #eee;\r\n\t    transition: background 0.2s;\r\n\t    background-color: white;\r\n\t    white-space: nowrap;       \r\n\t  \toverflow: hidden;          /* 넘치는 텍스트 감춤 */\r\n\t  \ttext-overflow: ellipsis; \r\n\t}\r\n\t\r\n\t#notification-list li:hover {\r\n\t    background: #f9f9f9;\r\n\t}\r\n\t\r\n\t#notification-box h3 {\r\n\t    position: sticky;\r\n\t    top: -20px;\r\n\t    background: white;\r\n\t\tpadding: 10px;\r\n\t    margin: 0;\r\n\t    font-size: 1.2em;\r\n\t    z-index: 10;\r\n\t}\r\n\t\r\n\t.read-status {\r\n\t    font-size: 12px;\r\n\t    color: #888;\r\n\t    margin-left: 10px;\r\n\t}\r\n\t.no-notification {\r\n\t    text-align: center;\r\n\t    color: #999;\r\n\t    padding: 10px;\r\n\t}\r\n\t\r\n\t.circle {\r\n\t    display: inline-block;\r\n\t    width: 10px;\r\n\t    height: 10px;\r\n\t    border-radius: 50%;\r\n\t    margin-left: 5px;\r\n\t}\r\n\t.circle.read {\r\n\t    background-color: #ccc; \r\n\t}\r\n\t.circle.unread {\r\n\t    background-color: red;\r\n\t}\r\n\t\r\n\t#notification-header  div {\r\n\t\tdisplay: flex;\r\n\t\tgap: 20px;\r\n\t\tcursor: pointer;\r\n\t\tcolor: black;\r\n\t}\r\n\t\r\n\t\r\n\t.noti-message {\r\n\t  flex: 1;\r\n\t  white-space: nowrap;\r\n\t  overflow: hidden;\r\n\t  text-overflow: ellipsis;\r\n\t  color: #333;\r\n\t}\r\n</style>\r\n<script src=\"https://cdn.jsdelivr.net/npm/sweetalert2@11\"></script>\r\n<script src=\"https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js\"></script>\r\n<script src=\"https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js\"></script>\r\n<script src=\"/resources/js/common/web_socket.js\"></script>\r\n\r\n\t<script type=\"text/javascript\">\r\n\t\tSwal.fire({\r\n\t\t    icon: 'error',\r\n\t\t    title: '경고',\r\n\t\t    text: \"해당 기능에 접근할 권한이 없습니다.\",\r\n\t\t    confirmButtonText: '확인'\r\n\t\t});\r\n\t</script>\r\n\t\r\n\r\n\r\n<nav class=\"top-nav\">\r\n\t\r\n\r\n\r\n\r\n<!-- 정보변경 모달창 -->\r\n<div id=\"change-info-modal\" class=\"modal\">\r\n    <div class=\"modal-card sm\">\r\n        <div class=\"modal-head\">\r\n            <h2>정보 변경</h2>\r\n            <button type=\"button\" class=\"modal-close-btn\" data-modal-close>&times;</button>\r\n        </div>\r\n        \r\n        <div class=\"modal-body modal-form\">\r\n            <form id=\"changeInfoForm\" action=\"/admin/employeeManagement/modifyEmployeeInfo\" method=\"post\" >\r\n                 <input type=\"hidden\" name=\"_csrf\" value=\"a79ce8cd-46bf-4ff4-a6a5-89947d13c402\" />\r\n                <input type=\"hidden\" name=\"empIdx\" value=\"1\">\r\n                <!-- 사원 ID -->\r\n                <div class=\"field\">\r\n                    <label for=\"top_empNo\">사번</label>\r\n                    <input class=\"form-control\" type=\"text\" id=\"top_empNo\" name=\"empNo\" value=\"\" disabled>\r\n                </div>\r\n                <!-- 이름 -->\r\n                <div class=\"field\">\r\n                    <label for=\"top_empName\">이름</label>\r\n                    <input class=\"form-control\" type=\"text\" id=\"top_empName\" name=\"empName\" value=\"\" disabled>\r\n                </div>\r\n                <!-- 이름 -->\r\n                <div class=\"field\">\r\n                    <label for=\"top_departmentName\">부서</label>\r\n                    <input class=\"form-control\" type=\"text\" id=\"top_departmentName\" name=\"departmentName\" value=\"\" disabled>\r\n                </div>\r\n                <!-- 이름 -->\r\n                <div class=\"field\">\r\n                    <label for=\"top_teamName\">팀</label>\r\n                    <input class=\"form-control\" type=\"text\" id=\"top_teamName\" name=\"teamName\" value=\"\" disabled>\r\n                </div>\r\n                <!-- 이름 -->\r\n                <div class=\"field\">\r\n                    <label for=\"top_roleName\">직책</label>\r\n                    <input class=\"form-control\" type=\"text\" id=\"top_roleName\" name=\"roleName\" value=\"\" disabled>\r\n                </div>\r\n\t\t\t\t\r\n                <!-- 휴대폰 번호 -->\r\n                <div class=\"field\">\r\n\t\t\t\t    <label for=\"top_empPhone\">휴대폰 번호</label>\r\n\t\t\t\t    <input class=\"form-control\" type=\"text\" id=\"top_empPhone\" name=\"empPhone\" value=\"\" \r\n\t\t\t\t           readonly maxlength=\"13\" >\r\n\t\t\t\t</div>\r\n\r\n                <!-- 이메일 -->\r\n                <div class=\"field\">\r\n                    <label for=\"top_empEmail\">이메일</label>\r\n                    <input class=\"form-control\" type=\"email\" id=\"top_empEmail\" name=\"empEmail\" value=\"\" readonly>\r\n                </div>\r\n                \r\n                <!-- 입사일 -->\r\n                <div class=\"field\">\r\n                    <label for=\"top_hireDate\">입사일</label>\r\n                    <input class=\"form-control\" type=\"text\" id=\"top_hireDate\" name=\"hireDate\" value=\"\" disabled>\r\n                </div>\r\n\r\n                <!-- 비밀번호 (편집 모드에서만) -->\r\n                <div class=\"field edit-only\" style=\"display: none;\">\r\n                    <label for=\"empPassword1\">새 비밀번호</label>\r\n                    <input class=\"form-control\" type=\"password\" id=\"empPassword1\">\r\n                    <div id=\"passwordStrengthMsg\"></div>\r\n                    <label for=\"empPassword2\">새 비밀번호 확인</label>\r\n                    <input class=\"form-control\" type=\"password\" id=\"empPassword2\" name=\"empPassword\">\r\n                    <div id=\"passwordMatchMsg\"></div>\r\n                </div>\r\n            </form>\r\n        </div>\r\n        \r\n        <div class=\"modal-foot\">\r\n            <div class=\"view-only\">\r\n                <button type=\"button\" class=\"btn btn-update\">수정</button>\r\n            </div>\r\n            <div class=\"edit-only\" style=\"display: none;\">\r\n                <button type=\"submit\" form=\"changeInfoForm\" class=\"btn btn-primary\">저장</button>\r\n                <button type=\"button\" class=\"btn btn-secondary\" data-modal-close>취소</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    \r\n</div> \r\n\t<button id=\"sidebar-toggle\" class=\"sidebar-toggle\">&#9776;</button>\r\n\t<span class=\"site-title\">물류관리 ERP </span>\r\n\t<div class=\"top-nav-actions\" style=\"margin-left:auto; display:flex; align-items:center; gap:16px;\">\r\n\t\t<div class=\"profile-wrapper\">\r\n\t\t\t<a id=\"profile\" href=\"javascript:void(0)\" >\r\n\t\t\t\tadmin\r\n\t\t\t\t&#44288;&#47532;&#51088;\r\n\t\t\t</a>\r\n\t\t\t<script type=\"text/javascript\">\r\n\t\t\t\tconst role = \"최고관리자\";\r\n\t\t\t</script>\r\n\t\t\t<div id=\"employeeInfo\" class=\"profile-popover\" role=\"menu\" aria-hidden=\"true\" >\r\n\t\t\t\t<span class=\"changeInfo\"><button type=\"button\" class=\"btn btn-link\" data-modal-target=\"change-info-modal\"> 정보 변경</button></span>\r\n\t\t\t\t<span class=\"logout\" >\r\n\t\t\t\t\t<button type=\"button\" class=\"btn btn-secondary\" data-action=\"logout\">로그아웃</button>\r\n\t\t\t\t</span>\r\n\t\t\t\t<div class=\"darkmode-wrapper\" style=\"color: #e0e5e6;\">\r\n\t\t\t\t\t<span class=\"darkmode-label\">다크모드 :</span>\r\n\t\t\t\t\t<button id=\"dark-mode-toggle\" class=\"toggle-switch\" aria-label=\"다크모드\" style=\"text-align: right;\"></button><br>\t\r\n\t\t\t\t</div>\t\t\t\t\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t\t<div id=\"alarm-wrapper\">\r\n\t\t\t<a id=\"noti\" href=\"javascript:void(0)\" onclick=\"notification()\"><img src=\"/resources/images/alarm.png\" id=\"alarm-image\" /></a>\r\n\t\t\t<span id=\"alarm-badge\"></span>\r\n       \t\t<div id=\"notification-box\">\r\n\t\t\t\t<div id=\"notification-header\">\r\n\t\t\t\t\t<h3>알림</h3>\r\n\t\t\t\t\t<div>\r\n\t\t\t\t\t\t<a href=\"/alarm\">전체보기</a>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\t\t\t\t<ul id=\"notification-list\"></ul>\r\n       \t\t</div>\t\t\t\r\n\t\t</div>\t\t\t\r\n\t</div>\r\n</nav>\r\n\r\n\t\r\n\r\n<div class=\"dashboard-layout\">\r\n  <!-- 사이드바 -->\r\n\t<aside id=\"sidebar\" class=\"sidebar\">\r\n\t\t<ul>\r\n\t\t\t\r\n\t\t\t<li>\r\n\t\t\t\t<span>관리자페이지</span>\r\n<!-- \t\t\t\t<a href=\"\"><span>물류부서관리</span></a> -->\r\n\t\t\t\t<ul class=\"submenu\">\r\n\t\t\t\t\t<li><a href=\"/admin/employeeManage\">직원관리</a></li>\r\n\t\t\t\t\t<li><a href=\"/admin/preference/dept\">조직관리</a></li>\r\n\t\t\t\t\t<li><a href=\"/admin/preference/supplyCompany\">공급업체관리</a></li>\r\n\t\t\t\t\t<li><a href=\"/admin/preference/product\">상품관리</a></li>\r\n\t\t\t\t\t<li><a href=\"/admin/preference/supplyContract\">공급계약</a></li>\r\n\t\t\t\t\t<li><a href=\"/admin/preference/franchise\">지점관리</a></li>\r\n\t\t\t\t\t<li><a href=\"/admin/sysNoti\">시스템알림</a></li>\r\n\t\t\t\t</ul>\r\n\t\t\t</li>\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t<li>\r\n\t\t\t\t<a href=\"/inbound/main\"><span>입고 관리</span></a>\r\n\t\t\t\t<ul class=\"submenu\">\r\n\t\t\t        <li><a href=\"/inbound/main\">대시보드</a></li>\r\n\t\t\t        <li><a href=\"/inbound/management\">입고조회</a></li>\r\n\t\t\t        <li><a href=\"/inbound/inboundDetail\">입고조회 > 상세</a></li>\r\n\t\t\t        <li><a href=\"/inbound/inboundInspection\">입고조회 > 검수</a></li>\r\n\t\t\t        <li><a href=\"/inbound/inboundConfirm\">입고조회 > 확정</a></li>\r\n\t\t\t        <li><a href=\"/inbound/inboundRegister\">입고요청</a></li>\r\n\t\t\t    </ul>\r\n\t\t\t</li>\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t<li>\r\n\t\t\t\t<a href=\"/outbound\"><span>출고 관리</span></a>\r\n\t\t\t\t<ul class=\"submenu\">\r\n\t\t\t        <li><a href=\"/outbound/main\">대시보드</a></li>\r\n\t\t\t        <li><a href=\"/outbound/outboundManagement\">출고조회</a></li>\r\n\t\t\t        <li><a href=\"/outbound/outboundDetail\">출고조회 > 상세</a></li>\r\n\t\t\t        <li><a href=\"/outbound/outboundInspection\">출고조회 > 검수</a></li>\r\n\t\t\t        <li><a href=\"/outbound/outboundConfirm\">출고조회 > 확정</a></li>\r\n\t\t\t        <li><a href=\"/outbound/outboundRegister\">출고요청</a></li>\r\n\t\t\t        <li><a href=\"/outbound/outboundPicking\">출고피킹</a></li>\r\n\t\t\t    </ul>\r\n\t\t\t</li>\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t<li>\r\n\t\t\t\t<a href=\"/inventory\"><span>재고 현황</span></a>\r\n\t\t\t    <ul class=\"submenu\">\r\n\t\t\t        <li><a href=\"/inventory/stockCheck\">재고 조회/검수</a></li>\r\n\t\t\t        <li><a href=\"/inventory/productHistory\">제품 위치 기록</a></li>\r\n              <li><a href=\"/inventory/updateInventory\">재고 업데이트</a></li>\r\n              <li><a href=\"/inventory/updateWarehouse\">창고 업데이트</a></li>\r\n              <li><a href=\"/inventory/moveInventory\">재고를 옮기다</a></li>\r\n              <li><a href=\"/inventory/updatedInventory\">업데이트된 재고 테이블</a></li>\r\n              <li><a href=\"/inventory/inventoryToMove\">이동할 재고</a></li>\r\n\r\n              <li><a href=\"/inventory/qrScanner\">QR 스캐너</a></li>\r\n              <li><a href=\"/inventory/locationType\">로케이션 지정</a></li>\r\n              <li><a href=\"/inventory/stockCheck\">재고 조회/검수</a></li>\r\n\t\t\t  </ul>\r\n\t\t\t</li>\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t<li>\r\n\t\t\t\t<a href=\"/transport\"><span>운송관리</span></a>\r\n\t\t\t\t<ul class=\"submenu\">\r\n\t\t\t\t\t<li><a href=\"/transport/drivers\">기사관리</a></li>\r\n\t\t\t\t\t<li><a href=\"/transport/vehicle\">차량관리</a></li>\r\n\t\t\t\t\t<li><a href=\"/transport/dispatches\">배차관리</a></li>\r\n\t\t\t\t</ul>\r\n\t\t\t</li>\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t\t<li>\r\n\t\t\t\t\t<ul class=\"submenu\">\r\n\t\t\t\t\t\t<li><a href=\"/admin/dash\">통계</a></li>\r\n\t\t\t\t\t\t<li><a href=\"/admin/workingLog\">작업관리</a></li>\r\n\t\t\t\t\t</ul>\r\n\t\t\t\t</li>\r\n\t\t\t\r\n\t\t\t<li>\r\n\t\t\t\t<a href=\"/guide\"><span>가이드페이지</span></a>\r\n\t\t\t\t\r\n\t\t\t</li>\r\n      \r\n\t\t</ul>\r\n\t</aside>\r\n\r\n  <!-- 여기서부터 개별 페이지 내용 들어감 -->\r\n\r\n\t<!-- 반드시 content 안에서 시작 -->\r\n\t<section class=\"content\">\r\n\r\n\t\t<!-- 페이지 타이틀 -->\r\n\t\t<div class=\"d-flex justify-content-between align-items-center mb-2\">\r\n\t\t     <h1 class=\"card-title\" style=\"margin:0;\">출고관리</h1>\r\n\t\t</div>\r\n\r\n\t\t<!-- 간단 검색바 -->\r\n\t\t<div class=\"card mb-3 inbound-simple-search d-flex align-items-center p-3 gap-2\">\r\n\t\t    <input type=\"text\" class=\"form-control\" id=\"simpleItemKeyword\" placeholder=\"품목 코드/명 검색\" />\r\n\t\t    <button class=\"btn btn-primary btn-sm\" id=\"simpleSearchBtn\">검색</button>\r\n\t\t    <button class=\"btn btn-secondary btn-sm\" id=\"toggleDetailSearchBtn\">상세검색</button>\r\n\t\t</div>\r\n\t\t\r\n\t\t<!-- 검색/필터 -->\r\n\t\t<div class=\"card mb-4 inbound-filters\" id=\"detailSearchCard\" style=\"display:none;\">\r\n\t\t\t<div class=\"card-header d-flex justify-content-between align-items-center\">\r\n\t\t\t\t<div class=\"card-title\">검색 / 필터</div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<!-- 날짜 + 기준 -->\r\n\t\t\t<div class=\"row\">\r\n\t\t\t\t<div class=\"col-md-3\">\r\n\t\t\t\t\t<label class=\"form-label\">검색 기준</label>\r\n\t\t\t\t\t<select class=\"form-control search-select\" id=\"dateBasis\">\r\n\t\t\t\t\t\t<option value=\"start\" selected>시작일 기준</option>\r\n\t\t\t\t\t\t<option value=\"end\">종료일(완료일) 기준</option>\r\n\t\t\t\t\t\t<option value=\"range\">기간 기준</option>\r\n\t\t\t\t\t</select>\r\n\t\t\t\t</div>\r\n\r\n\t\t\t\t<div class=\"col-md-3 date-field date-start\">\r\n\t\t\t\t\t<label class=\"form-label\">출고 시작일</label>\r\n\t\t\t\t\t<input type=\"date\" class=\"form-control search-input\" id=\"inStartDate\" />\r\n\t\t\t\t</div>\r\n\r\n\t\t\t\t<div class=\"col-md-3 date-field date-end\" style=\"display:none;\">\r\n\t\t\t\t\t<label class=\"form-label\">출고 종료일(완료일)</label>\r\n\t\t\t\t\t<input type=\"date\" class=\"form-control search-input\" id=\"inEndDate\" />\r\n\t\t\t\t</div>\r\n\r\n\t\t\t\t<div class=\"col-md-3 date-field date-range\" style=\"display:none;\">\r\n\t\t\t\t\t<label class=\"form-label\">기간(시작)</label>\r\n\t\t\t\t\t<input type=\"date\" class=\"form-control search-input\" id=\"inRangeStart\" />\r\n\t\t\t\t</div>\r\n\t\t\t\t<div class=\"col-md-3 date-field date-range\" style=\"display:none;\">\r\n\t\t\t\t\t<label class=\"form-label\">기간(종료)</label>\r\n\t\t\t\t\t<input type=\"date\" class=\"form-control search-input\" id=\"inRangeEnd\" />\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<!-- 1줄: 창고 · 상태 · 품목 -->\r\n\t\t\t<div class=\"row\">\r\n\t\t\t\t<div class=\"col-md-3\">\r\n\t\t\t\t\t<label class=\"form-label\">창고</label>\r\n\t\t\t\t\t<select class=\"form-control search-select\" id=\"warehouse\">\r\n\t\t\t\t\t\t<option value=\"\">전체</option>\r\n\t\t\t\t\t\t<option>중앙창고</option>\r\n\t\t\t\t\t\t<option>동부창고</option>\r\n\t\t\t\t\t\t<option>서부창고</option>\r\n\t\t\t\t\t</select>\r\n\t\t\t\t</div>\r\n\t\t\t\t<div class=\"col-md-3\">\r\n\t\t\t\t\t<label class=\"form-label\">상태</label>\r\n\t\t\t\t\t<select class=\"form-control search-select\" id=\"status\">\r\n\t\t\t\t\t\t<option value=\"\">전체</option>\r\n\t\t\t\t\t\t<option value=\"PENDING\">대기</option>\r\n\t\t\t\t\t\t<option value=\"CONFIRMED\">확정</option>\r\n\t\t\t\t\t\t<option value=\"COMPLETED\">완료</option>\r\n\t\t\t\t\t</select>\r\n\t\t\t\t</div>\r\n\t\t\t\t<div class=\"col-md-3\">\r\n\t\t\t\t\t<label class=\"form-label\">품목 코드/명</label>\r\n\t\t\t\t\t<input type=\"text\" class=\"form-control search-input\" placeholder=\"예) SKU-0001\" id=\"itemKeyword\" />\r\n\t\t\t\t</div>\r\n\t\t\t\t<div class=\"col-md-3\"></div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<!-- 2줄: 공급업체만 -->\r\n\t\t\t<div class=\"row\">\r\n\t\t\t\t<div class=\"col-md-3\">\r\n\t\t\t\t\t<label class=\"form-label\">공급업체</label>\r\n\t\t\t\t\t<input type=\"text\" class=\"form-control search-input\" placeholder=\"업체명/코드 검색\" id=\"vendorKeyword\" />\r\n\t\t\t\t</div>\r\n\t\t\t\t<div class=\"col-md-9\"></div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<!-- 버튼 -->\r\n\t\t\t<div class=\"row\">\r\n\t\t\t\t<div class=\"col-md-12 d-flex align-items-center gap-2 mt-3\">\r\n\t\t\t\t\t<button class=\"btn btn-primary btn-search\">검색</button>\r\n\t\t\t\t\t<button class=\"btn btn-secondary btn-reset\">초기화</button>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\r\n\t\t\r\n\t\t<!-- 액션 바 (rail로 좌우 여백 통일) -->\r\n\t\t<div class=\"card\">\r\n\t\t    <div class=\"card-header d-flex justify-content-between align-items-center\">\r\n\t\t        <div class=\"card-title\">\r\n\t\t            출고 목록\r\n\t\t            <span class=\"text-muted\" style=\"font-size: 0.9em;\">검색결과: 총 <strong id=\"resultCount\"></strong>건</span>\r\n\t\t        </div>\r\n\t\t        <div class=\"d-flex gap-2\">\r\n\t\t\t\t\t<a href=\"/order/insert\" class=\"btn btn-primary btn-sm\">새 출고 등록</a>\r\n\t\t\t\t\t<a href=\"#\" id=\"btnReadyOutbound\" class=\"btn btn-primary btn-sm\">출고준비 처리</a>\r\n\t\t            <a href=\"#\" class=\"btn btn-secondary btn-sm\">엑셀 다운로드</a>\r\n\t\t\t\t\t<a href=\"#\" id=\"settings-button\" class=\"btn btn-secondary btn-sm\">설정</a>\r\n\t\t            <a href=\"#\" class=\"btn btn-secondary btn-sm\">선택삭제</a>\r\n\t\t        </div>\r\n\t\t    </div>\r\n\t\t\t<div class=\"table-responsive\">\r\n\t\t\t\t<table class=\"table\">\r\n\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t<th style=\"width:36px;\"><input type=\"checkbox\" class=\"select-all\" /></th>\r\n\t\t\t\t\t\t\t<th>출고번호</th>\r\n\t\t\t\t\t\t\t<th>출고일자</th>\r\n\t\t\t\t\t\t\t<th>출고위치</th>\r\n\t\t\t\t\t\t\t<th>프렌차이즈 업체</th>\r\n\t\t\t\t\t\t\t<th>상태</th>\r\n\t\t\t\t\t\t\t<th>품목수</th>\r\n<!-- \t\t\t\t\t\t\t<th>총수량</th> -->\r\n\t\t\t\t\t\t\t<th>출고예정수량</th>\r\n\t\t\t\t\t\t\t<th>담당자</th>\r\n\t\t\t\t\t\t\t<th>비고</th>\r\n\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t</thead>\r\n\t<!-- ==============================================================================================================리스트 존========= -->\t\t\t\t\r\n\t\t\t\t\t<tbody>\r\n\t\t\t\t\t    <!-- 출력 카운터 초기화 -->\r\n\t\t\t\t\t    \r\n\t\t\t\t\t\r\n\t\t\t\t\t    \r\n\t\t\t\t\t        \r\n\t\t\t\t\t            <tr>\r\n\t\t\t\t\t                <!-- 체크박스 -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    <input type=\"checkbox\" name=\"selectedOrder\" value=\"997626\" />\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고번호 (링크) -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    \r\n\t\t\t\t\t                    <a href=\"/outbound/outboundDetail?obwaitNumber=OB20250909-006&outboundOrderIdx=997626\" class=\"link-order-number\">\r\n\t\t\t\t\t                        OB20250909-006\r\n\t\t\t\t\t                    </a>\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고일자 -->\r\n\t\t\t\t\t                <td>2025-09-11</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고위치 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 주문프랜차이즈 -->\r\n\t\t\t\t\t                <td>부산남구 키아누커피 6지점</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 상태 -->\r\n\t\t\t\t\t                <td>대기</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 품목수 -->\r\n\t\t\t\t\t                <td>3</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고예정수량 -->\r\n\t\t\t\t\t                <td>200</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 담당자 -->\r\n\t\t\t\t\t                <td class=\"manager-cell\" data-modal-target=\"changeManager\">\r\n\t\t\t\t\t\t\t\t\t    -\r\n\t\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 비고 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t            </tr>\r\n\t\t\t\t\t\r\n\t\t\t\t\t            <!-- 출력 카운트 증가 -->\r\n\t\t\t\t\t            \r\n\t\t\t\t\t        \r\n\t\t\t\t\t    \r\n\t\t\t\t\t        \r\n\t\t\t\t\t            <tr>\r\n\t\t\t\t\t                <!-- 체크박스 -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    <input type=\"checkbox\" name=\"selectedOrder\" value=\"997620\" />\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고번호 (링크) -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    \r\n\t\t\t\t\t                    <a href=\"/outbound/outboundDetail?obwaitNumber=OB20250909-005&outboundOrderIdx=997620\" class=\"link-order-number\">\r\n\t\t\t\t\t                        OB20250909-005\r\n\t\t\t\t\t                    </a>\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고일자 -->\r\n\t\t\t\t\t                <td>2025-09-11</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고위치 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 주문프랜차이즈 -->\r\n\t\t\t\t\t                <td>부산남구 키아누커피 2지점</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 상태 -->\r\n\t\t\t\t\t                <td>대기</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 품목수 -->\r\n\t\t\t\t\t                <td>2</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고예정수량 -->\r\n\t\t\t\t\t                <td>250</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 담당자 -->\r\n\t\t\t\t\t                <td class=\"manager-cell\" data-modal-target=\"changeManager\">\r\n\t\t\t\t\t\t\t\t\t    -\r\n\t\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 비고 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t            </tr>\r\n\t\t\t\t\t\r\n\t\t\t\t\t            <!-- 출력 카운트 증가 -->\r\n\t\t\t\t\t            \r\n\t\t\t\t\t        \r\n\t\t\t\t\t    \r\n\t\t\t\t\t        \r\n\t\t\t\t\t            <tr>\r\n\t\t\t\t\t                <!-- 체크박스 -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    <input type=\"checkbox\" name=\"selectedOrder\" value=\"997619\" />\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고번호 (링크) -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    \r\n\t\t\t\t\t                    <a href=\"/outbound/outboundDetail?obwaitNumber=OB20250909-004&outboundOrderIdx=997619\" class=\"link-order-number\">\r\n\t\t\t\t\t                        OB20250909-004\r\n\t\t\t\t\t                    </a>\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고일자 -->\r\n\t\t\t\t\t                <td>2025-09-11</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고위치 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 주문프랜차이즈 -->\r\n\t\t\t\t\t                <td>부산진구 키아누커피2지점</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 상태 -->\r\n\t\t\t\t\t                <td>대기</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 품목수 -->\r\n\t\t\t\t\t                <td>1</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고예정수량 -->\r\n\t\t\t\t\t                <td>150</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 담당자 -->\r\n\t\t\t\t\t                <td class=\"manager-cell\" data-modal-target=\"changeManager\">\r\n\t\t\t\t\t\t\t\t\t    -\r\n\t\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 비고 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t            </tr>\r\n\t\t\t\t\t\r\n\t\t\t\t\t            <!-- 출력 카운트 증가 -->\r\n\t\t\t\t\t            \r\n\t\t\t\t\t        \r\n\t\t\t\t\t    \r\n\t\t\t\t\t        \r\n\t\t\t\t\t            <tr>\r\n\t\t\t\t\t                <!-- 체크박스 -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    <input type=\"checkbox\" name=\"selectedOrder\" value=\"997618\" />\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고번호 (링크) -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    \r\n\t\t\t\t\t                    <a href=\"/outbound/outboundDetail?obwaitNumber=OB20250909-003&outboundOrderIdx=997618\" class=\"link-order-number\">\r\n\t\t\t\t\t                        OB20250909-003\r\n\t\t\t\t\t                    </a>\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고일자 -->\r\n\t\t\t\t\t                <td>2025-09-11</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고위치 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 주문프랜차이즈 -->\r\n\t\t\t\t\t                <td>부산진구 키아누커피3지점</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 상태 -->\r\n\t\t\t\t\t                <td>대기</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 품목수 -->\r\n\t\t\t\t\t                <td>2</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고예정수량 -->\r\n\t\t\t\t\t                <td>600</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 담당자 -->\r\n\t\t\t\t\t                <td class=\"manager-cell\" data-modal-target=\"changeManager\">\r\n\t\t\t\t\t\t\t\t\t    -\r\n\t\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 비고 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t            </tr>\r\n\t\t\t\t\t\r\n\t\t\t\t\t            <!-- 출력 카운트 증가 -->\r\n\t\t\t\t\t            \r\n\t\t\t\t\t        \r\n\t\t\t\t\t    \r\n\t\t\t\t\t        \r\n\t\t\t\t\t            <tr>\r\n\t\t\t\t\t                <!-- 체크박스 -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    <input type=\"checkbox\" name=\"selectedOrder\" value=\"997617\" />\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고번호 (링크) -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    \r\n\t\t\t\t\t                    <a href=\"/outbound/outboundDetail?obwaitNumber=OB20250909-002&outboundOrderIdx=997617\" class=\"link-order-number\">\r\n\t\t\t\t\t                        OB20250909-002\r\n\t\t\t\t\t                    </a>\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고일자 -->\r\n\t\t\t\t\t                <td>2025-09-11</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고위치 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 주문프랜차이즈 -->\r\n\t\t\t\t\t                <td>부산진구 키아누커피3지점</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 상태 -->\r\n\t\t\t\t\t                <td>대기</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 품목수 -->\r\n\t\t\t\t\t                <td>1</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고예정수량 -->\r\n\t\t\t\t\t                <td>150</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 담당자 -->\r\n\t\t\t\t\t                <td class=\"manager-cell\" data-modal-target=\"changeManager\">\r\n\t\t\t\t\t\t\t\t\t    -\r\n\t\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 비고 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t            </tr>\r\n\t\t\t\t\t\r\n\t\t\t\t\t            <!-- 출력 카운트 증가 -->\r\n\t\t\t\t\t            \r\n\t\t\t\t\t        \r\n\t\t\t\t\t    \r\n\t\t\t\t\t        \r\n\t\t\t\t\t            <tr>\r\n\t\t\t\t\t                <!-- 체크박스 -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    <input type=\"checkbox\" name=\"selectedOrder\" value=\"997616\" />\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고번호 (링크) -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    \r\n\t\t\t\t\t                    <a href=\"/outbound/outboundDetail?obwaitNumber=OB20250909-001&outboundOrderIdx=997616\" class=\"link-order-number\">\r\n\t\t\t\t\t                        OB20250909-001\r\n\t\t\t\t\t                    </a>\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고일자 -->\r\n\t\t\t\t\t                <td>2025-09-11</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고위치 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 주문프랜차이즈 -->\r\n\t\t\t\t\t                <td>부산남구 키아누커피 2지점</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 상태 -->\r\n\t\t\t\t\t                <td>대기</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 품목수 -->\r\n\t\t\t\t\t                <td>2</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고예정수량 -->\r\n\t\t\t\t\t                <td>350</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 담당자 -->\r\n\t\t\t\t\t                <td class=\"manager-cell\" data-modal-target=\"changeManager\">\r\n\t\t\t\t\t\t\t\t\t    -\r\n\t\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 비고 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t            </tr>\r\n\t\t\t\t\t\r\n\t\t\t\t\t            <!-- 출력 카운트 증가 -->\r\n\t\t\t\t\t            \r\n\t\t\t\t\t        \r\n\t\t\t\t\t    \r\n\t\t\t\t\t        \r\n\t\t\t\t\t            <tr>\r\n\t\t\t\t\t                <!-- 체크박스 -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    <input type=\"checkbox\" name=\"selectedOrder\" value=\"997615\" />\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고번호 (링크) -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    \r\n\t\t\t\t\t                    <a href=\"/outbound/outboundDetail?obwaitNumber=OB20250908-002&outboundOrderIdx=997615\" class=\"link-order-number\">\r\n\t\t\t\t\t                        OB20250908-002\r\n\t\t\t\t\t                    </a>\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고일자 -->\r\n\t\t\t\t\t                <td>2025-09-10</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고위치 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 주문프랜차이즈 -->\r\n\t\t\t\t\t                <td>부산진구 키아누커피1지점</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 상태 -->\r\n\t\t\t\t\t                <td>배차완료</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 품목수 -->\r\n\t\t\t\t\t                <td>3</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고예정수량 -->\r\n\t\t\t\t\t                <td>150</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 담당자 -->\r\n\t\t\t\t\t                <td class=\"manager-cell\" data-modal-target=\"changeManager\">\r\n\t\t\t\t\t\t\t\t\t    -\r\n\t\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 비고 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t            </tr>\r\n\t\t\t\t\t\r\n\t\t\t\t\t            <!-- 출력 카운트 증가 -->\r\n\t\t\t\t\t            \r\n\t\t\t\t\t        \r\n\t\t\t\t\t    \r\n\t\t\t\t\t        \r\n\t\t\t\t\t            <tr>\r\n\t\t\t\t\t                <!-- 체크박스 -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    <input type=\"checkbox\" name=\"selectedOrder\" value=\"997613\" />\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고번호 (링크) -->\r\n\t\t\t\t\t                <td>\r\n\t\t\t\t\t                    \r\n\t\t\t\t\t                    <a href=\"/outbound/outboundDetail?obwaitNumber=OB20250908-001&outboundOrderIdx=997613\" class=\"link-order-number\">\r\n\t\t\t\t\t                        OB20250908-001\r\n\t\t\t\t\t                    </a>\r\n\t\t\t\t\t                </td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고일자 -->\r\n\t\t\t\t\t                <td>2025-09-10</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고위치 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 주문프랜차이즈 -->\r\n\t\t\t\t\t                <td>부산진구 키아누커피1지점</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 상태 -->\r\n\t\t\t\t\t                <td>배차완료</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 품목수 -->\r\n\t\t\t\t\t                <td>2</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 출고예정수량 -->\r\n\t\t\t\t\t                <td>100</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 담당자 -->\r\n\t\t\t\t\t                <td class=\"manager-cell\" data-modal-target=\"changeManager\">\r\n\t\t\t\t\t\t\t\t\t    -\r\n\t\t\t\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\r\n\t\t\t\t\t                <!-- 비고 -->\r\n\t\t\t\t\t                <td>-</td>\r\n\t\t\t\t\t            </tr>\r\n\t\t\t\t\t\r\n\t\t\t\t\t            <!-- 출력 카운트 증가 -->\r\n\t\t\t\t\t            \r\n\t\t\t\t\t        \r\n\t\t\t\t\t    \r\n\t\t\t\t\t\r\n\t\t\t\t\t    <!-- 출력된 행이 하나도 없을 경우 안내문 -->\r\n\t\t\t\t\t    \r\n\t\t\t\t\t</tbody>\r\n\r\n\t<!-- ==============================================================================================================리스트 존========= -->\t\t\t\t\r\n\t\t\t\t</table>\r\n\t\t\t</div>\r\n\t\r\n\t\t\t<div class=\"d-flex justify-content-between align-items-center p-3\">\r\n\t\t\t\t<div class=\"text-muted\">페이지 1 / 13</div>\r\n\t\t\t\t<div class=\"d-flex gap-2\">\r\n\t\t\t\t\t<a href=\"#\" class=\"btn btn-secondary btn-sm\">« 처음</a>\r\n\t\t\t\t\t<a href=\"#\" class=\"btn btn-secondary btn-sm\">‹ 이전</a>\r\n\t\t\t\t\t<a href=\"#\" class=\"btn btn-primary btn-sm\">1</a>\r\n\t\t\t\t\t<a href=\"#\" class=\"btn btn-secondary btn-sm\">2</a>\r\n\t\t\t\t\t<a href=\"#\" class=\"btn btn-secondary btn-sm\">3</a>\r\n\t\t\t\t\t<a href=\"#\" class=\"btn btn-secondary btn-sm\">다음 ›</a>\r\n\t\t\t\t\t<a href=\"#\" class=\"btn btn-secondary btn-sm\">끝 »</a>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\r\n\t</section>\r\n\t\r\n\r\n<!DOCTYPE html>\r\n<div id=\"changeManager\" class=\"modal\" aria-hidden=\"true\">\r\n\t<div class=\"modal-card md\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"changeManagerTitle\">\r\n\t\t<div class=\"modal-head\">\r\n\t\t\t<h3 id=\"changeManagerTitle\" class=\"card-title\">담당자 변경</h3>\r\n\t\t\t<button type=\"button\" class=\"modal-close-btn\" aria-label=\"닫기\" onclick=\"ModalManager.closeModalById('changeManager')\">&times;</button>\r\n\t\t</div>\r\n\t\t<div class=\"modal-body\">\r\n\t\t\t<form id=\"changeManagerForm\" class=\"form\">\r\n\t\t\t\t<div class=\"field\">\r\n\t\t\t\t\t<label for=\"manager\" class=\"form-label\">새 담당자</label>\r\n\t\t\t\t\t<input type=\"text\" id=\"manager\" name=\"manager\" class=\"form-control\" />\r\n\t\t\t\t</div>\r\n\t\t\t</form>\r\n\t\t</div>\r\n\t\t<div class=\"modal-foot\">\r\n\t\t\t<button type=\"button\" class=\"btn btn-cancel\" onclick=\"ModalManager.closeModalById('changeManager')\">취소</button>\r\n\t\t\t<button type=\"submit\" form=\"changeManagerForm\" class=\"btn btn-primary\">변경</button>\r\n\t\t</div>\r\n\t</div>\r\n</div>\r\n\r\n\t<script src=\"/resources/js/common/common.js\"></script>\r\n\t<script src=\"/resources/js/outbound/management.js\"></script>\r\n</body>\r\n</html>\r\n "setRequestHeader: ƒ (e,t)state: ƒ ()status: 200statusCode: ƒ (e)statusText: "parsererror"then: ƒ (t,n,r)[[Prototype]]: Object
+(anonymous) @ management.js:30
+c @ jquery-3.6.0.min.js:2
+fireWith @ jquery-3.6.0.min.js:2
+l @ jquery-3.6.0.min.js:2
+(anonymous) @ jquery-3.6.0.min.js:2
+XMLHttpRequest.send
+send @ jquery-3.6.0.min.js:2
+ajax @ jquery-3.6.0.min.js:2
+ajaxPost @ common.js:220
+(anonymous) @ management.js:19
+dispatch @ jquery-3.6.0.min.js:2
+v.handle @ jquery-3.6.0.min.js:2Understand this error
+ChatGPT의 말:
+
+47s 동안 생각함
+좋아, 로그/응답 캡처가 핵심을 다 말해줬어.
+
+결론 (원인)
+AJAX 응답 status: 200, statusText: "parsererror", responseText에는 전체 HTML 페이지가 들어 있음.
+
+그 HTML 안에 “해당 기능에 접근할 권한이 없습니다.” SweetAlert 스크립트가 포함.
+
+즉, /outbound/updateStatusReady 요청이 JSON이 아니라 “권한 없음(AccessDenied)” HTML 페이지로 응답되었고, jQuery가 JSON으로 파싱하려다 parsererror가 난 것.
+
+왜 403이 아니라 200인가?
+프로젝트의 AccessDenied 처리(전역 예외/뷰 리졸버)에서 HTML 오류 페이지를 200으로 렌더링하고 있기 때문이야. 그래서 프론트는 “성공한 HTML”을 JSON으로 파싱하려다 실패 → parsererror.
+
+해결 순서 (빠르게 적용)
+1단계: 권한 부여 (가장 먼저)
+로그상 현재 계정은 INBOUND_READ/WRITE만 있는 것으로 보여. /outbound/**는 OUTBOUND_READ 또는 OUTBOUND_WRITE 권한이 필요해. 계정에 OUTBOUND_WRITE(또는 READ)를 추가해.
+
+예시(SQL) — 너의 규칙대로 테이블명 대문자 가정:
+
+-- 공통코드가 이미 존재한다고 가정: ('OUTBOUND_READ'), ('OUTBOUND_WRITE')
+
+-- 사원-권한 매핑 테이블(예시명): EMPLOYEE_COMMON_CODE(emp_idx, common_code)
+-- 관리자(emp_idx=1)에게 OUTBOUND 권한 부여
+INSERT INTO EMPLOYEE_COMMON_CODE (emp_idx, common_code)
+VALUES (1, 'OUTBOUND_READ'), (1, 'OUTBOUND_WRITE');
+너희 스키마에서 매핑 테이블명이 다르면 거기에 맞춰 실행해.
+적용 후 로그아웃 → 재로그인하고 다시 클릭.
+
+2단계: CSRF/요청 헤더 점검 (동시에 해두면 안전)
+Spring Security CSRF를 쓰면 AJAX에 토큰을 실어야 해. common.js의 ajaxPost가 이미 처리 중일 수도 있지만, 확실히 하자.
+
+// 공통 초기화(한번만)
+$.ajaxSetup({
+	headers: {
+		'Accept': 'application/json' // 서버에게 JSON 응답을 기대함을 명시
+	}
+});
+
+// meta/cookie에서 CSRF 꺼내 헤더 추가 (네 프로젝트 방식에 맞춰 하나 선택)
+function csrfHeader() {
+	// 1) meta tag 방식
+	var token = $('meta[name="_csrf"]').attr('content');
+	var header = $('meta[name="_csrf_header"]').attr('content');
+	var h = {};
+	if (token && header) h[header] = token;
+	return h;
+}
+// ajaxPost 내부에 병합
+function ajaxPost(url, body){
+	return $.ajax({
+		url: url,
+		method: 'POST',
+		data: JSON.stringify(body),
+		contentType: 'application/json; charset=utf-8',
+		dataType: 'json',
+		headers: Object.assign({'Accept':'application/json'}, csrfHeader())
+	});
+}
+3단계: 보안 설정에서 AJAX일 때 JSON 403을 반환하도록 고치기 (강력 추천)
+지금처럼 HTML 오류 페이지(200)를 돌리면, 앞으로도 AJAX는 계속 parsererror가 날 수 있어. AJAX 요청에 한해 JSON으로 403을 돌려 프론트가 정상 처리하게 만들자.
+
+(Java Config 예시)
+http.exceptionHandling()
+    .authenticationEntryPoint((req, res, ex) -> {
+        boolean ajax = "XMLHttpRequest".equals(req.getHeader("X-Requested-With"))
+                    || (req.getHeader("Accept") != null && req.getHeader("Accept").contains("application/json"));
+        if (ajax) {
+            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            res.setContentType("application/json;charset=UTF-8");
+            res.getWriter().write("{\"ok\":false,\"message\":\"로그인이 필요합니다.\"}");
+        } else {
+            res.sendRedirect("/login");
+        }
+    })
+    .accessDeniedHandler((req, res, ex) -> {
+        boolean ajax = "XMLHttpRequest".equals(req.getHeader("X-Requested-With"))
+                    || (req.getHeader("Accept") != null && req.getHeader("Accept").contains("application/json"));
+        if (ajax) {
+            res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            res.setContentType("application/json;charset=UTF-8");
+            res.getWriter().write("{\"ok\":false,\"message\":\"해당 기능에 접근할 권한이 없습니다.\"}");
+        } else {
+            res.sendRedirect("/error/403");
+        }
+    });
+(XML 사용 중이라면 핵심은 동일)
+커스텀 AccessDeniedHandler/AuthenticationEntryPoint를 빈으로 등록하고 <http>에 연결.
+
+내부 로직은 위와 똑같이 AJAX 식별 → JSON 401/403 응답.
+
+4단계: 프론트 방어 코드 (혹시 모를 HTML 응답 방어)
+네 management.js의 fail()에서 **HTML 응답(컨텐트 타입 text/html 또는 <html 포함)**을 감지해 안내하도록 보강해.
+
+req.fail(function(xhr){
+	const ct = (xhr.getResponseHeader('Content-Type') || '').toLowerCase();
+	const body = xhr.responseText || '';
+	if (ct.includes('text/html') || body.trim().startsWith('<!DOCTYPE html') || body.includes('<html')) {
+		// 서버가 HTML 에러 페이지를 보낸 상황 (권한/인증 문제 등)
+		(showError || alert)('권한 또는 인증 문제로 요청이 거부되었습니다.');
+		// 필요 시 리다이렉트
+		// location.href = '/login';
+		return;
+	}
+	(showError || alert)('서버 오류: ' + (xhr.status || ''));
+	console.error(xhr);
+});
+5단계: 엔드포인트 소비 타입 일치 (참고)
+컨트롤러가 @RequestParam List<Long> orderIdxList를 받으면 프론트는 x-www-form-urlencoded(+ traditional:true)로,
+@RequestBody면 JSON으로. 둘 다 가능하도록 이미 폴백 코드를 넣어뒀지만, 하나로 정해서 쓰는 게 좋아.
+
+권장(쓰기 작업): JSON
+
+@PostMapping(path="/outbound/updateStatusReady", consumes="application/json", produces="application/json")
+@ResponseBody
+public Map<String,Object> updateStatusReady(@RequestBody UpdateStatusReq req){
+    outboundService.markReady(req.getOrderIdxList());
+    return Map.of("ok", true, "count", req.getOrderIdxList().size());
+}
+체크리스트 요약
+ 계정에 OUTBOUND_WRITE(또는 READ) 권한 추가 → 재로그인
+
+ AJAX 요청에 Accept: application/json 및 CSRF 헤더 첨부
+
+ Spring Security에서 AJAX 요청은 JSON 401/403으로 반환하도록 설정
+
+ (옵션) 프론트 fail()에서 HTML 응답 방어
+
+ 컨트롤러 JSON 방식으로 고정
+
+위 두 가지(권한 부여 + AJAX 403 JSON)만 해도 지금 에러는 바로 해결돼. 적용하고 결과 알려줘. 다음 단계로 응답 스키마/토스트 메시지 일원화까지 정리해줄게.
+
+나의 말:
+이걸 다 포함한 management.js코드 줘
+ChatGPT의 말:
+아래 파일로 /resources/js/outbound/management.js 교체하면 됩니다.
+(자체 ajaxPost 포함, 위임형 클릭 바인딩, CSRF/권한 오류 JSON 처리, HTML 오류 응답 방어, JSON→FORM 폴백 모두 포함)
+
+// /resources/js/outbound/management.js
+(function($, w, d){
+	'use strict';
+
+	/* =========================================
+	 * 공통: 알림(스윗알럿 있으면 사용, 없으면 alert)
+	 * ======================================= */
+	function notify(type, msg){
+		if(w.Swal && typeof w.Swal.fire === 'function'){
+			var title = (type === 'success') ? '완료' : (type === 'warning' ? '경고' : '오류');
+			w.Swal.fire({ icon: type, title: title, text: msg, confirmButtonText: '확인' });
+		}else{
+			w.alert(msg);
+		}
+	}
+	function showSuccess(msg){ notify('success', msg); }
+	function showWarning(msg){ notify('warning', msg); }
+	function showError(msg){ notify('error', msg); }
+
+	/* =========================================
+	 * 공통: CSRF 헤더 추출 (meta / cookie / hidden input 지원)
+	 * ======================================= */
+	function getCsrfHeaders(){
+		var token = null, header = null;
+
+		var metaToken = d.querySelector('meta[name="_csrf"]');
+		var metaHeader = d.querySelector('meta[name="_csrf_header"]');
+		if(metaToken && metaHeader){
+			token = metaToken.getAttribute('content');
+			header = metaHeader.getAttribute('content');
+		}
+
+		if(!token){
+			// Spring Security 기본 쿠키명 (사용 중일 때)
+			var m = (d.cookie || '').match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+			if(m){
+				token = decodeURIComponent(m[1]);
+				header = header || 'X-XSRF-TOKEN';
+			}
+		}
+
+		if(!token){
+			// 페이지 내 hidden input 에서 추출 (폼에만 존재해도 OK)
+			var input = d.querySelector('input[name="_csrf"]');
+			if(input){
+				token = input.value;
+				header = header || 'X-CSRF-TOKEN';
+			}
+		}
+
+		var h = {};
+		if(token && header){ h[header] = token; }
+		return h;
+	}
+
+	/* =========================================
+	 * 공통: AJAX 기본 헤더 (JSON 선호 + AJAX 식별)
+	 * ======================================= */
+	$.ajaxSetup({
+		headers: {
+			'Accept': 'application/json',
+			'X-Requested-With': 'XMLHttpRequest'
+		}
+	});
+
+	/* =========================================
+	 * 공통: HTML 응답 감지 (권한없음/로그인만료 등)
+	 * ======================================= */
+	function isHtmlResponse(xhr){
+		try{
+			var ct = (xhr.getResponseHeader && xhr.getResponseHeader('Content-Type')) || '';
+			if(ct && ct.toLowerCase().indexOf('text/html') >= 0) return true;
+		}catch(e){/* ignore */}
+		var body = (xhr && xhr.responseText) ? xhr.responseText : '';
+		return /^\s*<!doctype html/i.test(body) || /<html[\s>]/i.test(body);
+	}
+
+	/* =========================================
+	 * 공통: 에러 처리 (401/403/HTML 응답/네트워크)
+	 * ======================================= */
+	function handleAjaxFail(xhr){
+		// 네트워크/중단
+		if(!xhr || typeof xhr.status === 'undefined' || xhr.status === 0){
+			showError('네트워크 오류가 발생했습니다.');
+			return;
+		}
+		// HTML 에러 페이지(권한/인증) 방어
+		if(isHtmlResponse(xhr)){
+			var body = xhr.responseText || '';
+			if(body.indexOf('해당 기능에 접근할 권한이 없습니다') >= 0 || xhr.status === 403){
+				showError('권한이 없습니다. 관리자에게 권한을 요청하세요.');
+			}else{
+				showError('인증이 필요하거나 세션이 만료되었습니다. 다시 로그인해 주세요.');
+			}
+			return;
+		}
+		// 표준 JSON 에러
+		if(xhr.status === 401){
+			showError('로그인이 필요합니다.');
+		}else if(xhr.status === 403){
+			showError('권한이 없습니다. 관리자에게 권한을 요청하세요.');
+		}else{
+			showError('서버 오류: ' + xhr.status);
+		}
+	}
+
+	/* =========================================
+	 * 공통: AJAX 헬퍼 (JSON / FORM 폴백)
+	 * ======================================= */
+	function postJson(url, payload){
+		return $.ajax({
+			url: url,
+			method: 'POST',
+			data: JSON.stringify(payload),
+			contentType: 'application/json; charset=utf-8',
+			dataType: 'json',
+			headers: getCsrfHeaders()
+		});
+	}
+
+	function postForm(url, params){
+		return $.ajax({
+			url: url,
+			method: 'POST',
+			data: params,                 // x-www-form-urlencoded
+			traditional: true,            // 배열 직렬화: key=1&key=2&...
+			dataType: 'json',
+			headers: getCsrfHeaders()
+		});
+	}
+
+	// JSON 우선, 400/415 시 FORM으로 자동 폴백
+	function ajaxPostAuto(url, payload){
+		return postJson(url, payload).fail(function(xhr){
+			if(xhr && (xhr.status === 400 || xhr.status === 415)){
+				// 서버가 @RequestParam 기반이면 FORM으로 재시도
+				var params = {};
+				// payload: { orderIdxList: [...] } 가정
+				Object.keys(payload || {}).forEach(function(k){
+					params[k] = payload[k];
+				});
+				return postForm(url, params);
+			}
+			// 그 외 실패는 그대로 전파
+			return $.Deferred().reject(xhr);
+		});
+	}
+
+	/* =========================================
+	 * 유틸: 선택된 출고건 수집
+	 * ======================================= */
+	function getSelectedOrderIdxList(){
+		return $("input[name='selectedOrder']:checked")
+			.map(function(){ return Number($(this).val()); })
+			.get();
+	}
+
+	/* =========================================
+	 * 위임형 바인딩: 출고준비 처리
+	 * ======================================= */
+	$(d).on('click', '#btnReadyOutbound', function(e){
+		e.preventDefault();
+
+		var $btn = $(this);
+		var selected = getSelectedOrderIdxList();
+
+		if(selected.length === 0){
+			showWarning('출고준비 처리할 출고건을 선택하세요.');
+			return;
+		}
+
+		$btn.prop('disabled', true).attr('aria-busy', 'true');
+
+		var payload = { orderIdxList: selected };
+
+		ajaxPostAuto('/outbound/updateStatusReady', payload)
+			.done(function(res){
+				// 정상 JSON 응답 기대: { ok: true, ... }
+				if(res && res.ok){
+					showSuccess('선택된 출고건이 출고준비 상태로 변경되었습니다.');
+					w.location.reload();
+					return;
+				}
+				var msg = (res && (res.message || res.error)) || '알 수 없는 오류';
+				showError('처리 실패: ' + msg);
+			})
+			.fail(function(xhr){
+				handleAjaxFail(xhr);
+				w.console && console.error('[updateStatusReady] fail', xhr);
+			})
+			.always(function(){
+				$btn.prop('disabled', false).removeAttr('aria-busy');
+			});
+	});
+
+	/* =========================================
+	 * 로드 시 디버그
+	 * ======================================= */
+	if(!$('#btnReadyOutbound').length){
+		console.warn('[management.js] #btnReadyOutbound not found at load time');
+	}
+})(jQuery, window, document);
+주의사항
+
+서버 컨트롤러는 아래 둘 중 하나로 맞춰주세요. (권장: JSON)
+
+JSON: @PostMapping(value="/outbound/updateStatusReady", consumes="application/json", produces="application/json") + @RequestBody
+
+FORM: @PostMapping(value="/outbound/updateStatusReady", produces="application/json") + @RequestParam("orderIdxList") List<Long>
+
+Spring Security에서 AJAX일 때 401/403을 JSON으로 반환하도록 AccessDeniedHandler/AuthenticationEntryPoint를 설정해두면 parsererror 없이 안정적으로 동작합니다.
+
+계정에 OUTBOUND_READ/OUTBOUND_WRITE 권한이 없으면 여전히 거부됩니다. (권한 부여 후 재로그인 필요)
+
+나의 말:
+package com.itwillbs.keanu_coffee.outbound.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.itwillbs.keanu_coffee.outbound.dto.OutboundManagementDTO;
+import com.itwillbs.keanu_coffee.outbound.dto.OutboundProductDetailDTO;
+import com.itwillbs.keanu_coffee.outbound.service.OutboundService;
+
+import lombok.RequiredArgsConstructor;
+
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/outbound")
+public class OutboundController {
+	
+	private final OutboundService outboundService; 
+	
+	// 대시보드
+	@GetMapping("/main")
+	public String showOutboundDashboard() {
+		return "/outbound/outboundDashboard";
+	}
+	
+	// 출고조회
+	@GetMapping("/outboundManagement")
+	public String showOutboundManagement(Model model) {
+		// 출고 리스트 조회
+		List<OutboundManagementDTO> obManagement = outboundService.getAllObManagementList();
+		model.addAttribute("obManagement", obManagement);
+		
+	    return "/outbound/outboundManagement";
+	}
+	
+	// 출고상세페이지
+	@GetMapping("/outboundDetail")
+	public String showOutboundDetail(@RequestParam("obwaitNumber") String obwaitNumber,
+	        						@RequestParam("outboundOrderIdx") Long outboundOrderIdx,
+	        						Model model) {
+
+	    // 출고 기본정보 조회
+	    OutboundManagementDTO obDetail = outboundService.getOutboundDetail(obwaitNumber, outboundOrderIdx);
+	    model.addAttribute("obDetail", obDetail);
+
+	    // 출고 품목 리스트 조회
+	    List<OutboundProductDetailDTO> obProductList = outboundService.getOutboundProductDetail(outboundOrderIdx);
+	    model.addAttribute("obProductList", obProductList);
+
+	    return "/outbound/outboundDetail";
+	}
+	
+	// 출고요청
+	@GetMapping("/outboundRegister")
+	public String showOutboundRegister() {
+		return "/outbound/outboundRegister";
+	}
+	
+	// 출고검수
+	@GetMapping("/outboundInspection")
+	public String showOutboundInspection() {
+		return "/outbound/outboundInspection";
+	}
+	
+	// 출고피킹
+	@GetMapping("/outboundPicking")
+	public String showOutboundPicking() {
+		return "/outbound/outboundPicking";
+	}
+	
+	// 출고확정
+	@GetMapping("/outboundConfirm")
+	public String showOutboundConfirm() {
+		return "/outbound/outboundConfirm";
+	}
+	
+	// 출고 상태변경(대기->출고준비)
+	@PostMapping(path = "/updateStatusReady", consumes = "application/json", produces = "application/json")
+	@ResponseBody
+	public Map<String, Object> updateStatusReady(@RequestBody Map<String, List<Long>> request) {
+		List<Long> orderIdxList = request.get("orderIdxList");
+
+		if (orderIdxList == null || orderIdxList.isEmpty()) {
+			return Map.of("ok", false, "message", "선택된 출고건이 없습니다.");
+		}
+
+		int updatedCount = outboundService.updateStatusReady(orderIdxList);
+
+		return Map.of("ok", true, "updatedCount", updatedCount);
+	}
+	
+
+}
+작동안해
+ChatGPT의 말:
+
+46s 동안 생각함
+스킬라, 컨트롤러는 정상이에요. 지금 “안 됨”의 직접 원인은 Spring Security가 /outbound/updateStatusReady를 가로막고 HTML(권한없음 페이지)을 200으로 돌려서 프론트가 JSON 파싱하다 parsererror가 나는 겁니다.
+→ 권한/응답 형식/CSRF 3곳만 정리하면 바로 됩니다.
+
+1) 권한 부여 (가장 먼저)
+/outbound/**는 OUTBOUND_READ/OUTBOUND_WRITE가 필요합니다. 작업 계정에 OUTBOUND_WRITE(또는 READ)를 부여하세요. (DB 스키마에 맞게 실행)
+
+-- 예시: 관리자(emp_idx=1)에게 출고 권한 부여
+INSERT INTO EMPLOYEE_COMMON_CODE (emp_idx, common_code)
+VALUES (1, 'OUTBOUND_READ'), (1, 'OUTBOUND_WRITE');
+권한 부여 후 로그아웃 → 재로그인.
+
+2) AJAX일 때 JSON 401/403으로 응답(핵심)
+HTML 오류 페이지(200)를 반환하지 말고, AJAX에는 JSON + 올바른 상태코드를 주도록 보안 설정을 추가합니다.
+
+(Java Config 사용 시)
+// SecurityConfig.java (Spring Security 5.8 스타일)
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+  @Bean
+  SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+      .csrf(csrf -> csrf  /* CSRF는 유지 (토큰을 헤더로 보냄) */ )
+      .authorizeHttpRequests(auth -> auth
+        .requestMatchers(HttpMethod.POST, "/outbound/updateStatusReady")
+          .hasAnyAuthority("OUTBOUND_WRITE","OUTBOUND_READ")
+        .requestMatchers("/outbound/**")
+          .hasAnyAuthority("OUTBOUND_READ","OUTBOUND_WRITE")
+        .anyRequest().authenticated()
+      )
+      .exceptionHandling(ex -> ex
+        .authenticationEntryPoint((req, res, e) -> {
+          boolean ajax = isAjax(req);
+          if (ajax) {
+            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            res.setContentType("application/json;charset=UTF-8");
+            res.getWriter().write("{\"ok\":false,\"message\":\"로그인이 필요합니다.\"}");
+          } else {
+            res.sendRedirect("/login");
+          }
+        })
+        .accessDeniedHandler((req, res, e) -> {
+          boolean ajax = isAjax(req);
+          if (ajax) {
+            res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            res.setContentType("application/json;charset=UTF-8");
+            res.getWriter().write("{\"ok\":false,\"message\":\"해당 기능에 접근할 권한이 없습니다.\"}");
+          } else {
+            res.sendRedirect("/error/403");
+          }
+        })
+      );
+    return http.build();
+  }
+
+  private boolean isAjax(HttpServletRequest req){
+    String xr = req.getHeader("X-Requested-With");
+    String accept = req.getHeader("Accept");
+    return "XMLHttpRequest".equals(xr) || (accept != null && accept.contains("application/json"));
+  }
+}
+(XML 사용 시 – 개념 동일)
+커스텀 AccessDeniedHandler / AuthenticationEntryPoint Bean을 등록하고 <http>의 entry-point-ref와 access-denied-handler-ref로 연결하세요. 내부 로직은 위 Java와 동일하게 AJAX → JSON 401/403을 반환하면 됩니다.
+
+3) 전역 CSRF 메타 태그(권장)
+페이지 공통 레이아웃(예: top.jsp head)에 아래 메타 2줄을 넣어두면 JS가 어디서든 쉽게 토큰을 읽을 수 있어요.
+
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+이미 히든 input에 _csrf가 있어도 무방하지만, 메타 태그가 가장 안정적입니다.
+
+4) 프론트엔드(최종본) management.js
+이미 내가 준 버전이면 충분합니다. 다시 한 번 완성본 붙여둘게요.
+(위임형 바인딩, CSRF 헤더 자동, JSON 선호 + FORM 폴백, HTML 응답 방어, 권한/인증 에러 메시지 포함)
+
+// /resources/js/outbound/management.js
+(function($, w, d){
+	'use strict';
+
+	function notify(type, msg){
+		if(w.Swal && typeof w.Swal.fire === 'function'){
+			var title = (type === 'success') ? '완료' : (type === 'warning' ? '경고' : '오류');
+			w.Swal.fire({ icon: type, title: title, text: msg, confirmButtonText: '확인' });
+		}else{
+			w.alert(msg);
+		}
+	}
+	function showSuccess(msg){ notify('success', msg); }
+	function showWarning(msg){ notify('warning', msg); }
+	function showError(msg){ notify('error', msg); }
+
+	function getCsrfHeaders(){
+		var token = null, header = null;
+		var metaToken = d.querySelector('meta[name="_csrf"]');
+		var metaHeader = d.querySelector('meta[name="_csrf_header"]');
+		if(metaToken && metaHeader){
+			token = metaToken.getAttribute('content');
+			header = metaHeader.getAttribute('content');
+		}
+		if(!token){
+			var m = (d.cookie || '').match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+			if(m){ token = decodeURIComponent(m[1]); header = header || 'X-XSRF-TOKEN'; }
+		}
+		if(!token){
+			var input = d.querySelector('input[name="_csrf"]');
+			if(input){ token = input.value; header = header || 'X-CSRF-TOKEN'; }
+		}
+		var h = {};
+		if(token && header){ h[header] = token; }
+		return h;
+	}
+
+	$.ajaxSetup({
+		headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+	});
+
+	function isHtmlResponse(xhr){
+		try{
+			var ct = (xhr.getResponseHeader && xhr.getResponseHeader('Content-Type')) || '';
+			if(ct && ct.toLowerCase().indexOf('text/html') >= 0) return true;
+		}catch(e){}
+		var body = (xhr && xhr.responseText) ? xhr.responseText : '';
+		return /^\s*<!doctype html/i.test(body) || /<html[\s>]/i.test(body);
+	}
+
+	function handleAjaxFail(xhr){
+		if(!xhr || typeof xhr.status === 'undefined' || xhr.status === 0){
+			showError('네트워크 오류가 발생했습니다.');
+			return;
+		}
+		if(isHtmlResponse(xhr)){
+			var body = xhr.responseText || '';
+			if(body.indexOf('해당 기능에 접근할 권한이 없습니다') >= 0 || xhr.status === 403){
+				showError('권한이 없습니다. 관리자에게 권한을 요청하세요.');
+			}else{
+				showError('인증이 필요하거나 세션이 만료되었습니다. 다시 로그인해 주세요.');
+			}
+			return;
+		}
+		if(xhr.status === 401){
+			showError('로그인이 필요합니다.');
+		}else if(xhr.status === 403){
+			showError('권한이 없습니다. 관리자에게 권한을 요청하세요.');
+		}else{
+			showError('서버 오류: ' + xhr.status);
+		}
+	}
+
+	function postJson(url, payload){
+		return $.ajax({
+			url: url,
+			method: 'POST',
+			data: JSON.stringify(payload),
+			contentType: 'application/json; charset=utf-8',
+			dataType: 'json',
+			headers: getCsrfHeaders()
+		});
+	}
+	function postForm(url, params){
+		return $.ajax({
+			url: url,
+			method: 'POST',
+			data: params,
+			traditional: true,
+			dataType: 'json',
+			headers: getCsrfHeaders()
+		});
+	}
+	function ajaxPostAuto(url, payload){
+		return postJson(url, payload).fail(function(xhr){
+			if(xhr && (xhr.status === 400 || xhr.status === 415)){
+				var params = {};
+				Object.keys(payload || {}).forEach(function(k){ params[k] = payload[k]; });
+				return postForm(url, params);
+			}
+			return $.Deferred().reject(xhr);
+		});
+	}
+
+	function getSelectedOrderIdxList(){
+		return $("input[name='selectedOrder']:checked")
+			.map(function(){ return Number($(this).val()); })
+			.get();
+	}
+
+	$(d).on('click', '#btnReadyOutbound', function(e){
+		e.preventDefault();
+
+		var $btn = $(this);
+		var selected = getSelectedOrderIdxList();
+
+		if(selected.length === 0){
+			showWarning('출고준비 처리할 출고건을 선택하세요.');
+			return;
+		}
+
+		$btn.prop('disabled', true).attr('aria-busy', 'true');
+
+		var payload = { orderIdxList: selected };
+
+		ajaxPostAuto('/outbound/updateStatusReady', payload)
+			.done(function(res){
+				if(res && res.ok){
+					showSuccess('선택된 출고건이 출고준비 상태로 변경되었습니다.');
+					w.location.reload();
+				}else{
+					var msg = (res && (res.message || res.error)) || '알 수 없는 오류';
+					showError('처리 실패: ' + msg);
+				}
+			})
+			.fail(function(xhr){
+				handleAjaxFail(xhr);
+				w.console && console.error('[updateStatusReady] fail', xhr);
+			})
+			.always(function(){
+				$btn.prop('disabled', false).removeAttr('aria-busy');
+			});
+	});
+
+	if(!$('#btnReadyOutbound').length){
+		console.warn('[management.js] #btnReadyOutbound not found at load time');
+	}
+})(jQuery, window, document);
+5) 컨트롤러(현재 코드 OK, 그대로 사용)
+@PostMapping(path = "/updateStatusReady", consumes = "application/json", produces = "application/json")
+@ResponseBody
+public Map<String, Object> updateStatusReady(@RequestBody Map<String, List<Long>> request) {
+    List<Long> orderIdxList = request.get("orderIdxList");
+    if (orderIdxList == null || orderIdxList.isEmpty()) {
+        return Map.of("ok", false, "message", "선택된 출고건이 없습니다.");
+    }
+    int updatedCount = outboundService.updateStatusReady(orderIdxList);
+    return Map.of("ok", true, "updatedCount", updatedCount);
+}
+최종 체크리스트
+ 사용자에게 OUTBOUND_WRITE/READ 권한 부여 후 재로그인
+
+ SecurityConfig에 AJAX용 JSON 401/403 응답 설정
+
+ 레이아웃에 CSRF 메타 태그 추가
+
+ 위 management.js로 교체
+
+이대로 하면 parsererror는 사라지고, 권한/세션 상태에 따라 프론트가 올바르게 안내합니다. 적용 후에도 문제면 개발자도구→Network 탭에서 /outbound/updateStatusReady의 응답 헤더/바디를 알려줘.
+
+나의 말:
+<meta name="_csrf" content="${_csrf.token}" />
+    <meta name="_csrf_header" content="${_csrf.headerName}" />
+이걸 헤드에 넣는 방식으로 처리했는데 
+
+이러면
+(function($, w, d){
+	'use strict';
+
+	/* =========================================
+	 * 공통: 알림(스윗알럿 있으면 사용, 없으면 alert)
+	 * ======================================= */
+	function notify(type, msg){
+		if(w.Swal && typeof w.Swal.fire === 'function'){
+			var title = (type === 'success') ? '완료' : (type === 'warning' ? '경고' : '오류');
+			w.Swal.fire({ icon: type, title: title, text: msg, confirmButtonText: '확인' });
+		}else{
+			w.alert(msg);
+		}
+	}
+	function showSuccess(msg){ notify('success', msg); }
+	function showWarning(msg){ notify('warning', msg); }
+	function showError(msg){ notify('error', msg); }
+
+	/* =========================================
+	 * 공통: CSRF 헤더 추출 (meta / cookie / hidden input 지원)
+	 * ======================================= */
+	function getCsrfHeaders(){
+		var token = null, header = null;
+
+		var metaToken = d.querySelector('meta[name="_csrf"]');
+		var metaHeader = d.querySelector('meta[name="_csrf_header"]');
+		if(metaToken && metaHeader){
+			token = metaToken.getAttribute('content');
+			header = metaHeader.getAttribute('content');
+		}
+
+		if(!token){
+			// Spring Security 기본 쿠키명 (사용 중일 때)
+			var m = (d.cookie || '').match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+			if(m){
+				token = decodeURIComponent(m[1]);
+				header = header || 'X-XSRF-TOKEN';
+			}
+		}
+
+		if(!token){
+			// 페이지 내 hidden input 에서 추출 (폼에만 존재해도 OK)
+			var input = d.querySelector('input[name="_csrf"]');
+			if(input){
+				token = input.value;
+				header = header || 'X-CSRF-TOKEN';
+			}
+		}
+
+		var h = {};
+		if(token && header){ h[header] = token; }
+		return h;
+	}
+
+	/* =========================================
+	 * 공통: AJAX 기본 헤더 (JSON 선호 + AJAX 식별)
+	 * ======================================= */
+	$.ajaxSetup({
+		headers: {
+			'Accept': 'application/json',
+			'X-Requested-With': 'XMLHttpRequest'
+		}
+	});
+
+	/* =========================================
+	 * 공통: HTML 응답 감지 (권한없음/로그인만료 등)
+	 * ======================================= */
+	function isHtmlResponse(xhr){
+		try{
+			var ct = (xhr.getResponseHeader && xhr.getResponseHeader('Content-Type')) || '';
+			if(ct && ct.toLowerCase().indexOf('text/html') >= 0) return true;
+		}catch(e){/* ignore */}
+		var body = (xhr && xhr.responseText) ? xhr.responseText : '';
+		return /^\s*<!doctype html/i.test(body) || /<html[\s>]/i.test(body);
+	}
+
+	/* =========================================
+	 * 공통: 에러 처리 (401/403/HTML 응답/네트워크)
+	 * ======================================= */
+	function handleAjaxFail(xhr){
+		// 네트워크/중단
+		if(!xhr || typeof xhr.status === 'undefined' || xhr.status === 0){
+			showError('네트워크 오류가 발생했습니다.');
+			return;
+		}
+		// HTML 에러 페이지(권한/인증) 방어
+		if(isHtmlResponse(xhr)){
+			var body = xhr.responseText || '';
+			if(body.indexOf('해당 기능에 접근할 권한이 없습니다') >= 0 || xhr.status === 403){
+				showError('권한이 없습니다. 관리자에게 권한을 요청하세요.');
+			}else{
+				showError('인증이 필요하거나 세션이 만료되었습니다. 다시 로그인해 주세요.');
+			}
+			return;
+		}
+		// 표준 JSON 에러
+		if(xhr.status === 401){
+			showError('로그인이 필요합니다.');
+		}else if(xhr.status === 403){
+			showError('권한이 없습니다. 관리자에게 권한을 요청하세요.');
+		}else{
+			showError('서버 오류: ' + xhr.status);
+		}
+	}
+
+	/* =========================================
+	 * 공통: AJAX 헬퍼 (JSON / FORM 폴백)
+	 * ======================================= */
+	function postJson(url, payload){
+		return $.ajax({
+			url: url,
+			method: 'POST',
+			data: JSON.stringify(payload),
+			contentType: 'application/json; charset=utf-8',
+			dataType: 'json',
+			headers: getCsrfHeaders()
+		});
+	}
+
+	function postForm(url, params){
+		return $.ajax({
+			url: url,
+			method: 'POST',
+			data: params,                 
+			traditional: true,           
+			dataType: 'json',
+			headers: getCsrfHeaders()
+		});
+	}
+
+	// JSON 우선, 400/415 시 FORM으로 자동 폴백
+	function ajaxPostAuto(url, payload){
+		return postJson(url, payload).fail(function(xhr){
+			if(xhr && (xhr.status === 400 || xhr.status === 415)){
+				// 서버가 @RequestParam 기반이면 FORM으로 재시도
+				var params = {};
+				// payload: { orderIdxList: [...] } 가정
+				Object.keys(payload || {}).forEach(function(k){
+					params[k] = payload[k];
+				});
+				return postForm(url, params);
+			}
+			// 그 외 실패는 그대로 전파
+			return $.Deferred().reject(xhr);
+		});
+	}
+
+	/* =========================================
+	 * 유틸: 선택된 출고건 수집
+	 * ======================================= */
+	function getSelectedOrderIdxList(){
+		return $("input[name='selectedOrder']:checked")
+			.map(function(){ return Number($(this).val()); })
+			.get();
+	}
+
+	/* =========================================
+	 * 위임형 바인딩: 출고준비 처리
+	 * ======================================= */
+	$(d).on('click', '#btnReadyOutbound', function(e){
+		e.preventDefault();
+
+		var $btn = $(this);
+		var selected = getSelectedOrderIdxList();
+
+		if(selected.length === 0){
+			showWarning('출고준비 처리할 출고건을 선택하세요.');
+			return;
+		}
+
+		$btn.prop('disabled', true).attr('aria-busy', 'true');
+
+		var payload = { orderIdxList: selected };
+
+		ajaxPostAuto('/outbound/updateStatusReady', payload)
+			.done(function(res){
+				// 정상 JSON 응답 기대: { ok: true, ... }
+				if(res && res.ok){
+					showSuccess('선택된 출고건이 출고준비 상태로 변경되었습니다.');
+					w.location.reload();
+					return;
+				}
+				var msg = (res && (res.message || res.error)) || '알 수 없는 오류';
+				showError('처리 실패: ' + msg);
+			})
+			.fail(function(xhr){
+				handleAjaxFail(xhr);
+				w.console && console.error('[updateStatusReady] fail', xhr);
+			})
+			.always(function(){
+				$btn.prop('disabled', false).removeAttr('aria-busy');
+			});
+	});
+
+	/* =========================================
+	 * 로드 시 디버그
+	 * ======================================= */
+	if(!$('#btnReadyOutbound').length){
+		console.warn('[management.js] #btnReadyOutbound not found at load time');
+	}
+})(jQuery, window, document);
+이 스크립트에서 빼도되는게 생기지않아?
+ChatGPT의 말:
+
+17s 동안 생각함
+맞아요. meta로 CSRF를 주입했다면, 쿠키/hidden input 폴백과 FORM 폴백(ajaxPostAuto) 은 빼도 됩니다. 컨트롤러가 consumes="application/json" 이므로 JSON 고정이 가장 깔끔해요. 아래는 불필요한 부분을 걷어낸 슬림 버전입니다.
+
+// /resources/js/outbound/management.js (slim)
+(function($, w, d){
+  'use strict';
+
+  /* ========== 알림 ========== */
+  function notify(type, msg){
+    if(w.Swal && typeof w.Swal.fire === 'function'){
+      var title = (type === 'success') ? '완료' : (type === 'warning' ? '경고' : '오류');
+      w.Swal.fire({ icon: type, title: title, text: msg, confirmButtonText: '확인' });
+    }else{
+      w.alert(msg);
+    }
+  }
+  var showSuccess = (m)=>notify('success', m);
+  var showWarning = (m)=>notify('warning', m);
+  var showError   = (m)=>notify('error',   m);
+
+  /* ========== CSRF: meta만 사용 ========== */
+  function getCsrfHeadersFromMeta(){
+    var token  = $('meta[name="_csrf"]').attr('content');
+    var header = $('meta[name="_csrf_header"]').attr('content');
+    var h = {};
+    if(token && header){ h[header] = token; }
+    return h;
+  }
+
+  /* ========== AJAX 기본 헤더 ========== */
+  $.ajaxSetup({
+    headers: Object.assign({
+      'Accept': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest'
+    }, getCsrfHeadersFromMeta())
+  });
+
+  /* ========== HTML 오류 응답 방어(권장) ========== */
+  function isHtmlResponse(xhr){
+    try{
+      var ct = (xhr.getResponseHeader && xhr.getResponseHeader('Content-Type')) || '';
+      if(ct && ct.toLowerCase().indexOf('text/html') >= 0) return true;
+    }catch(e){}
+    var body = (xhr && xhr.responseText) ? xhr.responseText : '';
+    return /^\s*<!doctype html/i.test(body) || /<html[\s>]/i.test(body);
+  }
+
+  function handleAjaxFail(xhr){
+    if(!xhr || typeof xhr.status === 'undefined' || xhr.status === 0){
+      showError('네트워크 오류가 발생했습니다.'); return;
+    }
+    if(isHtmlResponse(xhr)){
+      var body = xhr.responseText || '';
+      if(body.indexOf('해당 기능에 접근할 권한이 없습니다') >= 0 || xhr.status === 403){
+        showError('권한이 없습니다. 관리자에게 권한을 요청하세요.');
+      }else{
+        showError('인증이 필요하거나 세션이 만료되었습니다. 다시 로그인해 주세요.');
+      }
+      return;
+    }
+    if(xhr.status === 401)      showError('로그인이 필요합니다.');
+    else if(xhr.status === 403) showError('권한이 없습니다. 관리자에게 권한을 요청하세요.');
+    else                        showError('서버 오류: ' + xhr.status);
+  }
+
+  /* ========== JSON 전송 헬퍼(단일) ========== */
+  function postJson(url, payload){
+    return $.ajax({
+      url: url,
+      method: 'POST',
+      data: JSON.stringify(payload),
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json'
+    });
+  }
+
+  /* ========== 선택된 출고건 수집 ========== */
+  function getSelectedOrderIdxList(){
+    return $("input[name='selectedOrder']:checked")
+      .map(function(){ return Number($(this).val()); })
+      .get();
+  }
+
+  /* ========== 출고준비 처리(위임형) ========== */
+  $(d).on('click', '#btnReadyOutbound', function(e){
+    e.preventDefault();
+
+    var $btn = $(this);
+    var selected = getSelectedOrderIdxList();
+
+    if(selected.length === 0){
+      showWarning('출고준비 처리할 출고건을 선택하세요.');
+      return;
+    }
+
+    $btn.prop('disabled', true).attr('aria-busy', 'true');
+
+    postJson('/outbound/updateStatusReady', { orderIdxList: selected })
+      .done(function(res){
+        if(res && res.ok){
+          showSuccess('선택된 출고건이 출고준비 상태로 변경되었습니다.');
+          w.location.reload();
+        }else{
+          var msg = (res && (res.message || res.error)) || '알 수 없는 오류';
+          showError('처리 실패: ' + msg);
+        }
+      })
+      .fail(function(xhr){
+        handleAjaxFail(xhr);
+        w.console && console.error('[updateStatusReady] fail', xhr);
+      })
+      .always(function(){
+        $btn.prop('disabled', false).removeAttr('aria-busy');
+      });
+  });
+
+  /* ========== 로드 시 디버그 ========== */
+  if(!$('#btnReadyOutbound').length){
+    console.warn('[management.js] #btnReadyOutbound not found at load time');
+  }
+})(jQuery, window, document);
+무엇을 뺐나?
+쿠키/히든 인풋 기반 CSRF 폴백 제거 → meta만 사용.
+
+postForm / ajaxPostAuto 제거 → JSON 고정(컨트롤러 consumes="application/json" 기준).
+
+나머지는 안정성(권한/세션 만료 시 HTML 응답 방어, 위임형 바인딩) 유지.
+
+참고: 애플리케이션이 루트 외 컨텍스트(/keanu_coffee 등)라면, url 앞에 컨텍스트를 붙이세요.
+예: <meta name="ctx" content="${pageContext.request.contextPath}"> 추가 후 postJson( $('meta[name="ctx"]').attr('content') + '/outbound/updateStatusReady', … )
+
+나의 말:
+근데 이거 출고처리 하고 알림창뜨는데 너무 순식간에 없어지는데
+ChatGPT의 말:
+
+22s 동안 생각함
+맞아요—원인은 알림 뜨자마자 location.reload()가 바로 실행돼서예요.
+해결: “확인” 눌렀을 때만 새로고침 하도록 바꾸면 됩니다.
+
+바꿀 부분 (딱 이 블록만 교체)
+res.ok 처리 부분을 아래처럼 수정하세요.
+
+// 기존
+// if(res && res.ok){
+//   showSuccess('선택된 출고건이 출고준비 상태로 변경되었습니다.');
+//   w.location.reload();
+//   return;
+// }
+
+// 변경
+if (res && res.ok) {
+  if (w.Swal && typeof w.Swal.fire === 'function') {
+    Swal.fire({
+      icon: 'success',
+      title: '완료',
+      text: '선택된 출고건이 출고준비 상태로 변경되었습니다.',
+      confirmButtonText: '확인',
+      allowOutsideClick: false,
+      allowEscapeKey: false
+    }).then(() => w.location.reload());
+  } else {
+    alert('선택된 출고건이 출고준비 상태로 변경되었습니다.');
+    w.location.reload();
+  }
+  return;
+}
+이렇게 하면 사용자가 확인을 눌러야 페이지가 새로고침돼서, 알림이 사라지는 문제가 없어집니다.
+
+(선택) 토스트가 필요하면 타이머 늘리고 끝나고 새로고침
+빠르게 안내하고 자동 새로고침하고 싶다면:
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 2500,            // ← 원하는 시간으로
+  timerProgressBar: true
+});
+
+Toast.fire({ icon: 'success', title: '출고준비로 변경했습니다.' })
+  .then(() => w.location.reload());
+둘 중 하나로 적용해보세요.
+
+나의 말:
+postJson('/outbound/updateStatusReady', { orderIdxList: selected })
+      .done(function(res){
+        if(res && res.ok){
+          showSuccess('선택된 출고건이 출고준비 상태로 변경되었습니다.');
+          w.location.reload();
+        }else{
+          var msg = (res && (res.message || res.error)) || '알 수 없는 오류';
+          showError('처리 실패: ' + msg);
+        }
+      })
+      .fail(function(xhr){
+        handleAjaxFail(xhr);
+        w.console && console.error('[updateStatusReady] fail', xhr);
+      })
+      .always(function(){
+        $btn.prop('disabled', false).removeAttr('aria-busy');
+      });
+여기를 변경하라는건가?
+ChatGPT의 말:
+맞아요. 그 블록만 아래처럼 교체하세요. (확인 버튼을 누른 뒤에만 새로고침)
+
+postJson('/outbound/updateStatusReady', { orderIdxList: selected })
+  .done(function(res){
+    if (res && res.ok) {
+      if (w.Swal && typeof w.Swal.fire === 'function') {
+        Swal.fire({
+          icon: 'success',
+          title: '완료',
+          text: '선택된 출고건이 출고준비 상태로 변경되었습니다.',
+          confirmButtonText: '확인',
+          allowOutsideClick: false,
+          allowEscapeKey: false
+        }).then(() => w.location.reload());
+      } else {
+        alert('선택된 출고건이 출고준비 상태로 변경되었습니다.');
+        w.location.reload();
+      }
+      return;
+    }
+    var msg = (res && (res.message || res.error)) || '알 수 없는 오류';
+    showError('처리 실패: ' + msg);
+  })
+  .fail(function(xhr){
+    handleAjaxFail(xhr);
+    w.console && console.error('[updateStatusReady] fail', xhr);
+  })
+  .always(function(){
+    $btn.prop('disabled', false).removeAttr('aria-busy');
+  });
+이렇게 하면 알림이 사라지지 않고, 사용자가 확인을 누를 때만 페이지가 새로고침됩니다.
+
+나의 말:
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8" />
+	<title>입고 상세</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet" />
+	<link href="${pageContext.request.contextPath}/resources/css/inbound/inboundDetailAndInspection.css" rel="stylesheet" />
+	
+	
+	<!-- ============================================ 가격 계산 ============================================ -->
+	<script>
+		function formatCurrency(value) {
+		    return "₩ " + Number(value).toLocaleString();
+		}
+		
+		function recalculate(index) {
+		    const qtyInput = document.querySelector(input.quantity[data-index='${index}']);
+		    const priceInput = document.querySelector(input.unitPrice[data-index='${index}']);
+		
+		    const quantity = parseFloat(qtyInput.value) || 0;
+		    const unitPrice = parseFloat(priceInput.value) || 0;
+		
+		    const amount = quantity * unitPrice;
+		    const tax = amount * 0.1;
+		    const total = amount + tax;
+		
+		    document.querySelector(.amount[data-index='${index}']).textContent = formatCurrency(amount);
+		    document.querySelector(.tax[data-index='${index}']).textContent = formatCurrency(tax);
+		    document.querySelector(.totalPrice[data-index='${index}']).textContent = formatCurrency(total);
+		
+		    updateGrandTotal(); // 전체 합계도 갱신
+		}
+		
+		function updateGrandTotal() {
+		    let total = 0;
+		    document.querySelectorAll(".totalPrice").forEach(cell => {
+		        const text = cell.textContent.replace(/[^\d]/g, "");
+		        total += parseInt(text) || 0;
+		    });
+		    document.getElementById("grandTotalCell").textContent = formatCurrency(total);
+		}
+		
+		// 이벤트 연결
+		document.querySelectorAll("input.quantity, input.unitPrice").forEach(input => {
+		    input.addEventListener("input", () => {
+		        const index = input.getAttribute("data-index");
+		        recalculate(index);
+		    });
+		});
+	</script>
+	<!-- ============================================ 가격 계산 ============================================ -->
+	
+</head>
+ 
+<body data-context="${pageContext.request.contextPath}">
+	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
+
+	<section class="content inbound-detail" data-app-root="1">
+		<!-- 헤더 / 액션 -->
+		<div class="d-flex justify-content-between align-items-center mb-3">
+			<div>
+				<h1 class="card-title">입고 상세</h1>
+			</div>
+			<div class="page-actions">
+				<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
+				<button id="btnAssignManager" class="btn btn-primary btn-sm">담당자지정</button>
+				<button id="btnAssignLocation" class="btn btn-primary btn-sm">입고위치지정</button>
+				<button id="btnEdit" class="btn btn-primary btn-sm" data-ibwait-idx="${inboundDetailData.ibwaitIdx}"
+						data-order-number="${inboundDetailData.orderNumber}">검수</button>
+				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
+			</div>
+		</div>
+		
+		<!-- 상단 기본정보 카드 -->
+		<div class="card mb-3">
+			<div class="card-header d-flex justify-content-between align-items-center">
+				<div class="card-title">기본 정보</div>
+				<div class="text-muted">상태: 	<span class="badge badge-pending">
+													<c:out value="${inboundDetailData.inboundStatus}" default="-"/>
+												</span></div>
+			</div>
+			<div class="kv-grid">
+				<div class="kv-item">
+					<div class="kv-label">입고번호</div>
+					<div class="kv-value" style="display:flex; align-items:center; gap:.5rem;">
+				        <a id="inboundLink" class="inbound-link">
+							<c:out value="${inboundDetailData.ibwaitNumber}" default="-"/>
+				        </a>
+				    </div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">입고일자</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.arrivalDate}" default="-"/></div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">발주번호</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.orderNumber}" default="-"/></div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">입고구분</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.inboundClassification}" default="-"/></div>
+				</div>
+
+				<div class="kv-item">
+					<div class="kv-label">공급업체</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.supplierName}" default="-"/></div>
+				</div>
+				
+				<div class="kv-item">
+					<div class="kv-label">담당자</div>
+					<div class="kv-value">
+						<span id="fieldManagerName">
+							<c:out value="${inboundDetailData.managerName}" default="-"/>
+						</span>
+					</div>
+				</div>
+				
+				<div class="kv-item">
+					<div class="kv-label">발주번호(PO)</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.orderNumber}" default="-"/></div>
+				</div>
+				
+				<div class="kv-item">
+					<div class="kv-label">입고위치</div>
+					<div class="kv-value">
+						<span id="fieldInboundLocation">
+							<c:out value="${inboundDetailData.inboundLocation}" default="-"/>
+						</span>
+					</div>
+				</div>
+
+				<div class="kv-item">
+					<div class="kv-label">총 품목 수</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.numberOfItems}" default="-"/></div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">총 수량</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.quantity}" default="-"/></div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">총 금액</div>
+					<div class="kv-value"><fmt:formatNumber value="${inboundDetailData.totalPrice}" pattern="₩ #,##0" /></div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">비고</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.note}" default="-"/></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 타임라인 -->
+		<div class="card mb-3">
+			<div class="card-header">
+				<div class="card-title">상태 이력 (타임라인)</div>
+			</div>
+			<div class="timeline p-2">
+				<div class="timeline-step active">
+					<div class="timeline-dot"></div>
+					<div class="muted" style="font-size:.85rem;">등록</div>
+					<div style="font-size:.85rem;">2025-08-11<br/><span class="muted">홍길동</span></div>
+				</div>
+				<div class="timeline-step">
+					<div class="timeline-dot"></div>
+					<div class="muted" style="font-size:.85rem;">검수대기</div>
+					<div style="font-size:.85rem;">(미완료)</div>
+				</div>
+				<div class="timeline-step">
+					<div class="timeline-dot"></div>
+					<div class="muted" style="font-size:.85rem;">확정</div>
+					<div style="font-size:.85rem;">-</div>
+				</div>
+			</div>
+		</div>
+		
+			
+		<!-- 품목 목록 -->
+		<div class="card mb-3">
+			<div class="card-header d-flex justify-content-between align-items-center">
+				<div class="card-title">품목 내역</div>
+				<div class="muted">-</div>
+			</div>
+
+			<div class="table-responsive">
+				<table id="itemsTable" class="table">
+					<thead>
+						<tr>
+							<th>No</th>
+							<th colspan="2">품목명 / 규격</th>
+							<th>LOT번호</th>
+							<th>수량</th>
+							<th>단위</th>
+							<th>단가</th>
+							<th>공급가액</th>
+							<th>부가세</th>
+							<th>총액</th>
+						</tr>
+					</thead>
+	<!-- ==============================================================================================================리스트 존========= -->
+					<tbody>
+					    <c:choose>
+					        <c:when test="${not empty ibProductDetail}">
+					            <c:forEach var="item" items="${ibProductDetail}" varStatus="vs">
+					                <tr>
+					                    <!-- No. -->
+					                    <td>
+					                        <c:out value="${vs.index + 1}" />
+					                    </td>
+					
+					                    <!-- 상품명 -->
+					                    <td colspan="2">
+					                        <c:out value="${item.productName}" />
+					                    </td>
+										
+										<!-- LOT넘버 -->
+					                    <td><c:out value="${item.lotNumber}" /></td>
+										
+					                    <!-- 수량 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.quantity}" pattern="#개,##0" />
+					                    </td>
+					
+					                    <!-- 단위 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.productVolume}" pattern="#호" />
+					                    </td>
+					
+					                    <!-- 단가 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.unitPrice}" pattern="₩ #,##0" />
+					                    </td>
+					
+					                    <!-- 공급가액 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.amount}" pattern="₩ #,##0" />
+					                    </td>
+					
+					                    <!-- 부가세 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.tax}" pattern="₩ #,##0" />
+					                    </td>
+					
+					                    <!-- 총액 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.totalPrice}" pattern="₩ #,##0" />
+					                    </td>
+					
+					                    
+					                </tr>
+					            </c:forEach>
+					        </c:when>
+					        <c:otherwise>
+					            <tr>
+					                <td colspan="10" class="text-center">입고 품목 정보가 없습니다.</td>
+					            </tr>
+					        </c:otherwise>
+					    </c:choose>
+					</tbody>
+					
+					<c:set var="grandTotal" value="0" />
+					<c:forEach var="item" items="${ibProductDetail}">
+					    <c:set var="grandTotal" value="${grandTotal + item.totalPrice}" />
+					</c:forEach>
+					
+					<tfoot>
+					    <tr>
+					        <td colspan="8"></td>
+					        <td>합계</td>
+					        <td><fmt:formatNumber value="${grandTotal}" pattern="₩ #,##0" /></td>
+					    </tr>
+					</tfoot>
+	<!-- ==============================================================================================================리스트 존========= -->
+				</table>
+			</div>
+		</div>
+
+		<!-- 첨부 / 메모 / 로그 -->
+		<div class="card mb-4">
+			<div class="card-header">
+				<div class="card-title">첨부 / 메모 / 변경이력</div>
+			</div>
+
+			<div class="row mb-3">
+				<div class="col-md-6">
+					<div class="muted">첨부파일</div>
+					<div class="attachments">
+						<div class="attachment-item">packing_list_20250811.pdf</div>
+						<div class="attachment-item">inspection_photo_1.jpg</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="muted">메모</div>
+					<div class="kv-value" style="min-height:80px;">검수 후 입고확정 필요 — 외관 손상 일부. 공급사에 통보 예정.</div>
+				</div>
+			</div>
+
+			<div>
+				<div class="muted">변경 이력</div>
+				<table class="table" style="margin-top:.5rem;">
+					<thead>
+						<tr>
+							<th style="width:160px;">시간</th>
+							<th style="width:160px;">사용자</th>
+							<th>변경내용</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>2025-08-11 10:12</td>
+							<td>홍길동</td>
+							<td>입고 요청 등록</td>
+						</tr>
+						<tr>
+							<td>2025-08-11 13:40</td>
+							<td>김담당</td>
+							<td>부분입고 체크 — 수량 수정 (300 → 200)</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+	<jsp:include page="/WEB-INF/views/inbound/modal/modifyManager.jsp" />
+	<jsp:include page="/WEB-INF/views/inbound/modal/modifyLocation.jsp" />
+	<!-- ============================================================================================================ js 모음 -->
+	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/modify.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/inboundDetail.js"></script>
+</body>
+<link href="${pageContext.request.contextPath}/resources/css/inbound/modal/detailSmallModal.css" rel="stylesheet" />
+</html>
+이게 inboundDetail인데,
+
+.inbound-detail {
+	font-variant-numeric: tabular-nums;
+}
+
+.inbound-detail .card { padding: 1rem; }
+.inbound-detail .card-header { margin-bottom: .75rem; padding-bottom: .5rem; }
+.inbound-detail .card-title { margin: 0; }
+
+/* 읽기전용 느낌: label / value 그리드 */
+.inbound-detail .kv-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(160px, 1fr));
+	gap: .5rem 1rem;
+	align-items: center;
+}
+.inbound-detail .kv-item { min-width: 0; }
+.inbound-detail .kv-label { font-size: .9rem; color: var(--muted-foreground); margin-bottom: .25rem; }
+.inbound-detail .kv-value { padding: .45rem .6rem; background: var(--input-background); border: 1px solid var(--border); border-radius: var(--radius); }
+
+/* 상단 버튼 그룹 */
+.inbound-detail .page-actions { display:flex; gap:.5rem; align-items:center; }
+
+.inbound-detail .timeline {
+	display:flex;
+	gap:1rem;
+	align-items:center;
+	padding: .5rem 0;
+}
+.inbound-detail .timeline-step {
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	gap:.25rem;
+	text-align:center;
+	min-width:90px;
+}
+.inbound-detail .timeline-dot {
+	width:18px;
+	height:18px;
+	border-radius:50%;
+	background:var(--muted);
+	border:2px solid var(--border);
+}
+.inbound-detail .timeline-step.active .timeline-dot { background:var(--primary); border-color:var(--primary); }
+
+/* items table */
+.inbound-detail #itemsTable { table-layout: fixed; width:100%; }
+.inbound-detail .table th, .inbound-detail .table td { padding: .55rem .6rem; vertical-align: middle; }
+.inbound-detail .table thead th { background: var(--accent); color: var(--foreground); position: sticky; top:0; z-index:1; }
+.inbound-detail .table .right { text-align:right; }
+
+/* attachments */
+.inbound-detail .attachments { display:flex; flex-direction:column; gap:.4rem; }
+.inbound-detail .attachment-item { padding:.5rem; background:var(--card); border:1px solid var(--border); border-radius:.375rem; }
+
+/* responsive */
+@media (max-width: 980px) {
+	.inbound-detail .kv-grid { grid-template-columns: 1fr 1fr; }
+	.inbound-detail .timeline { flex-wrap:wrap; justify-content:flex-start; }
+}
+
+/* No 열 고정폭 (두 자리 숫자 기준) */
+.inbound-detail #itemsTable th:first-child,
+.inbound-detail #itemsTable td:first-child {
+  width: 4ch;              /* '00' + 약간의 여유 */
+  text-align: center;      /* 숫자 가운데 정렬 */
+  padding-left: .25rem;    /* 기존 .6rem보다 좁게 */
+  padding-right: .25rem;   /* 좌우 패딩 줄여서 폭 절약 */
+  white-space: nowrap;     /* 줄바꿈 방지 */
+}
+
+.inbound-detail #itemsTable th,
+.inbound-detail #itemsTable td {
+  text-align: center;
+}
+
+여기 css인데 이거처럼 outboundDetail.css를 만들고싶어
+현재 outboundDetail.jsp는
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8" />
+	<title>출고 상세</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet" />
+	<link href="${pageContext.request.contextPath}/resources/css/outbound/outboundDetail.css" rel="stylesheet" />
+</head>
+
+<body data-context="${pageContext.request.contextPath}">
+	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
+
+	<section class="content outbound-detail" data-app-root="1">
+		<!-- 헤더 / 액션 -->
+		<div class="d-flex justify-content-between align-items-center mb-3">
+			<div>
+				<h1 class="card-title">출고 상세</h1>
+			</div>
+			<div class="page-actions">
+				<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
+				<button id="btnAssignManager" class="btn btn-primary btn-sm">담당자지정</button>
+				<button id="btnAssignLocation" class="btn btn-primary btn-sm">출고위치지정</button>
+				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
+			</div>
+		</div>
+		
+		<!-- 상단 기본정보 카드 -->
+		<div class="card mb-3">
+			<div class="card-header d-flex justify-content-between align-items-center">
+				<div class="card-title">기본 정보</div>
+				<div class="text-muted">상태:
+					<span class="badge badge-pending">
+						<c:out value="${obDetail.status}" default="-" />
+					</span>
+				</div>
+			</div>
+			<div class="kv-grid">
+				<div class="kv-item">
+					<div class="kv-label">출고번호</div>
+					<div class="kv-value">
+						<c:out value="${obDetail.obwaitNumber}" default="-" />
+					</div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">출고일자</div>
+					<div class="kv-value">
+						<c:out value="${obDetail.departureDate}" default="-" />
+					</div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">프랜차이즈</div>
+					<div class="kv-value">
+						<c:out value="${obDetail.franchiseName}" default="-" />
+					</div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">담당자</div>
+					<div class="kv-value">
+						<span id="fieldManagerName">
+							<c:out value="${obDetail.manager}" default="-" />
+						</span>
+					</div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">출고위치</div>
+					<div class="kv-value">
+						<span id="fieldOutboundLocation">
+							<c:out value="${obDetail.outboundLocation}" default="-" />
+						</span>
+					</div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">총 품목 수</div>
+					<div class="kv-value">
+						<c:out value="${obDetail.itemCount}" default="0" /> 개
+					</div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">총 수량</div>
+					<div class="kv-value">
+						<c:out value="${obDetail.totalQuantity}" default="0" /> 개
+					</div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">비고</div>
+					<div class="kv-value">
+						<c:out value="${obDetail.note}" default="-" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 타임라인 -->
+		<div class="card mb-3">
+			<div class="card-header">
+				<div class="card-title">상태 이력 (타임라인)</div>
+			</div>
+			<div class="timeline p-2">
+				<div class="timeline-step active">
+					<div class="timeline-dot"></div>
+					<div class="muted" style="font-size:.85rem;">등록</div>
+					<div style="font-size:.85rem;">2025-09-10<br/><span class="muted">관리자</span></div>
+				</div>
+				<div class="timeline-step">
+					<div class="timeline-dot"></div>
+					<div class="muted" style="font-size:.85rem;">피킹대기</div>
+					<div style="font-size:.85rem;">(미완료)</div>
+				</div>
+				<div class="timeline-step">
+					<div class="timeline-dot"></div>
+					<div class="muted" style="font-size:.85rem;">출고확정</div>
+					<div style="font-size:.85rem;">-</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 품목 목록 -->
+		<div class="card mb-3">
+			<div class="card-header d-flex justify-content-between align-items-center">
+				<div class="card-title">품목 내역</div>
+				<div class="muted">-</div>
+			</div>
+
+			<div class="table-responsive">
+				<table id="itemsTable" class="table">
+					<thead>
+						<tr>
+							<th>No</th>
+							<th>LOT번호</th>
+							<th>상품명</th>
+							<th>규격/단위</th>
+							<th>출고수량</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:choose>
+							<c:when test="${not empty obProductList}">
+								<c:forEach var="item" items="${obProductList}" varStatus="vs">
+									<tr>
+										<td><c:out value="${vs.index + 1}" /></td>
+										<td><c:out value="${item.lotNumber}" /></td>
+										<td><c:out value="${item.productName}" /></td>
+										<td><c:out value="${item.productVolume}" /></td>
+										<td><fmt:formatNumber value="${item.quantity}" pattern="#,##0" /></td>
+									</tr>
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								<tr>
+									<td colspan="5" class="text-center">출고 품목 정보가 없습니다.</td>
+								</tr>
+							</c:otherwise>
+						</c:choose>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- 첨부 / 메모 / 로그 -->
+		<div class="card mb-4">
+			<div class="card-header">
+				<div class="card-title">첨부 / 메모 / 변경이력</div>
+			</div>
+
+			<div class="row mb-3">
+				<div class="col-md-6">
+					<div class="muted">첨부파일</div>
+					<div class="attachments">
+						<div class="attachment-item">shipping_label_OB20250909-006.pdf</div>
+						<div class="attachment-item">outbound_photo_1.jpg</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="muted">메모</div>
+					<div class="kv-value" style="min-height:80px;">
+						출고 전 최종 검수 필요. 파손 유의.
+					</div>
+				</div>
+			</div>
+
+			<div>
+				<div class="muted">변경 이력</div>
+				<table class="table" style="margin-top:.5rem;">
+					<thead>
+						<tr>
+							<th style="width:160px;">시간</th>
+							<th style="width:160px;">사용자</th>
+							<th>변경내용</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>2025-09-10 09:30</td>
+							<td>관리자</td>
+							<td>출고 요청 등록</td>
+						</tr>
+						<tr>
+							<td>2025-09-11 15:20</td>
+							<td>홍길동</td>
+							<td>출고수량 수정 (100 → 80)</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+.outbound-detail {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 카드 기본 */
+.outbound-detail .card { padding: 1rem; }
+.outbound-detail .card-header { margin-bottom: .75rem; padding-bottom: .5rem; }
+.outbound-detail .card-title { margin: 0; }
+
+/* 상단 버튼 그룹 */
+.outbound-detail .page-actions { display: flex; gap: .5rem; align-items: center; }
+
+/* 읽기전용 느낌: label / value 그리드 */
+/* === 기본정보 영역: inbound와 동일 규격 === */
+.outbound-detail .kv-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  gap: .5rem 1rem;
+  align-items: center;
+}
+.outbound-detail .kv-item { min-width: 0; }
+.outbound-detail .kv-label {
+  font-size: .9rem;
+  color: var(--muted-foreground);
+  margin-bottom: .25rem;
+}
+.outbound-detail .kv-value {
+  padding: .45rem .6rem;
+  background: var(--input-background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  /* (주의) inbound 기준에 맞추기 위해 아래 두 줄은 제거함
+     min-height: 2.25rem;
+     display: flex; align-items: center;
+  */
+}
+
+/* 타임라인 */
+.outbound-detail .timeline {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: .5rem 0;
+}
+.outbound-detail .timeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .25rem;
+  text-align: center;
+  min-width: 90px;
+}
+.outbound-detail .timeline-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--muted);
+  border: 2px solid var(--border);
+}
+.outbound-detail .timeline-step.active .timeline-dot {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+/* 테이블 */
+.outbound-detail #itemsTable { table-layout: fixed; width: 100%; }
+.outbound-detail .table th,
+.outbound-detail .table td { padding: .55rem .6rem; vertical-align: middle; }
+.outbound-detail .table thead th {
+  background: var(--accent);
+  color: var(--foreground);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* 첫 번째 'No' 열 고정폭 & 센터 정렬 */
+.outbound-detail #itemsTable th:first-child,
+.outbound-detail #itemsTable td:first-child {
+  width: 4ch;                 /* '00' 기준 */
+  text-align: center;
+  padding-left: .25rem;
+  padding-right: .25rem;
+  white-space: nowrap;
+}
+
+/* 기본은 가운데 정렬 */
+.outbound-detail #itemsTable th,
+.outbound-detail #itemsTable td { text-align: center; }
+
+/* 상품명은 좌측 정렬, 길면 말줄임 */
+.outbound-detail #itemsTable td:nth-child(3) {
+  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 수량은 우측 정렬(숫자 가독성) */
+.outbound-detail #itemsTable td:last-child { text-align: middle; }
+
+/* 첨부 */
+.outbound-detail .attachments { display: flex; flex-direction: column; gap: .4rem; }
+.outbound-detail .attachment-item {
+  padding: .5rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: .375rem;
+}
+
+/* 상태 뱃지 (공통에 없다면 아래 색상 사용) */
+.outbound-detail .badge {
+  display: inline-block;
+  padding: .2rem .5rem;
+  border-radius: 999px;
+  font-size: .8rem;
+  line-height: 1;
+  border: 1px solid transparent;
+}
+.outbound-detail .badge-pending { background: #fff7e6; color: #ad6800; border-color: #ffe7ba; }     /* 대기 */
+.outbound-detail .badge-confirmed { background: #e6fffb; color: #006d75; border-color: #b5f5ec; }   /* 확정 */
+.outbound-detail .badge-completed { background: #f6ffed; color: #237804; border-color: #d9f7be; }   /* 완료 */
+.outbound-detail .badge-picking { background: #f0f5ff; color: #2f54eb; border-color: #d6e4ff; }     /* 피킹대기/중 */
+
+/* 반응형 */
+@media (max-width: 980px) {
+  .outbound-detail .kv-grid { grid-template-columns: 1fr 1fr; }
+  .outbound-detail .timeline { flex-wrap: wrap; justify-content: flex-start; }
+}
+
+/* (선택) 인쇄 시 불필요 영역 숨김 */
+@media print {
+  nav.top-nav, .sidebar, .page-actions { display: none !important; }
+  .content { margin: 0; padding: 0; }
+}
+적용 체크
+JSP에 이미 다음 링크가 있으니 경로만 맞으면 끝:
+
+<link href="${pageContext.request.contextPath}/resources/css/outbound/outboundDetail.css" rel="stylesheet" />
+common.css에서 사용하는 CSS 변수(--border, --radius, --primary, --accent 등)가 정의되어 있음을 전제로 했습니다. 만약 없다면 색상값을 직접 지정해도 됩니다.
+
+필요하면 열 구성(상품명/규격/수량)이나 배지 색상을 더 맞춰서 커스텀해줄게.
+
+
+
+
+선택된 파일 없음선택된 파일 없음
+ChatGPT는 실수를 할 수 있습니다. 중요한 정보는 재차 확인하세요.

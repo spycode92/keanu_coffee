@@ -149,7 +149,8 @@
 </head>
 <body>
 
-    <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
+    <!-- 상단/사이드 레이아웃 -->
+	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 
     <div class="card" style="margin:20px;">
         <div class="card-header">
@@ -539,7 +540,7 @@
 		}
 	
 	    /* 고정 임박 기준값 */
-	    const FIXED_THRESHOLD = 7;
+	    const FIXED_THRESHOLD = 60;
 	
 	    function makeStatusAndDday(expDate, threshold){
 	        const d = diffDaysFromToday(expDate);
@@ -710,6 +711,16 @@
 	        $('select[name="outboundStatus"]').val('전체');
 
 	        window.location.href = "${pageContext.request.contextPath}/inventory/stockCheck?pageNum=1";
+	    });
+	    
+	    $(document).ready(function(){
+	        const urlParams = new URLSearchParams(window.location.search);
+	        const lotNumber = urlParams.get('keyword');
+	        if (lotNumber) {
+	            $("#tbodyRealtime tr").filter(function() {
+	                return $(this).find("td:nth-child(3)").text().trim() === lotNumber;
+	            }).css("background-color", "#fff3cd"); // 노란색 강조
+	        }
 	    });
 	</script>
 </body>

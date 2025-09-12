@@ -11,15 +11,15 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/statistics")
 public class TotalDashBoardController {
 	
-	@GetMapping("/statistics1")
+	@GetMapping("/1")
 	public String Dashboard() {
 		return "/admin/statistics/statistics1";
 	}
 	
-	@GetMapping("/statistics2")
+	@GetMapping("/2")
 	public String Dashboard2() {
 		return "/admin/statistics/statistics2";
 	}

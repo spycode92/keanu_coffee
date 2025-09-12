@@ -41,8 +41,6 @@ function connectWebSocket() {
 			
 	// STOMP 를 사용하여 서버와 연결 시도
 	stompClient.connect({}, function(frame) {
-		// 연결 성공 시 콘솔에 연결 정보가 저장된 frame 값 출력
-		console.log("Connected : " + frame);
 		// 연결 상태 플래그를 true 로 변경
 		isConnected = true;
 		
@@ -67,14 +65,11 @@ function connectWebSocket() {
 		subscribeRoom(role);
 				
 	}, function(error){ // 서버 연결(접속) 실패 
-		showSnackbar("서버 연결 실패! 재연결 시도중...");
-		console.log("서버 연결 실패! 재연결 시도중...");
 		isConnected = false;
 	});
 	
 	//웹소켓 연결 끊어짐 감지
 	socket.onclose = function(){
-		console.log("서버 연결 끊어짐! 1초 후 재연결 시도");
 		isConnected = false;
 		
 		//setTimeOut() 메서드 활용하여 connect() 함수를 지정된 시간 뒤에 호출
@@ -216,7 +211,7 @@ function notificationList(data) {
 		ul.innerHTML = "<li class='no-notification'>알림이 없습니다.</li>"
 		return
 	}
-	
+	ul.innerHTML = "<li class='noti-message'>최근10개알림만표시됩니다.</li>"
 	data.forEach((noti) => {
 		const li = document.createElement("li");
 		const status = getReadStatus(noti.empAlarmReadStatus);
@@ -285,26 +280,7 @@ function getReadStatus(status) {
         : '<span class="circle read"></span>';
 }
 
-// 전체 읽음
-function readAll() {
-	fetch("/user/notification/all-read", {
-		method: "PATCH",
-		header: {
-			"Content-Type": "application/json"
-		}
-	})
-	  .then((res) => res.json())
-	  .then((data) => {
-		  if (data.result === "모든 알림을 읽음 처리했습니다") {
-			  document.querySelectorAll(".read-status").forEach(span => {
-		          span.innerHTML = getReadStatus(1);
-		      }); 
-		  } else {
-			  alert("더 이상 읽을 알림이 없습니다.");
-		  }
-	  })
-	    .catch((err) => console.error("전체 읽음 오류:", err));
-}
+
 
 
 

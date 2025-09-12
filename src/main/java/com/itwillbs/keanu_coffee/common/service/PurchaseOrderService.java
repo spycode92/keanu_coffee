@@ -2,12 +2,16 @@ package com.itwillbs.keanu_coffee.common.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itwillbs.keanu_coffee.common.dto.AlarmDTO;
 import com.itwillbs.keanu_coffee.common.dto.PurchaseWithSupplierDTO;
 import com.itwillbs.keanu_coffee.common.mapper.PurchaseOrderMapper;
 import com.itwillbs.keanu_coffee.inventory.dto.OutboundOrderItemDTO;
@@ -18,8 +22,10 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class PurchaseOrderService {
+
 	private final PurchaseOrderMapper purchaseOrderMapper;
-	
+	private final SimpMessagingTemplate messagingTemplate;
+	private final AlarmService alarmService;
 	
 //	public List<PurchaseWithSupplierDTO> orderDetail() {
 //		return purchaseOrderMapper.orderDetail();
@@ -39,6 +45,20 @@ public class PurchaseOrderService {
 	@Transactional
 	public void addInboundWaitingOrder(String inboundWaitingNumber, int orderIdx, int quantity, int numberOfItems,
 			LocalDate expectedArrivalDate) {
+		//Alarm
+		AlarmDTO alarm = new AlarmDTO();
+		//receiver
+		alarm.setRoleName("입고관리자");
+		//Url
+//		alarm.setEmpAlarmLink("/main");
+		//message
+		alarm.setEmpAlarmMessage(inboundWaitingNumber + "번 입고대기 목록이 생성되었습니다.");
+		
+		alarmService.insertAlarmByRole(alarm);
+		
+		Map<String, String> payload = new HashMap<>();
+		payload.put("message", "새알림이 도착하였습니다.");
+		messagingTemplate.convertAndSend("/topic/" + alarm.getRoleName(), payload);
 		
 		purchaseOrderMapper.insertInboundWaiting(inboundWaitingNumber, orderIdx, quantity, numberOfItems, expectedArrivalDate);
 	}

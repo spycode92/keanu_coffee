@@ -255,20 +255,9 @@
        		<div id="notification-box">
 				<div id="notification-header">
 					<h3>알림</h3>
-					<c:choose>
-						<c:when test="${sUT eq 1 }">
-							<div>
-								<a href="/myPage/notification">전체보기</a>
-								<div onclick="readAll()">전체읽음</div>
-							</div>
-						</c:when>
-						<c:otherwise>
-							<div>
-								<a href="/company/myPage/notification">전체보기</a>
-								<div onclick="readAll()">전체읽음</div>
-							</div>
-						</c:otherwise>
-					</c:choose>
+					<div>
+						<a href="/alarm">전체보기</a>
+					</div>
 				</div>
 				<ul id="notification-list"></ul>
        		</div>			
@@ -287,7 +276,7 @@
 				<span>관리자페이지</span>
 <!-- 				<a href=""><span>물류부서관리</span></a> -->
 				<ul class="submenu">
-					<li><a href="/admin/employeeManage">사원관리</a></li>
+					<li><a href="/admin/employeeManage">직원관리</a></li>
 					<li><a href="/admin/preference/dept">조직관리</a></li>
 					<li><a href="/admin/preference/supplyCompany">공급업체관리</a></li>
 					<li><a href="/admin/preference/product">상품관리</a></li>
@@ -312,7 +301,7 @@
 			</sec:authorize>
 			<sec:authorize access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')">
 			<li>
-				<a href="/outbound"><span>출고 관리</span></a>
+				<a href="/outbound/main"><span>출고 관리</span></a>
 				<ul class="submenu">
 			        <li><a href="/outbound/main">대시보드</a></li>
 			        <li><a href="/outbound/outboundManagement">출고조회</a></li>
@@ -326,7 +315,7 @@
 			</sec:authorize>
 			<sec:authorize access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')">
 			<li>
-				<a href="/inventory"><span>재고 현황</span></a>
+				<a href="/inventory/main"><span>재고 현황</span></a>
 			    <ul class="submenu">
 			        <li><a href="/inventory/stockCheck">재고 조회/검수</a></li>
 			        <li><a href="/inventory/productHistory">제품 위치 기록</a></li>
@@ -338,7 +327,6 @@
 
               <li><a href="/inventory/qrScanner">QR 스캐너</a></li>
               <li><a href="/inventory/locationType">로케이션 지정</a></li>
-              <li><a href="/inventory/stockCheck">재고 조회/검수</a></li>
 			  </ul>
 			</li>
 			</sec:authorize>

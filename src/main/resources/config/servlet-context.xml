@@ -29,6 +29,8 @@
 <!-- 		<context:include-filter type="annotation" expression="org.springframework.stereotype.RestController"/> -->
 	</context:component-scan>
 	
+	<beans:bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
+	
 	<context:property-placeholder location="classpath:/config/application.properties"/>
 	
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

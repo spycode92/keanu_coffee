@@ -620,6 +620,16 @@
 			dispatch_idx = #{dispatchIdx}
 	</delete>
 	
+	<!-- 출고 idx 조회 -->
+	<select id="selectOutboundOrderIdx" resultType="int">
+		SELECT
+			outbound_order_idx
+		FROM
+			DISPATCH_ORDER_MAP
+		WHERE
+			dispatch_idx = #{dispatchIdx}
+	</select>
+	
 	<!-- 출고 주문 테이블 상태 변경 -->
 	<update id="updateOutboundOrderStatus" >
 		UPDATE 	
@@ -630,4 +640,24 @@
 		WHERE
 			outbound_order_idx = #{outboundOrderIdx}
 	</update>
+	
+	<!-- 출고 대기 시간 변경 -->
+	<update id="updateOutboundWaiting">
+		UPDATE
+			OUTBOUND_WAITING
+		SET
+			departure_date = NOW()
+		WHERE
+			outbound_order_idx = #{outboundOrderIdx}
+	</update>
+	
+	<!-- 출고 테이블 상태 확인 -->
+	<select id="selectOutboundOrderStatus" resultType="string">
+		SELECT
+			status
+		FROM
+			OUTBOUND_ORDER
+		WHERE
+			outbound_order_idx = #{outboundOrderIdx}
+	</select>
 </mapper>

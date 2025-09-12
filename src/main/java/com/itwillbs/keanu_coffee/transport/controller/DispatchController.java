@@ -1,20 +1,17 @@
 package com.itwillbs.keanu_coffee.transport.controller;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
@@ -120,6 +117,10 @@ public class DispatchController {
 		try {
 			dispatchService.insertDispatchLoad(request);
 			return ResponseEntity.ok("적재 완료");
+		} catch (IllegalStateException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					 .contentType(new MediaType("text", "plain", StandardCharsets.UTF_8))
+                    .body(e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -144,7 +145,7 @@ public class DispatchController {
 	@PostMapping("/mypage/delivery/completed")
 	public ResponseEntity<String> modifyDeliveryCompleted(@RequestBody DeliveryConfirmationDTO request) {
 		try {
-			dispatchService.updateDeliveryCompleted(request);
+//			dispatchService.updateDeliveryCompleted(request);
 			return ResponseEntity.ok("납품완료");
 		} catch (Exception e) {
 			e.printStackTrace();
