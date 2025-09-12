@@ -37,7 +37,7 @@ public class TransportController {
 	private final DispatchService dispatchService;
 	
 	// 운송 대시보드
-	@GetMapping("")
+	@GetMapping("/main")
 	public String dashboard() {
 		return "/transport/dashboard";
 	}
@@ -132,7 +132,7 @@ public class TransportController {
 	}
 	
 	// 기사 마이페이지
-	@GetMapping("/mypage")
+	@GetMapping("/mypage/{id}")
 	public String mypage(Authentication authentication, Model model) {
 		EmployeeDetail empDetail = (EmployeeDetail)authentication.getPrincipal();
 		
