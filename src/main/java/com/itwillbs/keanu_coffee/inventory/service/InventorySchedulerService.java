@@ -36,15 +36,15 @@ public class InventorySchedulerService {
         	);
 
         	// 알람 클릭 시 이동할 링크 → stockCheck.jsp 에서 '임박' 필터 적용
-        	alarm.setEmpAlarmLink("/inventory/stockCheck?stockStatus=WARN");
+//        	alarm.setEmpAlarmLink("/inventory/stockCheck?stockStatus=WARN");
 
             // 2. DB 저장
-            alarmService.insertAlarm(alarm);
+        	alarmService.insertAlarmByRole(alarm);
 
             // 3. 웹소켓 전송
             Map<String, String> payload = new HashMap<>();
             payload.put("message", alarm.getEmpAlarmMessage());
-            messagingTemplate.convertAndSend("/topic/inventory", payload);
+            messagingTemplate.convertAndSend("/topic/" + alarm.getRoleName(), payload);
         }
     }
     
