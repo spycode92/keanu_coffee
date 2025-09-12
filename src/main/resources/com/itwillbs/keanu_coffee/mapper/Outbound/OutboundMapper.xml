@@ -35,6 +35,50 @@
 	        ,ow.note
 	    ORDER BY ow.departure_date DESC
 	</select>
+	
+	<!-- 출고 기본정보 상세 조회 -->
+    <select id="selectOutboundDetail" resultType="com.itwillbs.keanu_coffee.outbound.dto.OutboundManagementDTO">
+    SELECT 
+        ow.obwait_idx        AS obwaitIdx,
+        ow.obwait_number     AS obwaitNumber,
+        ow.departure_date 	 AS departureDate,
+        fo.franchise_name    AS franchiseName,
+        ow.manager           AS manager,
+        ow.outbound_location AS outboundLocation,
+        COUNT(foi.outbound_order_item_idx) AS itemCount,
+        SUM(foi.quantity)    AS totalQuantity,
+        oo.status            AS status,
+        ow.note              AS note
+    FROM OUTBOUND_WAITING ow
+    JOIN OUTBOUND_ORDER oo 
+      ON ow.outbound_order_idx = oo.outbound_order_idx
+    JOIN FRANCHISE fo 
+      ON oo.franchise_idx = fo.franchise_idx
+    JOIN OUTBOUND_ORDER_ITEM foi 
+      ON oo.outbound_order_idx = foi.outbound_order_idx
+    WHERE ow.obwait_number = #{obwaitNumber}
+      AND ow.outbound_order_idx = #{outboundOrderIdx}
+    GROUP BY ow.obwait_idx, ow.obwait_number, ow.departure_date, 
+             fo.franchise_name, ow.manager, ow.outbound_location,
+             oo.status, ow.note
+</select>
 
+
+
+    <!-- 출고 품목 리스트 조회 -->
+    <select id="selectOutboundProductDetail" resultType="com.itwillbs.keanu_coffee.outbound.dto.OutboundProductDetailDTO">
+	    SELECT p.product_idx
+	         , p.product_name
+	         , p.product_volume
+	         , foi.quantity
+	    FROM OUTBOUND_ORDER_ITEM foi
+	    JOIN PRODUCT p
+	      ON foi.product_idx = p.product_idx
+	    JOIN OUTBOUND_ORDER oo
+	      ON foi.outbound_order_idx = oo.outbound_order_idx
+	    WHERE foi.outbound_order_idx = #{outboundOrderIdx}
+	    ORDER BY p.product_name ASC
+	</select>
+	
 
 </mapper>

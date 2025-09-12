@@ -1,5 +1,7 @@
 package com.itwillbs.keanu_coffee.outbound.dto;
 
+import java.sql.Date;
+
 import lombok.Data;
 
 @Data
@@ -7,7 +9,7 @@ public class OutboundManagementDTO {
 
     private Integer outboundOrderIdx;   // 출고 주문 IDX
     private String obwaitNumber;      // OUTBOUND_WAITING.obwait_number
-    private String departureDate;       // OUTBOUND_WAITING.departure_date
+    private Date departureDate;       // OUTBOUND_WAITING.departure_date
     private String outboundLocation;    // OUTBOUND_WAITING.outbound_location
     private String franchiseName;       // FRANCHISE.franchise_name
     private String status;              // OUTBOUND_ORDER.status
