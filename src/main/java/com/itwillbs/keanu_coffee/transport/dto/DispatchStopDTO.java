@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 public class DispatchStopDTO {
@@ -22,8 +23,4 @@ public class DispatchStopDTO {
     private String note;                    // 비고
     
     private List<DeliveryConfirmationDTO> deliveryConfirmations;
-    
-    public enum dispatchStopStatus {
-    	대기, 운송중, 납품완료
-    }
 }

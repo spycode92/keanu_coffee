@@ -18,9 +18,9 @@ public class AlarmService {
 	private final EmployeeManagementMapper employeeManagementMapper;
 	
 	//알람정보조회
-	public List<AlarmDTO> getAlarm(Integer empIdx) {
+	public List<AlarmDTO> getAlarm(Integer empIdx, int startRow, int listLimit) {
 		
-		return alarmMapper.selectAlarm(empIdx);
+		return alarmMapper.selectAlarm(empIdx, startRow, listLimit);
 	}
 
 	//알람상태업그레이드
@@ -46,6 +46,23 @@ public class AlarmService {
 		
 		int insertCount = alarmMapper.insertAlarm(alarmDTO);
 		
+	}
+	
+	//알림 갯수 새기
+	public int getAlarmCount(Integer empIdx) {
+		
+		return alarmMapper.selectAlarmCount(empIdx);
+	}
+	//API조회 내알림갯수
+	public List<AlarmDTO> getAlarmInAjax(Integer empIdx) {
+
+		return alarmMapper.selectAlarmInAjax(empIdx);
+	}
+	//모든알림 읽음처리
+	public Boolean modifyAllAlarmStatus(Integer empIdx) {
+		
+		int updateCount = alarmMapper.updateAllAlarmStatus(empIdx);
+		return updateCount > 0;
 	}
 
 }

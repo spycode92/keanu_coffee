@@ -15,18 +15,18 @@ $(document).on("click", ".load-btn", function() {
 
 	const dispatchIdx = parseInt(parent.data("dispatch-idx"));
 	const vehicleIdx = parseInt(parent.data("vehicle-idx"));
+	
+    const status = parent.find("td:eq(4)").text();
 
 	$("#currentDispatchIdx").val(dispatchIdx);
 	$("#currentVehicleIdx").val(vehicleIdx);
 
 	$.getJSON(`${MYPAGE_DISPATCH_DETAIL_URL}/${dispatchIdx}/${vehicleIdx}`)
 		.done(function(dispatch) {
-
 			franchises = dispatch.franchises || [];
 
 			// 배차 메타 정보 표시
 			$("#orderMeta").text("배차일 " + formatDate(dispatch.dispatchDate));
-
 
 			// 지점 카드 + 품목 테이블 그리기
 			let html = "";
@@ -127,13 +127,12 @@ $(document).on("click", "#btnClearPick", function() {
 // 적재하기 버튼 클릭 시
 function loadCompleted() {
 	const selectedStops = [];
-
+	const grouped = {};
 	$(".franchise-check:checked").each(function() {
 		const idx = $(this).data("franchise-idx");
 		const franchise = franchises.find((franchise) => franchise.franchiseIdx === idx);
 
 		// outboundOrderIdx 값 가져오기
-		const grouped = {};
 		franchise.items.forEach(item => {
 			if (!grouped[item.outboundOrderIdx]) {
 				grouped[item.outboundOrderIdx] = [];
@@ -156,6 +155,11 @@ function loadCompleted() {
 			selectedStops.push(stopData);
 		});
 	});
+	
+	const capacity = $("#capacity").val() === 1000 ? 3000 : 4500;
+	
+	const totalVolume = calculateTotalCapacity(grouped);
+	
 
 	if (selectedStops.length === 0) {
 		Swal.fire({ icon: 'warning', text: '선택된 지점이 없습니다.' });
@@ -176,6 +180,11 @@ function loadCompleted() {
 		cancelButtonText: "아니오"
 	}).then((result) => {
 		if (result.isConfirmed) {
+			
+			if (capacity * 0.8 < totalVolume) {
+				Swal.fire("에러", "적재 용량을 초과하였습니다.", "error");
+				return;
+			}
 			const { token, header } = getCsrf();
 			$.ajax({
 				url: MYPAGE_DISPATCH_COMPLETE_URL,
@@ -197,6 +206,24 @@ function loadCompleted() {
 		}
 	})
 }
+
+// 선택한 지점 총량 계산하기
+ function calculateTotalCapacity(grouped) {
+  const volumeMap = {
+    3: 18,
+    4: 36,
+    5: 60
+  };
+
+  return Object.values(grouped)
+    .flat()
+    .reduce((total, item) => {
+      const realVolume = volumeMap[item.productVolume] || 0;
+      return total + (realVolume * item.quantity);
+    }, 0);
+}
+
+
 
 // 배송 현황 관련 데이터
 let timelineData = [];
@@ -233,7 +260,6 @@ $(document).on("click", ".detail-btn", function() {
 				const items = stop.deliveryConfirmations?.[0]?.items || [];
 				if (stop.deliveryConfirmations) {
 					stop.deliveryConfirmations.forEach((dc) => {
-						
 						dc.items?.forEach((item, index) => {
 							complateRequestData = {
 								deliveryConfirmationIdx: parseInt(item.confirmationIdx),
@@ -246,7 +272,7 @@ $(document).on("click", ".detail-btn", function() {
 								items: []
 							};
 							detailHtml += `
-							<tr>
+							<tr data-confirmation-item-idx="${item.confirmationItemIdx}">
 								${index === 0 ? `<td rowspan="${items.length}">${stop.franchiseName}</td>` : ""}
 								<td>${item.itemName}</td>
 								<td>${item.orderedQty}</td>
@@ -257,9 +283,9 @@ $(document).on("click", ".detail-btn", function() {
 								           min="0"
 								           max="${item.orderedQty}"
 								           value="${item.deliveredQty != null ? item.deliveredQty : 0}" 
-										  />
+											${item.status === "OK" || item.status === "REFUND" || item.status === "PARTIAL_REFUND" ? "disabled" : ""} />
 							  	</td>
-								<td class="status-cell">${item.status ===  "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전체반품"|| "-"}</td>
+								<td class="status-cell">${stop.completeTime == null ? "대기" : item.status ===  "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전량반품"|| "-"}</td>
 						        ${index === 0 ? `<td rowspan="${items.length}">
 						        	<button class="complateBtn" 
 											data-franchise-idx="${stop.franchiseIdx}" 
@@ -398,13 +424,13 @@ $(document).on("input", ".delivered-qty", function() {
 // 납품 완료 버튼 클릭 시 
 $(document).on("click", ".complateBtn", function() {
 	const tbody = $(this).closest("table").find("tbody");
-
-	const confirmationItemIdx = $(this).data("confirmation-item-idx");
+//	const confirmationItemIdx = $(this).data("confirmation-item-idx");
 
 	complateRequestData.items = [];
 
 	tbody.find("tr").each(function() {
 		const row = $(this);
+		const confirmationItemIdx = row.data("confirmation-item-idx");
 		const delivered = parseInt(row.find(".delivered-qty").val() || 0, 10);
 		const statusCode = row.find(".delivered-qty").data("status-code");
 
@@ -414,6 +440,8 @@ $(document).on("click", ".complateBtn", function() {
 			status: statusCode
 		});
 	});
+	
+	console.log(complateRequestData);
 
 	Swal.fire({
 		title: "납품을 완료하시겠습니가?",
