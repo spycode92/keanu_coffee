@@ -145,7 +145,7 @@ public class DispatchController {
 	@PostMapping("/mypage/delivery/completed")
 	public ResponseEntity<String> modifyDeliveryCompleted(@RequestBody DeliveryConfirmationDTO request) {
 		try {
-//			dispatchService.updateDeliveryCompleted(request);
+			dispatchService.updateDeliveryCompleted(request);
 			return ResponseEntity.ok("납품완료");
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -15,8 +15,6 @@ $(document).on("click", ".load-btn", function() {
 
 	const dispatchIdx = parseInt(parent.data("dispatch-idx"));
 	const vehicleIdx = parseInt(parent.data("vehicle-idx"));
-	
-    const status = parent.find("td:eq(4)").text();
 
 	$("#currentDispatchIdx").val(dispatchIdx);
 	$("#currentVehicleIdx").val(vehicleIdx);
@@ -24,7 +22,6 @@ $(document).on("click", ".load-btn", function() {
 	$.getJSON(`${MYPAGE_DISPATCH_DETAIL_URL}/${dispatchIdx}/${vehicleIdx}`)
 		.done(function(dispatch) {
 			franchises = dispatch.franchises || [];
-
 			// 배차 메타 정보 표시
 			$("#orderMeta").text("배차일 " + formatDate(dispatch.dispatchDate));
 
@@ -45,23 +42,23 @@ $(document).on("click", ".load-btn", function() {
 				});
 
 				html += `
-          <div class="p-4 border rounded-2xl mb-4 shadow franchise-block" data-franchise-idx="${fr.franchiseIdx}">
-            <div class="font-bold text-lg mb-2">
-              <input type="checkbox" class="franchise-check mr-2" data-franchise-idx="${fr.franchiseIdx}" />
-              ${fr.franchiseName || "-"} (${fr.regionName || ""})
-            </div>
-            <table class="w-full text-sm" id="dispatchLoad">
-              <thead>
-                <tr class="border-b">
-                  <th class="text-left p-2">상품명</th>
-                  <th class="text-right p-2">수량</th>
-                  <th class="text-right p-2">부피</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${itemsHtml}
-              </tbody>
-            </table>
+          	<div class="p-4 border rounded-2xl mb-4 shadow franchise-block" data-franchise-idx="${fr.franchiseIdx}">
+	            <div class="font-bold text-lg mb-2">
+	              <input type="checkbox" class="franchise-check mr-2" data-franchise-idx="${fr.franchiseIdx}" data-order-idx="${fr.outboundOrderIdx}"/>
+	              ${fr.franchiseName || "-"} (${fr.regionName || ""})
+	            </div>
+	            <table class="w-full text-sm" id="dispatchLoad">
+	              <thead>
+	                <tr class="border-b">
+	                  <th class="text-left p-2">상품명</th>
+	                  <th class="text-right p-2">수량</th>
+	                  <th class="text-right p-2">부피</th>
+	                </tr>
+	              </thead>
+	              <tbody>
+	                ${itemsHtml}
+	              </tbody>
+	            </table>
           </div>
         `;
 			});
@@ -87,8 +84,10 @@ function updatePickedSummary() {
 	let productMap = {}; // { productName: qty }
 
 	$(".franchise-check:checked").each(function() {
-		const idx = $(this).data("franchise-idx");
-		const franchise = franchises.find(f => f.franchiseIdx === idx);
+		const orderIdx = $(this).data("order-idx");
+		const franchiseIdx = $(this).data("franchise-idx");
+		const franchise = franchises.find(f => 
+		      f.franchiseIdx === franchiseIdx && f.outboundOrderIdx === orderIdx);
 
 		if (franchise && franchise.items) {
 			franchise.items.forEach(item => {
@@ -129,8 +128,10 @@ function loadCompleted() {
 	const selectedStops = [];
 	const grouped = {};
 	$(".franchise-check:checked").each(function() {
-		const idx = $(this).data("franchise-idx");
-		const franchise = franchises.find((franchise) => franchise.franchiseIdx === idx);
+		const orderIdx = $(this).data("order-idx");
+		const franchiseIdx = $(this).data("franchise-idx");
+		const franchise = franchises.find(f => 
+		      f.franchiseIdx === franchiseIdx && f.outboundOrderIdx === orderIdx);
 
 		// outboundOrderIdx 값 가져오기
 		franchise.items.forEach(item => {
@@ -155,11 +156,10 @@ function loadCompleted() {
 			selectedStops.push(stopData);
 		});
 	});
-	
+
 	const capacity = $("#capacity").val() === 1000 ? 3000 : 4500;
-	
+
 	const totalVolume = calculateTotalCapacity(grouped);
-	
 
 	if (selectedStops.length === 0) {
 		Swal.fire({ icon: 'warning', text: '선택된 지점이 없습니다.' });
@@ -180,8 +180,8 @@ function loadCompleted() {
 		cancelButtonText: "아니오"
 	}).then((result) => {
 		if (result.isConfirmed) {
-			
-			if (capacity * 0.8 < totalVolume) {
+
+			if (capacity * 0.9 < totalVolume) {
 				Swal.fire("에러", "적재 용량을 초과하였습니다.", "error");
 				return;
 			}
@@ -208,19 +208,19 @@ function loadCompleted() {
 }
 
 // 선택한 지점 총량 계산하기
- function calculateTotalCapacity(grouped) {
-  const volumeMap = {
-    3: 18,
-    4: 36,
-    5: 60
-  };
+function calculateTotalCapacity(grouped) {
+	const volumeMap = {
+		3: 18,
+		4: 36,
+		5: 60
+	};
 
-  return Object.values(grouped)
-    .flat()
-    .reduce((total, item) => {
-      const realVolume = volumeMap[item.productVolume] || 0;
-      return total + (realVolume * item.quantity);
-    }, 0);
+	return Object.values(grouped)
+		.flat()
+		.reduce((total, item) => {
+			const realVolume = volumeMap[item.productVolume] || 0;
+			return total + (realVolume * item.quantity);
+		}, 0);
 }
 
 
@@ -240,12 +240,13 @@ $(document).on("click", ".detail-btn", function() {
 	const vehicleIdx = row.data("vehicle-idx");
 	let requiresAdditional = "";
 
-    timelineData = [];
+	timelineData = [];
 
 	// --------------
 	// 화면 구현
 	$.getJSON(`${MYPAGE_DISPATCH_DETAIL_URL}/${dispatchIdx}/${vehicleIdx}`)
 		.done(function(dispatch) {
+			console.log(dispatch);
 			$("#progMeta").text("배차일 " + formatDate(dispatch.dispatchDate));
 			requiresAdditional = dispatch.requiresAdditional;
 			let detailHtml = "";
@@ -271,6 +272,7 @@ $(document).on("click", ".detail-btn", function() {
 								receiverName: dispatch.franchiseManagerName,
 								items: []
 							};
+							console.log("stop", stop);
 							detailHtml += `
 							<tr data-confirmation-item-idx="${item.confirmationItemIdx}">
 								${index === 0 ? `<td rowspan="${items.length}">${stop.franchiseName}</td>` : ""}
@@ -283,9 +285,9 @@ $(document).on("click", ".detail-btn", function() {
 								           min="0"
 								           max="${item.orderedQty}"
 								           value="${item.deliveredQty != null ? item.deliveredQty : 0}" 
-											${item.status === "OK" || item.status === "REFUND" || item.status === "PARTIAL_REFUND" ? "disabled" : ""} />
+											 />
 							  	</td>
-								<td class="status-cell">${stop.completeTime == null ? "대기" : item.status ===  "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전량반품"|| "-"}</td>
+								<td class="status-cell">${stop.completeTime == null ? "대기" : item.status === "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전량반품" || "-"}</td>
 						        ${index === 0 ? `<td rowspan="${items.length}">
 						        	<button class="complateBtn" 
 											data-franchise-idx="${stop.franchiseIdx}" 
@@ -299,6 +301,7 @@ $(document).on("click", ".detail-btn", function() {
 						});
 					});
 				}
+//				${item.status === "OK" || item.status === "REFUND" || item.status === "PARTIAL_REFUND" ? "disabled" : ""}
 			});
 			renderTimeline();
 
@@ -336,21 +339,21 @@ $(document).on("click", ".detail-btn", function() {
 	} else if (status === "운행중") {
 		btn.text("복귀");
 		const allDone = timelineData.length > 0 && timelineData.every(s => s.status === "납품 완료");
-		
+
 		if (!allDone) {
 			btn.prop("disabled", allDone);
 		}
-		
+
 		btn.off("click").on("click", function() {
 			Swal.fire({
 				title: "복귀하시겠습니까?",
-	  			showDenyButton: true,
+				showDenyButton: true,
 				confirmButtonText: "복귀",
 				denyButtonText: "취소"
 			}).then((result) => {
 				if (result.isConfirmed) {
 					$.ajax({
-						url: MYPAGE_DELIVERY_RETURN_URL, 
+						url: MYPAGE_DELIVERY_RETURN_URL,
 						type: "POST",
 						contentType: "application/json; charset=UTF-8",
 						data: JSON.stringify({
@@ -424,7 +427,7 @@ $(document).on("input", ".delivered-qty", function() {
 // 납품 완료 버튼 클릭 시 
 $(document).on("click", ".complateBtn", function() {
 	const tbody = $(this).closest("table").find("tbody");
-//	const confirmationItemIdx = $(this).data("confirmation-item-idx");
+	//	const confirmationItemIdx = $(this).data("confirmation-item-idx");
 
 	complateRequestData.items = [];
 
@@ -440,8 +443,8 @@ $(document).on("click", ".complateBtn", function() {
 			status: statusCode
 		});
 	});
-	
-	console.log(complateRequestData);
+
+	console.log("complateRequestData", complateRequestData);
 
 	Swal.fire({
 		title: "납품을 완료하시겠습니가?",
@@ -472,7 +475,7 @@ $(document).on("click", ".complateBtn", function() {
 
 function renderTimeline() {
 	let html = "";
-	
+
 	// 지점별 상태 표시
 	timelineData.forEach(stop => {
 		html += `

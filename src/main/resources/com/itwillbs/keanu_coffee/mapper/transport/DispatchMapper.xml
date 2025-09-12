@@ -329,6 +329,7 @@
 		<result property="totalQty" column="total_qty"/> 
 		<collection property="franchises" ofType="DispatchFranchiseDTO"> 
 			<id property="franchiseIdx" column="franchise_idx"/> 
+			<id property="outboundOrderIdx" column="outbound_order_idx"/>
 			<result property="franchiseName" column="franchise_name"/> 
 			<result property="regionIdx" column="region_idx"/> 
 			<result property="regionName" column="region_name"/> 

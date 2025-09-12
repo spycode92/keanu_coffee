@@ -16,6 +16,7 @@ public class DispatchFranchiseDTO {
     private String franchisePhone;
     private String franchiseManagerName;
     private String outboundOrderStatus;
+    private Integer outboundOrderIdx;  
 
     private List<OutboundOrderItemDTO> items; // 지점별 품목 리스트
 //    private List<DeliveryConfirmationDTO> deliveryConfirmations;
