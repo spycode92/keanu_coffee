@@ -158,7 +158,14 @@
 								<td>${product.productIdx }</td>
 								<td>${product.commonCode.commonCodeName }</td>
 								<td>${product.productName }</td>
-								<td>${product.status }</td>
+								<td>
+									<span class="badge
+										${product.status eq '활성'   ? 'badge-confirmed' :
+										  product.status eq '비활성' ? 'badge-warning'   :
+										                              'badge-urgent'}">
+										${product.status}
+									</span>
+								</td>
 							</tr>		            	
 		            	</c:forEach>
 		            </tbody>

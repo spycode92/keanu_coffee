@@ -7,15 +7,14 @@
 <meta charset="UTF-8">
 <title>관리자페이지 - 직원관리</title>
 <style type="text/css">
-/* 검색/필터 바 */
+/* 검색/필터 바 (상품관리 스타일, 3개 컬럼 유지) */
 .filters {
-	width: 70em;
-   
+	width: 100%;
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 12px;
     display: grid;
-    grid-template-columns: 180px 1fr max-content;
+    grid-template-columns: 180px 1fr max-content; /* 직원관리 3개 컬럼 유지 */
     gap: 10px;
     align-items: center; /* 세로 중앙 */
 }
@@ -24,11 +23,9 @@
 .filters select{ width:100%; height:38px; }
 .filters .search{ display:flex; }
 .filters input{ width:100%; height:38px; }
-
 .filters input, .filters select{
   padding:0 10px; border:1px solid var(--border); border-radius:10px; background:#fff;
 }
-
 /* 버튼은 오른쪽 끝 */
 .filters .actions{
 	display:flex; 
@@ -42,7 +39,6 @@
 	display: flex;
 	justify-content: center;
 }
-
 /* 반응형: 좁아지면 세로 스택 */
 @media (max-width: 900px){
   .filters{ grid-template-columns: 1fr; }

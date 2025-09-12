@@ -132,7 +132,7 @@
 		                </select>
 		            </div>
 		    		<div class="field">
-			    		<select name="searchType" class="form-control" >
+			    		<select name="searchType"  >
 							<option value="s.supplier_name" <c:if test="${searchType eq 's.supplier_name' }">selected</c:if>>공급업체 </option>
 							<option value="p.product_name" <c:if test="${searchType eq 'p.product_name' }">selected</c:if>>상품명</option>
 			            </select>
@@ -145,7 +145,7 @@
 		            </div>
 		        </form>    
 		    </div>
-            <div class="table-responsive" style="max-height:300px; overflow-y:auto;">
+            <div class="table-responsive" >
                 <table id="contractTable" class="table contract-table mb-0">
                     <thead>
                         <tr>
@@ -165,7 +165,14 @@
                         		<td>${contract.contractPrice }</td>
                         		<td>${contract.contractStart }</td>
                         		<td>${contract.contractEnd }</td>
-                        		<td>${contract.status }</td>
+                        		<td>              
+	                        		<span class="badge
+						                  ${contract.status eq '활성'   ? 'badge-confirmed' :
+						                    contract.status eq '비활성' ? 'badge-warning'   :
+						                                                'badge-urgent'}">
+						                  ${contract.status}
+									</span>
+								</td>
                         	</tr>
                         
                         </c:forEach>

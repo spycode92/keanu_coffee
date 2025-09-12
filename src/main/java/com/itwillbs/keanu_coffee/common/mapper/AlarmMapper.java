@@ -22,6 +22,8 @@ public interface AlarmMapper {
 	int selectAlarmCount(Integer empIdx);
 
 	List<AlarmDTO> selectAlarmInAjax(Integer empIdx);
+	//알림 전부 읽음처리
+	int updateAllAlarmStatus(Integer empIdx);
 
 
 	
