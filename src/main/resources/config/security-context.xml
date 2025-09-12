@@ -8,6 +8,7 @@
 		http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<beans:bean id="customAccessDeniedHandler" class="com.itwillbs.keanu_coffee.common.security.CustomAccessDeniedHandler" />
+	<beans:bean id="CustomAuthenticationSuccessHandler" class="com.itwillbs.keanu_coffee.common.security.CustomAuthenticationSuccessHandler" />
 	<!-- 패스워드 인코더로 사용될 BCryptPasswordEncoder 클래스 등록 -->
 	<beans:bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 	<!-- 리소스, 파비콘, 개발자도구 검사제외 -->
@@ -51,7 +52,7 @@
 			login-processing-url="/loginForSecurity"
 			username-parameter="empNo"
 			password-parameter="empPassword"
-			default-target-url="/main"
+			authentication-success-handler-ref="CustomAuthenticationSuccessHandler"
 		/>
 		
 		<logout logout-url="/logoutForSecurity"
