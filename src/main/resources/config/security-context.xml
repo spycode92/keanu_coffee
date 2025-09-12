@@ -42,7 +42,7 @@
 		
 		
 		<intercept-url pattern="/alarm/**" access="isAuthenticated()" />
-		<intercept-url pattern="/ws-chat/**" access="isAuthenticated()" />	
+		<intercept-url pattern="/ws-noti/**" access="isAuthenticated()" />	
 		<intercept-url pattern="/chat/**" access="isAuthenticated()" />	
 		<!-- 접근제한 처리 -->
 		<access-denied-handler ref="customAccessDeniedHandler"/>
