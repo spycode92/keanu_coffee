@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DispatchRegisterRequestDTO;
 import com.itwillbs.keanu_coffee.transport.dto.VehicleDTO;
 
 public interface VehicleMapper {
@@ -38,4 +40,10 @@ public interface VehicleMapper {
 	
 	// 차량번호 중복검사(등록 시)
 	int countByVehicleNumber(String vehicleNumber);
+
+	// 차량 상태 업데이트(DispatchAssignmentDTO 사용)
+	void updateVehicleStatus(DispatchAssignmentDTO assignment);
+
+	// 차량 상태 업데이트(DispatchRegisterRequestDTO)
+	void updateVehicleStatus(DispatchRegisterRequestDTO request);
 }

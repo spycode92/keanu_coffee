@@ -4,13 +4,15 @@ package com.itwillbs.keanu_coffee.inventory.mapper;
 import org.apache.ibatis.annotations.Mapper;
 
 
-import com.itwillbs.keanu_coffee.inventory.dto.CreateWarehouseDTO;
+import com.itwillbs.keanu_coffee.inventory.dto.WarehouseLocationDTO;
 
 
 @Mapper
 public interface InventoryActionsMapper {
 
-	void insertWarehouse(CreateWarehouseDTO createWarehouseDTO);
+	void insertWarehouse(WarehouseLocationDTO warehouseLocationDTO);
+
+	String selectLastCurrentLocation();
 	
 
 	

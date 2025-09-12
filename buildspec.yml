@@ -10,10 +10,24 @@ phases:
   pre_build:
     commands:
       - echo Build started on `date`
+      - echo "Parameter Store에서 비밀값 가져오기"
+      - DB_HOST=$(aws ssm get-parameter --name "/keanu_coffee/db_host" --with-decryption --query "Parameter.Value" --output text)
+      - DB_NAME=$(aws ssm get-parameter --name "/keanu_coffee/db_name" --with-decryption --query "Parameter.Value" --output text)
+      - DB_PASSWORD=$(aws ssm get-parameter --name "/keanu_coffee/db_password" --with-decryption --query "Parameter.Value" --output text)
+      - DB_USERNAME=$(aws ssm get-parameter --name "/keanu_coffee/db_username" --with-decryption --query "Parameter.Value" --output text)
+      - |
+        cat > src/main/resources/config/application.properties << EOF
+        db.host= ${DB_HOST}
+        db.db_name= ${DB_NAME}
+        db.username= ${DB_USERNAME}
+        db.password= ${DB_PASSWORD}
+        EOF
+
       - mvn clean install
   build:
     commands:
       - echo Packaging application
+      - ls target
       - mv target/keanu_coffee-1.0.0-BUILD-SNAPSHOT.war myapp.war
   post_build:
     commands:

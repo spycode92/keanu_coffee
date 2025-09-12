@@ -71,7 +71,8 @@ public class EmployeeManagementService {
 		String empPassword = passwordEncoder.encode("1234");
 		// empId생성
 		String empNo = empNoBuilder(employee);
-		
+		//회사이메일생성
+		employee.setEmpEmail(employee.getEmpEmail()+"@keanu.com");
 		//empId, empPassword DTO 주입
 		employee.setEmpNo(empNo);
 		employee.setEmpPassword(empPassword);
@@ -111,6 +112,7 @@ public class EmployeeManagementService {
 	public int modifyEmployeeInfo(EmployeeInfoDTO employee, Authentication authentication) throws IllegalStateException, IOException {
 		EmployeeDetail empDetail = (EmployeeDetail)authentication.getPrincipal();
 		Integer empIdx = empDetail.getEmpIdx();
+		employee.setEmpEmail(employee.getEmpEmail()+"@keanu.com");
 		
 		// 새로 받은 비밀번호가 존재한다면 암호화
 		if(employee.getEmpPassword() != null && !employee.getEmpPassword().trim().isEmpty()) {
@@ -127,6 +129,7 @@ public class EmployeeManagementService {
 	// 관리자가 직원정보 업데이트
 	@SystemLog(target = SystemLogTarget.EMPLOYEE_INFO)
 	public void updateEmployeeInfo(EmployeeInfoDTO employee) {
+		employee.setEmpEmail(employee.getEmpEmail()+"@keanu.com");
 		employeeManagementMapper.updateEmployeeInfo(employee);
 	}
 	
@@ -140,7 +143,13 @@ public class EmployeeManagementService {
 		
 		return updateCount;
 	}
-
+	
+	//직책별 직원정보 구하기
+	public List<EmployeeInfoDTO> selectEmpInfoByRole(String roleName){
+		List<EmployeeInfoDTO> employeeList = employeeManagementMapper.selectEmpInfoByRole(roleName);
+		
+		return employeeList;
+	}
 
 
 
