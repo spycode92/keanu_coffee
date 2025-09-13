@@ -7,44 +7,47 @@
 <meta charset="UTF-8">
 <title>관리자페이지 - 직원관리</title>
 <style type="text/css">
-/* 검색/필터 바 (상품관리 스타일, 3개 컬럼 유지) */
-.filters {
-	width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px;
-    display: grid;
-    grid-template-columns: 180px 1fr max-content; /* 직원관리 3개 컬럼 유지 */
-    gap: 10px;
-    align-items: center; /* 세로 중앙 */
-}
-/* 고정폭 제거 → 그리드가 폭을 관리하도록 */
-.filters .field{ display:flex; gap:6px; margin-right: 1.5em;}
-.filters select{ width:100%; height:38px; }
-.filters .search{ display:flex; }
-.filters input{ width:100%; height:38px; }
-.filters input, .filters select{
-  padding:0 10px; border:1px solid var(--border); border-radius:10px; background:#fff;
-}
-/* 버튼은 오른쪽 끝 */
-.filters .actions{
-	display:flex; 
-	width: 100%;
-	justify-content:center; 
-	align-items:center;
-}
-.filters .actions .btn{ 
-	height:38px; 
-	width: 10em;
-	display: flex;
-	justify-content: center;
-}
-/* 반응형: 좁아지면 세로 스택 */
-@media (max-width: 900px){
-  .filters{ grid-template-columns: 1fr; }
-  .filters .actions{ justify-content: stretch; }
-  .filters .actions .btn{ width:100%; }
-}
+/* 검색/필터 바 */
+	.filters {
+		width: 100%;
+	    border: 1px solid var(--border);
+	    border-radius: 12px;
+	    padding: 12px;
+	    display: grid;
+	    grid-template-columns: 180px 1fr max-content;
+	    gap: 10px;
+	    align-items: center; /* 세로 중앙 */
+	}
+	/* 고정폭 제거 → 그리드가 폭을 관리하도록 */
+	.filters .field{ display:flex; gap:6px; margin-right: 1.5em;}
+	.filters select{ width:100%; height:38px; }
+	.filters .search{ display:flex; }
+	.filters input{ width:100%; height:38px; }
+	
+	.filters input, .filters select{
+	  padding:0 10px; border:1px solid var(--border); border-radius:10px; background:#fff;
+	}
+	
+	/* 버튼은 오른쪽 끝 */
+	.filters .actions{
+		display:flex; 
+		width: 100%;
+		justify-content:center; 
+		align-items:center;
+	}
+	.filters .actions .btn{ 
+		height:38px; 
+		width: 10em;
+		display: flex;
+		justify-content: center;
+	}
+	
+	/* 반응형: 좁아지면 세로 스택 */
+	@media (max-width: 900px){
+	  .filters{ grid-template-columns: 1fr; }
+	  .filters .actions{ justify-content: stretch; }
+	  .filters .actions .btn{ width:100%; }
+	}
 /* 페이징(.pager: 앞서 만든 공용 클래스가 있다면 그대로 사용) */
 .pager{
   	display:flex;
@@ -126,7 +129,7 @@
 				<input class="filterText" placeholder="텍스트 입력" name="searchKeyword" >
 			</div>
 			<div class="actions">
-				<input type="submit" value="검색" class="btn btn-sm btn-primary">
+				<input type="submit" value="검색" id="btnSearch">
 			</div>
 		</form>
     	<div class="table-responsive mt-3" >
@@ -242,7 +245,14 @@
 						<td>${employee.empPhone }</td>
 						<td>${employee.empEmail }</td>
 						<td>${employee.hireDate }</td>
-						<td>${employee.empStatus }</td>
+						<td>
+							<span class="badge
+				                  ${employee.empStatus eq '재직'   ? 'badge-confirmed' :
+				                    employee.empStatus eq '휴직' ? 'badge-warning'   :
+				                                                'badge-urgent'}">
+				                  ${employee.empStatus}
+							</span>
+						</td>
 					</tr>
 				</c:forEach>
 				</table>

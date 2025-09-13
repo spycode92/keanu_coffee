@@ -732,6 +732,7 @@ $(function () {
             console.error('저장 실패:', error);
         });
 	}
+	
 	// 수정버튼
 	$('.btn-edit-autho').on('click','',function(){
 		const authoIdx = $(this).data('authoidx');

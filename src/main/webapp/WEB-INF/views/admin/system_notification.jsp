@@ -128,7 +128,7 @@
 				<input class="filterText" placeholder="텍스트 입력" name="searchKeyword" >
 			</div>
 			<div class="actions">
-				<input type="submit" value="검색" class="btn btn-sm btn-primary">
+				<input type="submit" value="검색" id="btnSearch">
 			</div>
 		</form>
     	<div class="table-responsive mt-3" >

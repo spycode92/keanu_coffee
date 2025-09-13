@@ -380,10 +380,12 @@ $(function(){
                 ajaxPost('/admin/systemPreference/supplyContract/deleteContractDetail',
                     dataToDelete
 				).then(function(response) {
-                        Swal.fire(response.title, response.msg, response.result);
+                        Swal.fire(response.title, response.msg, response.result).then(()=>{
+	
                         const detailModal = document.getElementById('contractDetailModal');
 						window.location.reload();
                         ModalManager.closeModal(detailModal);
+						})
                     }).catch(function() {
                         Swal.fire('오류', '삭제 중 오류가 발생했습니다.', 'error');
                 });
