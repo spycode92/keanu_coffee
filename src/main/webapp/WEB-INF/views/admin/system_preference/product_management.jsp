@@ -114,10 +114,10 @@
 
     <section class="content">
         <div class="container mt-4">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-            	<h4 class="mb-0">상품 관리</h4>
-            	<button id="btnAddProduct" class="btn btn-primary">상품 추가</button> 
-            </div>
+			<div class="d-flex justify-content-between align-items-center mb-3">
+			    <h4 class="mb-0">상품 관리</h4>
+			    <button id="btnAddProduct" class="btn btn-primary">상품 추가</button>
+			</div>
 			<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
 		    	<form class="filters" aria-label="검색 및 필터">
 		    		<div class="field">
@@ -141,36 +141,37 @@
 		            </div>
 		        </form>    
 		    </div>
-		
-		    <div class="table-responsive" >
-		        <table id="productTable" class="table mb-0">
-		            <thead>
-		                <tr>
-		                    <th>상품번호</th>
-		                    <th>카테고리</th>
-		                    <th>상품명</th>
-		                    <th>상태</th>
-		                </tr>
-		            </thead>
-		            <tbody>
-		            	<c:forEach items="${productList }" var="product">
-							<tr class="productIdx" data-productidx="${product.productIdx}">
-								<td>${product.productIdx }</td>
-								<td>${product.commonCode.commonCodeName }</td>
-								<td>${product.productName }</td>
-								<td>
-									<span class="badge
-										${product.status eq '활성'   ? 'badge-confirmed' :
-										  product.status eq '비활성' ? 'badge-warning'   :
-										                              'badge-urgent'}">
-										${product.status}
-									</span>
-								</td>
-							</tr>		            	
-		            	</c:forEach>
-		            </tbody>
-		        </table>
-		    </div>
+			<div class="card">
+			    <div class="table-responsive" >
+			        <table id="productTable" class="table mb-0">
+			            <thead>
+			                <tr>
+			                    <th>상품번호</th>
+			                    <th>카테고리</th>
+			                    <th>상품명</th>
+			                    <th>상태</th>
+			                </tr>
+			            </thead>
+			            <tbody>
+			            	<c:forEach items="${productList }" var="product">
+								<tr class="productIdx" data-productidx="${product.productIdx}">
+									<td>${product.productIdx }</td>
+									<td>${product.commonCode.commonCodeName }</td>
+									<td>${product.productName }</td>
+									<td>
+										<span class="badge
+											${product.status eq '활성'   ? 'badge-confirmed' :
+											  product.status eq '비활성' ? 'badge-warning'   :
+											                              'badge-urgent'}">
+											${product.status}
+										</span>
+									</td>
+								</tr>		            	
+			            	</c:forEach>
+			            </tbody>
+			        </table>
+			    </div>
+			</div>
 		    <!-- 페이징 -->
 		    <div class="pager">
 				<div>
