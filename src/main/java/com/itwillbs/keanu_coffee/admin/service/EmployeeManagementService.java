@@ -23,6 +23,7 @@ import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
 import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
 import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
 import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
@@ -53,6 +54,7 @@ public class EmployeeManagementService {
 	
 	// 직원 목록 갯수
 	@Transactional(readOnly = true)
+	@WorkingLog(target = WorkingLogTarget.INBOUND_WAITING)
 	public int getEmployeeCount(String searchType, String searchKeyword) {
 		return employeeManagementMapper.countEmployee(searchType, searchKeyword );
 	}
