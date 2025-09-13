@@ -48,9 +48,9 @@
             </div>
             <div class="modal-foot">
             <button type="button"
-                    class="btn btn-secondary"
+                    class="btn btn-confirm"
                     onclick="ModalManager.closeModal(document.getElementById('detailModal'))">
-                닫기
+                확인
             </button>
             </div>
         </div>

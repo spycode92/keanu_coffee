@@ -6,7 +6,7 @@
 
 		<!-- 등록 모달 -->
 		<div class="modal" id="createModal" aria-hidden="true">
-			<div class="modal-card" role="dialog" aria-modal="true"
+			<div class="modal-card modal-form.lg" role="dialog" aria-modal="true"
 				aria-labelledby="createTitle">
 				<div class="modal-head">
 					<strong id="createTitle">신규 차량 등록</strong>
@@ -54,8 +54,8 @@
 					</form>
 				</div>
 				<div class="modal-foot">
-					<button class="btn secondary" id="cancelCreate">취소</button>
-					<button class="btn" id="saveCreate">등록</button>
+					<button class="btn btn-cancel" id="cancelCreate">취소</button>
+					<button class="btn btn-confirm" id="saveCreate">등록</button>
 				</div>
 			</div>
 		</div>

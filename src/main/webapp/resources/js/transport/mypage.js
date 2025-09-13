@@ -252,7 +252,6 @@ $(document).on("click", ".detail-btn", function() {
 			requiresAdditional = dispatch.requiresAdditional;
 			let detailHtml = "";
 			dispatch.franchises?.forEach((stop) => {
-				console.log("stop", stop);
 				timelineData.push({
 					franchiseIdx: stop.franchiseIdx,
 					franchiseName: stop.franchiseName,
@@ -263,16 +262,15 @@ $(document).on("click", ".detail-btn", function() {
 				const items = stop.deliveryConfirmations?.[0]?.items || [];
 				if (stop.deliveryConfirmations) {
 					stop.deliveryConfirmations.forEach((dc) => {
-						console.log("dc", dc);
 						dc.items?.forEach((item, index) => {
 							const orderItems = dc.items;
 							detailHtml += `
 							<tr data-confirmation-item-idx="${item.confirmationItemIdx}"
 							    data-outbound-order-idx="${dc.outboundOrderIdx}">
-								${index === 0 ? `<td rowspan="${orderItems.length}">${stop.franchiseName}</td>` : ""}
-								<td>${item.itemName}</td>
-								<td>${item.orderedQty}</td>
-							  	<td>
+								${index === 0 ? `<td rowspan="${orderItems.length}" data-label="지점명">${stop.franchiseName}</td>` : ""}
+								<td data-label="품목명">${item.itemName}</td>
+								<td data-label="주문수량">${item.orderedQty}</td>
+							  	<td data-label="납품수량">
 								    <input type="number"
 								           class="delivered-qty"
 								           data-ordered-qty="${item.orderedQty}"
@@ -282,16 +280,27 @@ $(document).on("click", ".detail-btn", function() {
 										   ${item.status === "OK" || item.status === "REFUND" || item.status === "PARTIAL_REFUND" ? "disabled" : ""}
 											 />
 							  	</td>
-								<td class="status-cell">${stop.completeTime == null ? "대기" : item.status === "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전량반품" || "-"}</td>
-						        ${index === 0 ? `<td rowspan="${orderItems.length}">
-						        	<button class="complateBtn" 
-											data-franchise-idx="${stop.franchiseIdx}" 
-											data-dispatch-stop-idx="${stop.dispatchStopIdx}" 
-											data-order-idx="${dc.outboundOrderIdx}"
-											data-confirmation-item-idx="${item.confirmationItemIdx}" disabled>
-						              납품완료!
-						            </button>
-						        </td>` : ""}
+								${index === 0 ? `
+								      <td rowspan="${orderItems.length}" class="btn-cell btn-pc">
+								          <button class="complateBtn btn btn-secondary"
+								                  data-franchise-idx="${stop.franchiseIdx}" 
+								                  data-dispatch-stop-idx="${stop.dispatchStopIdx}" 
+								                  data-order-idx="${dc.outboundOrderIdx}"
+								                  data-confirmation-item-idx="${item.confirmationItemIdx}" disabled>
+								            납품완료
+								          </button>
+								      </td>` : ""}
+								
+								  ${index === orderItems.length - 1 ? `
+								      <td class="btn-cell btn-mobile">
+								          <button class="complateBtn btn btn-secondary"
+								                  data-franchise-idx="${stop.franchiseIdx}" 
+								                  data-dispatch-stop-idx="${stop.dispatchStopIdx}" 
+								                  data-order-idx="${dc.outboundOrderIdx}"
+								                  data-confirmation-item-idx="${item.confirmationItemIdx}" disabled>
+								            납품완료
+								          </button>
+								      </td>` : ""}
 							</tr>
 						`;
 						});
@@ -458,8 +467,6 @@ $(document).on("click", ".complateBtn", function() {
 	      status: statusCode
 	    });
 	});
-
-	console.log(complateRequestData);
 
 	Swal.fire({
 		title: "납품을 완료하시겠습니가?",

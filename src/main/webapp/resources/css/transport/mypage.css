@@ -46,21 +46,10 @@ h2 {
 	color: var(- -muted)
 }
 
-.btn {
-	display: inline-flex;
-	align-items: center;
-	gap: .5rem;
-	padding: .5rem .9rem;
-	border-radius: 10px;
-	border: 1px solid var(- -border);
-	background: var(- -primary);
-	color: #fff;
-	cursor: pointer;
-}
-
 .btn.ghost {
 	background: #fff;
 	color: #111;
+	display: none;
 }
 
 .btn:disabled {
@@ -84,7 +73,7 @@ table {
 
 th, td {
 	padding: 10px 12px;
-	border-bottom: 1px solid var(- -border);
+	border-bottom: 1px solid var(--border);
 	text-align: left;
 	font-size: .95rem;
 }
@@ -94,54 +83,106 @@ thead th {
 	font-weight: 700;
 }
 
-@media ( max-width : 600px) {
-	thead {
+.btn-mobile {
+  display: none;
+}
+
+@media (max-width: 600px) {
+	/* 목록 테이블 */
+	.responsive-table thead {
 		display: none;
 	}
-	tbody tr {
+	.responsive-table tbody tr {
 		display: block;
 		background: #fff;
-		border: 1px solid var(- -border);
+		border: 1px solid var(--border);
 		border-radius: 12px;
 		margin-bottom: 10px;
 		overflow: hidden;
 		box-shadow: 0 2px 8px rgba(15, 23, 42, .05);
 	}
-	td {
+	.responsive-table td {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		border: 0;
 		border-bottom: 1px dashed #eef2ff;
 	}
-	td:last-child {
-		border-bottom: 0
+	.responsive-table td:last-child {
+		border-bottom: 0;
 	}
-	td:nth-child(1)::before {
-		content: "배차일";
-		font-weight: 600;
-		color: #64748b
-	}
-	td:nth-child(2)::before {
-		content: "지점";
-		font-weight: 600;
-		color: #64748b
-	}
-	td:nth-child(3)::before {
-		content: "예상중량";
-		font-weight: 600;
-		color: #64748b
-	}
-	td:nth-child(4)::before {
-		content: "상태";
-		font-weight: 600;
-		color: #64748b
-	}
-	td:nth-child(5)::before {
-		content: "작업";
-		font-weight: 600;
-		color: #64748b
-	}
+	.responsive-table td:nth-child(1)::before { content: "배차일"; font-weight: 600; color: #64748b; }
+	.responsive-table td:nth-child(2)::before { content: "배차시간"; font-weight: 600; color: #64748b; }
+	.responsive-table td:nth-child(3)::before { content: "구역"; font-weight: 600; color: #64748b; }
+	.responsive-table td:nth-child(4)::before { content: "총적재량"; font-weight: 600; color: #64748b; }
+	.responsive-table td:nth-child(5)::before { content: "작업"; font-weight: 600; color: #64748b; }
+	
+	 .detail-table thead {
+    display: none; /* 헤더 숨김 */
+  }
+  
+  .btn-pc {
+    display: none;
+  }
+  .btn-mobile {
+    display: block;
+    text-align: right;
+  }
+
+  .detail-table tbody tr {
+    display: block;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, .05);
+  }
+
+  .detail-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 0;
+    border-bottom: 1px dashed #eef2ff;
+    padding: 6px 10px;
+  }
+
+  .detail-table td:last-child {
+    border-bottom: 0;
+  }
+
+  /* 공통 라벨 */
+  .detail-table td::before {
+    font-weight: 600;
+    color: #64748b;
+  }
+
+  /* 지점명(td[rowspan])은 독립 블록처럼 표시 */
+  .detail-table td[rowspan] {
+    display: block;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 700;
+    font-size: .95rem;
+    background: #f9fafb;
+  }
+
+  .detail-table td[rowspan]::before {
+    content: "지점명";
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+    color: #475569;
+  }
+
+/*   나머지 td 라벨 지정 */
+  .detail-table td:nth-child(2)::before { content: "품목명"; }
+  .detail-table td:nth-child(3)::before { content: "주문수량"; }
+  .detail-table td:nth-child(4)::before { content: "반품수량"; }
+  .detail-table td:nth-child(5)::before { content: "상태"; }
+  .detail-table td:nth-child(6)::before { content: "작업"; }
+
+
 }
 
 /* 상태 칩 (예약/운송중/완료) */
@@ -188,7 +229,7 @@ thead th {
 	max-width: 720px;
 	max-height: 92vh;
 	background: #fff;
-	border: 1px solid var(- -border);
+	border: 1px solid var(--border);
 	border-radius: 12px 12px 0 0;
 	overflow: hidden;
 }
@@ -198,7 +239,7 @@ thead th {
 	align-items: center;
 	justify-content: space-between;
 	padding: 12px;
-	border-bottom: 1px solid var(- -border)
+	border-bottom: 1px solid var(--border)
 }
 
 .modal-body {
@@ -211,7 +252,7 @@ thead th {
 	display: flex;
 	gap: 8px;
 	padding: 12px;
-	border-top: 1px solid var(- -border);
+	border-top: 1px solid var(--border);
 	background: #fff;
 	position: sticky;
 	bottom: 0
@@ -219,7 +260,7 @@ thead th {
 
 /* 주문서(그룹 테이블) */
 .group {
-	border: 1px solid var(- -border);
+	border: 1px solid var(--border);
 	border-radius: 10px;
 	margin-bottom: 12px;
 	overflow: hidden;
@@ -288,4 +329,29 @@ thead th {
 	padding: 6px 10px;
 	border-radius: 999px;
 	font-size: .85rem;
+}
+
+.delivered-qty {
+	width: 60px;              /* 숫자 입력 칸 크기 */
+	padding: 4px 6px;         /* 안쪽 여백 */
+	font-size: 0.85rem;       /* 글자 크기 */
+	text-align: center;       /* 숫자 가운데 정렬 */
+	border: 1px solid #d1d5db;/* 연한 회색 테두리 (#d1d5db = Tailwind gray-300) */
+	border-radius: 6px;       /* 모서리 둥글게 */
+	background-color: #f9fafb;/* 밝은 배경 */
+	outline: none;            /* 포커스 시 기본 파란 테두리 제거 */
+	transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* 포커스 시 효과 */
+.delivered-qty:focus {
+	border-color: #3b82f6;    /* 파란색 테두리 */
+	box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* disabled 상태 */
+.delivered-qty:disabled {
+	background-color: #f3f4f6; /* 비활성화일 때 약간 진한 회색 */
+	color: #9ca3af;            /* 글씨도 연하게 */
+	cursor: not-allowed;       /* 클릭 불가 표시 */
 }

@@ -53,9 +53,9 @@
 				</form>
 			</div>
 			<div class="modal-foot">
-				<button class="btn secondary" id="cancelEdit">취소</button>
-				<button class="btn" id="saveEdit">저장</button>
-				<button class="btn" id="editBtn">수정</button>
+				<button class="btn btn-cancel" id="cancelEdit">취소</button>
+				<button class="btn btn-confirm" id="saveEdit">저장</button>
+				<button class="btn btn-update" id="editBtn">수정</button>
 			</div>
 		</div>
 	</div>

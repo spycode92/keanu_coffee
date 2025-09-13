@@ -272,7 +272,7 @@
         <!-- 배차 요청 목록 -->
         <section class="card" style="margin-top:12px">
             <h2>배차 요청 목록</h2>
-            <table id="assignTable">
+            <table class="responsive-table" id="assignTable">
                 <thead>
                     <tr>
                         <th>배차일</th>
@@ -301,7 +301,7 @@
                 						<button class="btn ghost load-btn">적재하기</button>
                 					</c:when>
                 					<c:otherwise>
-		                				<button class="btn ghost detail-btn">상세</button>
+		                				<button class="btn btn-confirm detail-btn">상세</button>
                 					</c:otherwise>
                 				</c:choose>
                 			</td>
@@ -347,7 +347,7 @@
             <div class="modal-body">
                 <div id="progMeta" class="muted" style="margin-bottom:8px">배차일 -</div>
                 <div id="deliverWrap">
-                	<table id="detailItems">
+                	<table class="detail-table" id="detailItems">
                 		<thead>
                 			<tr>
                 				<th>지점명</th>
