@@ -631,6 +631,46 @@
 			dispatch_idx = #{dispatchIdx}
 	</select>
 	
+	<!-- 상품 번호 조회 -->
+	<select id="selectReceiptProductIdxForDisposal" resultType="int">
+		SELECT 
+			ooi.receipt_product_idx
+	    FROM 
+	    	OUTBOUND_ORDER_ITEM ooi
+	    JOIN 
+	    	DELIVERY_CONFIRMATION dc
+	    ON 
+	    	ooi.outbound_order_idx = dc.outbound_order_idx
+	    JOIN 
+	    	DISPATCH_STOPDELIVERY_CONFIRMATION_ITEM dci
+	    ON 
+	    	dc.delivery_confirmation_idx = dci.confirmation_idx
+	    AND 
+	    	ooi.product_idx = dci.product_idx
+	    WHERE 
+	    	dc.delivery_confirmation_idx = #{deliveryConfirmationIdx}
+	    AND 
+	    	dci.confirmation_item_idx = #{confirmationItemIdx}
+	</select>
+	
+	<!-- 반품 폐기 처리 -->
+	<insert id="insertDeliveryDisposal">
+		INSERT INTO DISPOSAL (
+			emp_idx
+			, section
+			, receipt_product_idx
+			, disposal_amount
+			, note
+		)
+		VALUES (
+			#{empIdx}
+			, #{section}
+			, #{receiptProductIdx}
+			, #{disposalAmount}
+			, #{note}
+		)
+	</insert>
+	
 	<!-- 출고 주문 테이블 상태 변경 -->
 	<update id="updateOutboundOrderStatus" >
 		UPDATE 	

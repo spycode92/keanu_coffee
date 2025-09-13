@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.itwillbs.keanu_coffee.common.dto.DisposalDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationItemDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
@@ -114,4 +115,10 @@ public interface DispatchMapper {
 
 	// 적재 상태 확인
 	String selectOutboundOrderStatus(Integer outboundOrderIdx);
+
+	// 상품 번호 조회
+	Integer selectReceiptProductIdxForDisposal(@Param("deliveryConfirmationIdx") Integer deliveryConfirmationIdx, @Param("confirmationItemIdx") Integer confirmationItemIdx);
+
+	// 반품 폐기 처리
+	void insertDeliveryDisposal(DisposalDTO disposal);
 }

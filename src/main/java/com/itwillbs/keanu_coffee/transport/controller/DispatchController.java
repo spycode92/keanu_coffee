@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchCompleteRequest;
@@ -112,7 +114,7 @@ public class DispatchController {
 	}
 	
 	// 기사 마이페이지 적재 완료
-	@PostMapping("/mypage/dispatch/complete")
+	@PostMapping("/mypage/dispatch/completed")
 	public ResponseEntity<String> addLoad(@RequestBody DispatchCompleteRequest request) {
 		try {
 			dispatchService.insertDispatchLoad(request);
@@ -143,9 +145,11 @@ public class DispatchController {
 	
 	// 납품 완료
 	@PostMapping("/mypage/delivery/completed")
-	public ResponseEntity<String> modifyDeliveryCompleted(@RequestBody DeliveryConfirmationDTO request) {
+	public ResponseEntity<String> modifyDeliveryCompleted(@RequestBody DeliveryConfirmationDTO request, Authentication authentication) {
+		EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
+		Integer empIdx = empDetail.getEmpIdx();
 		try {
-			dispatchService.updateDeliveryCompleted(request);
+			dispatchService.updateDeliveryCompleted(request, empIdx);
 			return ResponseEntity.ok("납품완료");
 		} catch (Exception e) {
 			e.printStackTrace();
