@@ -88,8 +88,8 @@ public class EmployeeManagementService {
 	public String empNoBuilder(EmployeeInfoDTO employee) {
 		//입력된휴대폰번호
 		String phone = employee.getEmpPhone();
-		//휴대폰번호 뒷 4자리
-		String last4Digits = phone.substring(phone.length() - 4);
+		//휴대폰번호 뒷 2자리
+		String last4Digits = phone.substring(phone.length() - 2);
 		//오늘 날짜 MMdd 형식
 		String today = new SimpleDateFormat("MMdd").format(new Date());
 		
