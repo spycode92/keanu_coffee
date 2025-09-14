@@ -193,6 +193,7 @@
 	    <result property="franchiseName" column="franchise_name"/>
 	    <result property="regionIdx" column="region_idx"/>
 	    <result property="regionName" column="common_code_name"/>
+	    <result property="address" column="franchise_address1"/>
 	    <result property="dispatchStopStatus" column="status"/>
 	    <result property="arrivalTime" column="arrival_time"/>
 	    <result property="completeTime" column="complete_time"/>
@@ -241,6 +242,7 @@
 	        , f.franchise_name
 	        , f.region_idx
 	        , f.franchise_manager_name
+	        , f.franchise_address1
 	        , c.common_code_name AS region_name
 	        , dc.delivery_confirmation_idx
 	        , dc.outbound_order_idx AS outbound_order_idx

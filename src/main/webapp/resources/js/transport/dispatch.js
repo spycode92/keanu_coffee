@@ -321,6 +321,7 @@ $(document).on("click", ".dispatchInfo", function() {
 				   		}
 					});
 					$("#timeline").html(timelineHtml);
+					renderDispatchMap("mapContainer", dispatch.franchises);
 			}
 		})
 		.fail((xhr, status, error) => {
