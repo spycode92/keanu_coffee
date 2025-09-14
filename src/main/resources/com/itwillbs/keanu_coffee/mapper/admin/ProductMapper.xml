@@ -221,6 +221,7 @@
 			product_idx
 			, product_name
 		FROM PRODUCT
+		WHERE status = '활성'
 		ORDER BY product_name
 	</select>
 	
