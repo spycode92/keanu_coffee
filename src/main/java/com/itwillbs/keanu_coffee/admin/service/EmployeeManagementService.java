@@ -54,7 +54,6 @@ public class EmployeeManagementService {
 	
 	// 직원 목록 갯수
 	@Transactional(readOnly = true)
-	@WorkingLog(target = WorkingLogTarget.INBOUND_WAITING)
 	public int getEmployeeCount(String searchType, String searchKeyword) {
 		return employeeManagementMapper.countEmployee(searchType, searchKeyword );
 	}
