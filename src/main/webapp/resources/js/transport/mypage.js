@@ -280,6 +280,7 @@ $(document).on("click", ".detail-btn", function() {
 										   ${item.status === "OK" || item.status === "REFUND" || item.status === "PARTIAL_REFUND" ? "disabled" : ""}
 											 />
 							  	</td>
+								<td class="status-cell">${stop.completeTime == null ? "대기" : item.status === "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전량반품" || "-"}</td>
 								${index === 0 ? `
 								      <td rowspan="${orderItems.length}" class="btn-cell btn-pc">
 								          <button class="complateBtn btn btn-secondary"
@@ -392,7 +393,6 @@ $(document).on("input", ".delivered-qty", function() {
 	const deliverd = parseInt($(this).val() || "0", 10);
 	const orderedQty = parseInt($(this).data("ordered-qty"), 10);
 	const orderIdx = tr.data("outbound-order-idx");
-	console.log(orderIdx);
 
 	let statusText = "대기 중";
 	let statusCode = null;
@@ -426,8 +426,11 @@ $(document).on("input", ".delivered-qty", function() {
 	      allFilled = false;
 	      return false;
 	    }
+
 		if (code === "REFUND" || code === "PARTIAL_REFUND") {
-			hasRefund = true;
+			$("#files").show();
+		} else {
+			$("#files").hide();
 		}
     });
 
@@ -467,9 +470,20 @@ $(document).on("click", ".complateBtn", function() {
 	      status: statusCode
 	    });
 	});
-
+	
+	const formData = new FormData();
+	
+	// formData 데이터 입력
+	formData.append("request", new Blob([JSON.stringify(complateRequestData)], { type: "application/json" }));
+	
+	// 파일 추가
+	const files = $('input[name="files"]')[0].files;
+	for (let i = 0; i < files.length; i++) {
+	  formData.append("files", files[i]); // List<MultipartFile>로 매핑됨
+	}
+	
 	Swal.fire({
-		title: "납품을 완료하시겠습니가?",
+		title: "납품을 완료하시겠습니까?",
 		showDenyButton: true,
 		confirmButtonText: "완료",
 		denyButtonText: "취소"
@@ -478,8 +492,13 @@ $(document).on("click", ".complateBtn", function() {
 			$.ajax({
 				url: MYPAGE_DELIVERY_COMPLETE_URL,
 				type: "POST",
-				contentType: "application/json",
-				data: JSON.stringify(complateRequestData),
+				contentType: "json",
+				data: formData,
+				processData: false,
+				contentType: false,
+				headers: {
+ 					"X-CSRF-TOKEN": token
+ 				},
 				beforeSend(xhr) {
 					if (token && header) xhr.setRequestHeader(header, token);
 				},

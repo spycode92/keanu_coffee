@@ -15,7 +15,7 @@
 	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
 	rel="stylesheet">
 <link
-	href="${pageContext.request.contextPath}/resources/css/common/common.css"
+	href="${pageContext.request.contextPath}/resources/css/common/common_sample.css"
 	rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script
@@ -102,7 +102,7 @@ button:disabled {
             </div>
         </header>
         <!-- 검색/필터 -->
-        <form class="filters" aria-label="검색 및 필터">
+        <form class="filters card" aria-label="검색 및 필터">
             <div class="field">
                 <select id="filterStatus" name="filter">
                     <option value="전체">전체</option>

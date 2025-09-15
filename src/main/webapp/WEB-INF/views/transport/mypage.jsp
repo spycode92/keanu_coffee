@@ -224,6 +224,11 @@
 	  text-overflow: ellipsis;
 	  color: #333;
 	}
+	
+	#files {
+		display: none;
+		margin-top: 0.5em;
+	}
 </style>
 </head>
 <body>
@@ -360,6 +365,7 @@
                 		</thead>
                 		<tbody></tbody>
                 	</table>
+                	<input type="file" name="files" id="files" multiple style="display: none;"/>
                 </div>
                 <h3 style="margin:12px 0 6px">배송 현황</h3>
                 <div class="timeline" id="timeline"><!-- 단계 표시 --></div>

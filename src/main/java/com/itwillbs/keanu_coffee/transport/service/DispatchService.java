@@ -13,8 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.keanu_coffee.common.dto.AlarmDTO;
 import com.itwillbs.keanu_coffee.common.dto.DisposalDTO;
+import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.service.AlarmService;
+import com.itwillbs.keanu_coffee.common.utils.FileUtils;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationItemDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
@@ -38,6 +40,8 @@ public class DispatchService {
 	private final RouteMapper routeMapper;
 	private final SimpMessagingTemplate messagingTemplate;
 	private final AlarmService alarmService;
+	private final HttpSession session;
+	private final FileMapper fileMapper;
 	
 	// 페이징을 위한 배차 수
 	@Transactional(readOnly = true)
@@ -330,6 +334,14 @@ public class DispatchService {
 		
 		// 수주확인서 업데이트
 		dispatchMapper.updateDeliveryConfirmation(request.getDeliveryConfirmationIdx(), request.getReceiverName());
+		
+		// 반품 사진 업로드
+		List<FileDTO> fileList = FileUtils.uploadFile(request, session);
+		
+		// 파일 DB 등록
+		if (!fileList.isEmpty()) {
+			fileMapper.insertFiles(fileList);
+		}
 		
 		// 수주확인서 품목 업데이트
 		for (DeliveryConfirmationItemDTO item : request.getItems()) {
