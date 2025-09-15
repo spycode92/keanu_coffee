@@ -7,12 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,7 +31,7 @@ import com.itwillbs.keanu_coffee.transport.service.DriverService;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
+@Controller
 @RequestMapping("transport")
 @RequiredArgsConstructor
 public class DispatchController {
@@ -63,6 +65,7 @@ public class DispatchController {
 	
 	// 배차 등록
 	@PostMapping("/dispatch/add")
+	@ResponseBody
 	public ResponseEntity<String> addDispatch(@RequestBody DispatchRegisterRequestDTO request) {		
 		try {
 			dispatchService.insertDispatch(request);
@@ -75,6 +78,7 @@ public class DispatchController {
 	
 	// 배차 취소
 	@PostMapping("/dispatch/cancel")
+	@ResponseBody
 	public ResponseEntity<String> modifyDispatchStatus(@RequestBody DispatchRegisterRequestDTO request) {
 		try {
 			dispatchService.updateDispatchStatus(request);
@@ -117,6 +121,7 @@ public class DispatchController {
 	
 	// 기사 마이페이지 적재 완료
 	@PostMapping("/mypage/dispatch/completed")
+	@ResponseBody
 	public ResponseEntity<String> addLoad(@RequestBody DispatchCompleteRequest request) {
 		try {
 			dispatchService.insertDispatchLoad(request);
@@ -134,6 +139,7 @@ public class DispatchController {
 	
 	// 배송 시작
 	@PostMapping("/mypage/delivery/start")
+	@ResponseBody
 	public ResponseEntity<String> modifyDeliveryStatusStart(@RequestBody DispatchRegisterRequestDTO request) {
 		try {
 			dispatchService.updateDispatchStatusStart(request);
@@ -147,12 +153,14 @@ public class DispatchController {
 	
 	// 납품 완료
 	@PostMapping("/mypage/delivery/completed")
+	@ResponseBody
 	public ResponseEntity<String> modifyDeliveryCompleted(
 			@RequestPart("request") DeliveryConfirmationDTO request, 
 			@RequestPart(value = "files", required = false) List<MultipartFile> files, 
 			Authentication authentication) {
 		EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
 		Integer empIdx = empDetail.getEmpIdx();
+		
 		try {
 			// DTO에 파일 넣기
 			if (files != null && !files.isEmpty()) {
@@ -170,6 +178,7 @@ public class DispatchController {
 	
 	// 기사 복귀
 	@PostMapping("/mypage/delivery/return")
+	@ResponseBody
 	public ResponseEntity<String> modifyDeliveryReturn(@RequestBody DispatchAssignmentDTO request) {
 		try {
 			dispatchService.updateDeliveryReturn(request);
@@ -179,5 +188,11 @@ public class DispatchController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("다시 시도해주세요.");
 		}
+	}
+	
+	// 수주확인서 새창
+	@GetMapping("/deliveryConfirmation/{deliveryConfirmationIdx}")
+	public String getDeliveryConfirmationDetail(@PathVariable Integer deliveryConfirmationIdx) {
+		return "/transport/deliveryConfirmationDetail";
 	}
 }
