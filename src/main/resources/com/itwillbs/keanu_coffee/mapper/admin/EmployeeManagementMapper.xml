@@ -281,6 +281,13 @@
 		)
 	</insert>
 	
+	<!-- 사번구하기 -->
+	<select id="selectEmpNo" parameterType="String" resultType="String">
+		SELECT MAX(emp_no)
+		FROM EMPLOYEE_INFO
+		WHERE emp_no like CONCAT(#{today}, '%')
+	</select>
+	
 	
 	
 </mapper>

@@ -1,16 +1,9 @@
 package com.itwillbs.keanu_coffee.common.aop.aspect;
 
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Map;
 
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -20,10 +13,8 @@ import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
 import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
 import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
-import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.SystemLogDTO;
 import com.itwillbs.keanu_coffee.common.mapper.LogMapper;
-import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.TimeUtils;
 import com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO;
 
