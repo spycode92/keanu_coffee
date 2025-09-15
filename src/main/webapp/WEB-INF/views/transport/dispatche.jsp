@@ -20,7 +20,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script
 	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
-<!-- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2b14d97248052db181d2cfc125eaa368"></script> -->
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2b14d97248052db181d2cfc125eaa368&libraries=services"></script>	
 <script
 	src="${pageContext.request.contextPath}/resources/js/transport/dispatch.js"></script>

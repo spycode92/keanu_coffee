@@ -45,7 +45,7 @@
                 </div>
                 <h3 style="margin:12px 0 6px">배송 현황</h3>
             	<div class="timeline" id="timeline"><!-- 단계 표시 --></div>
-				<div id="map" style="width:100%;height:350px;"></div>
+				<div id="map" ></div>
             </div>
             <div class="modal-foot">
             <button type="button"

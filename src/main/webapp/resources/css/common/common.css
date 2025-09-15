@@ -736,6 +736,7 @@ body {
 
 .modal-body {
   padding: 14px 16px;
+  overflow: auto;
 }
 
 .modal-foot {

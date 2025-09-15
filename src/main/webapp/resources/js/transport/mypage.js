@@ -311,6 +311,7 @@ $(document).on("click", ".detail-btn", function() {
 			renderTimeline();
 
 			$("#detailItems tbody").html(detailHtml);
+			renderDispatchMap("mapContainer", dispatch.franchises);
 		});
 
 	// 버튼 클릭 시 
