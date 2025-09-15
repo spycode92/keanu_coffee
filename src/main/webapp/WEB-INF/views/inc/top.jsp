@@ -317,7 +317,7 @@
 			<li>
 				<a href="/inventory/main"><span>재고 현황</span></a>
 			    <ul class="submenu">
-			        <li><a href="/inventory/stockCheck">재고 조회/검수</a></li>
+			        <li><a href="/inventory/stockCheck">재고 조회</a></li>
 			        <li><a href="/inventory/productHistory">제품 위치 기록</a></li>
               <li><a href="/inventory/updateInventory">재고 업데이트</a></li>
               <li><a href="/inventory/updateWarehouse">창고 업데이트</a></li>

@@ -1,13 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
-<title>재고 조회 / 검수</title>
+<title>재고 조회</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
@@ -27,36 +28,12 @@
     select.form-control {
         padding: 0 10px;
     }
-	
-	/* 테이블 컬럼 넓히기 & 줄바꿈 방지 */
-	#tblRealtime th:nth-child(1),   /* 로케이션 */
-	#tblRealtime td:nth-child(1),
-	#tblRealtime th:nth-child(3),   /* 상품코드 */
-	#tblRealtime td:nth-child(3),
-	#tblRealtime th:nth-child(4),   /* 수량 */
-	#tblRealtime td:nth-child(4),
-	#tblRealtime th:nth-child(6),   /* 로케이션유형 */
-	#tblRealtime td:nth-child(6),
-	#tblRealtime th:nth-child(7),   /* D-Day */
-	#tblRealtime td:nth-child(7),
-	#tblRealtime th:nth-child(8),   /* D-Day */
-	#tblRealtime td:nth-child(8),
-	#tblRealtime th:nth-child(9),   /* D-Day */
-	#tblRealtime td:nth-child(9),
-	#tblRealtime th:nth-child(10),  /* 재고상태 */
-	#tblRealtime td:nth-child(10),
-	#tblRealtime th:nth-child(11),  /* 출고여부 */
-	#tblRealtime td:nth-child(11) {
-	    min-width: 100px;   /* 원하는 폭, 100~120px 권장 */
-	    white-space: nowrap; /* 줄바꿈 방지 */
-	}
 
     /* 상태 라벨 */
     .status-label { display:inline-block; padding:3px 8px; border-radius:4px; font-weight:bold; font-size:0.9em; }
     .status-label.imminent { background:#fff3cd; border:1px solid #ffc107; color:#856404; }
     .status-label.expired  { background:#f8d7da; border:1px solid #dc3545; color:#721c24; }
     .status-label.normal   { background:#d4edda; border:1px solid #28a745; color:#155724; }
-    .status-label.disposed { background:#e5e7eb; border:1px solid #6b7280; color:#111827; }
 
     /* D-Day 뱃지 */
     .dday-badge { display:inline-block; margin-left:6px; padding:1px 6px; border-radius:999px; border:1px solid rgba(0,0,0,.1); font-size:.8em; font-weight:700; opacity:.9; }
@@ -108,43 +85,14 @@
     @media (max-width: 1200px) {
         .modal-card.lg { width: 95%; max-height: 85vh; }
     }
-
-
-    /* 폐기 처리 전용 */
-    #lotModal .panel-disposal {
-        border:1px dashed #334155;
-        border-radius:10px;
-        padding:12px;
-        background:#0f172a;
-        color:#e2e8f0;
-    }
-    #lotModal .panel-disposal .form {
-
-        display:flex;
-        flex-direction:column;
-        gap:12px;
-    }
-    #lotModal .panel-disposal .field {
-        display:flex;
-        flex-direction:column;
-        gap:6px;
-        width:100%;
-    }
-    #lotModal .panel-disposal .form-control {
-        width:100%;
-        box-sizing:border-box;
-        background:#0b1220;
-        border:1px solid #334155;
-        color:#e2e8f0;
-        border-radius:10px;
-        padding:10px 12px;
-
-    }
-    #lotModal .panel-disposal textarea.form-control {
-        min-height:110px;
-        resize:vertical;
-    }
-    .hidden { display:none; }
+    
+    /* 📌 stockCheck 전용 테이블 - 줄바꿈 방지 */
+	#tblRealtime th,
+	#tblRealtime td {
+	    white-space: nowrap;   /* 줄바꿈 안 함 */
+	    overflow: hidden;      /* 넘치는 텍스트는 숨김 */
+	    text-overflow: ellipsis; /* ... 처리 (옵션) */
+	}
 </style>
 </head>
 <body>
@@ -154,23 +102,42 @@
 
     <div class="card" style="margin:20px;">
         <div class="card-header">
-            <h3 class="card-title">실시간 재고 조회</h3>
+            <h3 class="card-title">재고 조회</h3>
         </div>
 
         <!-- 검색 조건 form -->
 		<form method="get" action="${pageContext.request.contextPath}/inventory/stockCheck">
 		
 		    <div class="filters">
+		    	<!-- 상품명/코드 -->
 		        <div class="interval">
 		            <label class="form-label">상품명/코드</label>
 		            <input class="form-control" name="keyword" id="prodSearch" 
 		                   placeholder="예: 바닐라시럽 / SYR-001" value="${keyword}">
 		        </div>
+		        
+		        <!-- 카테고리 -->
+				<div class="interval">
+				    <label class="form-label">카테고리</label>
+				    <select class="form-control" name="category" id="category">
+						<option value="" ${empty category ? 'selected' : ''}>전체</option>
+						<c:forEach var="cat" items="${categoryList}">
+						    <option value="${cat.commonCodeIdx}"
+						        ${not empty category and category eq cat.commonCodeIdx ? 'selected' : ''}>
+						        ${cat.commonCodeName}
+						    </option>
+						</c:forEach>
+					</select>
+				</div>
+						        
+		        <!-- 로케이션 -->
 		        <div class="interval">
 		            <label class="form-label">로케이션</label>
 		            <input class="form-control" name="location" id="locSearch" 
 		                   placeholder="예: A-1-a1" value="${location}">
 		        </div>
+		        
+		        <!-- 로케이션 유형 -->
 		        <div class="interval">
 		            <label class="form-label">로케이션 유형</label>
 		            <select class="form-control" name="locationType" id="locType">
@@ -226,15 +193,6 @@
 		                <option value="WARN" ${stockStatus eq 'WARN' ? 'selected' : ''}>임박</option>
 		                <option value="EXPIRED" ${stockStatus eq 'EXPIRED' ? 'selected' : ''}>만료</option>
 		                <option value="OK" ${stockStatus eq 'OK' ? 'selected' : ''}>정상</option>
-		                <option value="DISPOSED" ${stockStatus eq 'DISPOSED' ? 'selected' : ''}>폐기</option>
-		            </select>
-		        </div>
-		        <div class="interval">
-		            <label class="form-label">출고 여부</label>
-		            <select name="outboundStatus" class="form-control">
-		                <option value="전체" ${outboundStatus eq '전체' ? 'selected' : ''}>전체</option>
-		                <option value="YES" ${outboundStatus eq 'YES' ? 'selected' : ''}>가능</option>
-		                <option value="NO" ${outboundStatus eq 'NO' ? 'selected' : ''}>불가능</option>
 		            </select>
 		        </div>
 		    </div>
@@ -267,45 +225,43 @@
 	                    <th>유통기한</th>
 	                    <th>D-Day</th>
 	                    <th>재고상태</th>
-	                    <th>출고 여부</th>
 	                </tr>
 	            </thead>
 	            <tbody id="tbodyRealtime">
 				    <c:forEach var="item" items="${inventoryList}">
-						<tr data-idx="${item.inventory_idx}">
-						    <td>${item.location_name}</td>
-						    <td>${item.product_name}</td>
-						    <td>${item.product_idx}</td>
-						    <td>${item.current_quantity}</td>
-						    <td>BOX</td>
-						    <td>
-						        <c:choose>
-						            <c:when test="${item.location_type == 1}">Pallet</c:when>
-						            <c:when test="${item.location_type == 2}">Picking</c:when>
-						            <c:otherwise>미지정</c:otherwise>
-						        </c:choose>
-						    </td>
-						    <td>${item.manufacture_date}</td>
-						    <td>${item.expiration_date}</td>
-						    <td class="dday-cell" data-exp="${item.expiration_date}"></td>
-						    <td class="status-cell" data-exp="${item.expiration_date}"></td>
-						    <td>
-							    <c:choose>
-							        <c:when test="${item.outbound_status eq '불가능'}">
-							            <span class="ship-badge ship-no">불가능</span>
-							        </c:when>
-							        <c:otherwise>
-							            <span class="ship-badge ship-yes">가능</span>
-							        </c:otherwise>
-							    </c:choose>
-							</td>
-						</tr>
+				        <tr data-idx="${item.receipt_product_idx}">
+				            <td>${item.location_name}</td>
+				            <td>${item.product_name}</td>
+				            <td>${item.product_idx}</td>
+				            <td><fmt:formatNumber value="${item.current_quantity}" type="number"/></td>
+				            <td>BOX</td>
+				            <td>
+				                <c:choose>
+				                    <c:when test="${item.location_type == 1}">Pallet</c:when>
+				                    <c:when test="${item.location_type == 2}">Picking</c:when>
+				                    <c:otherwise>미지정</c:otherwise>
+				                </c:choose>
+				            </td>
+				            <td>${item.manufacture_date}</td>
+				            <td>${item.expiration_date}</td>
+				            <td class="dday-cell" data-exp="${item.expiration_date}"></td>
+				            <td class="status-cell" data-exp="${item.expiration_date}"></td>
+				        </tr>
 				    </c:forEach>
+				
+				    <!-- 결과가 없을 때 표시 -->
+				    <c:if test="${empty inventoryList}">
+				        <tr>
+				            <td colspan="10" style="text-align:center; padding:20px; color:gray;">
+				                조회된 재고가 없습니다.
+				            </td>
+				        </tr>
+				    </c:if>
 				</tbody>
 	        </table>
 	    </div>
 	    
-	    <!-- ✅ 페이징 -->
+	    <!-- 페이징 -->
 		<div class="pagination" style="text-align:center; margin:20px 0;">
 		
 		    <!-- 처음 / 이전 -->
@@ -318,9 +274,9 @@
 		            <c:param name="mfgDate" value="${mfgDate}"/>
 		            <c:param name="expDate" value="${expDate}"/>
 		            <c:param name="stockStatus" value="${stockStatus}"/>
-		            <c:param name="outboundStatus" value="${outboundStatus}"/>
 		            <c:param name="sortOption" value="${sortOption}"/>
 		            <c:param name="qtySort" value="${qtySort}"/>
+		            <c:param name="category" value="${category}"/>
 		        </c:url>
 		        <a href="${firstPageUrl}" class="btn btn-secondary">« 처음</a>
 		
@@ -332,9 +288,9 @@
 		            <c:param name="mfgDate" value="${mfgDate}"/>
 		            <c:param name="expDate" value="${expDate}"/>
 		            <c:param name="stockStatus" value="${stockStatus}"/>
-		            <c:param name="outboundStatus" value="${outboundStatus}"/>
 		            <c:param name="sortOption" value="${sortOption}"/>
 		            <c:param name="qtySort" value="${qtySort}"/>
+		            <c:param name="category" value="${category}"/>
 		        </c:url>
 		        <a href="${prevPageUrl}" class="btn btn-secondary">‹ 이전</a>
 		    </c:if>
@@ -354,9 +310,9 @@
 		                    <c:param name="mfgDate" value="${mfgDate}"/>
 		                    <c:param name="expDate" value="${expDate}"/>
 		                    <c:param name="stockStatus" value="${stockStatus}"/>
-		                    <c:param name="outboundStatus" value="${outboundStatus}"/>
 		                    <c:param name="sortOption" value="${sortOption}"/>
 		                    <c:param name="qtySort" value="${qtySort}"/>
+		                    <c:param name="category" value="${category}"/>
 		                </c:url>
 		                <a href="${pageUrl}" class="btn btn-secondary">${i}</a>
 		            </c:otherwise>
@@ -373,9 +329,9 @@
 		            <c:param name="mfgDate" value="${mfgDate}"/>
 		            <c:param name="expDate" value="${expDate}"/>
 		            <c:param name="stockStatus" value="${stockStatus}"/>
-		            <c:param name="outboundStatus" value="${outboundStatus}"/>
 		            <c:param name="sortOption" value="${sortOption}"/>
 		            <c:param name="qtySort" value="${qtySort}"/>
+		            <c:param name="category" value="${category}"/>
 		        </c:url>
 		        <a href="${nextPageUrl}" class="btn btn-secondary">다음 ›</a>
 		
@@ -387,9 +343,9 @@
 		            <c:param name="mfgDate" value="${mfgDate}"/>
 		            <c:param name="expDate" value="${expDate}"/>
 		            <c:param name="stockStatus" value="${stockStatus}"/>
-		            <c:param name="outboundStatus" value="${outboundStatus}"/>
 		            <c:param name="sortOption" value="${sortOption}"/>
 		            <c:param name="qtySort" value="${qtySort}"/>
+		            <c:param name="category" value="${category}"/>
 		        </c:url>
 		        <a href="${lastPageUrl}" class="btn btn-secondary">끝 »</a>
 		    </c:if>
@@ -414,6 +370,7 @@
 	                        <tbody>
 	                            <tr><th>상품명</th><td id="miName">–</td></tr>
 	                            <tr><th>상품코드</th><td id="miItem">–</td></tr>
+	                            <tr><th>카테고리</th><td id="miCategory">–</td></tr>
 	                            <tr><th>LOT</th><td id="miLot">–</td></tr>
 	                            <tr><th>제조일자</th><td id="miMfg">–</td></tr>
 	                            <tr><th>유통기한</th><td id="miExp">–</td></tr>
@@ -437,45 +394,6 @@
 	                </div>
 	            </div>
 	
-	            <!-- 폐기 처리 -->
-<!-- 	            <div class="card" style="padding:12px; grid-column:1 / -1;"> -->
-<!-- 	                <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;"> -->
-<!-- 	                    <h3 class="card-title">폐기 처리</h3> -->
-<!-- 	                    <button type="button" id="btn-disposal-toggle" class="btn btn-destructive" aria-expanded="false" aria-controls="disposalPanel">폐기 처리</button> -->
-<!-- 	                </div> -->
-	
-<!-- 	                <div id="disposalPanel" class="panel-disposal hidden"> -->
-<!-- 	                    <form id="disposalForm" class="form"> -->
-<!-- 	                        <input type="hidden" id="df-lotNumber" name="lotNumber"> -->
-<!-- 	                        <input type="hidden" id="df-productCode" name="productCode"> -->
-<!-- 	                        <input type="hidden" id="df-locationCode" name="locationCode"> -->
-	
-<!-- 	                        <div class="field"> -->
-<!-- 	                            <label>현재 재고</label> -->
-<!-- 	                            <div> -->
-<!-- 	                                <span id="df-currentQtyText">0</span> -->
-<!-- 	                                <span id="df-unitText">BOX</span> -->
-<!-- 	                            </div> -->
-<!-- 	                        </div> -->
-	
-<!-- 	                        <div class="field"> -->
-<!-- 	                            <label for="df-disposalAmount">폐기 수량</label> -->
-<!-- 	                            <input type="number" id="df-disposalAmount" name="disposalAmount" class="form-control" min="1" required> -->
-<!-- 	                        </div> -->
-	
-<!-- 	                        <div class="field"> -->
-<!-- 	                            <label for="df-note">폐기 사유</label> -->
-<!-- 	                            <textarea id="df-note" name="note" class="form-control" placeholder="폐기 사유를 입력하세요" required></textarea> -->
-<!-- 	                        </div> -->
-	
-<!-- 	                        <div style="display:flex; justify-content:flex-end; gap:8px;"> -->
-<!-- 	                            <button type="submit" class="btn btn-primary">등록</button> -->
-<!-- 	                            <button type="button" class="btn btn-secondary" id="btn-disposal-cancel">취소</button> -->
-<!-- 	                        </div> -->
-<!-- 	                    </form> -->
-<!-- 	                </div> -->
-<!-- 	            </div> -->
-<!-- 	        </div> -->
 	
 	        <div class="modal-foot">
 	            <button class="btn btn-secondary" onclick="ModalManager.closeModal(document.getElementById('lotModal'))">닫기</button>
@@ -486,11 +404,17 @@
     <!-- ========================= /LOT 상세 모달 ========================= -->
 
     <script>
-	 	// ✅ KPI 카드 데이터 채우기
+	 	// KPI 카드 데이터 채우기
 	    $(document).ready(function(){
 	        $.getJSON('${pageContext.request.contextPath}/inventory/metrics', function(res){
-	            $('#kpiSku').text(res.totalSku ?? '–');
-	            $('#kpiQty').text(res.totalQty ?? '–');
+	        	// 숫자 천 단위 콤마 포맷 함수
+	        	function formatNumber(num) {
+	        	    if (num === null || num === undefined) return '–';
+	        	    return Number(num).toLocaleString('ko-KR'); 
+	        	}
+
+	        	$('#kpiSku').text(formatNumber(res.totalSku ?? 0));
+	        	$('#kpiQty').text(formatNumber(res.totalQty ?? 0));
 	        });
 	    });
     	
@@ -576,7 +500,7 @@
 	
 	    /* ====================== 모달 ====================== */
 	    $('#tbodyRealtime').on('click', 'tr', function() {
-		    const idx = $(this).data('idx');   // ✅ receipt_product_idx 가져오기
+	    	const idx = $(this).data('idx');   // ✅ receipt_product_idx 가져오기
 		    if (!idx) return;
 		
 		    // Ajax로 상세 데이터 요청
@@ -584,6 +508,7 @@
 		        // 상품 정보 채우기
 		        $('#miName').text(data.product_name || '–');
 		        $('#miItem').text(data.product_idx || '–');
+		        $('#miCategory').text(data.category_name || '–');   // 카테고리 추가
 		        
 		     	// LOT 번호 넣기
 		        $('#miLot').text(data.lot_number || '–');
@@ -634,67 +559,6 @@
 		    });
 		});
 					    
-// 	    /* ====================== 폐기 패널 토글 ====================== */
-// 	    $('#btn-disposal-toggle').on('click', function(){
-// 	        const $panel = $('#disposalPanel');
-// 	        const expanded = $(this).attr('aria-expanded') === 'true';
-// 	        if(expanded){
-// 	            $(this).attr('aria-expanded','false').text('폐기 처리');
-// 	            $panel.addClass('hidden');
-// 	        }else{
-// 	            $(this).attr('aria-expanded','true').text('닫기');
-// 	            $panel.removeClass('hidden');
-// 	            setTimeout(()=> $('#df-disposalAmount').trigger('focus'),80);
-// 	        }
-// 	    });
-	
-// 	    $('#btn-disposal-cancel').on('click', function(){
-// 	        $('#btn-disposal-toggle').attr('aria-expanded','false').text('폐기 처리');
-// 	        $('#disposalPanel').addClass('hidden');
-// 	        $('#disposalForm')[0].reset();
-// 	    });
-	
-// 	    $('#disposalForm').on('submit', function(e){
-// 	        e.preventDefault(); // 기본 submit 막음 (지금은 DB 연동 전이니까)
-	
-// 	        const currentQty = parseInt($('#df-currentQtyText').text().replace(/[^0-9]/g,''), 10) || 0;
-// 	        const amount = parseInt($('#df-disposalAmount').val(), 10) || 0;
-// 	        const note = ($('#df-note').val() || '').trim();
-	
-// 	        if(amount <= 0){
-// 	            alert('폐기 수량은 1 이상이어야 합니다.');
-// 	            $('#df-disposalAmount').focus();
-// 	            return;
-// 	        }
-// 	        if(amount > currentQty){
-// 	            alert('폐기 수량이 현재 재고보다 많습니다.');
-// 	            $('#df-disposalAmount').focus();
-// 	            return;
-// 	        }
-// 	        if(note.length < 2){
-// 	            alert('폐기 사유를 두 글자 이상 입력하세요.');
-// 	            $('#df-note').focus();
-// 	            return;
-// 	        }
-	
-// 	        // 상태를 폐기로 업데이트
-// 	        const lotNo = $('#df-lotNumber').val();
-// 	        const row = realtimeData.find(x => x.lotNo === lotNo);
-// 	        if(row){
-// 	            row.qty -= amount; // 재고 차감
-// 	            if(row.qty <= 0){
-// 	                row.qty = 0;
-// 	            }
-// 	            // 재고가 남았어도 폐기 상태로 표시되게 강제
-// 	            row.status = 'DISPOSED';
-// 	        }
-	
-// 	        // 모달 닫고 테이블 갱신
-// 	        ModalManager.closeModal(document.getElementById('lotModal'));
-// 	        renderTable(true);
-	
-// 	        alert('폐기 처리가 완료되었습니다.');
-// 	    });
 	    /* ====================== 초기화 버튼 ====================== */
 	    $('#btnReset').on('click', function(){
 	        $('form')[0].reset();
@@ -708,19 +572,8 @@
 	        $('input[name="expTo"]').val('');
 	        $('select[name="sortBy"]').val('');
 	        $('select[name="stockStatus"]').val('전체');
-	        $('select[name="outboundStatus"]').val('전체');
 
 	        window.location.href = "${pageContext.request.contextPath}/inventory/stockCheck?pageNum=1";
-	    });
-	    
-	    $(document).ready(function(){
-	        const urlParams = new URLSearchParams(window.location.search);
-	        const lotNumber = urlParams.get('keyword');
-	        if (lotNumber) {
-	            $("#tbodyRealtime tr").filter(function() {
-	                return $(this).find("td:nth-child(3)").text().trim() === lotNumber;
-	            }).css("background-color", "#fff3cd"); // 노란색 강조
-	        }
 	    });
 	</script>
 </body>
