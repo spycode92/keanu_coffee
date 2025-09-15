@@ -72,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	    });
 	    
 	    // 날짜 정렬
-	    console.log(grouped);
 	    const sorted = Object.entries(grouped).sort((a, b) => b[1] - a[1]);
 		const labels = sorted.map(([category]) => category);
 		const data = sorted.map(([_, qty]) => qty);
@@ -141,7 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				        const clickedIndex = elements[0].index;
 				        const categoryName = this.data.labels[clickedIndex];
 				
-				        console.log("클릭된 카테고리:", categoryName);
 				        showProductChart(categoryName);
 				    }
 				}
@@ -241,8 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		palletHeatmapData = buildHeatmapData(palletZoneData);
 		drawHeatmap(palletHeatmapData, "#pallet_heatmap", "Pallet_Zone");
 		drawHeatmap(pickingHeatmapData, "#picking_heatmap", "Picking_Zone");
-		console.log("Dd",palletZoneData);
-		console.log("ff",pickingZoneData);
 		totalUsage();
 	});
 	
@@ -250,7 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	function getlocation(){
 		return ajaxGet(`/admin/dashboard/locationUse`)
 			.then((data)=>{
-				console.log(data);
 				locationRawData = data;
 			}).catch((data)=>{
 				console.log("error " + data)	

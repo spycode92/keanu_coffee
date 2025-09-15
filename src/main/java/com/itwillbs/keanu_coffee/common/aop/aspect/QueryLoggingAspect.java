@@ -21,7 +21,8 @@ public class QueryLoggingAspect {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	String methodName = pjp.getSignature().getName();
         Object[] args = pjp.getArgs();
-		String empNo = authentication.getName();
+        String empNo = (authentication != null && authentication.isAuthenticated() && authentication.getName() != null)
+        	    ? authentication.getName() : "Anonymous";
 
         logger.info("{} Use executing query method: {} with args {}", empNo, methodName, args);
 

@@ -15,8 +15,11 @@ import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
 import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.SystemLogDTO;
 import com.itwillbs.keanu_coffee.common.mapper.LogMapper;
+import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.TimeUtils;
 import com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DispatchRegisterRequestDTO;
+import com.itwillbs.keanu_coffee.transport.mapper.DispatchMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -26,9 +29,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @RequiredArgsConstructor
 public class WorkingLogAspect {
-	private final EmployeeManagementMapper employeeManagementMapper;
-	private final OrganizationMapper organizationMapper;
-	private final SupplyContractMapper supplyContractMapper;
+	private final DispatchMapper dispatchMapper;
 	private final LogMapper logmapper;
 	
 //	@Around("@annotation(com.itwillbs.keanu_coffee.common.aop.annotation.Insert)")
@@ -49,6 +50,9 @@ public class WorkingLogAspect {
 
 		//작업자
 		String empNo = authentication.getName();
+		EmployeeDetail empDetail = (EmployeeDetail)authentication.getPrincipal();
+		Integer empIdx = empDetail.getEmpIdx();
+		
 		slog.setEmpNo(empNo);
 		
 		//작업로그지정
@@ -80,12 +84,14 @@ public class WorkingLogAspect {
 
 	        String methodName = pjp.getSignature().getName();
 	        //여기부터 시작
-	        if (methodName.equals("updateReceiptProduct")) {
-	            ReceiptProductDTO receiptProduct = (ReceiptProductDTO) args[0];
-	            slog.setSubSection("입고처리");
-//	            slog.setTargetIdx(receiptProduct.getReceiptProductIdx().intValue());
-	            System.out.println(receiptProduct);
-	            System.out.println(slog);
+	        if (methodName.equals("updateDispatchStatusStart")) {
+	        	DispatchRegisterRequestDTO dispatchRegisterRequest = (DispatchRegisterRequestDTO) args[0];
+	            slog.setSubSection("출고완료/운송시작");
+	            
+	            Integer dispatchIdx = dispatchRegisterRequest.getDispatchIdx();
+	            dispatchRegisterRequest = dispatchMapper.selectDispatchDetailByDispatchIdx(dispatchIdx, empIdx);
+	            
+	            slog.setTargetIdx(dispatchIdx);
 //	            if (errorMessage == null) {
 //	                slog.setLogMessage(
 //                		slog.getSection() + ">" + slog.getSubSection() + "에서"  + 

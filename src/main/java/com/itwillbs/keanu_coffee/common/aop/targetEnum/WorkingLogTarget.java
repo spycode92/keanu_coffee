@@ -4,5 +4,5 @@ public enum WorkingLogTarget {
 	RECEIPT_PRODUCT
 	, INBOUND_WAITING
 	, INVENTORY
-	
+	, DISPATCH_ASSIGNMENT
 }

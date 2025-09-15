@@ -51,7 +51,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 				break;
 			case "운송관리자" : redirectURL = "/transport/main";
 				break;
-			case "운송기사" : redirectURL = "/transport/myPage/" + empNo;
+			case "운송기사" : redirectURL = "/transport/mypage/" + empNo;
 				break;
 		}
 		response.sendRedirect(redirectURL);

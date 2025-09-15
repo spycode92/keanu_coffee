@@ -158,7 +158,6 @@
 	        const statusCell = row.querySelector('td:nth-child(3)');
 	        const badge = statusCell.querySelector('.badge');
 	        if (badge && badge.classList.contains('badge-urgent')) {
-	        	console.log("여기까지");
 	            badge.classList.remove('badge-urgent');
 	            badge.classList.add('badge-confirmed');
 	            badge.textContent = '읽음';
@@ -180,7 +179,6 @@
 	            
 	            const alarmIdx = this.getAttribute('data-idx');
 	            ajaxPost("/alarm/status/" + alarmIdx + "/read").then(()=>{
-	            	console.log(alarmIdx);
 	            	updateAlarmStatus(alarmIdx);
 	            })
 	        });

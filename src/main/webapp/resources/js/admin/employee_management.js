@@ -141,7 +141,6 @@ let EmpData = "";
 function getEmpData(empIdx) {
 	ajaxGet('/admin/employeeManagement/getEmployeeDetailByIdx',{empIdx : empIdx})
 		.then(data => {
-			console.log('직원 상세정보 : ' + data);
 			EmpData = data;
 			populateEmployeeDetail(EmpData);
 			return data

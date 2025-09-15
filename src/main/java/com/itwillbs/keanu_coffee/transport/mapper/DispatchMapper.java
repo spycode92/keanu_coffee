@@ -134,4 +134,7 @@ public interface DispatchMapper {
 
 	// 긴급 요청
 	Integer selectUrgentDispatchCount();
+	
+	// 배차상세조회
+	DispatchRegisterRequestDTO selectDispatchDetailByDispatchIdx(@Param("dispatchIdx")Integer dispatchIdx, @Param("empIdx")Integer empIdx);
 }

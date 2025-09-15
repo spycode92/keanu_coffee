@@ -747,4 +747,11 @@
 		WHERE
 			status = '배차대기'
 	</select>
+	
+	<select id="selectDispatchDetailByDispatchIdx" resultType="DispatchRegisterRequestDTO">
+		SELECT *
+		FROM V_DISPATCH_DETAIL
+		WHERE dispatch_idx = #{dispatchIdx}
+		AND emp_idx = #{empIdx}
+	</select>
 </mapper>

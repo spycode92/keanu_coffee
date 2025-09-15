@@ -155,7 +155,6 @@ public class EmployeeManagementController {
 	@PostMapping("/resetPw")
 	@ResponseBody
 	public Map<String, Object> resetPw(@RequestBody EmployeeInfoDTO employee) {
-		System.out.println(employee);
 		// AJAX결과 리턴 객체 생성
 		Map<String, Object> result = new HashMap<>();
 

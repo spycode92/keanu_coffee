@@ -110,7 +110,6 @@ public class ProductController {
 	@PostMapping("/modifyCategory")
 	@ResponseBody
 	public ResponseEntity<Map<String, String>> modifyCategory(@RequestBody CommonCodeDTO category) {
-		System.out.println(category);
 		Map<String, String> response = new HashMap<>();
 		try {
 			productService.modifyCategory(category);
