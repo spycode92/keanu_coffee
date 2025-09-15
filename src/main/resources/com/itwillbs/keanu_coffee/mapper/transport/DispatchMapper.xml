@@ -715,6 +715,24 @@
 			dc.updated_at DESC
 	</select>
 	
+	<!-- 기사 이름 조회 -->
+	<select id="selectDriverName" resultType="string">
+		SELECT
+			e.emp_name
+		FROM 
+			DELIVERY_CONFIRMATION dc
+		JOIN 
+			DISPATCH_ASSIGNMENT da
+		ON 
+			dc.dispatch_assignment_idx = da.dispatch_assignment_idx
+		JOIN 
+			EMPLOYEE_INFO e
+		ON 
+			da.driver_idx = e.emp_idx
+		WHERE 
+			dc.delivery_confirmation_idx = #{deliveryConfirmationIdx}
+	</select>
+	
 	<!-- 반품 폐기 처리 -->
 	<insert id="insertDeliveryDisposal">
 		INSERT INTO DISPOSAL (
@@ -781,6 +799,20 @@
 		AND emp_idx = #{empIdx}
 	</select>
 	
+	<!-- 첨부파일(FILE) 테이블 ResultMap -->
+	<resultMap id="FileResultMap" type="FileDTO">
+		<id property="fileIdx" column="file_idx" /> 
+		<result property="targetTable" column="target_table" />
+		<result property="targetTableIdx" column="target_table_idx" />
+		<result property="originalFileName" column="original_file_name" />
+		<result property="realFileName" column="real_file_name" />
+		<result property="subDir" column="sub_dir" />
+		<result property="fileSize" column="file_size" />
+		<result property="contentType" column="content_type" />
+		<result property="createdAt" column="file_created_at" />
+		<result property="updatedAt" column="file_updated_at" />
+	</resultMap>
+	
 
 	<!-- 수주 확인서 매핑 리절트맵 -->
 	<resultMap id="deliveryConfirmationMap2" type="DeliveryConfirmationDTO">
@@ -792,6 +824,7 @@
 	    <result property="receiverName" column="receiver_name"/>
 	    <result property="note" column="note"/>
 	    <result property="franchiseName" column="franchise_name"/>
+	    <association property="file" resultMap="FileResultMap" />
 	    <!-- 자식: 수주확인서 품목 -->
 	    <collection property="items" ofType="DeliveryConfirmationItemDTO"
 	                resultMap="deliveryConfirmationItemMap"/>
@@ -805,18 +838,31 @@
 			, dsci.item_name
 			, dsci.ordered_qty
 			, dsci.delivered_qty
-			, dsci.status as deliveredStatus
+			, dsci.status as item_status
 			, f.franchise_name
-		FROM DELIVERY_CONFIRMATION dc
-		LEFT JOIN DISPATCH_STOP ds
-		ON ds.dispatch_stop_idx = dc.dispatch_stop_idx
-		LEFT JOIN FRANCHISE f
-		ON f.franchise_idx = ds.franchise_idx
-		LEFT JOIN DISPATCH_STOPDELIVERY_CONFIRMATION_ITEM dsci
-		ON dsci.confirmation_idx = dc.confirmation_idx
-		
-		WHERE delivery_confirmation_idx = #{deliveryConfirmationIdx}
-
-		
+			, file.original_file_name
+			, file.target_table_idx
+			, file.real_file_name
+			, file.file_idx
+		FROM 
+			DELIVERY_CONFIRMATION dc
+		LEFT JOIN 
+			DISPATCH_STOP ds
+		ON 
+			ds.dispatch_stop_idx = dc.dispatch_stop_idx
+		LEFT JOIN 
+			FRANCHISE f
+		ON 
+			f.franchise_idx = ds.franchise_idx
+		LEFT JOIN 
+			DISPATCH_STOPDELIVERY_CONFIRMATION_ITEM dsci
+		ON 
+			dsci.confirmation_idx = dc.delivery_confirmation_idx
+		LEFT JOIN
+			FILE file
+		ON
+			dc.delivery_confirmation_idx = file.target_table_idx
+		WHERE 
+			delivery_confirmation_idx = #{deliveryConfirmationIdx}
 	</select>
 </mapper>
