@@ -117,6 +117,7 @@
 		<h4>시스템 알림</h4>
 		<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary" data-target="#addEmployeeModal">
 	</div>
+	<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
 		<form class="filters" aria-label="검색 및 필터">
 			<div class="field">
 				<select id="filterStatus" name="searchType">
@@ -128,9 +129,11 @@
 				<input class="filterText" placeholder="텍스트 입력" name="searchKeyword" >
 			</div>
 			<div class="actions">
-				<input type="submit" value="검색" class="btn btn-sm btn-primary">
+				<input type="submit" value="검색" id="btnSearch">
 			</div>
 		</form>
+	</div>
+	<div class="card">
     	<div class="table-responsive mt-3" >
 		
 			<table class="table table-striped table-bordered" >
@@ -176,8 +179,9 @@
 						<td>${notification.logMessage }</td>
 					</tr>
 				</c:forEach>
-				</table>
-
+			</table>
+		</div>
+	</div>
  				<div class="pager">
 					<div>
 						<c:if test="${not empty pageInfo.maxPage or pageInfo.maxPage > 0}">
@@ -202,9 +206,8 @@
 						</c:if>
 					</div>
 				</div>
-				
-						
-		</div>
+			</div>
+		
 
 	</section>
 	

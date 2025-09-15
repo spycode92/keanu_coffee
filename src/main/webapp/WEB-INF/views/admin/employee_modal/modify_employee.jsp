@@ -27,18 +27,33 @@
 			            <label class="form-label">사번</label>
 			            <input type="text" name="empNo" required class="form-control" readonly>
 			        </div>
-			        <div class="field">
-			            <label class="form-label">이름</label>
-			            <input type="text" name="empName" required class="form-control">
-			        </div>
-			        <div class="field">
-			            <label class="form-label">성별</label>
-			            <div class="seg-radio" style="display:flex; gap:1rem;">
-			                <label><input type="radio" name="empGender" value="남자" checked required> 남자</label>
-			                <label><input type="radio" name="empGender" value="여자"> 여자</label>
-			            </div>
-			        </div>
+<!-- 			        <div class="field"> -->
+<!-- 			            <label class="form-label">이름</label> -->
+<!-- 			            <input type="text" name="empName" required class="form-control"> -->
+<!-- 			        </div> -->
+<!-- 			        <div class="field"> -->
+<!-- 			            <label class="form-label">성별</label> -->
+<!-- 			            <div class="seg-radio" style="display:flex; gap:1rem;"> -->
+<!-- 			                <label><input type="radio" name="empGender" value="남자" checked required> 남자</label> -->
+<!-- 			                <label><input type="radio" name="empGender" value="여자"> 여자</label> -->
+<!-- 			            </div> -->
+<!-- 			        </div> -->
 			    </div>
+   				<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1rem;">
+				    <div class="field" >
+				        <label class="form-label">이름</label>
+				        <input type="text" name="empName" required class="form-control" >
+				    </div>
+				    <div class="field">
+				        <label class="form-label">성별</label>
+				        <div class="seg-radio">
+				            <input type="radio" name="empGender" value="남자" checked required>
+				            <label for="male">남자</label>
+				            <input type="radio"  name="empGender" value="여자">
+				            <label for="female">여자</label>
+				        </div>
+				    </div>
+				</div>
 
                 <!-- 이메일/연락처 -->
                 <div style="display:flex; gap:2rem; margin-bottom:1rem;">

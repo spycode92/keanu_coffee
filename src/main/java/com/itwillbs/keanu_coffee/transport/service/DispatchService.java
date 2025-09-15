@@ -109,7 +109,6 @@ public class DispatchService {
 			
 			alarm.setRoleName("출고관리자");
 			alarm.setEmpAlarmMessage(outboundOrderIdx + "번 주문에 대한 배차등록이 완료되었습니다.");
-			
 			alarmService.insertAlarmByRole(alarm);
 			
 			Map<String, String> payload = new HashMap<>();

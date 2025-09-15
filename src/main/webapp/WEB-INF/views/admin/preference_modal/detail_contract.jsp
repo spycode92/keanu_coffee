@@ -66,7 +66,7 @@
                     <select id="detailStatus" name="status" class="form-control" disabled>
                         <option value="활성">활성</option>
                         <option value="비활성">비활성</option>
-                        <option value="대기">대기</option>
+                        <option value="취소">취소</option>
                     </select>
                 </div>
                 <div class="field">
