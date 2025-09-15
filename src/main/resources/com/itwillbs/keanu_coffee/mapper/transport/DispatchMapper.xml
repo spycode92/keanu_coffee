@@ -805,15 +805,16 @@
 			, dsci.item_name
 			, dsci.ordered_qty
 			, dsci.delivered_qty
-			, dsci.status as deliveredStatus
+			, dsci.status
 			, f.franchise_name
 		FROM DELIVERY_CONFIRMATION dc
 		LEFT JOIN DISPATCH_STOP ds
 		ON ds.dispatch_stop_idx = dc.dispatch_stop_idx
 		LEFT JOIN FRANCHISE f
 		ON f.franchise_idx = ds.franchise_idx
+		
 		LEFT JOIN DISPATCH_STOPDELIVERY_CONFIRMATION_ITEM dsci
-		ON dsci.confirmation_idx = dc.confirmation_idx
+		ON dsci.confirmation_idx = dc.delivery_confirmation_idx
 		
 		WHERE delivery_confirmation_idx = #{deliveryConfirmationIdx}
 
