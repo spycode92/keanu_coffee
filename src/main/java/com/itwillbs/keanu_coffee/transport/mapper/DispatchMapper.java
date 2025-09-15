@@ -1,6 +1,7 @@
 package com.itwillbs.keanu_coffee.transport.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -21,6 +22,9 @@ public interface DispatchMapper {
 	// 배차 리스트
 	List<DispatchRegionGroupViewDTO> selectAllDispatch(@Param("startRow") int startRow, @Param("listLimit") int listLimit, @Param("filter") String filter,
 			@Param("searchKeyword") String searchKeyword);
+	
+	// 배차 목록 (현재 날짜 기준)
+	List<DispatchRegionGroupViewDTO> selectAllDispatchByToday();
 	
 	// 배차 요청 리스트
 	List<DispatchRegionGroupViewDTO> selectDispatchList();
@@ -121,4 +125,13 @@ public interface DispatchMapper {
 
 	// 반품 폐기 처리
 	void insertDeliveryDisposal(DisposalDTO disposal);
+
+	// 배차대기(출고 요청) 요청 횟수
+	Integer selectPendingDispatchCount();
+
+	// 기사의 배송 상태 횟수
+	Map<String, Object> selectAssignmentStatusCount();
+
+	// 긴급 요청
+	Integer selectUrgentDispatchCount();
 }

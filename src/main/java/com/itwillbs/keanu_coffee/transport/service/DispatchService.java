@@ -55,6 +55,12 @@ public class DispatchService {
 			String searchKeyword) {
 		return dispatchMapper.selectAllDispatch(startRow, listLimit, filter, searchKeyword);
 	}
+	
+	// 배차 목록 (현재 날짜 기준)
+	@Transactional(readOnly = true)
+	public List<DispatchRegionGroupViewDTO> selectAllDispatchByToday() {
+		return dispatchMapper.selectAllDispatchByToday();
+	}
 
 	// 배차 요청 리스트
 	@Transactional(readOnly = true)
@@ -392,5 +398,21 @@ public class DispatchService {
 	// 배정된 기사의 상태
 	public String selectDispatchAssignment(Integer dispatchIdx, Integer vehicleIdx) {
 		return dispatchMapper.selectDispatchAssignment(dispatchIdx, vehicleIdx);
+	}
+
+	// 배차대기(출고 요청) 요청 횟수
+	@Transactional(readOnly = true)
+	public Integer selectPendingDispatchCount() {
+		return dispatchMapper.selectPendingDispatchCount();
+	}
+
+	// 기사의 배송 상태 횟수
+	public Map<String, Object> selectAssignmentStatusCount() {
+		return dispatchMapper.selectAssignmentStatusCount();
+	}
+
+	// 긴급 요청
+	public Integer selectUrgentDispatchCount() {
+		return dispatchMapper.selectUrgentDispatchCount();
 	}
 }

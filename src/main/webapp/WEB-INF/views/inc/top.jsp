@@ -344,7 +344,7 @@
 			</sec:authorize>
 			<sec:authorize access="hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')">
 			<li>
-				<a href="/transport"><span>운송관리</span></a>
+				<a href="/transport/main"><span>운송관리</span></a>
 				<ul class="submenu">
 					<li><a href="/transport/drivers">기사관리</a></li>
 					<li><a href="/transport/vehicle">차량관리</a></li>

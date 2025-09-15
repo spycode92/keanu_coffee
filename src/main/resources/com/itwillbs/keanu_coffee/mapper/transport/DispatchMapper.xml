@@ -51,6 +51,15 @@
 			#{startRow}     
 			, #{listLimit} 
 	</select>
+	
+	<!-- 배차 목록 (현재 날짜 기준) -->
+	<select id="selectAllDispatchByToday" resultType="DispatchRegionGroupViewDTO">
+		SELECT *
+		FROM
+			V_DISPATCH_DETAIL
+		WHERE
+			DATE(dispatch_date) = CURRENT_DATE
+	</select>
 
 	<!-- 배차 요청 리스트 -->
 	<select id="selectDispatchList" resultType="DispatchRegionGroupViewDTO">
@@ -655,6 +664,31 @@
 	    	dci.confirmation_item_idx = #{confirmationItemIdx}
 	</select>
 	
+	<!-- 기사의 배송 상태 횟수 -->
+	<select id="selectAssignmentStatusCount" resultType="map">
+		SELECT
+			COALESCE(SUM(CASE WHEN status = '운행중' THEN 1 ELSE 0 END), 0) AS dispatchInProgressCount,
+        	COALESCE(SUM(CASE WHEN status = '완료' THEN 1 ELSE 0 END), 0) AS dispatchCompletedCount
+		FROM 
+			DISPATCH_ASSIGNMENT
+		WHERE
+			DATE(updated_at) = CURRENT_DATE
+	</select>
+	
+	<!-- 긴급 요청 -->
+	<select id="selectUrgentDispatchCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			OUTBOUND_ORDER
+		WHERE 
+			urgent = 'Y' 
+		AND
+			 status = '배차대기'
+		AND 
+			DATE(updated_at) = CURRENT_DATE
+	</select>
+	
 	<!-- 반품 폐기 처리 -->
 	<insert id="insertDeliveryDisposal">
 		INSERT INTO DISPOSAL (
@@ -702,5 +736,15 @@
 			OUTBOUND_ORDER
 		WHERE
 			outbound_order_idx = #{outboundOrderIdx}
+	</select>
+	
+	<!-- 배차대기(출고 요청) 요청 횟수  -->
+	<select id="selectPendingDispatchCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			OUTBOUND_ORDER
+		WHERE
+			status = '배차대기'
 	</select>
 </mapper>
