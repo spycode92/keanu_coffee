@@ -15,26 +15,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
-import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
-import com.itwillbs.keanu_coffee.admin.dto.FranchiseDTO;
-import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
-import com.itwillbs.keanu_coffee.admin.dto.RoleDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplyContractDTO;
-import com.itwillbs.keanu_coffee.admin.dto.TeamDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
-import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
 import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
-import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
 import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.SystemLogDTO;
 import com.itwillbs.keanu_coffee.common.mapper.LogMapper;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.TimeUtils;
+import com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -98,27 +89,23 @@ public class WorkingLogAspect {
 
 	        String methodName = pjp.getSignature().getName();
 	        //여기부터 시작
-	        if ("getEmployeeCount".equals(methodName)) {
-//	            EmployeeInfoDTO employee = (EmployeeInfoDTO) args[0];
-	            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	            slog.setSubSection("직원관리");
-//	            slog.setTargetIdx(employee.getEmpIdx());
-
-	            if (errorMessage == null) {
+	        if (methodName.equals("updateReceiptProduct")) {
+	            ReceiptProductDTO receiptProduct = (ReceiptProductDTO) args[0];
+	            slog.setSubSection("입고처리");
+//	            slog.setTargetIdx(receiptProduct.getReceiptProductIdx().intValue());
+	            System.out.println(receiptProduct);
+	            System.out.println(slog);
+//	            if (errorMessage == null) {
 //	                slog.setLogMessage(
-//                		slog.getSection() + ">" + slog.getSubSection() + "에서"  + employee.getEmpNo() + " "  + employee.getEmpName() + " 직원추가 완료"
+//                		slog.getSection() + ">" + slog.getSubSection() + "에서"  + 
+//                				receiptProduct.getEmpNo() + " "  + employee.getEmpName() + " 직원추가 완료"
 //	                );
-	            } else {
+//	            } else {
 //	                slog.setLogMessage(
-//                		slog.getSection() + ">" + slog.getSubSection() + "에서"  + employee.getEmpNo() + " " + employee.getEmpName() + " 직원추가 중 오류 발생: " + errorMessage
+//                		slog.getSection() + ">" + slog.getSubSection() + "에서"  + 
+//                			employee.getEmpNo() + " " + employee.getEmpName() + " 직원추가 중 오류 발생: " + errorMessage
 //	                );
-	            }
+//	            }
 	        }
 	        	        
 //	        logmapper.insertSystemLog(slog);
