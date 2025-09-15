@@ -28,6 +28,8 @@ import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.FileUtils;
+import com.itwillbs.keanu_coffee.inventory.dto.WarehouseLocationDTO;
+import com.itwillbs.keanu_coffee.inventory.service.InventoryActionsService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,6 +40,7 @@ public class EmployeeManagementService {
 	private final EmployeeManagementMapper employeeManagementMapper;
 	private final OrganizationMapper organizationMapper;
 	private final BCryptPasswordEncoder passwordEncoder;
+	private final InventoryActionsService inventoryActionsService;
 	private final FileMapper fileMapper;
 	
 	@Autowired
@@ -78,6 +81,8 @@ public class EmployeeManagementService {
 
 		// 정보 입력 후 empIdx 받아오기
 		int inputCount = employeeManagementMapper.insertEmployeeInfo(employee);
+		
+		employeeManagementMapper.InsertEmployeeInventory(employee);
 		
 		return inputCount;
 	}
