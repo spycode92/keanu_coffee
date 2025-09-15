@@ -345,8 +345,6 @@ $(document).on("click", ".detail-btn", function() {
 	} else if (status === "운행중") {
 		btn.text("복귀");
 		const allDone = timelineData.every(s => s.status === "납품완료");
-		console.log("allDone", allDone);
-		console.log("timelineData11", timelineData);
 
 		if (!allDone) {
 			btn.prop("disabled", !allDone);
@@ -479,6 +477,7 @@ $(document).on("click", ".complateBtn", function() {
 	
 	// 파일 추가
 	const files = $('input[name="files"]')[0].files;
+	
 	for (let i = 0; i < files.length; i++) {
 	  formData.append("files", files[i]); // List<MultipartFile>로 매핑됨
 	}

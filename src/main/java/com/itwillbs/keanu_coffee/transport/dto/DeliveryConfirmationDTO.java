@@ -20,6 +20,8 @@ public class DeliveryConfirmationDTO implements FileUploadHelpper {
 	   private String receiverName;              // 수령자
 	   private String note;                      // 비고
 	   private char requiresAdditional;
+	   private Timestamp updatedAt;
+	   private String franchiseName; // 지점명추가
 	   
 	   private List<DeliveryConfirmationItemDTO> items;
 	   

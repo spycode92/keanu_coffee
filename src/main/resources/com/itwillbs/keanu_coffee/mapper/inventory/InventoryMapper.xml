@@ -43,6 +43,17 @@
 			FROM 
 				WAREHOUSE_LOCATION		
 		</select>
+		
+		<select id="selectInventoryItemsInEmployeesVirtualLocation" resultType="com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO">
+			SELECT 
+				inventory_idx,
+				receipt_product_idx
+			FROM
+				INVENTORY
+			WHERE
+				location_idx = #{empIdx}
+				
+		</select>
 
 
 

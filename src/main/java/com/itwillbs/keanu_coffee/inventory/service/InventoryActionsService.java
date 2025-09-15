@@ -69,7 +69,7 @@ public class InventoryActionsService {
 	}
 
 //	public int getlocationIdxOfDestinationName(String destinationName) {
-	public String getlocationIdxOfDestinationName(String destinationName) {
+	public InventoryDTO getlocationIdxOfDestinationName(String destinationName) {
 		return inventoryActionsMapper.selectlocationIdxOfDestinationName(destinationName);
 	}
 

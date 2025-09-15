@@ -300,7 +300,7 @@
                 			<td>
                 				<c:choose>
                 					<c:when test="${dispatch.status eq '예약'}">
-                						<button class="btn ghost load-btn">적재하기</button>
+                						<button class="btn load-btn">적재하기</button>
                 					</c:when>
                 					<c:otherwise>
 		                				<button class="btn btn-confirm detail-btn">상세</button>
@@ -333,8 +333,8 @@
             </div>
 
             <div class="modal-foot">
-                <button class="btn ghost" id="btnClearPick">선택 초기화</button>
-                <button class="btn ghost" id="btnLoadCompleted">적재완료</button>
+                <button class="btn" id="btnClearPick">선택 초기화</button>
+                <button class="btn" id="btnLoadCompleted">적재완료</button>
             </div>
         </div>
     </div>

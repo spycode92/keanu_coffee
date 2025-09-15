@@ -14,16 +14,12 @@ import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
-import com.itwillbs.keanu_coffee.transport.dto.AdministrativeRegionDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegionGroupViewDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO;
-import com.itwillbs.keanu_coffee.transport.dto.RegionFranchiseRouteDTO;
 import com.itwillbs.keanu_coffee.transport.dto.VehicleDTO;
-import com.itwillbs.keanu_coffee.transport.mapper.DispatchMapper;
 import com.itwillbs.keanu_coffee.transport.service.DispatchService;
 import com.itwillbs.keanu_coffee.transport.service.DriverService;
 import com.itwillbs.keanu_coffee.transport.service.RegionService;
-import com.itwillbs.keanu_coffee.transport.service.RouteService;
 import com.itwillbs.keanu_coffee.transport.service.VehicleService;
 
 import lombok.RequiredArgsConstructor;
@@ -55,12 +51,16 @@ public class TransportController {
 		// 배차 목록 (현재 날짜 기준)
 		List<DispatchRegionGroupViewDTO> dispatchList = dispatchService.selectAllDispatchByToday();
 		
+		// 수주확인서 목록 
+		List<Map<String, Object>> deliveryConfirmationList = dispatchService.selectAllDeliveryConfirmation();
+		
 		// 배차대기 횟수
 		model.addAttribute("pendingDispatchCount", pendingDispatchCount);
 		model.addAttribute("dispatchInProgressCount", dispatchInProgressCount);
 		model.addAttribute("dispatchCompletedCount", dispatchCompletedCount);
 		model.addAttribute("urgentDispatchCount", urgentDispatchCount);
 		model.addAttribute("dispatchList", dispatchList);
+		model.addAttribute("deliveryConfirmationList", deliveryConfirmationList);
 		return "/transport/dashboard";
 	}
 	
