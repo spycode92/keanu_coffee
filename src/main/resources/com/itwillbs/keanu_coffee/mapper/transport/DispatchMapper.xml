@@ -689,6 +689,32 @@
 			DATE(updated_at) = CURRENT_DATE
 	</select>
 	
+	<!-- 수주확인서 목록 -->
+	<select id="selectAllDeliveryConfirmation" resultType="map">
+		SELECT
+			dc.updated_at, e.emp_name, fa.franchise_name, dc.receiver_name, dc.delivery_confirmation_idx
+		FROM
+			DELIVERY_CONFIRMATION dc
+		JOIN
+			DISPATCH_ASSIGNMENT da
+		ON 
+			dc.dispatch_assignment_idx = da.dispatch_assignment_idx
+		JOIN
+			EMPLOYEE_INFO e
+		ON
+			da.driver_idx = e.emp_idx
+		JOIN
+			DISPATCH_STOP ds
+		ON
+			dc.dispatch_stop_idx = ds.dispatch_stop_idx
+		JOIN
+			FRANCHISE fa
+		ON
+			fa.franchise_idx = ds.franchise_idx
+		ORDER BY
+			dc.updated_at DESC
+	</select>
+	
 	<!-- 반품 폐기 처리 -->
 	<insert id="insertDeliveryDisposal">
 		INSERT INTO DISPOSAL (

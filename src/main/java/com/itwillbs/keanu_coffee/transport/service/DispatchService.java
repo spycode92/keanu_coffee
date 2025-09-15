@@ -298,14 +298,14 @@ public class DispatchService {
 			dispatchMapper.updateOutboundOrderStatus(outboundOrderIdx, "출고완료");
 		}
 		
-		// 모든 기사 적재 확인
+		// 모든 기사 운송 시작 확인
 		if (request.getRequiresAdditional() == 'Y') {
 			// 같은 배차에 배정된 기사 수 카운트
 			int totalDrivers = dispatchMapper.selectCountAssigment(request.getDispatchIdx());
-			// 적재 완료한 기사 수 카운트
+			// 운송 시작 기사 수 카운트
 	        int completedDrivers = dispatchMapper.selectCountAssignmentsByStatus(request.getDispatchIdx(), request.getStatus());
 			
-	        // 모든 기사가 적재 완료일 때 상태 변경
+	        // 모든 기사가 운송중 때 상태 변경
 	        if (totalDrivers == completedDrivers) {
 	        	dispatchMapper.updateDispatchStatus(request.getDispatchIdx(), "운송중");
 	        	
@@ -340,13 +340,16 @@ public class DispatchService {
 		// 수주확인서 업데이트
 		dispatchMapper.updateDeliveryConfirmation(request.getDeliveryConfirmationIdx(), request.getReceiverName());
 		
-		// 반품 사진 업로드
-		List<FileDTO> fileList = FileUtils.uploadFile(request, session);
-		
-		// 파일 DB 등록
-		if (!fileList.isEmpty()) {
-			fileMapper.insertFiles(fileList);
+		if (request.getFiles() != null && request.getFiles().length > 0) {
+			// 반품 사진 업로드
+			List<FileDTO> fileList = FileUtils.uploadFile(request, session);
+			
+			// 파일 DB 등록
+			if (!fileList.isEmpty()) {
+				fileMapper.insertFiles(fileList);
+			}
 		}
+		
 		
 		// 수주확인서 품목 업데이트
 		for (DeliveryConfirmationItemDTO item : request.getItems()) {
@@ -406,12 +409,20 @@ public class DispatchService {
 	}
 
 	// 기사의 배송 상태 횟수
+	@Transactional(readOnly = true)
 	public Map<String, Object> selectAssignmentStatusCount() {
 		return dispatchMapper.selectAssignmentStatusCount();
 	}
 
 	// 긴급 요청
+	@Transactional(readOnly = true)
 	public Integer selectUrgentDispatchCount() {
 		return dispatchMapper.selectUrgentDispatchCount();
+	}
+
+	// 수주확인서 목록
+	@Transactional(readOnly = true)
+	public List<Map<String, Object>> selectAllDeliveryConfirmation() {
+		return dispatchMapper.selectAllDeliveryConfirmation();
 	}
 }

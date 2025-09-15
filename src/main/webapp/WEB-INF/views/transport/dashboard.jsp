@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,11 +9,16 @@
 <title>운송관리대시보드</title>
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 <script src="/resources/js/admin/statistics/statistics1.js"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2b14d97248052db181d2cfc125eaa368&libraries=services"></script>	
+<script src="${pageContext.request.contextPath}/resources/js/transport/dispatch.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/transport/deliveryConfirmation.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/transport/kakao_map.js"></script>
 <style type="text/css">
 .container {
 	max-width: 1264px;
@@ -111,6 +117,21 @@
         min-width: auto;
     }
 }
+
+.help, .hint { font-size: .83rem; color: var(--muted-foreground); }
+
+
+button:disabled {
+  background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
+  color: #999;
+  border: 1px solid #bbb;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;   /* hover시 scale 효과 제거 */
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field input { height: 38px; border: 1px solid var(--border); border-radius: 10px; padding: 0 10px; background: #f9fafb; }
 </style>
 </head>
 <body>
@@ -184,47 +205,102 @@
 			<div
 				style="display: flex; justify-content: space-between; align-items: center;">
 				<h3>오늘 배차 목록</h3>
-				<div>전체보기</div>
+				<div><a href="/transport/dispatches">전체보기</a></div>
 			</div>
-			<table class="table">
-				<thead>
-					<tr>
-						<th>배차일</th>
-						<th>기사명</th>
-						<th>차량번호</th>
-						<th>적재량</th>
-						<th>목적지</th>
-						<th>예상도착시간</th>
-						<th>상태</th>
-					</tr>
-				</thead>
-				<tbody>
-					
-				</tbody>
-			</table>
+			<c:choose>
+				<c:when test="${empty dispatchList}">
+					<div class="empty-result">오늘 배정된 배차가 없습니다.</div>
+				</c:when>
+				<c:otherwise>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>배차일</th>
+								<th>배차시간</th>
+								<th>기사명</th>
+		                        <th>차량번호</th>
+		                        <th>차량용량</th>
+		                        <th>구역</th>
+		                        <th>상태</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach var="dispatch" items="${dispatchList}">
+								<tr data-dispatch-idx="${dispatch.dispatchIdx }" 
+		                			data-vehicle-idx="${dispatch.vehicleIdx}" class="dispatchInfo">
+									<td>
+										<fmt:formatDate value="${dispatch.dispatchDate}" pattern="yyyy-MM-dd"/>
+									</td>
+									<td>${dispatch.startSlot}</td>
+									<td>${dispatch.driverName}</td>
+									<td>${dispatch.vehicleNumber}</td>
+									<td>
+	                					<c:choose>
+											<c:when test="${dispatch.capacity == 1000 }">
+												1.0t
+											</c:when>
+											<c:otherwise>
+												1.5t
+											</c:otherwise>
+										</c:choose>
+		                			</td>
+		                			<td>${dispatch.regionName}</td>
+		                			<td>
+		                				<c:choose>
+		                					<c:when test="${dispatch.status eq '완료'}">
+		                						<span class="badge done">완료</span>
+		                					</c:when>
+		                					<c:when test="${dispatch.status eq '예약'}">
+		                						<span class="badge book">예약</span>
+		                					</c:when>
+		                					<c:when test="${dispatch.status eq '적재완료'}">
+		                						<span class="badge loaded">적재완료</span>
+		                					</c:when>
+		                					<c:when test="${dispatch.status eq '운행중'}">
+		                						<span class="badge run">운행중</span>
+		                					</c:when>
+		                					<c:otherwise>
+		                						<span class="badge cancel">취소</span>
+		                					</c:otherwise>
+		                				</c:choose>
+		                			</td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</c:otherwise>
+			</c:choose>
 		</div>
+		<%-- 상세 모달(배차 클릭 시) --%>
+		<jsp:include page="/WEB-INF/views/transport/modal/detail_dispatch.jsp"></jsp:include>
 		<div>
-			<h3>납품확인서 목록</h3>
+			<h3>수주확인서 목록</h3>
 			<table class="table">
 				<thead>
 					<tr>
 						<th>제출일</th>
 						<th>기사명</th>
-						<th>품목</th>
-						<th>납품장소</th>
+						<th>지점명</th>
+						<th>수령자</th>
 						<th>서류</th>
-						<th>첨부파일</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>2025-08-11</td>
-						<td>김배송</td>
-						<td>원두1</td>
-						<td>동래구청</td>
-						<td>납품확인서_250811</td>
-						<td>file</td>
-					</tr>
+					<c:forEach var="deliveryConfirmation" items="${deliveryConfirmationList}">
+						<tr>
+							<td>
+								<fmt:formatDate value="${deliveryConfirmation.updated_at}" pattern="yyyy-MM-dd"/>
+							</td>
+							<td>${deliveryConfirmation.emp_name}</td>
+							<td>${deliveryConfirmation.franchise_name}</td>
+							<td>${deliveryConfirmation.receiver_name}</td>
+							<td>수주확인서${delivery_confirmation_idx}</td>
+							<td>
+								<button class="btn btn-confirm" onclick="openDeliveryConfirmationDetail('${delivery_confirmation_idx}')">상세보기</button>
+							</td>
+						</tr>
+					</c:forEach>
 				</tbody>
 			</table>
 		</div>

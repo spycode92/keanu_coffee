@@ -40,39 +40,6 @@ header {
     margin-bottom: 12px;
 }
 
-.badge { 
-	display: inline-block; 
-	padding: 2px 8px; 
-	border-radius: 999px; 
-	font-size: .8rem; 
-	font-weight: 700; 
-}
-
-.badge.run { /* 운행중 */
-	background: #dcfce7; 
-	color: #166534; 
-}      
-
-.badge.book { /* 예약 */
-	background: #e0e7ff; 
-	color: #3730a3; 
-}   
-  
-.badge.done {  /* 완료 */
-	background: #e5ffe9; 
-	color: #047857; 
-}    
-
-.badge.cancel { /* 취소 */
-	background: #fee2e2; 
-	color: #991b1b; 
-} 
-
-.badge.loaded { /* 적재완료 */
-	background: #cffafe; 
-	color: #0e7490;     
-}
-
 .help, .hint { font-size: .83rem; color: var(--muted-foreground); }
 
 
@@ -179,7 +146,6 @@ button:disabled {
 		                						<span class="badge cancel">취소</span>
 		                					</c:otherwise>
 		                				</c:choose>
-		                			
 		                			</td>
 		                		</tr>
 		                	</c:forEach>
