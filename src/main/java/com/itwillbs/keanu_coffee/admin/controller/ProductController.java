@@ -62,7 +62,7 @@ public class ProductController {
 
 			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
 				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-				model.addAttribute("targetURL", "/admin/customer/notice_list");
+				model.addAttribute("targetURL", "/admin/systemPreference/product");
 				return "commons/result_process";
 			}
 
@@ -110,7 +110,6 @@ public class ProductController {
 	@PostMapping("/modifyCategory")
 	@ResponseBody
 	public ResponseEntity<Map<String, String>> modifyCategory(@RequestBody CommonCodeDTO category) {
-		System.out.println(category);
 		Map<String, String> response = new HashMap<>();
 		try {
 			productService.modifyCategory(category);

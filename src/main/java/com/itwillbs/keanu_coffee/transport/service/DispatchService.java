@@ -11,6 +11,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.AlarmDTO;
 import com.itwillbs.keanu_coffee.common.dto.DisposalDTO;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
@@ -280,6 +282,7 @@ public class DispatchService {
 
 	// 배송 시작
 	@Transactional
+	@WorkingLog(target = WorkingLogTarget.DISPATCH_ASSIGNMENT)
 	public void updateDispatchStatusStart(DispatchRegisterRequestDTO request) {
 		request.setStatus("운행중");
 		// 차량 상태 업데이트
@@ -330,6 +333,7 @@ public class DispatchService {
 
 	// 납품 완료 
 	@Transactional
+	@WorkingLog(target = WorkingLogTarget.DELIVERY_CONFIRMATION)
 	public void updateDeliveryCompleted(DeliveryConfirmationDTO request, Integer empIdx) throws IllegalStateException, IOException {
 		// 출고 테이블 상태 변경 (운송 완료)
 		dispatchMapper.updateOutboundOrderStatus(request.getOutboundOrderIdx(), "운송완료");

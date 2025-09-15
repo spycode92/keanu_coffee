@@ -75,8 +75,6 @@ $(function() {
 		        dong: $('#addFranchiseDong').val().trim()
 			}
 	    };
-		console.log(franchiseData);
-		console.log($('#addFranchiseName').val().trim());
 	
 	    // 유효성검사 추가
 	    if (!franchiseData.franchiseName || !franchiseData.franchiseManagerName || !franchiseData.franchisePhone ||
@@ -110,7 +108,6 @@ $(function() {
 		        type: 'GET',
 		        dataType: 'json',
 		        success: function(data) {
-					console.log(data);
 		            originalFranchiseData = data;
 		            $('#franchiseDetailForm #franchiseDetailIdx').val(data.franchiseIdx);
 		            $('#franchiseDetailForm #detailFranchiseName').val(data.franchiseName);
@@ -230,7 +227,6 @@ $(function() {
 	    ajaxPost('/admin/systemPreference/franchise/modifyFranchise',
 			updateData
 		).then(function(reslult) {
-			console.log(reslult);
             Swal.fire('수정 완료', '', 'success').then( () => {
             setReadonlyMode();
 			location.href = '/admin/systemPreference/franchise'

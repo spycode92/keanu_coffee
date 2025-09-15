@@ -773,4 +773,50 @@
 		WHERE
 			status = '배차대기'
 	</select>
+	<!-- 배차정보 불러오기 (배차idx + 사원idx) -->
+	<select id="selectDispatchDetailByDispatchIdx" resultType="DispatchRegisterRequestDTO">
+		SELECT *
+		FROM V_DISPATCH_DETAIL
+		WHERE dispatch_idx = #{dispatchIdx}
+		AND emp_idx = #{empIdx}
+	</select>
+	
+
+	<!-- 수주 확인서 매핑 리절트맵 -->
+	<resultMap id="deliveryConfirmationMap2" type="DeliveryConfirmationDTO">
+	    <id property="deliveryConfirmationIdx" column="delivery_confirmation_idx"/>
+	    <result property="dispatchAssignmentIdx" column="dispatch_assignment_idx"/>
+	    <result property="dispatchStopIdx" column="dispatch_stop_idx"/>
+	    <result property="outboundOrderIdx" column="outbound_order_idx"/>
+	    <result property="confirmationTime" column="confirmation_time"/>
+	    <result property="receiverName" column="receiver_name"/>
+	    <result property="note" column="note"/>
+	    <result property="franchiseName" column="franchise_name"/>
+	    <!-- 자식: 수주확인서 품목 -->
+	    <collection property="items" ofType="DeliveryConfirmationItemDTO"
+	                resultMap="deliveryConfirmationItemMap"/>
+	</resultMap>
+	<!-- 수주확인서 상세 -->
+	<select id="selectDeliveryConfirmationByDeliveryConfirmationIdx" resultMap="deliveryConfirmationMap2">
+		SELECT
+			dc.delivery_confirmation_idx
+			, dc.outbound_order_idx
+			, dc.receiver_name
+			, dsci.item_name
+			, dsci.ordered_qty
+			, dsci.delivered_qty
+			, dsci.status as deliveredStatus
+			, f.franchise_name
+		FROM DELIVERY_CONFIRMATION dc
+		LEFT JOIN DISPATCH_STOP ds
+		ON ds.dispatch_stop_idx = dc.dispatch_stop_idx
+		LEFT JOIN FRANCHISE f
+		ON f.franchise_idx = ds.franchise_idx
+		LEFT JOIN DISPATCH_STOPDELIVERY_CONFIRMATION_ITEM dsci
+		ON dsci.confirmation_idx = dc.confirmation_idx
+		
+		WHERE delivery_confirmation_idx = #{deliveryConfirmationIdx}
+
+		
+	</select>
 </mapper>

@@ -134,7 +134,12 @@ public interface DispatchMapper {
 
 	// 긴급 요청
 	Integer selectUrgentDispatchCount();
+	
+	// 배차상세조회
+	DispatchRegisterRequestDTO selectDispatchDetailByDispatchIdx(@Param("dispatchIdx")Integer dispatchIdx, @Param("empIdx")Integer empIdx);
 
 	// 수주확인서 목록
 	List<Map<String, Object>> selectAllDeliveryConfirmation();
+
+	DeliveryConfirmationDTO selectDeliveryConfirmationByDeliveryConfirmationIdx(Integer deliveryConfirmationIdx);
 }

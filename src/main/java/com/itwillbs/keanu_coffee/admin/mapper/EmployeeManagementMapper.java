@@ -46,6 +46,12 @@ public interface EmployeeManagementMapper {
 	
 	//직원정보 구하기 직책이름으로
 	List<EmployeeInfoDTO> selectEmpInfoByRole(String roleName);
+	
+	//직원별 개인 인벤토리 생성
+	void InsertEmployeeInventory(EmployeeInfoDTO employee);
+	
+	//사번생성전 마지막사번구하기 
+	String selectEmpNo(String today);
 
 
 

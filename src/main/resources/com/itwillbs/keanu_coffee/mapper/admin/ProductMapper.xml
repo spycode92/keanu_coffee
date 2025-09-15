@@ -232,4 +232,9 @@
 		WHERE common_code_idx = #{commonCodeIdx}
 	</select>
 	
+	<select id="selectCountSameProductName" resultType="int">
+		SELECT COUNT(*)
+		FROM PRODUCT
+		WHERE product_name = #{productName}
+	</select>
 </mapper>

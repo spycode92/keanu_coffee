@@ -1,40 +1,26 @@
 package com.itwillbs.keanu_coffee.common.aop.aspect;
 
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Map;
 
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
-import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
-import com.itwillbs.keanu_coffee.admin.dto.FranchiseDTO;
-import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
-import com.itwillbs.keanu_coffee.admin.dto.RoleDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplyContractDTO;
-import com.itwillbs.keanu_coffee.admin.dto.TeamDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
-import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
 import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
-import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
 import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
-import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.SystemLogDTO;
 import com.itwillbs.keanu_coffee.common.mapper.LogMapper;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.TimeUtils;
+import com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DispatchRegisterRequestDTO;
+import com.itwillbs.keanu_coffee.transport.mapper.DispatchMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -44,9 +30,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @RequiredArgsConstructor
 public class WorkingLogAspect {
-	private final EmployeeManagementMapper employeeManagementMapper;
-	private final OrganizationMapper organizationMapper;
-	private final SupplyContractMapper supplyContractMapper;
+	private final DispatchMapper dispatchMapper;
 	private final LogMapper logmapper;
 	
 //	@Around("@annotation(com.itwillbs.keanu_coffee.common.aop.annotation.Insert)")
@@ -67,6 +51,10 @@ public class WorkingLogAspect {
 
 		//작업자
 		String empNo = authentication.getName();
+		EmployeeDetail empDetail = (EmployeeDetail)authentication.getPrincipal();
+		Integer empIdx = empDetail.getEmpIdx();
+		String empName = empDetail.getEmpName();
+		
 		slog.setEmpNo(empNo);
 		
 		//작업로그지정
@@ -97,28 +85,58 @@ public class WorkingLogAspect {
 	        }
 
 	        String methodName = pjp.getSignature().getName();
-	        //여기부터 시작
-	        if ("getEmployeeCount".equals(methodName)) {
-//	            EmployeeInfoDTO employee = (EmployeeInfoDTO) args[0];
-	            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	            slog.setSubSection("직원관리");
-//	            slog.setTargetIdx(employee.getEmpIdx());
-
+	        //운송시작
+	        if (methodName.equals("updateDispatchStatusStart")) {
+	        	DispatchRegisterRequestDTO dispatchRegisterRequest = (DispatchRegisterRequestDTO) args[0];
+	            slog.setSubSection("출고완료/운송시작");
+	            
+	            Integer dispatchIdx = dispatchRegisterRequest.getDispatchIdx();
+	            dispatchRegisterRequest = dispatchMapper.selectDispatchDetailByDispatchIdx(dispatchIdx, empIdx);
+	            
+	            slog.setTargetIdx(dispatchIdx);
 	            if (errorMessage == null) {
-//	                slog.setLogMessage(
-//                		slog.getSection() + ">" + slog.getSubSection() + "에서"  + employee.getEmpNo() + " "  + employee.getEmpName() + " 직원추가 완료"
-//	                );
+	                slog.setLogMessage(
+                		slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+                				empName + "(" + empNo + ") "  + " 운전기사가 " + dispatchRegisterRequest.getOrderIds()
+                				+ "번 주문의 운송을 시작합니다."
+	                );
 	            } else {
-//	                slog.setLogMessage(
-//                		slog.getSection() + ">" + slog.getSubSection() + "에서"  + employee.getEmpNo() + " " + employee.getEmpName() + " 직원추가 중 오류 발생: " + errorMessage
-//	                );
+	                slog.setLogMessage(
+	                		slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	                				empName + "(" + empNo + ") "  + " 운전기사가 " + dispatchRegisterRequest.getOrderIds()
+	                				+ "번 주문의 운송 중 에러 발생"
+	                );
 	            }
+	        }
+	        //운송완료
+	        if (methodName.equals("updateDeliveryCompleted")) {
+	        	System.out.println("여기왔어");
+	        	DeliveryConfirmationDTO deliveryConfirmation = (DeliveryConfirmationDTO) args[0];
+	        	slog.setSubSection("운송완료");
+	        	
+	        	Integer deliveryConfirmationIdx = deliveryConfirmation.getDeliveryConfirmationIdx();
+	        	deliveryConfirmation = dispatchMapper.selectDeliveryConfirmationByDeliveryConfirmationIdx(deliveryConfirmationIdx);
+	        	
+	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+	        	System.out.println(deliveryConfirmation);
+	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+	        	
+//	        	slog.setTargetIdx(dispatchIdx);
+//	        	if (errorMessage == null) {
+//	        		slog.setLogMessage(
+//	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+//	        						empName + "(" + empNo + ") "  + " 운전기사가 " + dispatchRegisterRequest.getOrderIds()
+//	        						+ "번 주문의 운송을 시작합니다."
+//	        				);
+//	        	} else {
+//	        		slog.setLogMessage(
+//	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+//	        						empName + "(" + empNo + ") "  + " 운전기사가 " + dispatchRegisterRequest.getOrderIds()
+//	        						+ "번 주문의 운송 중 에러 발생"
+//	        				);
+//	        	}
 	        }
 	        	        
 //	        logmapper.insertSystemLog(slog);

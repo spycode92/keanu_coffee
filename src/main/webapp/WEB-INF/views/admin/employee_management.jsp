@@ -114,7 +114,7 @@
 <jsp:include page="/WEB-INF/views/admin/employee_modal/detail_employee.jsp"></jsp:include> 
 <jsp:include page="/WEB-INF/views/admin/employee_modal/modify_employee.jsp"></jsp:include> 
 <section class="content">
-	<div class="container mt-4">
+	<div class="container">
 		<div class="d-flex justify-content-between align-items-center mb-3">
 			<h4>직원 관리</h4>
 			<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary" data-target="#addEmployeeModal">
@@ -131,7 +131,7 @@
 					<input class="filterText" placeholder="텍스트 입력" name="searchKeyword" >
 				</div>
 				<div class="actions">
-					<input type="submit" value="검색" id="btnSearch">
+					<button class="btn" value="검색" id="btnSearch">검색</button>
 				</div>
 			</form>
 		</div>
