@@ -26,6 +26,7 @@
 		width: 500px;
 	
 	}
+	
 </style>
 </head>
 <body>
@@ -34,33 +35,6 @@
 	<section>
 		
 		
-<!-- 		<form action="/inventory/updateInventory" method="post"> -->
-<!-- 			<p>직원 ID: John</p> -->
-<!-- 			<input type="text" name="employee_id" value="John" hidden><br> -->
-<!-- 			<label for="inventoryId">재고 ID</label> -->
-<!-- 			<input id="inventoryID" type="text" name="inventoryId"><br> -->
-			
-<!-- 			<label for="qtyMoving">이동할 양</label> -->
-<!-- 			<input id="qtyMoving" type="number" name="qtyMoving" min="0"><br> -->
-			
-			
-<!-- 			<select> -->
-<!-- 				<option value="">목적지</option> -->
-<!-- 				<option> -->
-<%-- 			 <c:if test="${param. eq '최신'}">selected</c:if> value="최신"> --%> 
-<!-- 				 팔레트 보관</option> -->
-<!-- 				<option > -->
-<%-- 			<c:if test="${param. eq '최신'}">selected</c:if> value="최신"> --%> 
-<!-- 				저장 선택</option> -->
-<!-- 				<option > -->
-<%-- 			<c:if test="${param. eq '최신'}">selected</c:if> value="최신"> --%> 
-<!-- 				포장 구역</option> -->
-<!-- 				<option > -->
-<%-- 			<c:if test="${param. eq '최신'}">selected</c:if> value="최신"> --%> 
-<!-- 				쓰레기통</option> -->
-<!-- 			</select> -->
-<!-- 			<input type="submit"> -->
-<!-- 		</form> -->
 			<form class="card" action="/inventory/moveInventory" method="post" enctype="multipart/form-data" id="form">
 				<sec:csrfInput/>
 				<h1 class="card-header">재고를 옮기다</h1>
@@ -68,42 +42,61 @@
 			    <tr>
 			      <td class="form-label">직원 ID:</td>
 			      <td>
-			        <sec:authentication property="principal.name" />
-			        <input type="text" name="employee_id" value="principal.name" hidden>
+			       <input type="text" name="employee_id" value="<sec:authentication property='principal.empIdx' />" readonly>
+			       
+<%-- 					${empIdx} --%>
+<%-- 			        <input type="text" name="employee_id" value="${empIdx}" hidden> --%>
 			      </td>
-			    </tr>
-			    <tr>
-			      <td><label class="form-label" for="inventoryId">재고 ID</label></td>
-			      <td><input class="form-control" id="inventoryID" type="text" name="inventoryId" required></td>
-			    </tr>
-			    <tr>
-			      <td><label class="form-label"  for="qtyMoving">이동할 양</label></td>
-			      <td><input class="form-control" id="qtyMoving" type="number" name="qtyMoving" min="0" required></td>
-			    </tr>
-			    <tr>
-			      <td><label class="form-label"  for="moveType">이동 유형</label></td>
-			      <td>
-			      	<label>
-				      픽업
-				      <input class="form-control" id="moveType" type="radio" name="moveType" value="pickUp" required>
-			     	 </label>
-			      	 <label>
-				      배치하다
-				      <input class="form-control"  type="radio" name="moveType" value="putDown" required>
-			       </label>
-				  </td>
 			    </tr>
 			    <tr>
 			      <td><label class="form-label"  for="destinationType">목적지</label></td>
 			      <td>
 			        <select class="form-control" id="destinationType" name="destinationType" required>
 			          <option value="">목적지를 선택하세요</option>
-			          <option value="팔레트 보관">팔레트 죤</option>
-			          <option value="저장 선택">피킹 죤</option>
+			          <option value="palletZone">팔레트 죤</option>
+			          <option value="pickingZone">피킹 죤</option>
 <!-- 			          <option value="포장 구역">포장 구역</option> -->
 			        </select>
 			      </td>
 			    </tr>
+			     <tr>
+			      <td><label class="form-label" for="inventoryId">고유번호 ID (인바운드에서 이동하는 경우 이것이 필요합니다.)</label></td>
+			      <td><input class="form-control" id="receiptID" type="text" name="receiptID" ></td>
+			    </tr>
+			    <tr>
+			      <td><label class="form-label" for="inventoryId">재고 ID (팔레트 구역에서 이동하는 경우 이것이 필요합니다.)</label></td>
+			      <td><input class="form-control" id="inventoryID" type="text" name="inventoryId" ></td>
+			    </tr>
+			    <tr>
+			      <td><label class="form-label"  for="qtyMoving">이동할 양</label></td>
+			      <td><input class="form-control" id="qtyMoving" type="number" name="qtyMoving" min="0" required></td>
+			    </tr>
+<!-- 			    <tr> -->
+<!-- 			      <td><label class="form-label"  for="moveType">이동 유형</label></td> -->
+<!-- 			      <td style="display: flex; gap: 1rem; align-items: center;"> -->
+<!-- 			      	<label> -->
+<!-- 				      픽업 -->
+<!-- 				      <input class="form-control" id="moveType" type="radio" name="moveType" value="pickUp" required> -->
+<!-- 			     	 </label> -->
+<!-- 			      	 <label> -->
+<!-- 				      배치하다 -->
+<!-- 				      <input class="form-control"  type="radio" name="moveType" value="putDown" required> -->
+<!-- 			       </label> -->
+<!-- 				  </td> -->
+<!-- 			    </tr> -->
+				<tr>
+				  <td><label class="form-label" for="moveType">이동 유형</label></td>
+				  <td style="display: flex; gap: 1rem; align-items: center;">
+				    <label style="display: flex; align-items: center; gap: 0.5rem;">
+				      픽업
+				      <input type="radio" name="moveType" value="pickUp" required>
+				    </label>
+				    <label style="display: flex; align-items: center; gap: 0.5rem;">
+				      배치하다
+				      <input type="radio" name="moveType" value="putDown" required>
+				    </label>
+				  </td>
+				</tr>
 			 
 			    <tr>
 			      <td><label class="form-label" for="destinationName">목적지 이름(아이템을 배치하는 경우)</label></td>
@@ -117,6 +110,22 @@
 			    </tr>
 			</table>
 		</form>
+		<script>
+		  const destinationSelect = document.getElementById('destinationType');
+		  const inventoryIdInput = document.getElementById('inventoryId');
+		  const receiptIdInput = document.getElementById('receiptID');
+		
+		  destinationSelect.addEventListener('change', function () {
+		    if (this.value === 'pickingZone') {
+		    	inventoryIdInput.required = true;
+		    	receiptIdInput.required = false;
+		    } else {
+		    	receiptIdInput.required = true;
+		    	inventoryIdInput.required = false;
+		    }
+		  });
+		</script>
+		
 
 	</section>
 	<script type="text/javascript">
@@ -132,7 +141,7 @@
 // 			console.log("csrfToken : " + csrfToken);
 			
 			$.ajax({
-				url: "/inventoryAction/create-warehouse",
+				url: "/inventoryAction/moveInventory",
 				type: "POST",
 				data: formData,
 				dataType: "json", // 응답데이터 형식을 JSON 으로 지정
@@ -150,7 +159,7 @@
 				success: function(response) {
 					console.log(response);
 					alert("등록 완료!");
-					location.href = "/inventory/moveInventory";
+					location.href = "/inventoryAction/moveInventory";
 				},
 				error: function(xhr, status, error) {
 					console.log(error);

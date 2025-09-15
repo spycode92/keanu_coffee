@@ -92,6 +92,7 @@
 			supplier_idx
 			, supplier_name
 			FROM SUPPLIER
+			WHERE status = '활성'
 			ORDER BY supplier_name
 	</select>
 	

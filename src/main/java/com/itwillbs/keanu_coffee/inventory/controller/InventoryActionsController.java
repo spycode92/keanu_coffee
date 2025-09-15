@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO;
 import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
+import com.itwillbs.keanu_coffee.inventory.dto.ReceiptProductDTO2;
 import com.itwillbs.keanu_coffee.inventory.dto.WarehouseLocationDTO;
 import com.itwillbs.keanu_coffee.inventory.service.InventoryActionsService;
 
@@ -170,29 +172,58 @@ public class InventoryActionsController {
 	//move inventory
 	// when all inventory from one location is moved the inventory row needs to be deleted
 	// I need to make a default location for the inbound area
-	@PostMapping("/updateWarehouse")
-	public String updateWarehouse( @RequestParam("employee_id") int employeeId, 
-			@RequestParam("inventoryId") int inventoryId,
+	@PostMapping("/moveInventory")
+	public String updateWarehouse(@RequestParam("employee_id") int employeeId, 
+			@RequestParam(name = "inventoryId", defaultValue = "0") int inventoryId,
+			@RequestParam(name = "receiptID", defaultValue = "0") int receiptID,
 			@RequestParam("qtyMoving") int qtyMoving,
-			@RequestParam("destinationType") int destinationType, 
+			@RequestParam("destinationType") String destinationType, 
 			@RequestParam("destinationName") String destinationName, 
 			@RequestParam("moveType") String moveType) {
 		
-		InventoryDTO inventoryDTO = inventoryActionsService.getquantity(inventoryId);
+		InventoryDTO inventoryDTO = null;
+		ReceiptProductDTO2 receiptProductDTO = null;
 		
-		if(moveType == "pickUp") {
-			
-			if(qtyMoving == inventoryDTO.getQuantity()) {
-				inventoryActionsService.removeRowInInventory(inventoryId);
-			} else {
-				inventoryActionsService.modifyLocationOfInventory(inventoryId, qtyMoving, employeeId);
-				inventoryActionsService.modifyQuantitydecrease(inventoryId, inventoryDTO.getQuantity() - qtyMoving);
-			}
-			
-			//need to finish this
+		if(inventoryId == 0) {
+			 receiptProductDTO = inventoryActionsService.getReceiptProduct(receiptID);
 		} else {
 			
-			
+			inventoryDTO = inventoryActionsService.getquantity(inventoryId);
+		}
+		
+		String result = inventoryActionsService.getlocationIdxOfDestinationName(destinationName);
+		int locationIdxOfDestinationName = result == null ? 0 : Integer.parseInt(result);
+		
+		if(destinationType.equals("pickingZone")) {
+		// these actions are changing the locationidx and the location name to the employeeidx of the person moving
+			if(moveType.equals("pickUp")) {
+				if(qtyMoving == inventoryDTO.getQuantity()) {
+	//				inventoryActionsService.removeRowInInventory(inventoryId);
+					inventoryActionsService.modifyLocationOfInventory(inventoryId, qtyMoving, employeeId);
+					
+					
+	//				if the worker is only moving some of the inventory then a new locationidx is being created and the current quantity is being decreased
+				} else {
+					inventoryActionsService.addLocationOfInventory(inventoryDTO, qtyMoving, employeeId);
+					inventoryActionsService.modifyQuantitydecrease(inventoryId, inventoryDTO.getQuantity() - qtyMoving);
+				}
+	//			these actions are for when the worker is placing the items in the destination location 
+			} else {
+				if(qtyMoving == inventoryDTO.getQuantity()) {
+					inventoryActionsService.modifyLocationOfInventory2(inventoryId, qtyMoving, destinationName, locationIdxOfDestinationName);
+					
+	//				if the worker is only placing some of the items that he has a new location is created and the quantity he is still holding is decreased
+				} else {
+					inventoryActionsService.addLocationOfInventory2(inventoryDTO, qtyMoving, destinationName, locationIdxOfDestinationName);
+					inventoryActionsService.modifyQuantitydecrease(inventoryId, inventoryDTO.getQuantity() - qtyMoving);
+				}
+			}
+//		if someone is moving product from inbound to pallet zone then new inventory is created here
+		} else {
+			System.out.println("receiptProductDTO : " + receiptProductDTO);
+			inventoryActionsService.addLocationOfInventory3(receiptProductDTO.getReceiptProductIdx(), locationIdxOfDestinationName, destinationName, 
+					receiptProductDTO.getProductIdx(), qtyMoving, receiptProductDTO.getLotNumber(), receiptProductDTO.getManufactureDate(), 
+					receiptProductDTO.getExpirationDate());
 		}
 		
 		
@@ -206,7 +237,17 @@ public class InventoryActionsController {
 	
 }
 
-
+//<!--     inventory_idx -->
+//<!-- receipt_product_idx -->
+//<!-- location_idx -->
+//<!-- location_name -->
+//<!-- product_idx -->
+//<!-- quantity -->
+//<!-- lot_number -->
+//<!-- manufacture_date -->
+//<!-- expiration_date -->
+//<!-- created_at -->
+//<!-- updated_at -->
 
 
 
