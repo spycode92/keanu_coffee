@@ -25,6 +25,16 @@ public class InventoryActionsController {
 		this.inventoryActionsService = inventoryActionsService;
 	}
 	
+	private void mergeInventory(int inventoryId, int qtyMoving, InventoryDTO destinationInventoryDTO) {
+	    inventoryActionsService.modifyQuantitydecrease(inventoryId, destinationInventoryDTO.getQuantity() + qtyMoving);
+	    inventoryActionsService.removeRowInInventory(inventoryId);
+	}
+	
+	private void splitInventory(InventoryDTO inventoryDTO, int qtyMoving, String destinationName, int locationIdx) {
+	    inventoryActionsService.addLocationOfInventory2(inventoryDTO, qtyMoving, destinationName, locationIdx);
+	    inventoryActionsService.modifyQuantitydecrease(inventoryDTO.getInventoryIdx(), inventoryDTO.getQuantity() - qtyMoving);
+	}
+	
 	@PostMapping("/create-warehouse")
 	public String createWarehouse(
 			@RequestParam("racks") int racks, 
@@ -41,23 +51,23 @@ public class InventoryActionsController {
 		if (racks > 26 || levels > 26) {
 		    throw new IllegalArgumentException("Max 26 racks and 26 levels supported.");
 		}
-		System.out.println("RACKS : " + racks);
-		System.out.println("bays : " + bays);
-		System.out.println("levels : " + levels);
-		System.out.println("positions : " + positions);
-		System.out.println("width : " + width);
-		System.out.println("depth : " + depth);
-		System.out.println("height : " + height);
-		System.out.println("location type : " + locationType);		
+//		System.out.println("RACKS : " + racks);
+//		System.out.println("bays : " + bays);
+//		System.out.println("levels : " + levels);
+//		System.out.println("positions : " + positions);
+//		System.out.println("width : " + width);
+//		System.out.println("depth : " + depth);
+//		System.out.println("height : " + height);
+//		System.out.println("location type : " + locationType);		
 		List<WarehouseLocationDTO> locationList = new ArrayList<>();
 		
 		
 		
-		int totalNumberOfWarehouseLocationsToCreate = racks * bays * levels * positions;
-		System.out.println("number of locations to create : " + totalNumberOfWarehouseLocationsToCreate);
+//		int totalNumberOfWarehouseLocationsToCreate = racks * bays * levels * positions;
+//		System.out.println("number of locations to create : " + totalNumberOfWarehouseLocationsToCreate);
 		
 		String lastCurrentLocation = inventoryActionsService.getLastCurrentLocation();
-		System.out.println("lastcurrent location ; " + lastCurrentLocation);
+//		System.out.println("lastcurrent location ; " + lastCurrentLocation);
 //		char lastRack = lastCurrentLocation.substring(0, 1).charAt(0);
 //		System.out.println(lastRack);
 //		int lastBay = Integer.parseInt(lastCurrentLocation.substring(2, 4));
@@ -80,16 +90,12 @@ public class InventoryActionsController {
 		System.out.println("last rack : " + lastRack);
 		
 		
-		String[] letters = new String[26];
-
-		for (int i = 0; i < 26; i++) {
-			letters[i] = String.valueOf((char) ('A' + i));
-
-//		    letters[i] = (char)('A' + i); //  uppercase letters
-		}
+		char[] letters = new char[26];
 		char[] lowerLetters = new char[26];
+
 		
 		for (int i = 0; i < 26; i++) {
+			letters[i] = (char)('A' + i);
 			lowerLetters[i] = (char)('a' + i); // lowercase letters
 		}
 		
@@ -117,7 +123,7 @@ public class InventoryActionsController {
 				startRackIndex + 
 				racks; i++) {  //this might need to be adjusted if there is no racks yet
 		    if (i >= 26) break;
-			String rack = letters[i];
+			char rack = letters[i];
 
 //		    int startBay = (i == startRackIndex) ? lastBay + 1 : 1;
 
@@ -136,7 +142,7 @@ public class InventoryActionsController {
 		                locationList.add(new WarehouseLocationDTO(
 		                    locationName, rack, bay, levelPosition, width, height, depth, locationType
 		                ));
-		                System.out.println("Adding location: " + locationName);
+//		                System.out.println("Adding location: " + locationName);
 		            }
 		        }
 		    }
@@ -157,9 +163,9 @@ public class InventoryActionsController {
 //								.levelPostion(null)
 //								.build();
 
-		System.out.println("locationList.getsize" + locationList.size());
+//		System.out.println("locationList.getsize" + locationList.size());
 		for (int i = 0; i < locationList.size(); i++) {
-			System.out.println("locationList.get(i)" + locationList.get(i));
+//			System.out.println("locationList.get(i)" + locationList.get(i));
 			inventoryActionsService.registWarehouse(locationList.get(i));
 		}
 		
@@ -191,58 +197,103 @@ public class InventoryActionsController {
 			inventoryDTO = inventoryActionsService.getquantity(inventoryId);
 		}
 		
-		String result = inventoryActionsService.getlocationIdxOfDestinationName(destinationName);
-		int locationIdxOfDestinationName = result == null ? 0 : Integer.parseInt(result);
+		InventoryDTO destinationInventoryDTO = inventoryActionsService.getlocationIdxOfDestinationName(destinationName);
+		int locationIdxOfDestinationName = destinationInventoryDTO == null ? 0 : destinationInventoryDTO.getLocationIdx();
 		
-		if(destinationType.equals("pickingZone")) {
-		// these actions are changing the locationidx and the location name to the employeeidx of the person moving
-			if(moveType.equals("pickUp")) {
-				if(qtyMoving == inventoryDTO.getQuantity()) {
-	//				inventoryActionsService.removeRowInInventory(inventoryId);
-					inventoryActionsService.modifyLocationOfInventory(inventoryId, qtyMoving, employeeId);
-					
-					
-	//				if the worker is only moving some of the inventory then a new locationidx is being created and the current quantity is being decreased
-				} else {
-					inventoryActionsService.addLocationOfInventory(inventoryDTO, qtyMoving, employeeId);
-					inventoryActionsService.modifyQuantitydecrease(inventoryId, inventoryDTO.getQuantity() - qtyMoving);
-				}
-	//			these actions are for when the worker is placing the items in the destination location 
-			} else {
-				if(qtyMoving == inventoryDTO.getQuantity()) {
-					inventoryActionsService.modifyLocationOfInventory2(inventoryId, qtyMoving, destinationName, locationIdxOfDestinationName);
-					
-	//				if the worker is only placing some of the items that he has a new location is created and the quantity he is still holding is decreased
-				} else {
-					inventoryActionsService.addLocationOfInventory2(inventoryDTO, qtyMoving, destinationName, locationIdxOfDestinationName);
-					inventoryActionsService.modifyQuantitydecrease(inventoryId, inventoryDTO.getQuantity() - qtyMoving);
-				}
-			}
-			
-			
-//		if someone is moving product from inbound to pallet zone then new inventory is created here
-		} else {
-			
-			//pickup
-			if(moveType.equals("pickUp")) {
-				System.out.println("receiptProductDTO : " + receiptProductDTO);
-				String stringEmpId = String.valueOf(employeeId);
-				inventoryActionsService.addLocationOfInventory3(receiptProductDTO.getReceiptProductIdx(), employeeId, stringEmpId, 
-						receiptProductDTO.getProductIdx(), qtyMoving, receiptProductDTO.getLotNumber(), receiptProductDTO.getManufactureDate(), 
-						receiptProductDTO.getExpirationDate());
-			
-				//put down
-			} else {
-				if(qtyMoving == inventoryDTO.getQuantity()) {
-					inventoryActionsService.modifyLocationOfInventory2(inventoryId, qtyMoving, destinationName, locationIdxOfDestinationName);
-				
-	//				if the worker is only placing some of the items that he has, then, a new location is created and the quantity he is still holding is decreased
-				} else {
-					inventoryActionsService.addLocationOfInventory2(inventoryDTO, qtyMoving, destinationName, locationIdxOfDestinationName);
-					inventoryActionsService.modifyQuantitydecrease(inventoryId, inventoryDTO.getQuantity() - qtyMoving);
-				}
-			}
+		boolean isTotalQuantity = qtyMoving == inventoryDTO.getQuantity();
+		boolean isSameLot = destinationInventoryDTO != null &&
+		                    destinationInventoryDTO.getLotNumber().equals(inventoryDTO.getLotNumber());
+		
+		
+		if ("pickUp".equals(moveType)) {
+		    if ("pickingZone".equals(destinationType)) {
+		        if (isTotalQuantity) {
+		            inventoryActionsService.modifyLocationOfInventory(inventoryId, qtyMoving, employeeId);
+		        } else {
+		            inventoryActionsService.addLocationOfInventory(inventoryDTO, qtyMoving, employeeId);
+		            inventoryActionsService.modifyQuantitydecrease(inventoryId, inventoryDTO.getQuantity() - qtyMoving);
+		        }
+		    } else {
+		        inventoryActionsService.addLocationOfInventory3(
+		            receiptProductDTO.getReceiptProductIdx(), employeeId, String.valueOf(employeeId),
+		            receiptProductDTO.getProductIdx(), qtyMoving, receiptProductDTO.getLotNumber(),
+		            receiptProductDTO.getManufactureDate(), receiptProductDTO.getExpirationDate()
+		        );
+		    }
+		} else { // putDown
+		    if (isSameLot && isTotalQuantity) {
+		        mergeInventory(inventoryId, qtyMoving, destinationInventoryDTO);
+		    } else if (isTotalQuantity) {
+		        inventoryActionsService.modifyLocationOfInventory2(inventoryId, qtyMoving, destinationName, locationIdxOfDestinationName);
+		    } else {
+		        splitInventory(inventoryDTO, qtyMoving, destinationName, locationIdxOfDestinationName);
+		    }
 		}
+//		if(destinationType.equals("pickingZone")) {
+//		// these actions are changing the locationidx and the location name to the employeeidx of the person moving
+//			if(moveType.equals("pickUp")) {
+//				if(qtyMoving == inventoryDTO.getQuantity()) {
+//					inventoryActionsService.modifyLocationOfInventory(inventoryId, qtyMoving, employeeId);
+//					
+//					
+//	//				if the worker is only moving some of the inventory then a new locationidx is being created and the current quantity is being decreased
+//				} else {
+//					
+//					inventoryActionsService.addLocationOfInventory(inventoryDTO, qtyMoving, employeeId);
+//					inventoryActionsService.modifyQuantitydecrease(inventoryId, inventoryDTO.getQuantity() - qtyMoving);
+//				}
+//	//			these actions are for when the worker is placing the items in the destination location 
+//			} else {
+////					if the worker is putting inventory in a location that already has inventory with the same lot number
+//				if(destinationInventoryDTO.getLotNumber().equals(inventoryDTO.getLotNumber()) && qtyMoving == inventoryDTO.getQuantity()) {
+//					
+//					inventoryActionsService.modifyQuantitydecrease(inventoryId, destinationInventoryDTO.getQuantity() + qtyMoving);
+//					inventoryActionsService.removeRowInInventory(inventoryId);
+//					
+//				} else {
+//					if(qtyMoving == inventoryDTO.getQuantity()) {
+//						inventoryActionsService.modifyLocationOfInventory2(inventoryId, qtyMoving, destinationName, locationIdxOfDestinationName);
+//						
+//		//				if the worker is only placing some of the items that he has a new location is created and the quantity he is still holding is decreased
+//					} else {
+//						inventoryActionsService.addLocationOfInventory2(inventoryDTO, qtyMoving, destinationName, locationIdxOfDestinationName);
+//						inventoryActionsService.modifyQuantitydecrease(inventoryId, inventoryDTO.getQuantity() - qtyMoving);
+//					}
+//				}
+//			}
+//			
+//			
+////		if someone is moving product from inbound to pallet zone then new inventory is created here
+//		} else {
+//			
+//			//pickup
+//			if(moveType.equals("pickUp")) {
+//				System.out.println("receiptProductDTO : " + receiptProductDTO);
+//				String stringEmpId = String.valueOf(employeeId);
+//				inventoryActionsService.addLocationOfInventory3(receiptProductDTO.getReceiptProductIdx(), employeeId, stringEmpId, 
+//						receiptProductDTO.getProductIdx(), qtyMoving, receiptProductDTO.getLotNumber(), receiptProductDTO.getManufactureDate(), 
+//						receiptProductDTO.getExpirationDate());
+//			
+//				//put down
+//			} else {
+//				if(destinationInventoryDTO.getLotNumber().equals(inventoryDTO.getLotNumber()) && qtyMoving == inventoryDTO.getQuantity()) {
+//					
+//					inventoryActionsService.modifyQuantitydecrease(inventoryId, destinationInventoryDTO.getQuantity() + qtyMoving);
+//					inventoryActionsService.removeRowInInventory(inventoryId);
+//					
+//				} else {
+//	//				int inventoryIdxOfIteminventory
+//					if(qtyMoving == inventoryDTO.getQuantity()) {
+//						inventoryActionsService.modifyLocationOfInventory2(inventoryId, qtyMoving, destinationName, locationIdxOfDestinationName);
+//					
+//		//				if the worker is only placing some of the items that he has, then, a new location is created and the quantity he is still holding is decreased
+//					} else {
+//						inventoryActionsService.addLocationOfInventory2(inventoryDTO, qtyMoving, destinationName, locationIdxOfDestinationName);
+//						inventoryActionsService.modifyQuantitydecrease(inventoryId, inventoryDTO.getQuantity() - qtyMoving);
+//					}
+//				}
+//			}
+//		}
 		
 		
 		return "inventoryAction/updateWarehouse";

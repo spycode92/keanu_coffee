@@ -32,7 +32,7 @@ public interface InventoryActionsMapper {
 	void updateLocationOfInventory2(@Param("inventoryId") int inventoryId, @Param("qtyMoving") int qtyMoving, @Param("destinationName") String destinationName, @Param("locationIdxOfDestinationName") int locationIdxOfDestinationName);
 
 //	int selectlocationIdxOfDestinationName(String destinationName);
-	String selectlocationIdxOfDestinationName(String destinationName);
+	InventoryDTO selectlocationIdxOfDestinationName(String destinationName);
 
 	void insertLocationOfInventory2(@Param("inventoryDTO") InventoryDTO inventoryDTO, @Param("qtyMoving") int qtyMoving, @Param("destinationName") String destinationName,
 			@Param("locationIdxOfDestinationName") int locationIdxOfDestinationName);

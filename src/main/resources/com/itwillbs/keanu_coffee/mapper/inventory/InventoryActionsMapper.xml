@@ -149,11 +149,11 @@
 			#{inventoryDTO.expirationDate}
 		)
 	</insert>
-	<select id="selectlocationIdxOfDestinationName" resultType="string">
+	<select id="selectlocationIdxOfDestinationName" resultType="com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO">
 		SELECT
-			location_idx
+			*
 		FROM
-			WAREHOUSE_LOCATION
+			INVENTORY
 		WHERE
 			location_name = #{destinationName}
 	

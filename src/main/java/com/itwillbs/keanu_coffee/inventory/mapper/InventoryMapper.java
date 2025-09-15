@@ -12,6 +12,8 @@ public interface InventoryMapper {
 
 	WarehouseInfoDTO selectWarehouseInfo();
 
+	List<InventoryDTO> selectInventoryItemsInEmployeesVirtualLocation(int empIdx);
+
 //	List<InventoryDTO> selectInventoryThatNeedsToMoveFromInbound();
 //
 //	List<InventoryDTO> selectInventoryThatNeedsToMoveToOutbound();

@@ -73,12 +73,12 @@
 				  </td>
 				</tr>
 			     <tr>
-			      <td><label class="form-label" for="inventoryId">고유번호 ID (인바운드에서 이동하는 경우 이것이 필요합니다.)</label></td>
+			      <td><label class="form-label" for="receiptID">고유번호 ID (인바운드에서 이동하는 경우 이것이 필요합니다.)</label></td>
 			      <td><input class="form-control" id="receiptID" type="text" name="receiptID" ></td>
 			    </tr>
 			    <tr>
 			      <td><label class="form-label" for="inventoryId">재고 ID (팔레트 구역에서 이동하는 경우 이것이 필요합니다.)</label></td>
-			      <td><input class="form-control" id="inventoryID" type="text" name="inventoryId" ></td>
+			      <td><input class="form-control" id="inventoryId" type="text" name="inventoryId" ></td>
 			    </tr>
 			    <tr>
 			      <td><label class="form-label"  for="qtyMoving">이동할 양</label></td>
@@ -115,8 +115,10 @@
 		  const inventoryIdInput = document.getElementById('inventoryId');
 		  const receiptIdInput = document.getElementById('receiptID');
 		  const selectedMoveType = document.querySelector('input[name="moveType"]:checked');
+		  
+		  
 
-		
+// 		changes whether receipt id is required or if inventory id is required depending on the action
 		  destinationSelect.addEventListener('change', function () {
 		    if (this.value === 'pickingZone' || selectedMoveType.value == 'putDown') {
 		    	inventoryIdInput.required = true;
@@ -126,6 +128,30 @@
 		    	inventoryIdInput.required = false;
 		    }
 		  });
+		  
+		  // gets any items in the employees virtual location that was added when the page was loaded
+	
+		  const employeeInventory = [
+		    <c:forEach var="item" items="${employeeInventory}" varStatus="status">
+		      {
+		        inventoryIdx: ${item.inventoryIdx},
+		        receiptProductIdx: ${item.receiptProductIdx}
+		      }<c:if test="${!status.last}">,</c:if>
+		    </c:forEach>
+		  ];
+
+		
+		  // asks the employee if they want to place down an item they picked up
+		  
+		  for(let i = 0; i < employeeInventory.length; i++) {
+			  let getConfirm = confirm("픽업하신 품목을 영수증 ID: " + employeeInventory[i].receiptProductIdx + "과 함께 넣으시겠습니까?")
+			  if (getConfirm) {
+				  inventoryIdInput.value = employeeInventory[i].inventoryIdx;
+				  break;
+			  } 
+		  }
+		  
+		  
 		</script>
 		
 
