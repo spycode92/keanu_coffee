@@ -218,14 +218,31 @@ public class InventoryActionsController {
 					inventoryActionsService.modifyQuantitydecrease(inventoryId, inventoryDTO.getQuantity() - qtyMoving);
 				}
 			}
+			
+			
 //		if someone is moving product from inbound to pallet zone then new inventory is created here
 		} else {
-			System.out.println("receiptProductDTO : " + receiptProductDTO);
-			inventoryActionsService.addLocationOfInventory3(receiptProductDTO.getReceiptProductIdx(), locationIdxOfDestinationName, destinationName, 
-					receiptProductDTO.getProductIdx(), qtyMoving, receiptProductDTO.getLotNumber(), receiptProductDTO.getManufactureDate(), 
-					receiptProductDTO.getExpirationDate());
+			
+			//pickup
+			if(moveType.equals("pickUp")) {
+				System.out.println("receiptProductDTO : " + receiptProductDTO);
+				String stringEmpId = String.valueOf(employeeId);
+				inventoryActionsService.addLocationOfInventory3(receiptProductDTO.getReceiptProductIdx(), employeeId, stringEmpId, 
+						receiptProductDTO.getProductIdx(), qtyMoving, receiptProductDTO.getLotNumber(), receiptProductDTO.getManufactureDate(), 
+						receiptProductDTO.getExpirationDate());
+			
+				//put down
+			} else {
+				if(qtyMoving == inventoryDTO.getQuantity()) {
+					inventoryActionsService.modifyLocationOfInventory2(inventoryId, qtyMoving, destinationName, locationIdxOfDestinationName);
+				
+	//				if the worker is only placing some of the items that he has, then, a new location is created and the quantity he is still holding is decreased
+				} else {
+					inventoryActionsService.addLocationOfInventory2(inventoryDTO, qtyMoving, destinationName, locationIdxOfDestinationName);
+					inventoryActionsService.modifyQuantitydecrease(inventoryId, inventoryDTO.getQuantity() - qtyMoving);
+				}
+			}
 		}
-		
 		
 		
 		return "inventoryAction/updateWarehouse";

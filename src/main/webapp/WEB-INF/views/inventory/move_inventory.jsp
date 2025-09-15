@@ -42,7 +42,7 @@
 			    <tr>
 			      <td class="form-label">직원 ID:</td>
 			      <td>
-			       <input type="text" name="employee_id" value="<sec:authentication property='principal.empIdx' />" readonly>
+			       <input class="form-control" type="text" name="employee_id" value="<sec:authentication property='principal.empIdx' />" readonly>
 			       
 <%-- 					${empIdx} --%>
 <%-- 			        <input type="text" name="employee_id" value="${empIdx}" hidden> --%>
@@ -59,6 +59,19 @@
 			        </select>
 			      </td>
 			    </tr>
+				<tr>
+				  <td><label class="form-label" for="moveType">이동 유형</label></td>
+				  <td style="display: flex; gap: 1rem; align-items: center;">
+				    <label style="display: flex; align-items: center; gap: 0.5rem;">
+				      픽업
+				      <input type="radio" name="moveType" value="pickUp" required>
+				    </label>
+				    <label style="display: flex; align-items: center; gap: 0.5rem;">
+				      배치하다
+				      <input type="radio" name="moveType" value="putDown" required>
+				    </label>
+				  </td>
+				</tr>
 			     <tr>
 			      <td><label class="form-label" for="inventoryId">고유번호 ID (인바운드에서 이동하는 경우 이것이 필요합니다.)</label></td>
 			      <td><input class="form-control" id="receiptID" type="text" name="receiptID" ></td>
@@ -84,19 +97,6 @@
 <!-- 			       </label> -->
 <!-- 				  </td> -->
 <!-- 			    </tr> -->
-				<tr>
-				  <td><label class="form-label" for="moveType">이동 유형</label></td>
-				  <td style="display: flex; gap: 1rem; align-items: center;">
-				    <label style="display: flex; align-items: center; gap: 0.5rem;">
-				      픽업
-				      <input type="radio" name="moveType" value="pickUp" required>
-				    </label>
-				    <label style="display: flex; align-items: center; gap: 0.5rem;">
-				      배치하다
-				      <input type="radio" name="moveType" value="putDown" required>
-				    </label>
-				  </td>
-				</tr>
 			 
 			    <tr>
 			      <td><label class="form-label" for="destinationName">목적지 이름(아이템을 배치하는 경우)</label></td>
@@ -114,9 +114,11 @@
 		  const destinationSelect = document.getElementById('destinationType');
 		  const inventoryIdInput = document.getElementById('inventoryId');
 		  const receiptIdInput = document.getElementById('receiptID');
+		  const selectedMoveType = document.querySelector('input[name="moveType"]:checked');
+
 		
 		  destinationSelect.addEventListener('change', function () {
-		    if (this.value === 'pickingZone') {
+		    if (this.value === 'pickingZone' || selectedMoveType.value == 'putDown') {
 		    	inventoryIdInput.required = true;
 		    	receiptIdInput.required = false;
 		    } else {

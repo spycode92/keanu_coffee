@@ -270,10 +270,11 @@ $(document).on("click", ".dispatchInfo", function() {
 				        // 경유지(지점) 이름을 한 번만 출력하고, 품목은 하위 반복문으로 출력
 				        if (stop.deliveryConfirmations) {
 				            stop.deliveryConfirmations.forEach(dc => {
-				                dc.items?.forEach(item => {
+				                dc.items?.forEach((item, index) => {
+									const orderItems = dc.items;
 				                    detailHtml += `
 				                        <tr>
-				                            <td>${stop.franchiseName}</td>
+				                            ${index === 0 ? `<td rowspan="${orderItems.length}">${stop.franchiseName}</td>` : ""}
 				                            <td>${item.itemName || "-"}</td>
 				                            <td class="text-right">${item.deliveredQty ?? 0} / ${item.orderedQty}</td>
 				                            <td>${stop.completeTime == null ? "대기" : item.status ===  "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전체반품"|| "-"}</td>
@@ -320,6 +321,7 @@ $(document).on("click", ".dispatchInfo", function() {
 				   		}
 					});
 					$("#timeline").html(timelineHtml);
+					renderDispatchMap("mapContainer", dispatch.franchises);
 			}
 		})
 		.fail((xhr, status, error) => {
