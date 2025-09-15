@@ -145,39 +145,41 @@
 		            </div>
 		        </form>    
 		    </div>
-            <div class="table-responsive" >
-                <table id="contractTable" class="table contract-table mb-0">
-                    <thead>
-                        <tr>
-                            <th>공급업체</th>
-                            <th>상품명</th>
-                            <th>계약단가</th>
-                            <th>계약시작</th>
-                            <th>계약끝</th>
-                            <th>상태</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach items="${supplyCotractList }" var="contract">
-                        	<tr data-contract-idx="${contract.supplyContractIdx}">
-                        		<td>${contract.supplier.supplierName }</td>
-                        		<td>${contract.product.productName }</td>
-                        		<td>${contract.contractPrice }</td>
-                        		<td>${contract.contractStart }</td>
-                        		<td>${contract.contractEnd }</td>
-                        		<td>              
-	                        		<span class="badge
-						                  ${contract.status eq '활성'   ? 'badge-confirmed' :
-						                    contract.status eq '비활성' ? 'badge-warning'   :
-						                                                'badge-urgent'}">
-						                  ${contract.status}
-									</span>
-								</td>
-                        	</tr>
-                        
-                        </c:forEach>
-                    </tbody>
-                </table>
+		    <div class="card">
+	            <div class="table-responsive" >
+	                <table id="contractTable" class="table contract-table mb-0">
+	                    <thead>
+	                        <tr>
+	                            <th>공급업체</th>
+	                            <th>상품명</th>
+	                            <th>계약단가</th>
+	                            <th>계약시작</th>
+	                            <th>계약끝</th>
+	                            <th>상태</th>
+	                        </tr>
+	                    </thead>
+	                    <tbody>
+	                        <c:forEach items="${supplyCotractList }" var="contract">
+	                        	<tr data-contract-idx="${contract.supplyContractIdx}">
+	                        		<td>${contract.supplier.supplierName }</td>
+	                        		<td>${contract.product.productName }</td>
+	                        		<td>${contract.contractPrice }</td>
+	                        		<td>${contract.contractStart }</td>
+	                        		<td>${contract.contractEnd }</td>
+	                        		<td>              
+		                        		<span class="badge
+							                  ${contract.status eq '활성'   ? 'badge-confirmed' :
+							                    contract.status eq '비활성' ? 'badge-warning'   :
+							                                                'badge-urgent'}">
+							                  ${contract.status}
+										</span>
+									</td>
+	                        	</tr>
+	                        
+	                        </c:forEach>
+	                    </tbody>
+	                </table>
+	            </div>
             </div>
             <!-- 페이징 -->
 		    <div class="pager">

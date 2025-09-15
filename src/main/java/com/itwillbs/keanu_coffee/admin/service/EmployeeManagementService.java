@@ -20,9 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
-import com.itwillbs.keanu_coffee.common.aop.annotation.Insert;
+import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
 import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
 import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
@@ -71,8 +72,6 @@ public class EmployeeManagementService {
 		String empPassword = passwordEncoder.encode("1234");
 		// empId생성
 		String empNo = empNoBuilder(employee);
-		//회사이메일생성
-		employee.setEmpEmail(employee.getEmpEmail()+"@keanu.com");
 		//empId, empPassword DTO 주입
 		employee.setEmpNo(empNo);
 		employee.setEmpPassword(empPassword);
@@ -112,7 +111,6 @@ public class EmployeeManagementService {
 	public int modifyEmployeeInfo(EmployeeInfoDTO employee, Authentication authentication) throws IllegalStateException, IOException {
 		EmployeeDetail empDetail = (EmployeeDetail)authentication.getPrincipal();
 		Integer empIdx = empDetail.getEmpIdx();
-		employee.setEmpEmail(employee.getEmpEmail()+"@keanu.com");
 		
 		// 새로 받은 비밀번호가 존재한다면 암호화
 		if(employee.getEmpPassword() != null && !employee.getEmpPassword().trim().isEmpty()) {
@@ -129,7 +127,6 @@ public class EmployeeManagementService {
 	// 관리자가 직원정보 업데이트
 	@SystemLog(target = SystemLogTarget.EMPLOYEE_INFO)
 	public void updateEmployeeInfo(EmployeeInfoDTO employee) {
-		employee.setEmpEmail(employee.getEmpEmail()+"@keanu.com");
 		employeeManagementMapper.updateEmployeeInfo(employee);
 	}
 	
