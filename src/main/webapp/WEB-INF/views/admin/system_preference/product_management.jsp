@@ -10,7 +10,7 @@
     <style type="text/css">
     /* 검색/필터 바 */
 	.filters {
-		width: 70em;
+		width: 100%;
 	    border: 1px solid var(--border);
 	    border-radius: 12px;
 	    padding: 12px;
@@ -113,17 +113,15 @@
     <jsp:include page="/WEB-INF/views/admin/preference_modal/detail_product.jsp" />
 
     <section class="content">
-        <div class="container mt-4">
-			<div class="d-flex justify-content-between align-items-center mb-3">
-			    <h4 class="mb-0">상품 관리</h4>
+        <div class="container">
+			<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+			    <h4 class="mb-3"><i class="fas fa-truck"></i>상품 관리</h4>
 			    <button id="btnAddProduct" class="btn btn-primary">상품 추가</button>
 			</div>
 			<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
 		    	<form class="filters" aria-label="검색 및 필터">
 		    		<div class="field">
-			    		<select class="categories" name="filterCategoryIdx" class="form-control" >
-
-			            </select>
+			    		<select class="categories" name="filterCategoryIdx" class="form-control" ></select>
 		            </div>
 		            <div class="field">
 		                <select id="filterStatus" name="searchType">

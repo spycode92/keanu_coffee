@@ -11,7 +11,6 @@
 /* 검색/필터 바 */
 .filters {
 	width: 100%;
-   
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 12px;
@@ -129,7 +128,7 @@
 				<input class="filterText" placeholder="텍스트 입력" name="searchKeyword" >
 			</div>
 			<div class="actions">
-				<input type="submit" value="검색" id="btnSearch">
+				<button class="btn" value="검색" id="btnSearch">검색</button>
 			</div>
 		</form>
 	</div>

@@ -42,6 +42,8 @@ public interface ProductMapper {
 	List<ProductDTO> selectAllProduct();
 	//단일카테고리정보가져오기
 	CommonCodeDTO selectCategoryByIdx(Integer commonCodeIdx);
+	//상품 이름 중복 체크
+	int selectCountSameProductName(ProductDTO product);
 
 	
 }

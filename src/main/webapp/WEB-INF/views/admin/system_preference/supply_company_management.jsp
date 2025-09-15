@@ -11,7 +11,6 @@
     /* 검색/필터 바 */
 	.filters {
 		width: 100%;
-    
 	    border: 1px solid var(--border);
 	    border-radius: 12px;
 	    padding: 12px;
