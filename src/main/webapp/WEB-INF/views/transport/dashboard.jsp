@@ -8,11 +8,11 @@
 <title>운송관리대시보드</title>
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link
-	href="${pageContext.request.contextPath}/resources/css/common/common.css"
-	rel="stylesheet">
-<script
-	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+<script src="/resources/js/admin/statistics/statistics1.js"></script>
 <style type="text/css">
 .container {
 	max-width: 1264px;
@@ -75,86 +75,111 @@
 	}
 }
 
-.chart-card{
-    background: var(--card);
-    color: var(--card-foreground);
-    border: 1px solid var(--border);
-    border-radius: var(--radius, 12px);
-    padding: 12px;
+ /* 각 차트 박스 공통 스타일 */
+ 
+ .dashboard-charts {
+ 	display: flex;
+	flex-direction: row;
+	gap: 10px;
 }
-.chart-card .card-header{
-    font-weight: 600;
-    margin-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
-}
-
-/* 그래프를 안정적으로 고정 높이로 */
-.chart-wrap{
-    position: relative;
-    height: 220px;          /* 필요 시 180~260px로 조절 */
+ 
+.chart-card {
+    flex: 1 1 300px;
+    min-width: 240px;
+    min-height: 300px;
     width: 100%;
-}
-.chart-wrap canvas{
-    display: block;         /* 인라인 여백 제거 */
-    width: 100% !important;
-    height: 100% !important;
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    color: var(--card-foreground);
+    box-sizing: border-box;
 }
 
-/* 기존 그리드는 그대로 사용 */
-.chart-grid{
-    display: grid;
-    grid-template-columns: repeat(2, minmax(260px, 1fr));
-    gap: 1rem;
+/* 버튼 그룹 위치 왼쪽 상단 고정 */
+.period-selector-wrapper {
+    display: flex;
+    justify-content: flex-start;
 }
-@media (max-width: 900px){
-    .chart-grid{ grid-template-columns: 1fr; }
+/* 모바일 대응(세로 스크롤) */
+@media (max-width: 768px) {
+    .dashboard-charts {
+        flex-direction: column;
+    }
+    .chart-card {
+        max-width: 100%;
+        min-width: auto;
+    }
 }
 </style>
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
-	<section class="container">
+	<section class="content">
 		<h1>운송관리</h1>
 		<div>
 			<section class="card-grid">
 				<div class="card">
-					<div class="card-header">출고요청</div>
-					<div class="kpi-value">54</div>
+					<div class="card-header">배차대기</div>
+					<div class="kpi-value">${pendingDispatchCount}</div>
 				</div>
 				<div class="card">
 					<div class="card-header">배송중</div>
-					<div class="kpi-value">87</div>
+					<div class="kpi-value">${dispatchInProgressCount}</div>
 				</div>
 				<div class="card">
 					<div class="card-header">배송완료</div>
-					<div class="kpi-value">312</div>
+					<div class="kpi-value">${dispatchCompletedCount}</div>
 				</div>
 				<div class="card">
-					<div class="card-header">공차율</div>
-					<div class="kpi-value">5</div>
-				</div>
-				<div class="card">
-					<div class="card-header">추가 차량 배정</div>
-					<div class="kpi-value">2</div>
+					<div class="card-header">긴급요청</div>
+					<div class="kpi-value">${urgentDispatchCount}</div>
 				</div>
 			</section>
 		</div>
 		<!-- 그래프 그리드 -->
-		<section class="chart-grid">
-		    <div class="chart-card">
-		        <div class="card-header">기사별 파손율</div>
-		        <div class="chart-wrap">
-		            <canvas id="driverDamageChart"></canvas>
+	    <section class="content">
+		    <div class="card">
+		        <div class="card-header d-flex justify-content-between align-items-center">
+				    <!-- 왼쪽: 제목 + 날짜 선택기 -->
+				    <div class="d-flex align-items-center gap-2">
+				        <div class="date-selection">
+				            <div class="d-flex align-items-center gap-2">
+				                <div>
+				                    <input type="date" id="baseDate" class="form-control date-input-small" style="max-width:100px">
+				                </div>
+				                <div>
+				                    <span id="dateRangeInfo" class="text-muted" style="font-size: 0.8rem; max-width: 200px;">
+				                        <!-- 계산된 범위 표시 -->
+				                    </span>
+				                </div>
+				            </div>
+				        </div>
+				    </div>
+		            <div class="period-selector-wrapper">
+		                <div class="btn-group" role="group" aria-label="그래프 선택">
+		                    <button type="button" class="btn btn-secondary btn-sm" data-period="daily">일별</button>
+		                    <button type="button" class="btn btn-secondary btn-sm" data-period="weekly">주별</button>
+		                    <button type="button" class="btn btn-secondary btn-sm" data-period="monthly">월별</button>
+		                </div>
+		            </div>
+		        </div>
+		        <div class="dashboard-charts">
+		            <br>
+		            <!-- 운송/출고 차트 -->
+		            <div class="chart-card">
+		                <h3 class="card-title" id="outbound_title">출고/운송 현황</h3>
+		                <canvas id="OBoverallChart" style="width:80%; height:100%;"></canvas>
+		            </div>
+		            <br>
+		            <!-- 폐기량 꺽은선차트 -->
+		            <div class="chart-card">
+		                <h3 class="card-title">폐기 현황1</h3>
+		                <canvas id="disposalChart" style="width:80%; height:100%;"></canvas>
+		            </div>
 		        </div>
 		    </div>
-		    <div class="chart-card">
-		        <div class="card-header">구역별 평균 운송시간</div>
-		        <div class="chart-wrap">
-		            <canvas id="regionTimeChart"></canvas>
-		        </div>
-		    </div>
-		</section>
+	    </section>
 		<div style="margin-bottom: 2em;">
 			<div
 				style="display: flex; justify-content: space-between; align-items: center;">
@@ -174,33 +199,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>2025-08-12</td>
-						<td>김배송</td>
-						<td>89바 ****</td>
-						<td>1.5t</td>
-						<td>동래구</td>
-						<td>18:30</td>
-						<td>운행중</td>
-					</tr>
-					<tr>
-						<td>2025-08-12</td>
-						<td>이배송</td>
-						<td>99바 ****</td>
-						<td>1.5t</td>
-						<td>남구</td>
-						<td>15:30</td>
-						<td>운행중</td>
-					</tr>
-					<tr>
-						<td>2025-08-12</td>
-						<td>최배송</td>
-						<td>79바 ****</td>
-						<td>1.5t</td>
-						<td>중구</td>
-						<td>19:30</td>
-						<td>운행중</td>
-					</tr>
+					
 				</tbody>
 			</table>
 		</div>
@@ -230,136 +229,5 @@
 			</table>
 		</div>
 	</section>
-	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-	<script>
-		//CSS 변수 읽기(라이트/다크 자동 연동)
-		function cssVar(name) {
-			return getComputedStyle(document.documentElement).getPropertyValue(
-					name).trim();
-		}
-		var cPrimary = cssVar('--primary') || '#5660fe';
-		var cGrid = cssVar('--border') || '#e5e7eb';
-		var cFg = cssVar('--foreground') || '#111827';
-		var cIndigo = '#a5b4fc';
-		var cBlue = '#93c5fd';
-
-		Chart.defaults.font.family = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif";
-		Chart.defaults.color = cFg;
-		Chart.defaults.borderColor = cGrid;
-
-		/* ===================== 더미 데이터 ===================== */
-		// 1) 기사별 파손율(%) — 막대 그래프
-		var driverLabels = [ '김배송', '이배송', '최배송', '박배송', '정배송', '오배송' ];
-		var damageRates = [ 0.8, 1.6, 0.4, 1.1, 0.6, 2.0 ]; // %
-
-		// 2) 구역별 평균 운송시간(분) — 막대(또는 선) 그래프
-		var regionLabels = [ '동래구', '남구', '수영구', '해운대구', '연제구', '부산진구' ];
-		var avgMinutes = [ 42, 55, 38, 62, 47, 51 ]; // 분
-
-		/* ===================== 1) 기사별 파손율 ===================== */
-		var ctxDamage = document.getElementById('driverDamageChart');
-		new Chart(ctxDamage, {
-			type : 'bar',
-			data : {
-				labels : driverLabels,
-				datasets : [ {
-					label : '파손율(%)',
-					data : damageRates,
-					backgroundColor : cIndigo,
-					borderWidth : 0,
-					borderRadius : 6,
-					maxBarThickness : 38
-				} ]
-			},
-			options : {
-				responsive : true,
-				maintainAspectRatio : false,
-				scales : {
-					y : {
-						beginAtZero : true,
-						suggestedMax : 3, // 필요 시 조정
-						ticks : {
-							callback : function(v) {
-								return v + '%';
-							}
-						},
-						grid : {
-							drawBorder : false
-						}
-					},
-					x : {
-						grid : {
-							display : false
-						}
-					}
-				},
-				plugins : {
-					legend : {
-						display : false
-					},
-					tooltip : {
-						callbacks : {
-							label : function(ctx) {
-								return ' ' + (ctx.raw || 0) + '%';
-							}
-						}
-					}
-				}
-			}
-		});
-
-		/* ===================== 2) 구역별 평균 운송시간 ===================== */
-		var ctxRegion = document.getElementById('regionTimeChart');
-		new Chart(ctxRegion, {
-			type : 'bar', // 선형으로 바꾸려면 'line'
-			data : {
-				labels : regionLabels,
-				datasets : [ {
-					label : '평균 운송시간(분)',
-					data : avgMinutes,
-					backgroundColor : cBlue,
-					borderWidth : 0,
-					borderRadius : 6,
-					maxBarThickness : 38,
-				// type: 'line', borderColor: cPrimary, fill: false, tension: 0.3  // 혼합형 예시
-				} ]
-			},
-			options : {
-				responsive : true,
-				maintainAspectRatio : false,
-				scales : {
-					y : {
-						beginAtZero : true,
-						suggestedMax : 70,
-						ticks : {
-							callback : function(v) {
-								return v + '분';
-							}
-						},
-						grid : {
-							drawBorder : false
-						}
-					},
-					x : {
-						grid : {
-							display : false
-						}
-					}
-				},
-				plugins : {
-					legend : {
-						display : false
-					},
-					tooltip : {
-						callbacks : {
-							label : function(ctx) {
-								return ' ' + (ctx.raw || 0) + '분';
-							}
-						}
-					}
-				}
-			}
-		});
-	</script>
 </body>
 </html>

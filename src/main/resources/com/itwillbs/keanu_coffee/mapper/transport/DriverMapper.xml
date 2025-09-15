@@ -21,6 +21,9 @@
 			<when test="filter != null and filter == '운행중'">
 				v.status = '운행중'
 			</when>
+			<when test="filter != null and filter == '예약'">
+				v.status = '예약'
+			</when>
 			<otherwise>
 			 	1 = 1
 			</otherwise>

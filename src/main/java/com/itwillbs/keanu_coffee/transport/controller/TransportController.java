@@ -1,6 +1,7 @@
 package com.itwillbs.keanu_coffee.transport.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -38,7 +39,28 @@ public class TransportController {
 	
 	// 운송 대시보드
 	@GetMapping("/main")
-	public String dashboard() {
+	public String dashboard(Model model) {
+		// 배차대기(출고 요청) 요청 횟수
+		Integer pendingDispatchCount = dispatchService.selectPendingDispatchCount();
+		// 긴급 요청 
+		Integer urgentDispatchCount = dispatchService.selectUrgentDispatchCount();
+		// 기사의 상태별 횟수
+		Map<String, Object> result = dispatchService.selectAssignmentStatusCount();
+		
+		// 운행중인 상태의 횟수
+		Integer dispatchInProgressCount = ((Number) result.get("dispatchInProgressCount")).intValue();
+		// 배차 완료인 상태의 횟수
+		Integer dispatchCompletedCount = ((Number) result.get("dispatchCompletedCount")).intValue();
+		
+		// 배차 목록 (현재 날짜 기준)
+		List<DispatchRegionGroupViewDTO> dispatchList = dispatchService.selectAllDispatchByToday();
+		
+		// 배차대기 횟수
+		model.addAttribute("pendingDispatchCount", pendingDispatchCount);
+		model.addAttribute("dispatchInProgressCount", dispatchInProgressCount);
+		model.addAttribute("dispatchCompletedCount", dispatchCompletedCount);
+		model.addAttribute("urgentDispatchCount", urgentDispatchCount);
+		model.addAttribute("dispatchList", dispatchList);
 		return "/transport/dashboard";
 	}
 	

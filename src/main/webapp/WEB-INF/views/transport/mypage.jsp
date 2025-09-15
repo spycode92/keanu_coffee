@@ -9,21 +9,18 @@
 	<meta name="_csrf_header" content="${_csrf.headerName}"/>
     <title>기사 마이페이지 (모바일)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-	href="${pageContext.request.contextPath}/resources/css/common/common.css"
-	rel="stylesheet">
-	<link
-		href="${pageContext.request.contextPath}/resources/css/transport/mypage.css"
-		rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+	<link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
+	<link href="${pageContext.request.contextPath}/resources/css/transport/mypage.css" rel="stylesheet">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<script
-	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
-	<script
-	src="${pageContext.request.contextPath}/resources/js/transport/mypage.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/transport/mypage.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/common/web_socket.js"></script>
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2b14d97248052db181d2cfc125eaa368&libraries=services"></script>	
+	<script src="${pageContext.request.contextPath}/resources/js/transport/kakao_map.js"></script>
 	<style>
 	#alarm-wrapper {
 		position: relative;
@@ -224,6 +221,11 @@
 	  text-overflow: ellipsis;
 	  color: #333;
 	}
+	
+	#files {
+		display: none;
+		margin-top: 0.5em;
+	}
 </style>
 </head>
 <body>
@@ -272,7 +274,7 @@
         <!-- 배차 요청 목록 -->
         <section class="card" style="margin-top:12px">
             <h2>배차 요청 목록</h2>
-            <table id="assignTable">
+            <table class="responsive-table" id="assignTable">
                 <thead>
                     <tr>
                         <th>배차일</th>
@@ -301,7 +303,7 @@
                 						<button class="btn ghost load-btn">적재하기</button>
                 					</c:when>
                 					<c:otherwise>
-		                				<button class="btn ghost detail-btn">상세</button>
+		                				<button class="btn btn-confirm detail-btn">상세</button>
                 					</c:otherwise>
                 				</c:choose>
                 			</td>
@@ -347,7 +349,7 @@
             <div class="modal-body">
                 <div id="progMeta" class="muted" style="margin-bottom:8px">배차일 -</div>
                 <div id="deliverWrap">
-                	<table id="detailItems">
+                	<table class="detail-table" id="detailItems">
                 		<thead>
                 			<tr>
                 				<th>지점명</th>
@@ -360,9 +362,11 @@
                 		</thead>
                 		<tbody></tbody>
                 	</table>
+                	<input type="file" name="files" id="files" multiple style="display: none;"/>
                 </div>
                 <h3 style="margin:12px 0 6px">배송 현황</h3>
                 <div class="timeline" id="timeline"><!-- 단계 표시 --></div>
+                <div id="map" ></div>
             </div>
             <div class="modal-foot">
 				<button class="btn ghost" id="detailActionBtn"></button>
