@@ -429,4 +429,16 @@ public class DispatchService {
 	public List<Map<String, Object>> selectAllDeliveryConfirmation() {
 		return dispatchMapper.selectAllDeliveryConfirmation();
 	}
+	// 수주확인서 상세 조회
+	@Transactional(readOnly = true)
+	public DeliveryConfirmationDTO selectDeliveryConfirmationByDeliveryConfirmationIdx(
+			Integer deliveryConfirmationIdx) {
+		return dispatchMapper.selectDeliveryConfirmationByDeliveryConfirmationIdx(deliveryConfirmationIdx);
+	}
+
+	// 기사 이름 조회
+	@Transactional(readOnly = true)
+	public String selectDriverName(Integer deliveryConfirmationIdx) {
+		return dispatchMapper.selectDriverName(deliveryConfirmationIdx);
+	}
 }
