@@ -47,6 +47,10 @@ button:disabled {
 
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field input { height: 38px; border: 1px solid var(--border); border-radius: 10px; padding: 0 10px; background: #f9fafb; }
+
+#detailItems {
+	font-size: 0.9rem;
+}
 </style>
 </head>
 <body>
