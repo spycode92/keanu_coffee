@@ -270,7 +270,6 @@ $(document).on("click", ".dispatchInfo", function() {
 				        if (stop.deliveryConfirmations) {
 				            stop.deliveryConfirmations.forEach(dc => {
 				                dc.items?.forEach((item, index) => {
-					console.log(item);
 									const orderItems = dc.items;
 				                    detailHtml += `
 				                        <tr>
@@ -280,7 +279,7 @@ $(document).on("click", ".dispatchInfo", function() {
 				                            <td>${stop.completeTime == null ? "대기" : item.status ===  "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전체반품"|| "-"}</td>
 											${index === 0 ? `<td rowspan="${orderItems.length}">
 												<button 
-													class="btn btn-confirm"
+													class="btn btn-destructive"
 													onclick="openDeliveryConfirmationDetail('${item.confirmationIdx}')">상세보기</button>
 											</td>` : ""}
 				                        </tr>

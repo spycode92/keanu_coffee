@@ -217,9 +217,16 @@ table th {
   .detail-table td:nth-child(5)::before { content: "상태"; }
   .detail-table td:nth-child(6)::before { content: "작업"; }
 
-.dark table {
-	color: black;
-}
+  .dark table {
+   	 color: black;
+  }
+  
+   #files {
+    display: block;         /* 반품 있을 때 보이도록 */
+    margin-top: 10px;
+    width: 100%;            /* 화면 꽉 차게 */
+    font-size: 0.9rem;
+  }
 
 }
 

@@ -136,6 +136,12 @@ button:disabled {
 
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field input { height: 38px; border: 1px solid var(--border); border-radius: 10px; padding: 0 10px; background: #f9fafb; }
+
+.link {
+	color: #64748b;
+	font-size: 0.9rem;
+	cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -208,7 +214,7 @@ button:disabled {
 			<div
 				style="display: flex; justify-content: space-between; align-items: center;">
 				<h3>오늘 배차 목록</h3>
-				<div><a href="/transport/dispatches">전체보기</a></div>
+				<div><a href="/transport/dispatches" class="link">전체보기</a></div>
 			</div>
 			<c:choose>
 				<c:when test="${empty dispatchList}">
@@ -300,7 +306,7 @@ button:disabled {
 							<td>${deliveryConfirmation.receiver_name}</td>
 							<td>수주확인서${deliveryConfirmation.delivery_confirmation_idx}</td>
 							<td>
-								<button class="btn btn-confirm" onclick="openDeliveryConfirmationDetail('${deliveryConfirmation.delivery_confirmation_idx}')">상세보기</button>
+								<button class="btn btn-destructive" onclick="openDeliveryConfirmationDetail('${deliveryConfirmation.delivery_confirmation_idx}')">상세보기</button>
 							</td>
 						</tr>
 					</c:forEach>
