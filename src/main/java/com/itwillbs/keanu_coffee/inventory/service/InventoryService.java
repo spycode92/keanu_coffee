@@ -35,6 +35,13 @@ public class InventoryService {
 	}
 
 
+	// 재고 수량 업데이트
+	public boolean updateInventoryQuantity(Integer locationIdx, Integer receiptProductIdx, Integer quantity) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 
 //	public List<InventoryDTO> getInventoryThatNeedsToMoveFromInbound() {
 //		// TODO Auto-generated method stub

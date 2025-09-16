@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
+import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
 import com.itwillbs.keanu_coffee.inventory.service.InventorySearchService;
+import com.itwillbs.keanu_coffee.inventory.service.InventoryService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/inventory")
 public class InventorySearchController {
 	private final InventorySearchService inventorySearchService;
+	private final InventoryService inventoryService;
 	
 	// KPI (총 SKU, 총 재고 수량)
 	@GetMapping("/metrics") // 재고 관리 화면의 KPI 지표(=metrics)
@@ -107,6 +111,29 @@ public class InventorySearchController {
     @ResponseBody
     public Map<String, Object> getInventoryDetail(@RequestParam("idx") int receiptProductIdx) {
         return inventorySearchService.selectInventoryDetail(receiptProductIdx);
+    }
+    
+    // 수량 조절 업데이트
+    @PostMapping("/updateInventory")
+    public String modifyInventoryQuantity(@RequestParam Map<String, Object> request, Model model) {
+    	System.out.println(request + ">>>>>>>>>>>>>");
+    	
+    	Integer locationIdx = (Integer) request.get("locationIdx");
+    	Integer receiptProductIdx = (Integer) request.get("receiptProductIdx");
+    	Integer quantity = (Integer) request.get("quantity");
+    	
+    	boolean success = inventoryService.updateInventoryQuantity(locationIdx, receiptProductIdx, quantity);
+    	
+    	
+    	if (request == null) {
+			model.addAttribute("msg", "재고 수량을 업데이트 할 수 없습니다.");
+			model.addAttribute("targetURL", "/inventory/stockCheck");
+			return "commons/result_process";
+    	}
+    	
+    	
+    	
+    	return "";
     }
     
 }
