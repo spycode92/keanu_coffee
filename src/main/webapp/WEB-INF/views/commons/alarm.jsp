@@ -27,42 +27,7 @@
 	  text-overflow: ellipsis;
 	  color: var(--foreground);
 	}
-	/* 페이징(.pager: 앞서 만든 공용 클래스가 있다면 그대로 사용) */
-	.pager{
-	  	display:flex;
-	  	align-items:center;
-	  	justify-content:center;
-	  	margin-top:24px; /* 기존 30px에서 약간 컴팩트 */
-	}
-	.pager > div{
-	  	display:flex;
-	  	align-items:center;
-	  	flex-wrap:wrap;
-	  	gap:8px;
-	}
-	.pager > div a,
-	.pager > div input[type="button"],
-	.pager > div strong{
-		display:inline-flex;
-	  	align-items:center;
-	  	justify-content:center;
-	  	min-width:36px;
-	  	height:36px;
-	  	padding:0 12px;
-	  	border:1px solid #cbd5e1;
-	  	border-radius:8px;
-	  	background:#fff;
-	  	color:#0f172a;
-	  	text-decoration:none;
-	  	font-size:.95rem;
-	  	line-height:1;
-	  	transition:background .12s ease, border-color .12s ease, color .12s ease, box-shadow .12s ease;
-	}
-	.pager > div a:hover,
-	.pager > div input[type="button"]:not([disabled]):hover{ background:#f8fafc; border-color:#94a3b8; }
-	.pager > div input[disabled]{ opacity:.45; pointer-events:none; cursor:not-allowed; }
-	.pager > div strong{
-	  background:#2563eb; border-color:#2563eb; color:#fff; cursor:default;
+	
 	}
 </style>
 <!-- 기본 양식 -->
@@ -80,7 +45,7 @@
 	<div class="card">
 	    <div class="card-header d-flex justify-content-between align-items-center">
 		    <h3 class="card-title mb-0">알림 목록</h3>
-		    <button class="btn btn-primary btn-sm" onclick="markAllAsRead()">
+		    <button class="btn btn-primary btn-md" onclick="markAllAsRead()">
 		        전체읽음
 		    </button>
 		</div>

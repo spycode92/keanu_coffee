@@ -190,10 +190,10 @@ let isAllRead = true;
 
 function notification() {
 //	notiButton.style.display = (notiButton.style.display === 'block') ? 'none' : 'block';
-	
 	fetch("/alarm/getAlarm")
 		.then(res => res.json()).then(data => {
 			isAllRead = true;
+			console.log(data);
 			notificationList(data);
 		})
 		.catch(err => console.log("알림 조회 실패"));
@@ -228,7 +228,6 @@ function notificationList(data) {
 		ul.appendChild(li);
 	});
 	
-	console.log("다시검사해보기");
 	if(!isAllRead){
 		$("#alarm-badge").css("display", "block");
 	} else {

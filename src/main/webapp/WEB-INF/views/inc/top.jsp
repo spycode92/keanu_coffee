@@ -253,7 +253,7 @@
 			</div>
 		</div>
 		<div id="alarm-wrapper">
-			<a id="noti" href="javascript:void(0)" onclick="notification()"><i class="fa-solid fa-bell"></i></a>
+			<a id="noti" href="javascript:void(0)" onclick="notification()"><i class="fa-solid fa-bell" id="alarm-image"></i></a>
 			<span id="alarm-badge"></span>
        		<div id="notification-box">
 				<div id="notification-header">
