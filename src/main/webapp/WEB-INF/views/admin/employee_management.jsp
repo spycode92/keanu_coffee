@@ -39,7 +39,7 @@
 					<input class="filterText" placeholder="텍스트 입력" name="searchKeyword" >
 				</div>
 				<div class="actions">
-					<button class="btn" value="검색" id="btnSearch">검색</button>
+					<button class="btn btn-primary" value="검색" id="btnSearch">검색</button>
 				</div>
 			</form>
 		</div>
