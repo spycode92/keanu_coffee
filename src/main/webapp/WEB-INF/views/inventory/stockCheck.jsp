@@ -13,13 +13,42 @@
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <style>
-	/* 📌 stockCheck 전용: 테이블 줄바꿈 방지 */
+	/* 📌 모든 input[type=text], input[type=date], select를 form-control 기준으로 통일 */
+	.form-control {
+	    height: 40px;          /* input, select 모두 동일 */
+	    padding: 0 10px;
+	    width: 100%;           /* grid/flex 칸폭에 맞춰 자동 조절 */
+	    box-sizing: border-box;
+	    font-size: 14px;       /* 글자 크기도 통일 */
+	    line-height: normal;
+	}
+	
+	.filters {
+	    display: grid;
+	    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	    gap: 16px;
+	    align-items: end;       /* 라벨 높이 차이 보정 */
+	    max-width: 1190px;
+	}
+	
+	.filters .field {
+	    display: flex;
+	    flex-direction: column;
+	}
+	
+	/* ?stockCheck 전용: 테이블 줄바꿈 방지 */
 	#tblRealtime th,
 	#tblRealtime td {
 	    white-space: nowrap;
 	    overflow: hidden;
 	    text-overflow: ellipsis;
 	}
+	
+	/* 모달 높이/스크롤 */
+    .modal-card.lg { max-height: 90vh; overflow-y: auto; }
+    @media (max-width: 1200px) {
+        .modal-card.lg { width: 95%; max-height: 85vh; }
+    }
 </style>
 </head>
 <body>
@@ -35,99 +64,97 @@
         <!-- 검색 조건 form -->
 		<form method="get" action="${pageContext.request.contextPath}/inventory/stockCheck">
 		
-			<div class="filters">
-				<div class="field">
-					<label class="form-label">상품명/코드</label>
-					<input class="form-control" name="keyword" id="prodSearch"
-					       placeholder="예: 바닐라시럽 / SYR-001" value="${keyword}">
-				</div>
+		    <div class="filters">
+		        <div class="field">
+		            <label class="form-label">상품명/코드</label>
+		            <input class="form-control" name="keyword" id="prodSearch"
+		                   placeholder="예: 바닐라시럽 / SYR-001" value="${keyword}">
+		        </div>
 		        
 		        <!-- 카테고리 -->
-				<div class="field">
-					<label class="form-label">카테고리</label>
-					<select class="form-control" name="category" id="category">
-						<option value="" ${empty category ? 'selected' : ''}>전체</option>
-						<c:forEach var="cat" items="${categoryList}">
-						    <option value="${cat.commonCodeIdx}"
-						        ${not empty category and category eq cat.commonCodeIdx ? 'selected' : ''}>
-						        ${cat.commonCodeName}
-						    </option>
-						</c:forEach>
-					</select>
-				</div>
-						        
+		        <div class="field">
+		            <label class="form-label">카테고리</label>
+		            <select class="form-control" name="category" id="category">
+		                <option value="" ${empty category ? 'selected' : ''}>전체</option>
+		                <c:forEach var="cat" items="${categoryList}">
+		                    <option value="${cat.commonCodeIdx}"
+		                        ${not empty category and category eq cat.commonCodeIdx ? 'selected' : ''}>
+		                        ${cat.commonCodeName}
+		                    </option>
+		                </c:forEach>
+		            </select>
+		        </div>
+		                        
 		        <!-- 로케이션 -->
 		        <div class="field">
-					<label class="form-label">로케이션</label>
-					<input class="form-control" name="location" id="locSearch"
-					       placeholder="예: A-1-a1" value="${location}">
-				</div>
+		            <label class="form-label">로케이션</label>
+		            <input class="form-control" name="location" id="locSearch"
+		                   placeholder="예: A-1-a1" value="${location}">
+		        </div>
 		        
 		        <!-- 로케이션 유형 -->
 		        <div class="field">
-					<label class="form-label">로케이션 유형</label>
-					<select class="form-control" name="locationType" id="locType">
+		            <label class="form-label">로케이션 유형</label>
+		            <select class="form-control" name="locationType" id="locType">
 		                <option value="전체" ${locationType eq '전체' ? 'selected' : ''}>전체</option>
 		                <option value="1" ${locationType eq '1' ? 'selected' : ''}>Pallet</option>
 		                <option value="2" ${locationType eq '2' ? 'selected' : ''}>Picking</option>
 		            </select>
-				</div>
-				
-				<!-- 조회/초기화 버튼 -->
-		        <div class="actions">
-					<button type="submit" class="btn btn-primary">조회</button>
-					<button type="button" id="btnReset" class="btn btn-secondary">초기화</button>
-				</div>
-		    </div>
-
-	        <!-- 제조/유통 + 정렬 -->
-		   <div class="filters">
-				<div class="field">
-					<label class="form-label">제조일자</label>
-					<input type="date" name="mfgDate" class="form-control" value="${mfgDate}">
-				</div>
-				<div class="field">
-					<label class="form-label">유통기한</label>
-					<input type="date" name="expDate" class="form-control" value="${expDate}">
-				</div>
-				<!-- 날짜 정렬 -->
+		        </div>
+		        
+		        <!-- 재고상태 -->
 		        <div class="field">
-					<label class="form-label">날짜 정렬</label>
-					<select name="sortOption" class="form-control">
-				        <option value="">전체</option>
-				        <option value="manufactureAsc" ${sortOption eq 'manufactureAsc' ? 'selected' : ''}>제조일자 빠른 순</option>
-				        <option value="manufactureDesc" ${sortOption eq 'manufactureDesc' ? 'selected' : ''}>제조일자 늦은 순</option>
-				        <option value="expireAsc" ${sortOption eq 'expireAsc' ? 'selected' : ''}>유통기한 빠른 순</option>
-				        <option value="expireDesc" ${sortOption eq 'expireDesc' ? 'selected' : ''}>유통기한 늦은 순</option>
-				    </select>
-				</div>
-				<!-- 수량 정렬 -->
-				<div class="field">
-					<label class="form-label">수량 정렬</label>
-					<select name="qtySort" class="form-control">
-				        <option value="">전체</option>
-				        <option value="qtyDesc" ${qtySort eq 'qtyDesc' ? 'selected' : ''}>수량 많은 순</option>
-				        <option value="qtyAsc" ${qtySort eq 'qtyAsc' ? 'selected' : ''}>수량 적은 순</option>
-				    </select>
-				</div>
-			</div>
-
-	        <!-- 재고상태 / 출고여부 -->
-		    <div class="filters">
-				<div class="field">
-					<label class="form-label">재고상태</label>
-					<select name="stockStatus" class="form-control">
+		            <label class="form-label">재고상태</label>
+		            <select name="stockStatus" class="form-control">
 		                <option value="전체" ${stockStatus eq '전체' ? 'selected' : ''}>전체</option>
 		                <option value="WARN" ${stockStatus eq 'WARN' ? 'selected' : ''}>임박</option>
 		                <option value="EXPIRED" ${stockStatus eq 'EXPIRED' ? 'selected' : ''}>만료</option>
 		                <option value="OK" ${stockStatus eq 'OK' ? 'selected' : ''}>정상</option>
 		            </select>
+		        </div>
+		
+		        <!-- 제조/유통 + 정렬 -->
+		        <div class="field">
+		            <label class="form-label">제조일자</label>
+		            <input type="date" name="mfgDate" class="form-control" value="${mfgDate}">
+		        </div>
+		        <div class="field">
+		            <label class="form-label">유통기한</label>
+		            <input type="date" name="expDate" class="form-control" value="${expDate}">
+		        </div>
+		        <!-- 날짜 정렬 -->
+		        <div class="field">
+		            <label class="form-label">날짜 정렬</label>
+		            <select name="sortOption" class="form-control">
+		                <option value="">전체</option>
+		                <option value="manufactureAsc" ${sortOption eq 'manufactureAsc' ? 'selected' : ''}>제조일자 빠른 순</option>
+		                <option value="manufactureDesc" ${sortOption eq 'manufactureDesc' ? 'selected' : ''}>제조일자 늦은 순</option>
+		                <option value="expireAsc" ${sortOption eq 'expireAsc' ? 'selected' : ''}>유통기한 빠른 순</option>
+		                <option value="expireDesc" ${sortOption eq 'expireDesc' ? 'selected' : ''}>유통기한 늦은 순</option>
+		            </select>
+		        </div>
+		        <!-- 수량 정렬 -->
+		        <div class="field">
+		            <label class="form-label">수량 정렬</label>
+		            <select name="qtySort" class="form-control">
+		                <option value="">전체</option>
+		                <option value="qtyDesc" ${qtySort eq 'qtyDesc' ? 'selected' : ''}>수량 많은 순</option>
+		                <option value="qtyAsc" ${qtySort eq 'qtyAsc' ? 'selected' : ''}>수량 적은 순</option>
+		            </select>
+		        </div>
+		
+		
+		        <!-- 조회/초기화 버튼 -->
+		        <div class="actions" style="justify-self: flex-end; display:flex; gap:10px;">
+				    <button type="submit" class="btn btn-primary">조회</button>
+				    <button type="button" id="btnReset" class="btn btn-secondary">초기화</button>
 				</div>
-			</div>
+		    </div>
+		
 		</form>
 
         <!-- KPI -->
-        <div style="display:flex; gap:20px; align-items:center; padding:12px;">
+        <div style="display:flex; gap:20px; align-items:center; margin: 20px 0;">
 			<div class="kpi-card">
 				<div class="kpi-value" id="kpiSku">–</div>
 				<div class="kpi-change">총 SKU</div>
@@ -180,7 +207,7 @@
 				    <!-- 결과가 없을 때 표시 -->
 				    <c:if test="${empty inventoryList}">
 				        <tr>
-				            <td colspan="10" class="text-center text-muted" style="padding:20px;">
+				            <td colspan="10" class="text-center text-muted" style="padding:20px; text-align:center;">
 				                조회된 재고가 없습니다.
 				            </td>
 				        </tr>
@@ -191,21 +218,69 @@
 	    
 	    <!-- 페이징 -->
 		<div class="pager">
-			<div>
-			    <c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
-			        <c:choose>
-			            <c:when test="${i == pageInfo.pageNum}">
-			                <strong>${i}</strong>
-			            </c:when>
-			            <c:otherwise>
-			                <c:url var="pageUrl" value="/inventory/stockCheck">
-			                    <c:param name="pageNum" value="${i}"/>
-			                </c:url>
-			                <a href="${pageUrl}">${i}</a>
-			            </c:otherwise>
-			        </c:choose>
-			    </c:forEach>
-			</div>
+		    <div>
+		        <c:if test="${pageInfo.maxPage > 0}">
+		
+		            <!-- 이전 버튼 -->
+		            <c:url var="prevUrl" value="/inventory/stockCheck">
+		                <c:param name="pageNum" value="${pageInfo.pageNum - 1}" />
+		                <c:param name="keyword" value="${param.keyword}" />
+		                <c:param name="category" value="${param.category}" />
+		                <c:param name="location" value="${param.location}" />
+		                <c:param name="locationType" value="${param.locationType}" />
+		                <c:param name="mfgDate" value="${param.mfgDate}" />
+		                <c:param name="expDate" value="${param.expDate}" />
+		                <c:param name="sortOption" value="${param.sortOption}" />
+		                <c:param name="qtySort" value="${param.qtySort}" />
+		                <c:param name="stockStatus" value="${param.stockStatus}" />
+		            </c:url>
+		            <input type="button" value="이전"
+		                onclick="location.href='${prevUrl}'"
+		                <c:if test="${pageInfo.pageNum eq 1}">disabled</c:if>>
+		
+		            <!-- 페이지 번호 -->
+		            <c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
+		                <c:choose>
+		                    <c:when test="${i eq pageInfo.pageNum}">
+		                        <strong>${i}</strong>
+		                    </c:when>
+		                    <c:otherwise>
+		                        <c:url var="pageUrl" value="/inventory/stockCheck">
+		                            <c:param name="pageNum" value="${i}" />
+		                            <c:param name="keyword" value="${param.keyword}" />
+		                            <c:param name="category" value="${param.category}" />
+		                            <c:param name="location" value="${param.location}" />
+		                            <c:param name="locationType" value="${param.locationType}" />
+		                            <c:param name="mfgDate" value="${param.mfgDate}" />
+		                            <c:param name="expDate" value="${param.expDate}" />
+		                            <c:param name="sortOption" value="${param.sortOption}" />
+		                            <c:param name="qtySort" value="${param.qtySort}" />
+		                            <c:param name="stockStatus" value="${param.stockStatus}" />
+		                        </c:url>
+		                        <a href="${pageUrl}">${i}</a>
+		                    </c:otherwise>
+		                </c:choose>
+		            </c:forEach>
+		
+		            <!-- 다음 버튼 -->
+		            <c:url var="nextUrl" value="/inventory/stockCheck">
+		                <c:param name="pageNum" value="${pageInfo.pageNum + 1}" />
+		                <c:param name="keyword" value="${param.keyword}" />
+		                <c:param name="category" value="${param.category}" />
+		                <c:param name="location" value="${param.location}" />
+		                <c:param name="locationType" value="${param.locationType}" />
+		                <c:param name="mfgDate" value="${param.mfgDate}" />
+		                <c:param name="expDate" value="${param.expDate}" />
+		                <c:param name="sortOption" value="${param.sortOption}" />
+		                <c:param name="qtySort" value="${param.qtySort}" />
+		                <c:param name="stockStatus" value="${param.stockStatus}" />
+		            </c:url>
+		            <input type="button" value="다음"
+		                onclick="location.href='${nextUrl}'"
+		                <c:if test="${pageInfo.pageNum eq pageInfo.maxPage}">disabled</c:if>>
+		
+		        </c:if>
+		    </div>
 		</div>
 	</div>
 
@@ -242,11 +317,24 @@
 	
 	            <!-- 로케이션 분포 -->
 	            <div class="card">
-	                <div class="card-header"><h3 class="card-title">로케이션 분포</h3></div>
-	                <div id="locList">
-	                    <div class="text-muted">데이터 없음</div>
-	                </div>
-	            </div>
+			    <div class="card-header"><h3 class="card-title">로케이션 분포</h3></div>
+			    <div class="table-responsive">
+			        <table class="table">
+			            <thead>
+			                <tr>
+			                    <th>로케이션</th>
+			                    <th>수량</th>
+			                </tr>
+			            </thead>
+			            <tbody id="locList">
+			                <tr>
+			                    <td colspan="2" class="text-center text-muted">데이터 없음</td>
+			                </tr>
+			            </tbody>
+			        </table>
+			    </div>
+			</div>
+
 	
 			</div>
 	        <div class="modal-foot">
@@ -320,28 +408,34 @@
 	    const FIXED_THRESHOLD = 60;
 	
 	    function makeStatusAndDday(expDate, threshold){
-		    const d = diffDaysFromToday(expDate);
-		    if (d === null){
-		        return { status:'OK', labelHtml:'<span class="badge badge-good">정상</span>', ddayHtml:'<span class="badge">–</span>', d:null };
-		    }
-		    let status = 'OK';
-		    let labelHtml = '<span class="badge badge-good">정상</span>';
-		    const ddText = formatDday(d);
-		    let ddayClass = '';
-		    if (d < 0){ status='EXPIRED'; labelHtml='<span class="badge badge-urgent">만료</span>'; ddayClass='badge-urgent'; }
-		    else if (d === 0 || d <= threshold){ status='WARN'; labelHtml='<span class="badge badge-warning">임박</span>'; ddayClass='badge-warning'; }
-		    const ddayHtml = '<span class="badge '+ddayClass+'">'+ddText+'</span>';
-		    return { status, labelHtml, ddayHtml, d };
-		}
+	        const d = diffDaysFromToday(expDate);
+	        if (d === null){
+	            return { status:'OK', labelHtml:'<span class="badge badge-good">정상</span>', ddayText:'–', d:null };
+	        }
+	        let status = 'OK';
+	        let labelHtml = '<span class="badge badge-good">정상</span>';
+	        const ddText = formatDday(d);   // D-day 텍스트
+
+	        if (d < 0){ 
+	            status='EXPIRED'; 
+	            labelHtml='<span class="badge badge-urgent">만료</span>'; 
+	        }
+	        else if (d === 0 || d <= threshold){ 
+	            status='WARN'; 
+	            labelHtml='<span class="badge badge-warning">임박</span>'; 
+	        }
+
+	        return { status, labelHtml, ddayText: ddText, d };
+	    }
 	
 	    /* ====================== 테이블 D-Day & 재고상태 채우기 ====================== */
 	    $(document).ready(function(){
-	        // D-Day
-	        $('.dday-cell').each(function(){
-		        const exp = $(this).data('exp');
-		        const d = diffDaysFromToday(exp);
-		        $(this).html(formatDday(d));
-		    });
+	    	// 테이블 D-Day
+	    	$('.dday-cell').each(function(){
+	    	    const exp = $(this).data('exp');
+	    	    const d = diffDaysFromToday(exp);
+	    	    $(this).text(formatDday(d));   // text() 로 일반 텍스트 출력
+	    	});
 	
 	        // 재고상태
 	        $('.status-cell').each(function(){
@@ -385,27 +479,32 @@
 	       		$('#miSupplier').text(data.supplier_name || '–');
 		
 		        // 로케이션 분포
-		        const $box = $('#locList').empty();
-		        if (data.locations && data.locations.length > 0) {
-		            let sum = 0;
-		            data.locations.forEach(loc => {
-		                sum += loc.qty;
-		                $box.append(
-		                    '<div class="logline">' +
-		                        '<div class="logleft">' + loc.location_name + '</div>' +
-		                        '<div class="logright"><b>' + loc.qty + ' BOX</b></div>' +
-		                    '</div>'
-		                );
-		            });
-		            $box.append(
-		                '<div class="logline">' +
-		                    '<div class="logleft"><b>합계</b></div>' +
-		                    '<div class="logright"><b>' + sum + ' BOX</b></div>' +
-		                '</div>'
-		            );
-		        } else {
-		            $box.append('<div class="logline"><div class="logleft">데이터 없음</div><div class="logright">-</div></div>');
-		        }
+				const $box = $('#locList').empty();
+				if (data.locations && data.locations.length > 0) {
+				    let sum = 0;
+				    data.locations.forEach(loc => {
+				        sum += loc.qty;
+				        $box.append(
+				            '<tr>' +
+				                '<td>' + (loc.location_name || '-') + '</td>' +
+				                '<td>' + loc.qty + ' BOX</td>' +
+				            '</tr>'
+				        );
+				    });
+				    // 합계 행 추가
+				    $box.append(
+				        '<tr>' +
+				            '<td><b>합계</b></td>' +
+				            '<td><b>' + sum + ' BOX</b></td>' +
+				        '</tr>'
+				    );
+				} else {
+				    $box.append(
+				        '<tr>' +
+				            '<td colspan="2" class="text-center text-muted">데이터 없음</td>' +
+				        '</tr>'
+				    );
+				}
 		
 		        // 모달 열기
 		        ModalManager.openModalById('lotModal');
