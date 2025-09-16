@@ -9,9 +9,9 @@
 	<meta name="_csrf_header" content="${_csrf.headerName}"/>
     <title>기사 마이페이지 (모바일)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 	<link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
 	<link href="${pageContext.request.contextPath}/resources/css/transport/mypage.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
@@ -316,7 +316,7 @@
 
     <!-- 예약 상세(주문서/선택) 모달 -->
     <div class="modal" id="orderModal" aria-hidden="true">
-        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
+        <div class="modal-card lg" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
             <div class="modal-head">
                 <strong id="orderTitle">주문서 확인 및 적재</strong>
                 <button class="modal-close-btn" >✕</button>
@@ -341,7 +341,7 @@
 
     <!-- 운송중 상세(납품/현황) 모달 -->
     <div class="modal" id="progressModal" aria-hidden="true">
-        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="progTitle">
+        <div class="modal-card lg" role="dialog" aria-modal="true" aria-labelledby="progTitle">
             <div class="modal-head">
                 <strong id="progTitle">배송 상세</strong>
                 <button class="modal-close-btn" >✕</button>
@@ -369,7 +369,7 @@
                 <div id="map" ></div>
             </div>
             <div class="modal-foot">
-				<button class="btn ghost" id="detailActionBtn"></button>
+				<button class="btn" id="detailActionBtn"></button>
             </div>
         </div>
     </div>

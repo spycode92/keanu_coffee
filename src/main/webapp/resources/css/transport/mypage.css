@@ -1,10 +1,41 @@
-:root { -
-	-bg: #f6f8ff; -
-	-fg: #111827; -
-	-muted: #6b7280; -
-	-card: #fff; -
-	-border: #e5e7eb; -
-	-primary: #5660fe;
+:root { 
+	--bg: #f6f8ff; 
+	--fg: #111827; 
+	--muted: #6b7280; 
+	--card: #fff; 
+	--border: #e5e7eb; 
+	--primary: #5660fe;
+}
+
+.dark {
+    --background: #0b1220;
+    --foreground: #e5eaf3;
+    --card: #0f172a;
+    --card-foreground: #e5eaf3;
+    --popover: #0f172a;
+    --popover-foreground: #e5eaf3;
+    --primary: #1e314f;
+    --primary-foreground: #0b1220;
+    --secondary: #111827;
+    --secondary-foreground: #e5eaf3;
+    --muted: #1e314f;
+    --muted-foreground: #9aa7b7;
+    --accent: #0f1a2b;
+    --accent-foreground: #e5eaf3;
+    --destructive: #b91c1c;
+    --destructive-foreground: #ffecec;
+    --border: #182235;
+    --input: #141c2a;
+    --input-background: #141c2a;
+  	--switch-background: #334155;
+    --ring: oklch(0.439 0 0);
+    
+    /* 차트 다크 톤(선택) */
+	--chart-1: #5b7cff;
+	--chart-2: #38bdf8;
+	--chart-3: #2dd4bf;
+	--chart-4: #fbbf24;
+	--chart-5: #f87171;
 }
 
 * {
@@ -33,6 +64,10 @@ h1 {
 h2 {
 	margin: 0 0 8px;
 	font-size: 1.05rem;
+}
+
+h3 {
+	font-size: 1rem;
 }
 
 .card {
@@ -75,12 +110,12 @@ th, td {
 	padding: 10px 12px;
 	border-bottom: 1px solid var(--border);
 	text-align: left;
-	font-size: .95rem;
+	font-size: .9rem;
 }
 
-thead th {
-	background: #eef2ff;
-	font-weight: 700;
+table th {
+    background-color: var(--muted);
+    font-weight: var(--font-weight-medium);
 }
 
 .btn-mobile {
@@ -182,6 +217,16 @@ thead th {
   .detail-table td:nth-child(5)::before { content: "상태"; }
   .detail-table td:nth-child(6)::before { content: "작업"; }
 
+  .dark table {
+   	 color: black;
+  }
+  
+   #files {
+    display: block;         /* 반품 있을 때 보이도록 */
+    margin-top: 10px;
+    width: 100%;            /* 화면 꽉 차게 */
+    font-size: 0.9rem;
+  }
 
 }
 
@@ -209,6 +254,10 @@ thead th {
 	color: #166534
 }
 
+#pickedSummary {
+	font-size: 0.9rem;
+}
+
 /* 모달 (하단 시트) */
 .modal {
 	position: fixed;
@@ -218,44 +267,6 @@ thead th {
 	justify-content: center;
 	background: rgba(0, 0, 0, .45);
 	z-index: 1000;
-}
-
-.modal.open {
-	display: flex
-}
-
-.modal-card {
-	width: 100%;
-	max-width: 720px;
-	max-height: 92vh;
-	background: #fff;
-	border: 1px solid var(--border);
-	border-radius: 12px 12px 0 0;
-	overflow: hidden;
-}
-
-.modal-head {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 12px;
-	border-bottom: 1px solid var(--border)
-}
-
-.modal-body {
-	padding: 12px;
-	max-height: calc(92vh - 52px - 64px);
-	overflow: auto
-}
-
-.modal-foot {
-	display: flex;
-	gap: 8px;
-	padding: 12px;
-	border-top: 1px solid var(--border);
-	background: #fff;
-	position: sticky;
-	bottom: 0
 }
 
 /* 주문서(그룹 테이블) */
@@ -320,15 +331,7 @@ thead th {
 	display: flex;
 	gap: 6px;
 	flex-wrap: wrap;
-}
-
-.step {
-	background: #eef2ff;
-	color: #3949ab;
-	border: 1px solid #c7d2fe;
-	padding: 6px 10px;
-	border-radius: 999px;
-	font-size: .85rem;
+	font-size: 0.9rem;
 }
 
 .delivered-qty {

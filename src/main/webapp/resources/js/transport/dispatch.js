@@ -100,7 +100,7 @@ function assignBtn() {
 	$("#assignedDriverList").append(`
 		<div class="driver-item" data-vehicle-idx="${vehicleIdx}">
 			<span>${driverName} ${capacity} (${vehicleType})</span>
-			<button class="removeDriverBtn">X</button>
+			<i class="fa-solid fa-delete-left removeDriverBtn"></i>
 		</div>`);
 	
 	// 이미 선택한 기사 목록에서 비활성화
@@ -270,7 +270,6 @@ $(document).on("click", ".dispatchInfo", function() {
 				        if (stop.deliveryConfirmations) {
 				            stop.deliveryConfirmations.forEach(dc => {
 				                dc.items?.forEach((item, index) => {
-					console.log(item);
 									const orderItems = dc.items;
 				                    detailHtml += `
 				                        <tr>
@@ -280,7 +279,7 @@ $(document).on("click", ".dispatchInfo", function() {
 				                            <td>${stop.completeTime == null ? "대기" : item.status ===  "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전체반품"|| "-"}</td>
 											${index === 0 ? `<td rowspan="${orderItems.length}">
 												<button 
-													class="btn btn-confirm"
+													class="btn btn-destructive"
 													onclick="openDeliveryConfirmationDetail('${item.confirmationIdx}')">상세보기</button>
 											</td>` : ""}
 				                        </tr>
@@ -370,7 +369,7 @@ function dispatchRequestData() {
 }
 
 function openDeliveryConfirmationDetail(deliveryConfirmationIdx) {
-	window.open(`/transport/deliveryConfirmation/${deliveryConfirmationIdx}`, "수주확인서","width=700px,height=800px"); 
+	window.open(`/transport/deliveryConfirmation/${deliveryConfirmationIdx}`, "수주확인서","width=900px,height=800px"); 
 }
 
 

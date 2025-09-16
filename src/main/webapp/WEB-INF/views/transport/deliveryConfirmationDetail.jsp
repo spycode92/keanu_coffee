@@ -108,6 +108,7 @@ body {
 	background-color: #f7f7f7;
 	border: 1px dashed #aaa;
 	border-radius: 4px;
+	font-size: 0.9rem;
 }
 
 .download-area input[type="button"] {

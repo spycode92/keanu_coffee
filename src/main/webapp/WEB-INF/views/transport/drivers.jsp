@@ -42,44 +42,6 @@
 	justify-content:flex-end; 
 }
 
-.badge {
-	display: inline-block;
-	padding: 2px 8px;
-	border-radius: 999px;
-	font-size: 1rem;
-	font-weight: 700
-}
-
-.badge.reserve { /* 예약 */
-	background: #f3e8ff; /* 연보라 */
-	color: #6b21a8;      /* 진한 보라 */
-}
-
-.badge.wait { /* 대기 */
-	background: #e5e7eb;
-	color: #111827;
-}
-
-.badge.run { /* 운행중 */
-	background: #dbeafe;
-	color: #1e40af;
-}
-
-.badge.work { /* 재직 */
-	background: #dcfce7; /* 연한 초록 */
-	color: #166534;      /* 진한 초록 */
-}
-
-.badge.rest { /* 휴직 */
-	background: #fef9c3; /* 연한 노랑 */
-	color: #92400e;      /* 진한 갈색/주황 */
-}
-
-.badge.left { /* 퇴사 */
-	background: #fee2e2;
-	color: #991b1b;
-}
-
 .btn.disabled {
 	background-color: #e2e8f0;
     color: #94a3b8;
@@ -148,8 +110,8 @@
                 <button class="btn btn-primary" id="btnSearch">검색</button>
             </div>
         </form>
-		<div>
-			<h3>기사목록</h3>
+		<h3>기사목록</h3>
+		<div class="card">
 			<c:choose>
 				<c:when test="${empty driverList}">
 					<div class="empty-result">검색된 기사가 없습니다.</div>
@@ -187,26 +149,26 @@
 									<td>
 										<c:choose>
 											<c:when test="${driver.status eq '운행중'}">
-												<span class="badge run">운행중</span>
+												<span class="badge badge-normal">운행중</span>
 											</c:when>
 											<c:when test="${not empty driver.status && driver.status ne '운행중'}">
-												<span class="badge wait">대기</span>
+												<span class="badge badge-waiting">대기</span>
 											</c:when>
 											<c:otherwise>
-												<span class="badge reserve">예약</span>
+												<span class="badge badge-urgent">예약</span>
 											</c:otherwise>
 										</c:choose>
 									</td>
 									<td>
 										<c:choose>
 											<c:when test="${driver.empStatus eq '재직'}">
-												<span class="badge work">재직</span>
+												<span class="badge badge-confirmed">재직</span>
 											</c:when>
 											<c:when test="${driver.empStatus eq '휴직'}">
-												<span class="badge rest">휴직</span>
+												<span class="badge badge-warning">휴직</span>
 											</c:when>
 											<c:otherwise>
-												<span class="badge left">퇴직</span>
+												<span class="badge badge-urgent">퇴직</span>
 											</c:otherwise>
 										</c:choose>
 									</td>

@@ -228,8 +228,6 @@ function calculateTotalCapacity(grouped) {
 
 // 배송 현황 관련 데이터
 let timelineData = [];
-// 납품 완료 후 전송할 데이터
-//let complateRequestData;
 
 $(document).on("click", ".detail-btn", function() {
 	ModalManager.openModalById('progressModal');
@@ -316,6 +314,7 @@ $(document).on("click", ".detail-btn", function() {
 
 	// 버튼 클릭 시 
 	if (status === "적재완료") {
+		$("#complateBtn").prop("disabled", true);
 		btn.text("운송시작");
 		// 운송 시작 상태 변경 
 		btn.off("click").on("click", function() {
@@ -332,6 +331,7 @@ $(document).on("click", ".detail-btn", function() {
 					if (token && header) xhr.setRequestHeader(header, token);
 				},
 				success: function() {
+					$("#complateBtn").prop("disabled", false);
 					Swal.fire("운송시작", "운행을 시작합니다.", "success").then(() => {
 						location.reload();
 					});
@@ -415,6 +415,8 @@ $(document).on("input", ".delivered-qty", function() {
 
 	// 같은 지점의 반품 수량 및 상태 확인
 	let allFilled = true;
+	// 반품 여부 확인
+	let hasRefund = false; 
 	
   	tbody.find(`tr[data-outbound-order-idx="${orderIdx}"]`).each(function() {
     	const row = $(this);
@@ -427,16 +429,30 @@ $(document).on("input", ".delivered-qty", function() {
 	    }
 
 		if (code === "REFUND" || code === "PARTIAL_REFUND") {
-			$("#files").show();
-		} else {
-			$("#files").hide();
-		}
+			 hasRefund = true;
+		} 
     });
+
+	// 루프가 끝난 후 files 부분 한 번만 처리
+	if (hasRefund) {
+	    $("#files").show();
+	} else {
+	    $("#files").hide();
+	}
 
 	// 주문 단위로 반품 수량 입력 여부로 버튼 활성/비활성
 	const btn = tbody.find(`.complateBtn[data-order-idx="${orderIdx}"]`);
-    btn.prop("disabled", !allFilled);
+	
+	// 모든 수량 입력되었을 경우 활성화
+	let enableBtn = allFilled;
+	
+	if (hasRefund) {
+		enableBtn = allFilled && hasRefund;
+	}
+	
+    btn.prop("disabled", !enableBtn);
 });
+
 
 // 납품 완료 버튼 클릭 시 
 $(document).on("click", ".complateBtn", function() {
@@ -503,6 +519,7 @@ $(document).on("click", ".complateBtn", function() {
 					if (token && header) xhr.setRequestHeader(header, token);
 				},
 				success: function() {
+					$("#detailActionBtn").prop("disabled", false);
 					Swal.fire("납품완료되었습니다..", "", "success").then(() => {
 						location.reload();
 					});
