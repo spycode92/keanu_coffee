@@ -60,7 +60,10 @@
 	        <if test="locationType != null and locationType != '' and locationType != '전체'">
 	            AND w.location_type = #{locationType} 
 	        </if>
-	
+			
+			<!-- 📌 추가: 만료 제외 조건 -->
+        	AND r.expiration_date &gt;= CURDATE()
+			
 	        <!-- 날짜 조건 -->
 			<if test="mfgDate != null and mfgDate != '' and (expDate == null or expDate == '')">
 			    <!-- 제조일자만 입력 시: 해당 일자 이상 -->
@@ -149,6 +152,10 @@
 	        <if test="locationType != null and locationType != '' and locationType != '전체'">
 	            AND w.location_type = #{locationType}
 	        </if>
+	        
+	        <!-- 📌 추가: 만료 제외 조건 -->
+        	AND r.expiration_date &gt;= CURDATE()
+	        
 	        <!-- 날짜 조건 -->
 			<if test="mfgDate != null and mfgDate != '' and (expDate == null or expDate == '')">
 			    <!-- 제조일자만 입력 시: 해당 일자 이상 -->

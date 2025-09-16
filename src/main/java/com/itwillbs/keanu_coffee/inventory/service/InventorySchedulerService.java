@@ -37,9 +37,6 @@ public class InventorySchedulerService {
             alarm.setEmpIdx(11);  // 재고담당자
             alarm.setRoleName("재고관리자");
             alarm.setEmpAlarmMessage(msg);
-            
-        	// 알람 클릭 시 이동할 링크 → stockCheck.jsp 에서 '임박' 필터 적용
-//        	alarm.setEmpAlarmLink("/inventory/stockCheck?stockStatus=WARN");
 
             // DB 저장
         	alarmService.insertAlarmByRole(alarm);
@@ -49,6 +46,12 @@ public class InventorySchedulerService {
             payload.put("message", alarm.getEmpAlarmMessage());
             messagingTemplate.convertAndSend("/topic/" + alarm.getRoleName(), payload);
         }
+    }
+    
+	// ❌ 만료 재고 알림은 하지 않음 → 조회 제외 용도만
+    // 만료 재고 조회 (조회 제외 용도)
+    public List<InventoryDTO> selectExpiredStock() {
+        return inventorySchedulerMapper.selectExpiredStock();
     }
     
 }

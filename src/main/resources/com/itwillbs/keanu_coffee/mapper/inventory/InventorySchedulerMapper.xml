@@ -22,6 +22,25 @@
         WHERE DATEDIFF(expiration_date, CURDATE()) BETWEEN 0 AND 60
     </select>
     
+    <!-- 만료 재고 조회 -->
+	<select id="selectExpiredStock" resultType="com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO">
+	    SELECT
+	        inventory_idx,
+	        receipt_product_idx,
+	        location_idx,
+	        location_name,
+	        product_idx,
+	        quantity,
+	        lot_number,
+	        manufacture_date,
+	        expiration_date,
+	        created_at,
+	        updated_at
+	    FROM INVENTORY
+	    WHERE expiration_date &lt; CURDATE()
+	      AND quantity &gt; 0
+	</select>
+    
 </mapper>
 
 

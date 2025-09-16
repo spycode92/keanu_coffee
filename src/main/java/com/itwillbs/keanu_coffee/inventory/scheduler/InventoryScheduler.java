@@ -22,14 +22,17 @@ public class InventoryScheduler {
 	 */
 	
 	// 임박 재고 조회 (매일 00시 30분(= 밤 12시 반))
-//	@Scheduled(cron = "0 30 0 * * *", zone = "Asia/Seoul")
-	// 매일 오후 3시 28분 실행 (테스트용)
-	@Scheduled(cron = "0 19 16 * * *")
+//	@Scheduled(cron = "0 30 0 * * *")
+	@Scheduled(cron = "0 16 19 * * *")
     public void runImminentStockCheck() {
-    	
-        System.out.println("⏰ [Scheduler] 임박 재고 체크 실행");
+        System.out.println("⏰ [Scheduler] 임박 + 만료 재고 체크 실행");
         
-        inventorySchedulerService.getImminentStock();  
+        // 임박 재고 알림 처리
+        inventorySchedulerService.getImminentStock();
+        
+        // 만료 재고 확인
+        inventorySchedulerService.selectExpiredStock();
+
     }
 	
 }
