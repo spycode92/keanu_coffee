@@ -18,7 +18,7 @@
 <body>
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 <section class="content">
-    <form class="card d-flex" action="/inventory/moveInventory" method="post" enctype="multipart/form-data" id="form" style="gap: 1.5rem; max-width: 600px; margin: auto;">
+    <form class="card d-flex" action="/inventory/moveInventory" method="post"  id="moveToCartForm" style="gap: 1.5rem; max-width: 600px; margin: auto;">
         <sec:csrfInput/>
         
         <!-- 상품 이미지 프리뷰 영역: 가로 공간 약 35% -->
@@ -34,8 +34,8 @@
             </div>
 
             <div class="form field mb-3">
-                <label class="form-label" for="mi_lotNum">상품 lot번호</label>
-                <input class="form-control" id="mi_lotNum" type="text" name="lotNum">
+                <label class="form-label" for="mi_lotNumber">상품 lot번호</label>
+                <input class="form-control" id="mi_lotNumber" type="text" name="lotNumber">
             </div>
 
             <div class="form field mb-3">
@@ -45,7 +45,7 @@
 
             <div class="form field mb-3">
                 <label class="form-label" for="mi_quantity">상품 갯수</label>
-                <input class="form-control" id="mi_quantity" type="number" name="quantity" min="0" required>
+                <input class="form-control" id="mi_quantity" type="number" name="quantity" min="1" required readonly>
             </div>
             <div style="text-align: right;">
                 <button class="btn btn-primary" type="submit" id="mi_addCart">카트에담기</button>

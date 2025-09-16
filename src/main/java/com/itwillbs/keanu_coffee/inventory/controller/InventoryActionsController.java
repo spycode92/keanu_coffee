@@ -193,7 +193,6 @@ public class InventoryActionsController {
 		if(inventoryId == 0) {
 			 receiptProductDTO = inventoryActionsService.getReceiptProduct(receiptID);
 		} else {
-			
 			inventoryDTO = inventoryActionsService.getquantity(inventoryId);
 		}
 		
