@@ -25,7 +25,7 @@
 	</select>
 	
 	<!-- 로케이션 존재유무 체크 -->
-	<select id="selectLocationByLocationName" resultType="int"> 
+	<select id="selectCountLocationByLocationName" resultType="int"> 
 		SELECT COUNT(*)
 		FROM WAREHOUSE_LOCATION
 		WHERE location_name = #{locationName}
@@ -38,6 +38,51 @@
 		WHERE
 		location_name = #{locationName}
 	</select>
+	
+	<!-- 로케이션이름과 lot번호로 재고정보조회 -->
+	<select id="selectInventoryByLocationNAmeAndLotNumber" resultType="com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO">
+		SELECT *
+		FROM INVENTORY
+		WHERE
+			location_name = #{locationName}
+		AND
+			lot_number = #{lotNumber}
+	</select>
+	<!-- 로케이션정보 조회 -->
+	<select id="selectLocationByLocationName" resultType="com.itwillbs.keanu_coffee.inventory.dto.WarehouseLocationDTO">	
+		SELECT *
+		FROM WAREHOSE_LOCATION
+		WHERE location_name = #{empNo}
+	</select>
+	
+	<!-- 재고입력 -->
+	<insert id="insertInventory">
+		INSERT INTO INVENTORY
+		(receipt_product_idx
+		, location_idx
+		, location_name
+		, product_idx
+		, quantity
+		, lot_number
+		, manufacture_date
+		expiration_date)
+		VALUES
+		(#{receiptProductIdx}
+		, #{locationIdx}
+		, #{locationName}
+		, #{productIdx}
+		, #{quantity}
+		, #{lotNumber
+		, #{manufactureDate}
+		, #{expirationDate})
+	</insert>
+	
+	<!-- 재고수량업데이트 -->
+	<update id="updateInventoryQuantity">
+		UPDATE INVENTORY
+		SET quantity = #{quantity}
+		WHERE `inventory_idx` = #{inventoryIdx}
+	</update>
 
 
 

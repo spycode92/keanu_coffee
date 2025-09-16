@@ -8,10 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
@@ -70,6 +74,30 @@ public class InventoryMoveController {
 		result.put("success", true);
 		result.put("message", "제품 정보를 성공적으로 조회했습니다.");
 		result.put("inventoryList", inventoryList);
+		return ResponseEntity.ok(result);
+	}
+	
+	@PostMapping("/addCart")
+	@ResponseBody
+	public ResponseEntity<Map<String,Object>> addCart(@RequestBody InventoryDTO inventory, Authentication authentication){
+		Map<String,Object> result = new HashMap<String, Object>();
+		
+		try {
+			//카트에 추가 
+			Boolean isAdded = inventoryMoveService.addCart(inventory, authentication);
+		} catch (IllegalArgumentException  e) {
+			result.put("success", false);
+	        result.put("message", e.getMessage());
+	        return ResponseEntity.badRequest().body(result);
+		} catch (Exception e) {
+	        // 기타 시스템 오류
+	        result.put("success", false);
+	        result.put("message", "시스템 오류가 발생했습니다.");
+	        return ResponseEntity.internalServerError().body(result);
+	    }
+		
+		
+		
 		return ResponseEntity.ok(result);
 	}
 	

@@ -7,6 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>재고 이동</title>
+<sec:csrfMetaTags/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
@@ -48,7 +49,7 @@
                 <input class="form-control" id="mi_quantity" type="number" name="quantity" min="1" required readonly>
             </div>
             <div style="text-align: right;">
-                <button class="btn btn-primary" type="submit" id="mi_addCart">카트에담기</button>
+                <button class="btn btn-primary" type="button" id="mi_addCart" onclick="javascript:void(0)">카트에담기</button>
             </div>
         </div>
     </form>

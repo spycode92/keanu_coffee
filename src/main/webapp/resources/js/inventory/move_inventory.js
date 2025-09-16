@@ -1,16 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 공통 이벤트 핸들러 함수
+    //공통 이벤트 핸들러
     function addInputEvents(inputId, callback) {
         const input = document.getElementById(inputId);
         
-        // blur 이벤트
+        //blur
         input.addEventListener('blur', function() {
             const value = this.value.trim();
             callback(value);
         });
         
-        // Enter 키 이벤트
+        //Enter키
         input.addEventListener('keydown', function(event) {
             if(event.key === 'Enter') {
                 event.preventDefault();
@@ -45,6 +45,42 @@ document.addEventListener('DOMContentLoaded', () => {
 			event.preventDefault();
 			const quantity = this.value.trim();
 		    checkQuantity(quantity);
+			
+		}
+	});
+	
+	//카트에담을 상품갯수 입력후 blur이벤트
+	document.getElementById('mi_quantity').addEventListener('blur', function(event) {
+			event.preventDefault();
+			const quantity = this.value.trim();
+		    checkQuantity(quantity);
+	});
+	
+	//카트에담기 버튼 클릭이벤트
+	document.getElementById('mi_addCart').addEventListener('click', function(event) {
+		event.preventDefault();
+		// 현재 input 값들 가져오기
+	    const lotNumber = document.getElementById('mi_lotNumber').value.trim();
+	    const locationName = document.getElementById('mi_locationName').value.trim();
+	    const quantity = document.getElementById('mi_quantity').value.trim();
+
+		if (lotNumber !== selectLotNumber) {
+	        Swal.fire('LOT 번호 불일치', 'LOT 번호를 다시 확인해주세요.', 'warning');
+	        return;
+	    }
+	    
+	    if (locationName !== selectLocationName) {
+	        Swal.fire('로케이션 불일치', '로케이션을 다시 확인해주세요.', 'warning');
+	        return;
+	    }
+	    
+	    if (!quantity) {
+	        Swal.fire('수량 입력', '수량을 입력해주세요.', 'warning');
+	        return;
+	    }
+		//한번더 유효성 검사
+		if(checkQuantity(quantity)){
+			addToCart();
 		}
 	});
 });
@@ -53,7 +89,6 @@ let selectLotNumber = "";
 let selectLocationName = "";
 let selectQuantity = "";
 let selectedLocationItems = [];
-let selectedQuantity = "";
 
 //상품찾기
 function searchProductByLotNum(lotNumber){
@@ -150,11 +185,13 @@ function checkInventory(){
 	// 선택한 로케이션에 해당 상품이 재고로 존재할때
     $('#mi_quantity')
 		.removeAttr('readonly')
-		.attr('max', maxQuantity)  // 최대값 설정
+		.attr('max', maxQuantity)
+		.attr('placeholder', '최대수량 : ' + maxQuantity)
 	    .val('');                  // 기존 값 초기화 (옵션)
 
 }
 
+//상품갯수 초기화
 function resetQuantity(){
 	$('#mi_quantity')
 		.val('')
@@ -163,7 +200,46 @@ function resetQuantity(){
 		.prop('readonly', true); 
 }
 
+//상품갯수체크
+function checkQuantity(quantity){
+	const maxQuantity = parseInt($('#mi_quantity').prop('max'));//숫자변환
+	const qty = parseInt(quantity);//숫자변환
+	
+	if (quantity > maxQuantity) {
+        $('#mi_quantity').val('');
+		
+		Swal.fire({
+            icon: 'error',
+            title: '최대수량 초과',
+            text: '현재 위치에 상품의 갯수를 초과하였습니다.',
+            confirmButtonText: '확인'
+        });
+    } else {
+        $('#mi_quantity').val(quantity); // input 값 설정
+		selectQuantity = quantity;
+		return true;
+    }
+}
 
+//카트에담기 동작함수
+function addToCart(){
+	console.log("여여여여여기")
+	ajaxPost("/inventory/move/addCart",
+		{lotNumber : selectLotNumber
+		 , locationName : selectLocationName
+		 , quantity :selectQuantity }
+	).then(data => {
+	
+	}).catch(err=> {
+		Swal.fire({
+            icon: 'error',
+            title: '최대수량 초과',
+            text: err.message,
+            confirmButtonText: '확인'
+        });
+	});
+			
+}
 
 
 

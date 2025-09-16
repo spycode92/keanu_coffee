@@ -1,13 +1,17 @@
 package com.itwillbs.keanu_coffee.inventory.service;
 
+import java.security.Principal;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
 import com.itwillbs.keanu_coffee.inventory.dto.WarehouseInfoDTO;
+import com.itwillbs.keanu_coffee.inventory.dto.WarehouseLocationDTO;
 import com.itwillbs.keanu_coffee.inventory.mapper.InventoryMapper;
 import com.itwillbs.keanu_coffee.inventory.mapper.InventoryMoveMapper;
 
@@ -31,7 +35,7 @@ public class InventoryMoveService {
 	
 	//로케이션이 존재하는지 체크
 	public Boolean selectLocationByLocationName(String locationName) {
-		int selectCount = inventoryMoveMapper.selectLocationByLocationName(locationName);
+		int selectCount = inventoryMoveMapper.selectCountLocationByLocationName(locationName);
 		return selectCount > 0;
 	}
 
@@ -39,6 +43,47 @@ public class InventoryMoveService {
 	public List<InventoryDTO> selectInventoryListByLocationName(String locationName) {
 
 		return inventoryMoveMapper.selectInventoryListByLocationName(locationName);
+	}
+	
+	//카트에 추가
+	@Transactional
+	public Boolean addCart(InventoryDTO inventory, Authentication authentication) {
+		//사번
+		String empNo = authentication.getName();
+		
+		//이동할 수량
+		int moveQuantity = inventory.getQuantity();
+		
+		//카트정보 조회해오기
+		WarehouseLocationDTO location = inventoryMoveMapper.selectLocationByLocationName(empNo);
+		
+		//받은 로케이션이름과 로트번호로 해당위치 재고정보조회해오기
+		inventory = inventoryMoveMapper.selectInventoryByLocationNAmeAndLotNumber(inventory);
+		// 해당위치 재고수량
+		int OriginalInventoryQuantity = inventory.getQuantity();
+		int OriginalInventoryIdx = inventory.getInventoryIdx();
+		
+		//재고의 수량이 이동할 물건보다 많을때(남기고가져갈때)
+		if(OriginalInventoryQuantity > moveQuantity) {
+			int remainQuantity = OriginalInventoryQuantity - moveQuantity;
+			// insert데이터 만들기
+			inventory.setLocationIdx(location.getLocationIdx());
+			inventory.setLocationName(location.getLocationName());
+			inventory.setQuantity(moveQuantity);
+			//이동할 물량만큼 인벤토리 추가
+			inventoryMoveMapper.insertInventory(inventory);
+			//이동한 물량만큼 재고 차감
+			inventoryMoveMapper.updateInventoryQuantity(remainQuantity, OriginalInventoryIdx);
+			
+		} else if(OriginalInventoryQuantity == moveQuantity) { //모든 재고의 물건을 옮길때
+			
+		} else {
+			throw new IllegalArgumentException(
+		            String.format("이동 가능한 수량을 다시 확인하십시오. 현재재고(%d)", OriginalInventoryQuantity));
+		}
+		
+		
+		return null;
 	}
 
 

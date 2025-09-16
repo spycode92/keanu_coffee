@@ -3,7 +3,10 @@ package com.itwillbs.keanu_coffee.inventory.dto;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -33,6 +36,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class InventoryDTO {
 	private int inventoryIdx;
 	private int receiptProductIdx;
