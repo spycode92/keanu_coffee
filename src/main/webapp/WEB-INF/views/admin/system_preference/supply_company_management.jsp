@@ -11,7 +11,6 @@
     /* 검색/필터 바 */
 	.filters {
 		width: 100%;
-    
 	    border: 1px solid var(--border);
 	    border-radius: 12px;
 	    padding: 12px;
@@ -119,52 +118,56 @@
 	            <h4 class="mb-3"><i class="fas fa-truck"></i> 공급업체 관리</h4>
 				<button id="btnAddSupplier" class="btn btn-primary">공급업체 추가</button>
 			</div>
-  	        <form class="filters" aria-label="검색 및 필터">
-	            <div class="field">
-	                <select id="filterStatus" name="searchType">
-	                    <option value="">전체</option>
-	                    <option value="활성">활성</option>
-	                    <option value="비활성">비활성</option>
-	                    <option value="삭제">삭제</option>
-	                </select>
-	            </div>
-	            <div class="search">
-	                <input id="filterText" type="text" name="searchKeyword" placeholder="업체명" />
-	            </div>
-	            <div class="actions">
-	                <button class="btn" id="btnSearch">검색</button>
-	            </div>
-	        </form>
-
-            <div class="table-responsive">
-                <table id="supplierTable" class="table">
-                    <thead>
-                        <tr>
-                            <th>업체 번호</th>
-                            <th>공급업체</th>
-                            <th>공급업체 담당자</th>
-                            <th>계약 상태</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-	                    <c:forEach items="${supplierList }" var="supplier">
-	                        <tr class="supplier-row" data-supplieridx="${supplier.supplierIdx }">
-	                        	<td>${supplier.supplierIdx }</td>
-	                        	<td>${supplier.supplierName }</td>
-	                        	<td>${supplier.supplierManager }</td>
-	                        	<td>
-		                        	<span class="badge
-								        ${supplier.status eq '활성'   ? 'badge-confirmed' :
-								          supplier.status eq '비활성' ? 'badge-warning'   :
-								                                       'badge-urgent'}">
-								        ${supplier.status}
-								    </span>
-							    </td>
+			<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
+			
+	  	        <form class="filters" aria-label="검색 및 필터">
+		            <div class="field">
+		                <select id="filterStatus" name="searchType">
+		                    <option value="">전체</option>
+		                    <option value="활성">활성</option>
+		                    <option value="비활성">비활성</option>
+		                    <option value="삭제">삭제</option>
+		                </select>
+		            </div>
+		            <div class="search">
+		                <input id="filterText" type="text" name="searchKeyword" placeholder="업체명" />
+		            </div>
+		            <div class="actions">
+		                <button class="btn" id="btnSearch">검색</button>
+		            </div>
+		        </form>
+	        </div>
+			<div class="card">	
+	            <div class="table-responsive">
+	                <table id="supplierTable" class="table">
+	                    <thead>
+	                        <tr>
+	                            <th>업체 번호</th>
+	                            <th>공급업체</th>
+	                            <th>공급업체 담당자</th>
+	                            <th>계약 상태</th>
 	                        </tr>
-	                    </c:forEach>
-                        
-                    </tbody>
-                </table>
+	                    </thead>
+	                    <tbody>
+		                    <c:forEach items="${supplierList }" var="supplier">
+		                        <tr class="supplier-row" data-supplieridx="${supplier.supplierIdx }">
+		                        	<td>${supplier.supplierIdx }</td>
+		                        	<td>${supplier.supplierName }</td>
+		                        	<td>${supplier.supplierManager }</td>
+		                        	<td>
+			                        	<span class="badge
+									        ${supplier.status eq '활성'   ? 'badge-confirmed' :
+									          supplier.status eq '비활성' ? 'badge-warning'   :
+									                                       'badge-urgent'}">
+									        ${supplier.status}
+									    </span>
+								    </td>
+		                        </tr>
+		                    </c:forEach>
+	                        
+	                    </tbody>
+	                </table>
+	            </div>
             </div>
 	   		<div class="pager">
 				<div>
@@ -187,7 +190,7 @@
 						<c:if test="${pageInfo.pageNum eq pageInfo.maxPage}">disabled</c:if>>
 					</c:if>
 				</div>
-			</div>
+        	</div>
         </div>
     </section>
 </body>

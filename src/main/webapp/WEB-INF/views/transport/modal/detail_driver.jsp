@@ -37,7 +37,7 @@
 					</div>
 					<div id="vehicleDiv" class="vehicle-empty">
 						<div class="vehicle-empty-text"></div>
-						<button class="btn" id="vehicleAssignBtn">배정 해제</button>
+						<button class="btn btn-primary" id="vehicleAssignBtn">배정 해제</button>
 					</div>
 					<!-- 배정됨/목록 영역 (배정 또는 선택 테이블) -->
 					<div id="vehicleTableWrap" style="display:none;">

@@ -28,6 +28,14 @@ public class InventoryService {
 
 
 
+	public List<InventoryDTO> getInventoryItemsInEmployeesVirtualLocation(Integer empIdx) {
+		
+		return inventoryMapper.selectInventoryItemsInEmployeesVirtualLocation(empIdx);
+		
+	}
+
+
+
 //	public List<InventoryDTO> getInventoryThatNeedsToMoveFromInbound() {
 //		// TODO Auto-generated method stub
 //		return inventoryMapper.selectInventoryThatNeedsToMoveFromInbound();

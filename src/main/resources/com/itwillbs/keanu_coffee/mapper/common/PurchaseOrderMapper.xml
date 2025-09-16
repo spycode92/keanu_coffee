@@ -82,7 +82,7 @@
 		WHERE
 			DATE(created_at) = CURDATE()
 		ORDER BY 
-			created_at DESC
+			order_idx DESC
 		LIMIT 1;		
 	</select>
 	
@@ -189,7 +189,9 @@
 	<select id="selectProductAndSuppplier" resultType="com.itwillbs.keanu_coffee.inventory.dto.SupplierProductContractDTO">
 		SELECT
 			product_idx,
-			supplier_idx
+			supplier_idx,
+			contract_price
+			
 		FROM
 			SUPPLIER_PRODUCT_CONTRACT
 	
@@ -210,9 +212,11 @@
 		INSERT INTO PURCHASE_ORDER_ITEM (
 			order_idx
 			, product_idx
-			, quantity			
+			, quantity	
+			, unit_price
+			, total_price		
 		) VALUES
-		(#{orderIdx}, #{productIdx}, #{quantity}) 
+		(#{orderIdx}, #{productIdx}, #{quantity}, #{contractPrice}, round(#{quantity} * #{contractPrice}))
 		
 	</insert>
 

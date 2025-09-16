@@ -359,30 +359,35 @@ public class SystemLogAspect {
 				List<Integer> addAuthoritiesIdx = (List<Integer>) data.get("addedAuthorities");
 	        	List<Integer> removedAuthoritiesIdx = (List<Integer>) data.get("removedAuthorities");
 	        	// 추가권한 메세지 작성
-	        	List<CommonCodeDTO> addAuthoList = organizationMapper.selectAuthoByAuthoIdx(addAuthoritiesIdx);
 	        	StringBuilder addAuthos = new StringBuilder();
-	        	addAuthos.append("추가한 권한 : ");
-
-	        	for (int i = 0; i < addAuthoList.size(); i++) {
-	        	    CommonCodeDTO code = addAuthoList.get(i);
-	        	    addAuthos.append(code.getCommonCodeName());
-
-	        	    if (i != addAuthoList.size() - 1) {
-	        	    	addAuthos.append(" | "); // 마지막 항목 뒤에는 구분자 안 붙임
-	        	    }
+	        	if (addAuthoritiesIdx != null && !addAuthoritiesIdx.isEmpty()) {
+	        		List<CommonCodeDTO> addAuthoList = organizationMapper.selectAuthoByAuthoIdx(addAuthoritiesIdx);
+		        	addAuthos.append("추가한 권한 : ");
+	
+		        	for (int i = 0; i < addAuthoList.size(); i++) {
+		        	    CommonCodeDTO code = addAuthoList.get(i);
+		        	    addAuthos.append(code.getCommonCodeName());
+	
+		        	    if (i != addAuthoList.size() - 1) {
+		        	    	addAuthos.append(" | "); // 마지막 항목 뒤에는 구분자 안 붙임
+		        	    }
+		        	}
 	        	}
 	        	// 제거권한 메세지작성
-	        	List<CommonCodeDTO> removeAuthoList = organizationMapper.selectAuthoByAuthoIdx(removedAuthoritiesIdx); 
 	        	StringBuilder removeAuthos = new StringBuilder();
-	        	removeAuthos.append("제거한 권한 : ");
-
-	        	for (int i = 0; i < removeAuthoList.size(); i++) {
-	        	    CommonCodeDTO code = removeAuthoList.get(i);
-	        	    removeAuthos.append(code.getCommonCodeName());
-
-	        	    if (i != removeAuthoList.size() - 1) {
-	        	    	removeAuthos.append(" | "); // 마지막 항목 뒤에는 구분자 안 붙임
-	        	    }
+	        	if (removedAuthoritiesIdx != null && !removedAuthoritiesIdx.isEmpty()) {
+	        		
+	        		List<CommonCodeDTO> removeAuthoList = organizationMapper.selectAuthoByAuthoIdx(removedAuthoritiesIdx); 
+	        		removeAuthos.append("제거한 권한 : ");
+	        		
+	        		for (int i = 0; i < removeAuthoList.size(); i++) {
+	        			CommonCodeDTO code = removeAuthoList.get(i);
+	        			removeAuthos.append(code.getCommonCodeName());
+	        			
+	        			if (i != removeAuthoList.size() - 1) {
+	        				removeAuthos.append(" | "); // 마지막 항목 뒤에는 구분자 안 붙임
+	        			}
+	        		}
 	        	}
 	        	
 	        	
@@ -391,7 +396,7 @@ public class SystemLogAspect {
 	        	slog.setTargetIdx(roleIdx);
 	        	if (errorMessage == null) {
 	        		slog.setLogMessage(
-        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직책 에\n" + addAuthos + ", \n" + removeAuthos 
+        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직책 에\n" + addAuthos + "\n" + removeAuthos 
     				);
 	        	} else {
 	        		slog.setLogMessage(

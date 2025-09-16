@@ -152,7 +152,9 @@ $.ajax({
 		  // dong들 각각 span + 삭제 버튼으로 변환
 		  const dongHtml = group.dongs.map((dong, i) => `
 		    <span class="dong-tag" data-idx="${group.idxList[i]}">
-		      ${dong} <button class="dong-del">×</button></br>
+		    	${dong} 
+					<i class="fa-solid fa-circle-minus dong-del"></i>
+				</br>
 		    </span>
 		  `).join(" ");
 		
@@ -162,7 +164,7 @@ $.ajax({
 		      <td>${group.sido}</td>
 		      <td>${group.sigungu}</td>
 		      <td>${dongHtml}</td>
-		      <td><button class="delete-btn" data-idx="${group.idxList.join(",")}">그룹삭제</button></td>
+		      <td><button class="btn btn-sm btn-destructive" data-idx="${group.idxList.join(",")}">그룹삭제</button></td>
 		    </tr>
 		  `);
 		});

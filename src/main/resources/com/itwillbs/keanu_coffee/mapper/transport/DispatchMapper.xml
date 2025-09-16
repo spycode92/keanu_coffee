@@ -51,6 +51,15 @@
 			#{startRow}     
 			, #{listLimit} 
 	</select>
+	
+	<!-- 배차 목록 (현재 날짜 기준) -->
+	<select id="selectAllDispatchByToday" resultType="DispatchRegionGroupViewDTO">
+		SELECT *
+		FROM
+			V_DISPATCH_DETAIL
+		WHERE
+			DATE(dispatch_date) = CURRENT_DATE
+	</select>
 
 	<!-- 배차 요청 리스트 -->
 	<select id="selectDispatchList" resultType="DispatchRegionGroupViewDTO">
@@ -193,6 +202,7 @@
 	    <result property="franchiseName" column="franchise_name"/>
 	    <result property="regionIdx" column="region_idx"/>
 	    <result property="regionName" column="common_code_name"/>
+	    <result property="address" column="franchise_address1"/>
 	    <result property="dispatchStopStatus" column="status"/>
 	    <result property="arrivalTime" column="arrival_time"/>
 	    <result property="completeTime" column="complete_time"/>
@@ -241,6 +251,7 @@
 	        , f.franchise_name
 	        , f.region_idx
 	        , f.franchise_manager_name
+	        , f.franchise_address1
 	        , c.common_code_name AS region_name
 	        , dc.delivery_confirmation_idx
 	        , dc.outbound_order_idx AS outbound_order_idx
@@ -329,6 +340,7 @@
 		<result property="totalQty" column="total_qty"/> 
 		<collection property="franchises" ofType="DispatchFranchiseDTO"> 
 			<id property="franchiseIdx" column="franchise_idx"/> 
+			<id property="outboundOrderIdx" column="outbound_order_idx"/>
 			<result property="franchiseName" column="franchise_name"/> 
 			<result property="regionIdx" column="region_idx"/> 
 			<result property="regionName" column="region_name"/> 
@@ -554,7 +566,7 @@
       )
     	ORDER BY 
     		ds.delivery_sequence ASC
-    	LIMIT 1;
+    	LIMIT 1
 	</select>
 	
 	<!-- 경유지 테이블 상태 변경 -->
@@ -630,6 +642,116 @@
 			dispatch_idx = #{dispatchIdx}
 	</select>
 	
+	<!-- 상품 번호 조회 -->
+	<select id="selectReceiptProductIdxForDisposal" resultType="int">
+		SELECT 
+			ooi.receipt_product_idx
+	    FROM 
+	    	OUTBOUND_ORDER_ITEM ooi
+	    JOIN 
+	    	DELIVERY_CONFIRMATION dc
+	    ON 
+	    	ooi.outbound_order_idx = dc.outbound_order_idx
+	    JOIN 
+	    	DISPATCH_STOPDELIVERY_CONFIRMATION_ITEM dci
+	    ON 
+	    	dc.delivery_confirmation_idx = dci.confirmation_idx
+	    AND 
+	    	ooi.product_idx = dci.product_idx
+	    WHERE 
+	    	dc.delivery_confirmation_idx = #{deliveryConfirmationIdx}
+	    AND 
+	    	dci.confirmation_item_idx = #{confirmationItemIdx}
+	</select>
+	
+	<!-- 기사의 배송 상태 횟수 -->
+	<select id="selectAssignmentStatusCount" resultType="map">
+		SELECT
+			COALESCE(SUM(CASE WHEN status = '운행중' THEN 1 ELSE 0 END), 0) AS dispatchInProgressCount,
+        	COALESCE(SUM(CASE WHEN status = '완료' THEN 1 ELSE 0 END), 0) AS dispatchCompletedCount
+		FROM 
+			DISPATCH_ASSIGNMENT
+		WHERE
+			DATE(updated_at) = CURRENT_DATE
+	</select>
+	
+	<!-- 긴급 요청 -->
+	<select id="selectUrgentDispatchCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			OUTBOUND_ORDER
+		WHERE 
+			urgent = 'Y' 
+		AND
+			 status = '배차대기'
+		AND 
+			DATE(updated_at) = CURRENT_DATE
+	</select>
+	
+	<!-- 수주확인서 목록 -->
+	<select id="selectAllDeliveryConfirmation" resultType="map">
+		SELECT
+			dc.updated_at, e.emp_name, fa.franchise_name, dc.receiver_name, dc.delivery_confirmation_idx
+		FROM
+			DELIVERY_CONFIRMATION dc
+		JOIN
+			DISPATCH_ASSIGNMENT da
+		ON 
+			dc.dispatch_assignment_idx = da.dispatch_assignment_idx
+		JOIN
+			EMPLOYEE_INFO e
+		ON
+			da.driver_idx = e.emp_idx
+		JOIN
+			DISPATCH_STOP ds
+		ON
+			dc.dispatch_stop_idx = ds.dispatch_stop_idx
+		JOIN
+			FRANCHISE fa
+		ON
+			fa.franchise_idx = ds.franchise_idx
+		ORDER BY
+			dc.updated_at DESC
+		LIMIT 3
+	</select>
+	
+	<!-- 기사 이름 조회 -->
+	<select id="selectDriverName" resultType="string">
+		SELECT
+			e.emp_name
+		FROM 
+			DELIVERY_CONFIRMATION dc
+		JOIN 
+			DISPATCH_ASSIGNMENT da
+		ON 
+			dc.dispatch_assignment_idx = da.dispatch_assignment_idx
+		JOIN 
+			EMPLOYEE_INFO e
+		ON 
+			da.driver_idx = e.emp_idx
+		WHERE 
+			dc.delivery_confirmation_idx = #{deliveryConfirmationIdx}
+	</select>
+	
+	<!-- 반품 폐기 처리 -->
+	<insert id="insertDeliveryDisposal">
+		INSERT INTO DISPOSAL (
+			emp_idx
+			, section
+			, receipt_product_idx
+			, disposal_amount
+			, note
+		)
+		VALUES (
+			#{empIdx}
+			, #{section}
+			, #{receiptProductIdx}
+			, #{disposalAmount}
+			, #{note}
+		)
+	</insert>
+	
 	<!-- 출고 주문 테이블 상태 변경 -->
 	<update id="updateOutboundOrderStatus" >
 		UPDATE 	
@@ -659,5 +781,89 @@
 			OUTBOUND_ORDER
 		WHERE
 			outbound_order_idx = #{outboundOrderIdx}
+	</select>
+	
+	<!-- 배차대기(출고 요청) 요청 횟수  -->
+	<select id="selectPendingDispatchCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			OUTBOUND_ORDER
+		WHERE
+			status = '배차대기'
+	</select>
+	<!-- 배차정보 불러오기 (배차idx + 사원idx) -->
+	<select id="selectDispatchDetailByDispatchIdx" resultType="DispatchRegisterRequestDTO">
+		SELECT *
+		FROM V_DISPATCH_DETAIL
+		WHERE dispatch_idx = #{dispatchIdx}
+		AND emp_idx = #{empIdx}
+	</select>
+	
+	<!-- 첨부파일(FILE) 테이블 ResultMap -->
+	<resultMap id="FileResultMap" type="FileDTO">
+		<id property="fileIdx" column="file_idx" /> 
+		<result property="targetTable" column="target_table" />
+		<result property="targetTableIdx" column="target_table_idx" />
+		<result property="originalFileName" column="original_file_name" />
+		<result property="realFileName" column="real_file_name" />
+		<result property="subDir" column="sub_dir" />
+		<result property="fileSize" column="file_size" />
+		<result property="contentType" column="content_type" />
+		<result property="createdAt" column="file_created_at" />
+		<result property="updatedAt" column="file_updated_at" />
+	</resultMap>
+	
+
+	<!-- 수주 확인서 매핑 리절트맵 -->
+	<resultMap id="deliveryConfirmationAddFranchiseNameMap" type="DeliveryConfirmationDTO">
+	    <id property="deliveryConfirmationIdx" column="delivery_confirmation_idx"/>
+	    <result property="dispatchAssignmentIdx" column="dispatch_assignment_idx"/>
+	    <result property="dispatchStopIdx" column="dispatch_stop_idx"/>
+	    <result property="outboundOrderIdx" column="outbound_order_idx"/>
+	    <result property="confirmationTime" column="confirmation_time"/>
+	    <result property="receiverName" column="receiver_name"/>
+	    <result property="note" column="note"/>
+	    <result property="franchiseName" column="franchise_name"/>
+	    <association property="file" resultMap="FileResultMap" />
+	    <!-- 자식: 수주확인서 품목 -->
+	    <collection property="items" ofType="DeliveryConfirmationItemDTO"
+	                resultMap="deliveryConfirmationItemMap"/>
+	</resultMap>
+	<!-- 수주확인서 상세 -->
+	<select id="selectDeliveryConfirmationByDeliveryConfirmationIdx" resultMap="deliveryConfirmationAddFranchiseNameMap">
+		SELECT
+			dc.delivery_confirmation_idx
+			, dc.outbound_order_idx
+			, dc.receiver_name
+			, dsci.item_name
+			, dsci.ordered_qty
+			, dsci.delivered_qty
+			, dsci.status as item_status
+			, f.franchise_name
+			, file.original_file_name
+			, file.target_table_idx
+			, file.real_file_name
+			, file.file_idx
+		FROM 
+			DELIVERY_CONFIRMATION dc
+		LEFT JOIN 
+			DISPATCH_STOP ds
+		ON 
+			ds.dispatch_stop_idx = dc.dispatch_stop_idx
+		LEFT JOIN 
+			FRANCHISE f
+		ON 
+			f.franchise_idx = ds.franchise_idx
+		LEFT JOIN 
+			DISPATCH_STOPDELIVERY_CONFIRMATION_ITEM dsci
+		ON 
+			dsci.confirmation_idx = dc.delivery_confirmation_idx
+		LEFT JOIN
+			FILE file
+		ON
+			dc.delivery_confirmation_idx = file.target_table_idx
+		WHERE 
+			delivery_confirmation_idx = #{deliveryConfirmationIdx}
 	</select>
 </mapper>

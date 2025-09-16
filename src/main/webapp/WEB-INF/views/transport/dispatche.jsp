@@ -10,18 +10,14 @@
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>운송관리대시보드</title>
 <!-- 기본 양식 -->
+<link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resources/css/common/common_sample.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link
-	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
-	rel="stylesheet">
-<link
-	href="${pageContext.request.contextPath}/resources/css/common/common.css"
-	rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/js/transport/dispatch.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2b14d97248052db181d2cfc125eaa368&libraries=services"></script>	
+<script src="${pageContext.request.contextPath}/resources/js/transport/dispatch.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/transport/kakao_map.js"></script>
 <style type="text/css">
 .container {
     max-width: 1264px;
@@ -36,12 +32,6 @@ header {
     gap: 12px;
     margin-bottom: 12px;
 }
-
-.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: .8rem; font-weight: 700; }
-.badge.run { background: #dcfce7; color: #166534; }      /* 운행중 */
-.badge.book { background: #e0e7ff; color: #3730a3; }     /* 예약 */
-.badge.done { background: #e5ffe9; color: #047857; }     /* 완료 */
-.badge.cancel { background: #fee2e2; color: #991b1b; }   /* 취소 */
 
 .help, .hint { font-size: .83rem; color: var(--muted-foreground); }
 
@@ -61,19 +51,17 @@ button:disabled {
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
-
-    <div class="container">
+    <div class="content">
         <header>
             <h1>배차 관리</h1>
             <div style="display:flex; gap:8px">
-                <button class="btn secondary" id="openRegister">+ 배차 등록</button>
+                <button class="btn btn-primary" id="openRegister">+ 배차 등록</button>
                 <button onclick="location.href='/transport/mypage/${pageContext.request.userPrincipal.name}'">기사마이페이지</button>
-                <button onclick="location.href='/transport/region'">구역관리</button>
+                <button class="btn btn-confirm" onclick="location.href='/transport/region'">구역관리</button>
             </div>
         </header>
-
         <!-- 검색/필터 -->
-        <form class="filters" aria-label="검색 및 필터">
+        <form class="filters card" aria-label="검색 및 필터">
             <div class="field">
                 <select id="filterStatus" name="filter">
                     <option value="전체">전체</option>
@@ -88,7 +76,7 @@ button:disabled {
                 <input id="filterText" type="text" name="searchKeyword" placeholder="기사명 / 차량번호 / 구역명 검색" />
             </div>
             <div class="actions">
-                <button class="btn" id="btnSearch">검색</button>
+                <button class="btn btn-primary" id="btnSearch">검색</button>
             </div>
         </form>
 
@@ -133,7 +121,25 @@ button:disabled {
 										</c:choose>
 		                			</td>
 		                			<td>${dispatch.regionName}</td>
-		                			<td>${dispatch.status}</td>
+		                			<td>
+		                				<c:choose>
+		                					<c:when test="${dispatch.status eq '완료'}">
+		                						<span class="badge done">완료</span>
+		                					</c:when>
+		                					<c:when test="${dispatch.status eq '예약'}">
+		                						<span class="badge book">예약</span>
+		                					</c:when>
+		                					<c:when test="${dispatch.status eq '적재완료'}">
+		                						<span class="badge loaded">적재완료</span>
+		                					</c:when>
+		                					<c:when test="${dispatch.status eq '운행중'}">
+		                						<span class="badge run">운행중</span>
+		                					</c:when>
+		                					<c:otherwise>
+		                						<span class="badge cancel">취소</span>
+		                					</c:otherwise>
+		                				</c:choose>
+		                			</td>
 		                		</tr>
 		                	</c:forEach>
 		                </tbody>

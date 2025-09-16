@@ -1,5 +1,5 @@
 const MYPAGE_DISPATCH_DETAIL_URL = "/transport/mypage/dispatch/detail";
-const MYPAGE_DISPATCH_COMPLETE_URL = "/transport/mypage/dispatch/complete";
+const MYPAGE_DISPATCH_COMPLETE_URL = "/transport/mypage/dispatch/completed";
 const MYPAGE_DISPATCH_START_URL = "/transport/mypage/delivery/start";
 const MYPAGE_DELIVERY_COMPLETE_URL = "/transport/mypage/delivery/completed";
 const MYPAGE_DELIVERY_RETURN_URL = "/transport/mypage/delivery/return";
@@ -7,6 +7,7 @@ const MYPAGE_DELIVERY_RETURN_URL = "/transport/mypage/delivery/return";
 const { token, header } = getCsrf();
 
 let franchises = [];
+let currentDispatch;
 
 // 모달 열기 + 배차 상세 데이터 불러오기
 $(document).on("click", ".load-btn", function() {
@@ -15,8 +16,6 @@ $(document).on("click", ".load-btn", function() {
 
 	const dispatchIdx = parseInt(parent.data("dispatch-idx"));
 	const vehicleIdx = parseInt(parent.data("vehicle-idx"));
-	
-    const status = parent.find("td:eq(4)").text();
 
 	$("#currentDispatchIdx").val(dispatchIdx);
 	$("#currentVehicleIdx").val(vehicleIdx);
@@ -24,7 +23,6 @@ $(document).on("click", ".load-btn", function() {
 	$.getJSON(`${MYPAGE_DISPATCH_DETAIL_URL}/${dispatchIdx}/${vehicleIdx}`)
 		.done(function(dispatch) {
 			franchises = dispatch.franchises || [];
-
 			// 배차 메타 정보 표시
 			$("#orderMeta").text("배차일 " + formatDate(dispatch.dispatchDate));
 
@@ -45,23 +43,23 @@ $(document).on("click", ".load-btn", function() {
 				});
 
 				html += `
-          <div class="p-4 border rounded-2xl mb-4 shadow franchise-block" data-franchise-idx="${fr.franchiseIdx}">
-            <div class="font-bold text-lg mb-2">
-              <input type="checkbox" class="franchise-check mr-2" data-franchise-idx="${fr.franchiseIdx}" />
-              ${fr.franchiseName || "-"} (${fr.regionName || ""})
-            </div>
-            <table class="w-full text-sm" id="dispatchLoad">
-              <thead>
-                <tr class="border-b">
-                  <th class="text-left p-2">상품명</th>
-                  <th class="text-right p-2">수량</th>
-                  <th class="text-right p-2">부피</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${itemsHtml}
-              </tbody>
-            </table>
+          	<div class="p-4 border rounded-2xl mb-4 shadow franchise-block" data-franchise-idx="${fr.franchiseIdx}">
+	            <div class="font-bold text-lg mb-2">
+	              <input type="checkbox" class="franchise-check mr-2" data-franchise-idx="${fr.franchiseIdx}" data-order-idx="${fr.outboundOrderIdx}"/>
+	              ${fr.franchiseName || "-"} (${fr.regionName || ""})
+	            </div>
+	            <table class="w-full text-sm" id="dispatchLoad">
+	              <thead>
+	                <tr class="border-b">
+	                  <th class="text-left p-2">상품명</th>
+	                  <th class="text-right p-2">수량</th>
+	                  <th class="text-right p-2">부피</th>
+	                </tr>
+	              </thead>
+	              <tbody>
+	                ${itemsHtml}
+	              </tbody>
+	            </table>
           </div>
         `;
 			});
@@ -87,8 +85,10 @@ function updatePickedSummary() {
 	let productMap = {}; // { productName: qty }
 
 	$(".franchise-check:checked").each(function() {
-		const idx = $(this).data("franchise-idx");
-		const franchise = franchises.find(f => f.franchiseIdx === idx);
+		const orderIdx = $(this).data("order-idx");
+		const franchiseIdx = $(this).data("franchise-idx");
+		const franchise = franchises.find(f => 
+		      f.franchiseIdx === franchiseIdx && f.outboundOrderIdx === orderIdx);
 
 		if (franchise && franchise.items) {
 			franchise.items.forEach(item => {
@@ -129,8 +129,10 @@ function loadCompleted() {
 	const selectedStops = [];
 	const grouped = {};
 	$(".franchise-check:checked").each(function() {
-		const idx = $(this).data("franchise-idx");
-		const franchise = franchises.find((franchise) => franchise.franchiseIdx === idx);
+		const orderIdx = $(this).data("order-idx");
+		const franchiseIdx = $(this).data("franchise-idx");
+		const franchise = franchises.find(f => 
+		      f.franchiseIdx === franchiseIdx && f.outboundOrderIdx === orderIdx);
 
 		// outboundOrderIdx 값 가져오기
 		franchise.items.forEach(item => {
@@ -155,11 +157,10 @@ function loadCompleted() {
 			selectedStops.push(stopData);
 		});
 	});
-	
+
 	const capacity = $("#capacity").val() === 1000 ? 3000 : 4500;
-	
+
 	const totalVolume = calculateTotalCapacity(grouped);
-	
 
 	if (selectedStops.length === 0) {
 		Swal.fire({ icon: 'warning', text: '선택된 지점이 없습니다.' });
@@ -180,8 +181,8 @@ function loadCompleted() {
 		cancelButtonText: "아니오"
 	}).then((result) => {
 		if (result.isConfirmed) {
-			
-			if (capacity * 0.8 < totalVolume) {
+
+			if (capacity * 0.9 < totalVolume) {
 				Swal.fire("에러", "적재 용량을 초과하였습니다.", "error");
 				return;
 			}
@@ -208,19 +209,19 @@ function loadCompleted() {
 }
 
 // 선택한 지점 총량 계산하기
- function calculateTotalCapacity(grouped) {
-  const volumeMap = {
-    3: 18,
-    4: 36,
-    5: 60
-  };
+function calculateTotalCapacity(grouped) {
+	const volumeMap = {
+		3: 18,
+		4: 36,
+		5: 60
+	};
 
-  return Object.values(grouped)
-    .flat()
-    .reduce((total, item) => {
-      const realVolume = volumeMap[item.productVolume] || 0;
-      return total + (realVolume * item.quantity);
-    }, 0);
+	return Object.values(grouped)
+		.flat()
+		.reduce((total, item) => {
+			const realVolume = volumeMap[item.productVolume] || 0;
+			return total + (realVolume * item.quantity);
+		}, 0);
 }
 
 
@@ -228,7 +229,7 @@ function loadCompleted() {
 // 배송 현황 관련 데이터
 let timelineData = [];
 // 납품 완료 후 전송할 데이터
-let complateRequestData;
+//let complateRequestData;
 
 $(document).on("click", ".detail-btn", function() {
 	ModalManager.openModalById('progressModal');
@@ -240,12 +241,13 @@ $(document).on("click", ".detail-btn", function() {
 	const vehicleIdx = row.data("vehicle-idx");
 	let requiresAdditional = "";
 
-    timelineData = [];
+	timelineData = [];
 
 	// --------------
 	// 화면 구현
 	$.getJSON(`${MYPAGE_DISPATCH_DETAIL_URL}/${dispatchIdx}/${vehicleIdx}`)
 		.done(function(dispatch) {
+			currentDispatch= dispatch;
 			$("#progMeta").text("배차일 " + formatDate(dispatch.dispatchDate));
 			requiresAdditional = dispatch.requiresAdditional;
 			let detailHtml = "";
@@ -261,39 +263,45 @@ $(document).on("click", ".detail-btn", function() {
 				if (stop.deliveryConfirmations) {
 					stop.deliveryConfirmations.forEach((dc) => {
 						dc.items?.forEach((item, index) => {
-							complateRequestData = {
-								deliveryConfirmationIdx: parseInt(item.confirmationIdx),
-								dispatchIdx: parseInt(dispatch.dispatchIdx),
-								vehicleIdx: parseInt(dispatch.vehicleIdx),
-								requiresAdditional: dispatch.requiresAdditional,
-								outboundOrderIdx: parseInt(dc.outboundOrderIdx),
-								dispatchStopIdx: parseInt(stop.dispatchStopIdx),
-								receiverName: dispatch.franchiseManagerName,
-								items: []
-							};
+							const orderItems = dc.items;
 							detailHtml += `
-							<tr data-confirmation-item-idx="${item.confirmationItemIdx}">
-								${index === 0 ? `<td rowspan="${items.length}">${stop.franchiseName}</td>` : ""}
-								<td>${item.itemName}</td>
-								<td>${item.orderedQty}</td>
-							  	<td>
+							<tr data-confirmation-item-idx="${item.confirmationItemIdx}"
+							    data-outbound-order-idx="${dc.outboundOrderIdx}">
+								${index === 0 ? `<td rowspan="${orderItems.length}" data-label="지점명">${stop.franchiseName}</td>` : ""}
+								<td data-label="품목명">${item.itemName}</td>
+								<td data-label="주문수량">${item.orderedQty}</td>
+							  	<td data-label="납품수량">
 								    <input type="number"
 								           class="delivered-qty"
 								           data-ordered-qty="${item.orderedQty}"
 								           min="0"
 								           max="${item.orderedQty}"
 								           value="${item.deliveredQty != null ? item.deliveredQty : 0}" 
-											${item.status === "OK" || item.status === "REFUND" || item.status === "PARTIAL_REFUND" ? "disabled" : ""} />
+										   ${item.status === "OK" || item.status === "REFUND" || item.status === "PARTIAL_REFUND" ? "disabled" : ""}
+											 />
 							  	</td>
-								<td class="status-cell">${stop.completeTime == null ? "대기" : item.status ===  "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전량반품"|| "-"}</td>
-						        ${index === 0 ? `<td rowspan="${items.length}">
-						        	<button class="complateBtn" 
-											data-franchise-idx="${stop.franchiseIdx}" 
-											data-dispatch-stop-idx="${stop.dispatchStopIdx}" 
-											data-confirmation-item-idx="${item.confirmationItemIdx}"disabled>
-						              납품완료
-						            </button>
-						        </td>` : ""}
+								<td class="status-cell">${stop.completeTime == null ? "대기" : item.status === "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전량반품" || "-"}</td>
+								${index === 0 ? `
+								      <td rowspan="${orderItems.length}" class="btn-cell btn-pc">
+								          <button class="complateBtn btn btn-secondary"
+								                  data-franchise-idx="${stop.franchiseIdx}" 
+								                  data-dispatch-stop-idx="${stop.dispatchStopIdx}" 
+								                  data-order-idx="${dc.outboundOrderIdx}"
+								                  data-confirmation-item-idx="${item.confirmationItemIdx}" disabled>
+								            납품완료
+								          </button>
+								      </td>` : ""}
+								
+								  ${index === orderItems.length - 1 ? `
+								      <td class="btn-cell btn-mobile">
+								          <button class="complateBtn btn btn-secondary"
+								                  data-franchise-idx="${stop.franchiseIdx}" 
+								                  data-dispatch-stop-idx="${stop.dispatchStopIdx}" 
+								                  data-order-idx="${dc.outboundOrderIdx}"
+								                  data-confirmation-item-idx="${item.confirmationItemIdx}" disabled>
+								            납품완료
+								          </button>
+								      </td>` : ""}
 							</tr>
 						`;
 						});
@@ -303,6 +311,7 @@ $(document).on("click", ".detail-btn", function() {
 			renderTimeline();
 
 			$("#detailItems tbody").html(detailHtml);
+			renderDispatchMap("mapContainer", dispatch.franchises);
 		});
 
 	// 버튼 클릭 시 
@@ -335,22 +344,22 @@ $(document).on("click", ".detail-btn", function() {
 		});
 	} else if (status === "운행중") {
 		btn.text("복귀");
-		const allDone = timelineData.length > 0 && timelineData.every(s => s.status === "납품 완료");
-		
+		const allDone = timelineData.every(s => s.status === "납품완료");
+
 		if (!allDone) {
-			btn.prop("disabled", allDone);
+			btn.prop("disabled", !allDone);
 		}
-		
+
 		btn.off("click").on("click", function() {
 			Swal.fire({
 				title: "복귀하시겠습니까?",
-	  			showDenyButton: true,
+				showDenyButton: true,
 				confirmButtonText: "복귀",
 				denyButtonText: "취소"
 			}).then((result) => {
 				if (result.isConfirmed) {
 					$.ajax({
-						url: MYPAGE_DELIVERY_RETURN_URL, 
+						url: MYPAGE_DELIVERY_RETURN_URL,
 						type: "POST",
 						contentType: "application/json; charset=UTF-8",
 						data: JSON.stringify({
@@ -382,6 +391,7 @@ $(document).on("input", ".delivered-qty", function() {
 	const tbody = $(this).closest("tbody");
 	const deliverd = parseInt($(this).val() || "0", 10);
 	const orderedQty = parseInt($(this).data("ordered-qty"), 10);
+	const orderIdx = tr.data("outbound-order-idx");
 
 	let statusText = "대기 중";
 	let statusCode = null;
@@ -405,46 +415,75 @@ $(document).on("input", ".delivered-qty", function() {
 
 	// 같은 지점의 반품 수량 및 상태 확인
 	let allFilled = true;
-	tbody.find("tr").each(function() {
-		const row = $(this);
-		const returned = parseInt(row.find(".delivered-qty").val() || -1, 10);
-		const code = row.find(".delivered-qty").data("status-code");
+	
+  	tbody.find(`tr[data-outbound-order-idx="${orderIdx}"]`).each(function() {
+    	const row = $(this);
+        const returned = parseInt(row.find(".delivered-qty").val() || -1, 10);
+    	const code = row.find(".delivered-qty").data("status-code");
 
-		if (isNaN(returned) || returned < 0 || !code) {
-			allFilled = false;
-			return false; // 하나라도 안 맞으면 중단
+	    if (isNaN(returned) || returned < 0 || !code) {
+	      allFilled = false;
+	      return false;
+	    }
+
+		if (code === "REFUND" || code === "PARTIAL_REFUND") {
+			$("#files").show();
+		} else {
+			$("#files").hide();
 		}
-	});
+    });
 
-	const btn = tbody.find(".complateBtn").first();
-	btn.prop("disabled", !allFilled);
-
+	// 주문 단위로 반품 수량 입력 여부로 버튼 활성/비활성
+	const btn = tbody.find(`.complateBtn[data-order-idx="${orderIdx}"]`);
+    btn.prop("disabled", !allFilled);
 });
 
 // 납품 완료 버튼 클릭 시 
 $(document).on("click", ".complateBtn", function() {
-	const tbody = $(this).closest("table").find("tbody");
-//	const confirmationItemIdx = $(this).data("confirmation-item-idx");
+  	const stopIdx = parseInt($(this).data("dispatch-stop-idx"));
+  	const orderIdx = parseInt($(this).data("order-idx"));
+	const stop = currentDispatch.franchises.find(s => s.dispatchStopIdx === stopIdx);
+ 	const confirmation = stop?.deliveryConfirmations.find(dc => dc.outboundOrderIdx === orderIdx);
+	
+	const complateRequestData = {
+	    deliveryConfirmationIdx: confirmation.deliveryConfirmationIdx,
+	    dispatchIdx: currentDispatch.dispatchIdx,
+	    vehicleIdx: currentDispatch.vehicleIdx,
+	    requiresAdditional: currentDispatch.requiresAdditional,
+	    outboundOrderIdx: confirmation.outboundOrderIdx,
+	    dispatchStopIdx: stop.dispatchStopIdx,
+	    receiverName: currentDispatch.franchiseManagerName,
+	    items: []
+	};
 
-	complateRequestData.items = [];
-
+  	const tbody = $(this).closest("table").find("tbody");
 	tbody.find("tr").each(function() {
-		const row = $(this);
-		const confirmationItemIdx = row.data("confirmation-item-idx");
-		const delivered = parseInt(row.find(".delivered-qty").val() || 0, 10);
-		const statusCode = row.find(".delivered-qty").data("status-code");
-
-		complateRequestData.items.push({
-			confirmationItemIdx,
-			deliveredQty: delivered,
-			status: statusCode
-		});
+	    const row = $(this);
+	    const confirmationItemIdx = row.data("confirmation-item-idx");
+	    const delivered = parseInt(row.find(".delivered-qty").val() || 0, 10);
+	    const statusCode = row.find(".delivered-qty").data("status-code");
+	
+	    complateRequestData.items.push({
+	      confirmationItemIdx,
+	      deliveredQty: delivered,
+	      status: statusCode
+	    });
 	});
 	
-	console.log(complateRequestData);
-
+	const formData = new FormData();
+	
+	// formData 데이터 입력
+	formData.append("request", new Blob([JSON.stringify(complateRequestData)], { type: "application/json" }));
+	
+	// 파일 추가
+	const files = $('input[name="files"]')[0].files;
+	
+	for (let i = 0; i < files.length; i++) {
+	  formData.append("files", files[i]); // List<MultipartFile>로 매핑됨
+	}
+	
 	Swal.fire({
-		title: "납품을 완료하시겠습니가?",
+		title: "납품을 완료하시겠습니까?",
 		showDenyButton: true,
 		confirmButtonText: "완료",
 		denyButtonText: "취소"
@@ -453,8 +492,13 @@ $(document).on("click", ".complateBtn", function() {
 			$.ajax({
 				url: MYPAGE_DELIVERY_COMPLETE_URL,
 				type: "POST",
-				contentType: "application/json",
-				data: JSON.stringify(complateRequestData),
+				contentType: "json",
+				data: formData,
+				processData: false,
+				contentType: false,
+				headers: {
+ 					"X-CSRF-TOKEN": token
+ 				},
 				beforeSend(xhr) {
 					if (token && header) xhr.setRequestHeader(header, token);
 				},
@@ -472,7 +516,7 @@ $(document).on("click", ".complateBtn", function() {
 
 function renderTimeline() {
 	let html = "";
-	
+
 	// 지점별 상태 표시
 	timelineData.forEach(stop => {
 		html += `

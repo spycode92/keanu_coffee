@@ -40,7 +40,7 @@ public class SystemNotificationController {
 
 			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
 				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-				model.addAttribute("targetURL", "/admin/customer/notice_list");
+				model.addAttribute("targetURL", "/admin/systemnotification");
 				return "commons/result_process";
 			}
 

@@ -49,23 +49,26 @@
 <section class="content">
 
     <!-- 검색 바 : 공통 .filters 패턴 -->
-    <form class="filters" aria-label="검색 및 필터">
-        <div class="field">
-            <select name="searchType">
-                <option value="이름">이름</option>
-                <option value="사번">사번</option>
-                <option value="상품">상품</option>
-            </select>
-        </div>
-
-        <div class="search">
-            <input type="text" class="form-control" name="searchKeyword" placeholder="검색어 입력">
-        </div>
-
-        <div class="actions">
-            <button type="submit" class="btn btn-sm btn-primary">검색</button>
-        </div>
-    </form>
+	<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
+    
+	    <form class="filters" aria-label="검색 및 필터">
+	        <div class="field">
+	            <select name="searchType">
+	                <option value="이름">이름</option>
+	                <option value="사번">사번</option>
+	                <option value="상품">상품</option>
+	            </select>
+	        </div>
+	
+	        <div class="search">
+	            <input type="text" class="form-control" name="searchKeyword" placeholder="검색어 입력">
+	        </div>
+	
+	        <div class="actions">
+	            <button type="submit" class="btn btn-sm btn-primary">검색</button>
+	        </div>
+	    </form>
+    </div>
 
     <!-- 로그 테이블 : 공통 .table 스타일 -->
 	<table class="table">

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,11 +9,16 @@
 <title>운송관리대시보드</title>
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link
-	href="${pageContext.request.contextPath}/resources/css/common/common.css"
-	rel="stylesheet">
-<script
-	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+<script src="/resources/js/admin/statistics/statistics1.js"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2b14d97248052db181d2cfc125eaa368&libraries=services"></script>	
+<script src="${pageContext.request.contextPath}/resources/js/transport/dispatch.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/transport/deliveryConfirmation.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/transport/kakao_map.js"></script>
 <style type="text/css">
 .container {
 	max-width: 1264px;
@@ -75,291 +81,229 @@
 	}
 }
 
-.chart-card{
-    background: var(--card);
-    color: var(--card-foreground);
-    border: 1px solid var(--border);
-    border-radius: var(--radius, 12px);
-    padding: 12px;
+ /* 각 차트 박스 공통 스타일 */
+ 
+ .dashboard-charts {
+ 	display: flex;
+	flex-direction: row;
+	gap: 10px;
 }
-.chart-card .card-header{
-    font-weight: 600;
-    margin-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
-}
-
-/* 그래프를 안정적으로 고정 높이로 */
-.chart-wrap{
-    position: relative;
-    height: 220px;          /* 필요 시 180~260px로 조절 */
+ 
+.chart-card {
+    flex: 1 1 300px;
+    min-width: 240px;
+    min-height: 300px;
     width: 100%;
-}
-.chart-wrap canvas{
-    display: block;         /* 인라인 여백 제거 */
-    width: 100% !important;
-    height: 100% !important;
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    color: var(--card-foreground);
+    box-sizing: border-box;
 }
 
-/* 기존 그리드는 그대로 사용 */
-.chart-grid{
-    display: grid;
-    grid-template-columns: repeat(2, minmax(260px, 1fr));
-    gap: 1rem;
+/* 버튼 그룹 위치 왼쪽 상단 고정 */
+.period-selector-wrapper {
+    display: flex;
+    justify-content: flex-start;
 }
-@media (max-width: 900px){
-    .chart-grid{ grid-template-columns: 1fr; }
+/* 모바일 대응(세로 스크롤) */
+@media (max-width: 768px) {
+    .dashboard-charts {
+        flex-direction: column;
+    }
+    .chart-card {
+        max-width: 100%;
+        min-width: auto;
+    }
 }
+
+.help, .hint { font-size: .83rem; color: var(--muted-foreground); }
+
+
+button:disabled {
+  background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
+  color: #999;
+  border: 1px solid #bbb;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;   /* hover시 scale 효과 제거 */
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field input { height: 38px; border: 1px solid var(--border); border-radius: 10px; padding: 0 10px; background: #f9fafb; }
 </style>
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
-	<section class="container">
+	<section class="content">
 		<h1>운송관리</h1>
 		<div>
 			<section class="card-grid">
 				<div class="card">
-					<div class="card-header">출고요청</div>
-					<div class="kpi-value">54</div>
+					<div class="card-header">배차대기</div>
+					<div class="kpi-value">${pendingDispatchCount}</div>
 				</div>
 				<div class="card">
 					<div class="card-header">배송중</div>
-					<div class="kpi-value">87</div>
+					<div class="kpi-value">${dispatchInProgressCount}</div>
 				</div>
 				<div class="card">
 					<div class="card-header">배송완료</div>
-					<div class="kpi-value">312</div>
+					<div class="kpi-value">${dispatchCompletedCount}</div>
 				</div>
 				<div class="card">
-					<div class="card-header">공차율</div>
-					<div class="kpi-value">5</div>
-				</div>
-				<div class="card">
-					<div class="card-header">추가 차량 배정</div>
-					<div class="kpi-value">2</div>
+					<div class="card-header">긴급요청</div>
+					<div class="kpi-value">${urgentDispatchCount}</div>
 				</div>
 			</section>
 		</div>
 		<!-- 그래프 그리드 -->
-		<section class="chart-grid">
-		    <div class="chart-card">
-		        <div class="card-header">기사별 파손율</div>
-		        <div class="chart-wrap">
-		            <canvas id="driverDamageChart"></canvas>
+	    <section class="content">
+		    <div class="card">
+		        <div class="card-header d-flex justify-content-between align-items-center">
+				    <!-- 왼쪽: 제목 + 날짜 선택기 -->
+				    <div class="d-flex align-items-center gap-2">
+				        <div class="date-selection">
+				            <div class="d-flex align-items-center gap-2">
+				                <div>
+				                    <input type="date" id="baseDate" class="form-control date-input-small" style="max-width:100px">
+				                </div>
+				                <div>
+				                    <span id="dateRangeInfo" class="text-muted" style="font-size: 0.8rem; max-width: 200px;">
+				                        <!-- 계산된 범위 표시 -->
+				                    </span>
+				                </div>
+				            </div>
+				        </div>
+				    </div>
+		            <div class="period-selector-wrapper">
+		                <div class="btn-group" role="group" aria-label="그래프 선택">
+		                    <button type="button" class="btn btn-secondary btn-sm" data-period="daily">일별</button>
+		                    <button type="button" class="btn btn-secondary btn-sm" data-period="weekly">주별</button>
+		                    <button type="button" class="btn btn-secondary btn-sm" data-period="monthly">월별</button>
+		                </div>
+		            </div>
+		        </div>
+		        <div class="dashboard-charts">
+		            <br>
+		            <!-- 운송/출고 차트 -->
+		            <div class="chart-card">
+		                <h3 class="card-title" id="outbound_title">출고/운송 현황</h3>
+		                <canvas id="OBoverallChart" style="width:80%; height:100%;"></canvas>
+		            </div>
+		            <br>
+		            <!-- 폐기량 꺽은선차트 -->
+		            <div class="chart-card">
+		                <h3 class="card-title">폐기 현황1</h3>
+		                <canvas id="disposalChart" style="width:80%; height:100%;"></canvas>
+		            </div>
 		        </div>
 		    </div>
-		    <div class="chart-card">
-		        <div class="card-header">구역별 평균 운송시간</div>
-		        <div class="chart-wrap">
-		            <canvas id="regionTimeChart"></canvas>
-		        </div>
-		    </div>
-		</section>
+	    </section>
 		<div style="margin-bottom: 2em;">
 			<div
 				style="display: flex; justify-content: space-between; align-items: center;">
 				<h3>오늘 배차 목록</h3>
-				<div>전체보기</div>
+				<div><a href="/transport/dispatches">전체보기</a></div>
 			</div>
-			<table class="table">
-				<thead>
-					<tr>
-						<th>배차일</th>
-						<th>기사명</th>
-						<th>차량번호</th>
-						<th>적재량</th>
-						<th>목적지</th>
-						<th>예상도착시간</th>
-						<th>상태</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>2025-08-12</td>
-						<td>김배송</td>
-						<td>89바 ****</td>
-						<td>1.5t</td>
-						<td>동래구</td>
-						<td>18:30</td>
-						<td>운행중</td>
-					</tr>
-					<tr>
-						<td>2025-08-12</td>
-						<td>이배송</td>
-						<td>99바 ****</td>
-						<td>1.5t</td>
-						<td>남구</td>
-						<td>15:30</td>
-						<td>운행중</td>
-					</tr>
-					<tr>
-						<td>2025-08-12</td>
-						<td>최배송</td>
-						<td>79바 ****</td>
-						<td>1.5t</td>
-						<td>중구</td>
-						<td>19:30</td>
-						<td>운행중</td>
-					</tr>
-				</tbody>
-			</table>
+			<c:choose>
+				<c:when test="${empty dispatchList}">
+					<div class="empty-result">오늘 배정된 배차가 없습니다.</div>
+				</c:when>
+				<c:otherwise>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>배차일</th>
+								<th>배차시간</th>
+								<th>기사명</th>
+		                        <th>차량번호</th>
+		                        <th>차량용량</th>
+		                        <th>구역</th>
+		                        <th>상태</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach var="dispatch" items="${dispatchList}">
+								<tr data-dispatch-idx="${dispatch.dispatchIdx }" 
+		                			data-vehicle-idx="${dispatch.vehicleIdx}" class="dispatchInfo">
+									<td>
+										<fmt:formatDate value="${dispatch.dispatchDate}" pattern="yyyy-MM-dd"/>
+									</td>
+									<td>${dispatch.startSlot}</td>
+									<td>${dispatch.driverName}</td>
+									<td>${dispatch.vehicleNumber}</td>
+									<td>
+	                					<c:choose>
+											<c:when test="${dispatch.capacity == 1000 }">
+												1.0t
+											</c:when>
+											<c:otherwise>
+												1.5t
+											</c:otherwise>
+										</c:choose>
+		                			</td>
+		                			<td>${dispatch.regionName}</td>
+		                			<td>
+		                				<c:choose>
+		                					<c:when test="${dispatch.status eq '완료'}">
+		                						<span class="badge done">완료</span>
+		                					</c:when>
+		                					<c:when test="${dispatch.status eq '예약'}">
+		                						<span class="badge book">예약</span>
+		                					</c:when>
+		                					<c:when test="${dispatch.status eq '적재완료'}">
+		                						<span class="badge loaded">적재완료</span>
+		                					</c:when>
+		                					<c:when test="${dispatch.status eq '운행중'}">
+		                						<span class="badge run">운행중</span>
+		                					</c:when>
+		                					<c:otherwise>
+		                						<span class="badge cancel">취소</span>
+		                					</c:otherwise>
+		                				</c:choose>
+		                			</td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</c:otherwise>
+			</c:choose>
 		</div>
+		<%-- 상세 모달(배차 클릭 시) --%>
+		<jsp:include page="/WEB-INF/views/transport/modal/detail_dispatch.jsp"></jsp:include>
 		<div>
-			<h3>납품확인서 목록</h3>
+			<h3>수주확인서 목록</h3>
 			<table class="table">
 				<thead>
 					<tr>
 						<th>제출일</th>
 						<th>기사명</th>
-						<th>품목</th>
-						<th>납품장소</th>
+						<th>지점명</th>
+						<th>수령자</th>
 						<th>서류</th>
-						<th>첨부파일</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>2025-08-11</td>
-						<td>김배송</td>
-						<td>원두1</td>
-						<td>동래구청</td>
-						<td>납품확인서_250811</td>
-						<td>file</td>
-					</tr>
+					<c:forEach var="deliveryConfirmation" items="${deliveryConfirmationList}">
+						<tr>
+							<td>
+								<fmt:formatDate value="${deliveryConfirmation.updated_at}" pattern="yyyy-MM-dd"/>
+							</td>
+							<td>${deliveryConfirmation.emp_name}</td>
+							<td>${deliveryConfirmation.franchise_name}</td>
+							<td>${deliveryConfirmation.receiver_name}</td>
+							<td>수주확인서${deliveryConfirmation.delivery_confirmation_idx}</td>
+							<td>
+								<button class="btn btn-confirm" onclick="openDeliveryConfirmationDetail('${deliveryConfirmation.delivery_confirmation_idx}')">상세보기</button>
+							</td>
+						</tr>
+					</c:forEach>
 				</tbody>
 			</table>
 		</div>
 	</section>
-	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-	<script>
-		//CSS 변수 읽기(라이트/다크 자동 연동)
-		function cssVar(name) {
-			return getComputedStyle(document.documentElement).getPropertyValue(
-					name).trim();
-		}
-		var cPrimary = cssVar('--primary') || '#5660fe';
-		var cGrid = cssVar('--border') || '#e5e7eb';
-		var cFg = cssVar('--foreground') || '#111827';
-		var cIndigo = '#a5b4fc';
-		var cBlue = '#93c5fd';
-
-		Chart.defaults.font.family = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif";
-		Chart.defaults.color = cFg;
-		Chart.defaults.borderColor = cGrid;
-
-		/* ===================== 더미 데이터 ===================== */
-		// 1) 기사별 파손율(%) — 막대 그래프
-		var driverLabels = [ '김배송', '이배송', '최배송', '박배송', '정배송', '오배송' ];
-		var damageRates = [ 0.8, 1.6, 0.4, 1.1, 0.6, 2.0 ]; // %
-
-		// 2) 구역별 평균 운송시간(분) — 막대(또는 선) 그래프
-		var regionLabels = [ '동래구', '남구', '수영구', '해운대구', '연제구', '부산진구' ];
-		var avgMinutes = [ 42, 55, 38, 62, 47, 51 ]; // 분
-
-		/* ===================== 1) 기사별 파손율 ===================== */
-		var ctxDamage = document.getElementById('driverDamageChart');
-		new Chart(ctxDamage, {
-			type : 'bar',
-			data : {
-				labels : driverLabels,
-				datasets : [ {
-					label : '파손율(%)',
-					data : damageRates,
-					backgroundColor : cIndigo,
-					borderWidth : 0,
-					borderRadius : 6,
-					maxBarThickness : 38
-				} ]
-			},
-			options : {
-				responsive : true,
-				maintainAspectRatio : false,
-				scales : {
-					y : {
-						beginAtZero : true,
-						suggestedMax : 3, // 필요 시 조정
-						ticks : {
-							callback : function(v) {
-								return v + '%';
-							}
-						},
-						grid : {
-							drawBorder : false
-						}
-					},
-					x : {
-						grid : {
-							display : false
-						}
-					}
-				},
-				plugins : {
-					legend : {
-						display : false
-					},
-					tooltip : {
-						callbacks : {
-							label : function(ctx) {
-								return ' ' + (ctx.raw || 0) + '%';
-							}
-						}
-					}
-				}
-			}
-		});
-
-		/* ===================== 2) 구역별 평균 운송시간 ===================== */
-		var ctxRegion = document.getElementById('regionTimeChart');
-		new Chart(ctxRegion, {
-			type : 'bar', // 선형으로 바꾸려면 'line'
-			data : {
-				labels : regionLabels,
-				datasets : [ {
-					label : '평균 운송시간(분)',
-					data : avgMinutes,
-					backgroundColor : cBlue,
-					borderWidth : 0,
-					borderRadius : 6,
-					maxBarThickness : 38,
-				// type: 'line', borderColor: cPrimary, fill: false, tension: 0.3  // 혼합형 예시
-				} ]
-			},
-			options : {
-				responsive : true,
-				maintainAspectRatio : false,
-				scales : {
-					y : {
-						beginAtZero : true,
-						suggestedMax : 70,
-						ticks : {
-							callback : function(v) {
-								return v + '분';
-							}
-						},
-						grid : {
-							drawBorder : false
-						}
-					},
-					x : {
-						grid : {
-							display : false
-						}
-					}
-				},
-				plugins : {
-					legend : {
-						display : false
-					},
-					tooltip : {
-						callbacks : {
-							label : function(ctx) {
-								return ' ' + (ctx.raw || 0) + '분';
-							}
-						}
-					}
-				}
-			}
-		});
-	</script>
 </body>
 </html>

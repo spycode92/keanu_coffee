@@ -107,16 +107,16 @@ public class OrganizationController {
 		CommonCodeDTO commonCodeDTO = organizationService.selectDept(departmentIdx);
 		boolean deleted = organizationService.removeDepartmentByIdx(departmentIdx, commonCodeDTO.getCommonCodeName());
 
-		Map<String, Object> response = new HashMap<>();
+		Map<String, Object> result = new HashMap<>();
 
 		if (deleted) {
-			response.put("success", true);
-			response.put("message", "부서가 성공적으로 삭제되었습니다.");
-			return ResponseEntity.ok(response);
+			result.put("success", true);
+			result.put("message", "부서가 성공적으로 삭제되었습니다.");
+			return ResponseEntity.ok(result);
 		} else {
-			response.put("success", false);
-			response.put("message", "부서 삭제에 실패했습니다.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+			result.put("success", false);
+			result.put("message", "부서 삭제에 실패했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
 		}
 	}
 
@@ -129,16 +129,16 @@ public class OrganizationController {
 
 		boolean deleted = organizationService.deleteTeamByIdx(teamIdx, team.getTeamName());
 
-		Map<String, Object> response = new HashMap<>();
+		Map<String, Object> result = new HashMap<>();
 
 		if (deleted) {
-			response.put("success", true);
-			response.put("message", "팀이 성공적으로 삭제되었습니다.");
-			return ResponseEntity.ok(response);
+			result.put("success", true);
+			result.put("message", "팀이 성공적으로 삭제되었습니다.");
+			return ResponseEntity.ok(result);
 		} else {
-			response.put("success", false);
-			response.put("message", "팀 삭제에 실패했습니다.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+			result.put("success", false);
+			result.put("message", "팀 삭제에 실패했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
 		}
 	}
 
@@ -150,16 +150,16 @@ public class OrganizationController {
 		RoleDTO role = organizationService.selectRole(roleIdx);
 		boolean deleted = organizationService.deleteRoleByIdx(roleIdx, (String) role.getRoleName());
 
-		Map<String, Object> response = new HashMap<>();
+		Map<String, Object> result = new HashMap<>();
 
 		if (deleted) {
-			response.put("success", true);
-			response.put("message", "직책이 성공적으로 삭제되었습니다.");
-			return ResponseEntity.ok(response);
+			result.put("success", true);
+			result.put("message", "직책이 성공적으로 삭제되었습니다.");
+			return ResponseEntity.ok(result);
 		} else {
-			response.put("success", false);
-			response.put("message", "직책 삭제에 실패했습니다.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+			result.put("success", false);
+			result.put("message", "직책 삭제에 실패했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
 		}
 	}
 
@@ -167,17 +167,17 @@ public class OrganizationController {
 	@PostMapping("/modifyDepartment")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> modifyDepartment(@RequestBody DepartmentDTO dto) {
-		boolean success = organizationService.modifyDepartmentName(dto.getDepartmentIdx(), dto.getDepartmentName());
-		Map<String, Object> response = new HashMap<>();
-		if (success) {
-			response.put("success", true);
-			response.put("message", "부서명이 성공적으로 수정되었습니다.");
-			response.put("data", dto);
-			return ResponseEntity.ok(response);
+		boolean isUpdated = organizationService.modifyDepartmentName(dto.getDepartmentIdx(), dto.getDepartmentName());
+		Map<String, Object> result = new HashMap<>();
+		if (isUpdated) {
+			result.put("success", true);
+			result.put("message", "부서명이 성공적으로 수정되었습니다.");
+			result.put("data", dto);
+			return ResponseEntity.ok(result);
 		} else {
-			response.put("success", false);
-			response.put("message", "부서명 수정에 실패했습니다.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+			result.put("success", false);
+			result.put("message", "부서명 수정에 실패했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
 		}
 	}
 
@@ -185,17 +185,17 @@ public class OrganizationController {
 	@PostMapping("/modifyTeam")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> modifyTeam(@RequestBody TeamDTO teamDTO) {
-		boolean success = organizationService.modifyTeamName(teamDTO.getTeamIdx(), teamDTO.getTeamName());
-		Map<String, Object> response = new HashMap<>();
-		if (success) {
-			response.put("success", true);
-			response.put("message", "팀이름 수정에 성공하였습니다.");
-			response.put("data", teamDTO);
-			return ResponseEntity.ok(response);
+		boolean isUpdated = organizationService.modifyTeamName(teamDTO.getTeamIdx(), teamDTO.getTeamName());
+		Map<String, Object> result = new HashMap<>();
+		if (isUpdated) {
+			result.put("success", true);
+			result.put("message", "팀이름 수정에 성공하였습니다.");
+			result.put("data", teamDTO);
+			return ResponseEntity.ok(result);
 		} else {
-			response.put("success", false);
-			response.put("message", "팀이름 수정에 실패했습니다.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+			result.put("success", false);
+			result.put("message", "팀이름 수정에 실패했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
 		}
 	}
 
@@ -203,17 +203,17 @@ public class OrganizationController {
 	@PostMapping("/modifyRole")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> modifyRole(@RequestBody RoleDTO roleDTO) {
-		boolean success = organizationService.modifyRoleName(roleDTO.getRoleIdx(), roleDTO.getRoleName());
-		Map<String, Object> response = new HashMap<>();
-		if (success) {
-			response.put("success", true);
-			response.put("message", "직책이름 수정에 성공하였습니다.");
-			response.put("data", roleDTO);
-			return ResponseEntity.ok(response);
+		boolean isUpdated = organizationService.modifyRoleName(roleDTO.getRoleIdx(), roleDTO.getRoleName());
+		Map<String, Object> result = new HashMap<>();
+		if (isUpdated) {
+			result.put("success", true);
+			result.put("message", "직책이름 수정에 성공하였습니다.");
+			result.put("data", roleDTO);
+			return ResponseEntity.ok(result);
 		} else {
-			response.put("success", false);
-			response.put("message", "직책이름 수정에 실패했습니다.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+			result.put("success", false);
+			result.put("message", "직책이름 수정에 실패했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
 		}
 	}
 
@@ -221,7 +221,6 @@ public class OrganizationController {
 	@GetMapping("/getAutho")
 	public ResponseEntity<List<Map<String, Object>>> getRolesAutho(@RequestParam Integer roleIdx) {
 		List<Map<String, Object>> authority = organizationService.getAuthrityInfo(roleIdx);
-		System.out.println("authority size: " + (authority != null ? authority.size() : "null")); // 결과 확인
 
 		return ResponseEntity.ok(authority);
 	}
@@ -230,11 +229,19 @@ public class OrganizationController {
 	@PostMapping("/saveRoleAutho")
 	@ResponseBody
 	public ResponseEntity<Map<String, String>> modifyRoleAutho(@RequestBody Map<String, Object> data) {
-		organizationService.modifyRoleAutho(data);
 		Map<String, String> result = new HashMap<>();
-		result.put("result", "success");
-		result.put("msg", "권한정보 변경 완료");
-		return ResponseEntity.ok(result);
+		try {
+			organizationService.modifyRoleAutho(data);
+			
+			result.put("result", "success");
+			result.put("msg", "권한정보 변경 완료");
+			return ResponseEntity.ok(result);
+		} catch (Exception e) {
+			
+			result.put("result", "fail");
+			result.put("msg", "권한정보 변경 실패");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+		}
 
 	}
 
@@ -267,8 +274,16 @@ public class OrganizationController {
 		common.setCommonCodeIdx(authoIdx);
 		common = organizationService.selectAuthoName(common);
 
-		result = organizationService.removeAuthoName(common);
-
+		Boolean isDeleted = organizationService.removeAuthoName(common);
+		
+		if (isDeleted) {
+			result.put("result", "success");
+			result.put("msg", "권한이 삭제되었습니다.");
+		} else {
+			result.put("result", "fail");
+			result.put("msg", "권한이 부여된 직책이 있습니다.");
+		}
+		
 		return ResponseEntity.ok(result);
 	}
 
@@ -284,7 +299,15 @@ public class OrganizationController {
 		common.setCommonCode(authoCode);
 		common.setCommonCodeName(authoName);
 
-		result = organizationService.addAutho(common);
+		Boolean isAdded = organizationService.addAutho(common);
+		
+		if(isAdded) {
+			result.put("result", "success");
+			result.put("msg", "권한이 추가되었습니다.");
+		} else {
+			result.put("result", "fail");
+			result.put("msg", "권한 추가에 실패하였습니다.");
+		}
 
 		return ResponseEntity.ok(result);
 	}

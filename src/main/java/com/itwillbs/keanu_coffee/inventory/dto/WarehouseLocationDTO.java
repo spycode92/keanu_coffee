@@ -23,7 +23,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class WarehouseLocationDTO {
-	public WarehouseLocationDTO(String locationName, String rack, int bay, String levelPosition, int width,
+	public WarehouseLocationDTO(String locationName, char rack, int bay, String levelPosition, int width,
 			int height, int depth, int locationType) {
 			this.locationName = locationName;
 			this.rack = rack;
@@ -35,9 +35,10 @@ public class WarehouseLocationDTO {
 			this.height = height;
 			this.locationType = locationType;
 		}
+	
 	private int locationIdx;
 	private String locationName;
-	private String rack;
+	private char rack;
 	private int bay;
 	private String levelPosition;
 	private int locationType;

@@ -41,9 +41,12 @@ public class SupplyCompanyController {
 
 	// 공급업체관리 목록조회
 	@GetMapping("")
-	public String systemPreference(Model model, @RequestParam(defaultValue = "1") int pageNum,
-			@RequestParam(defaultValue = "") String searchType, @RequestParam(defaultValue = "") String searchKeyword,
-			@RequestParam(defaultValue = "") String orderKey, @RequestParam(defaultValue = "") String orderMethod) {
+	public String systemPreference(Model model
+			, @RequestParam(defaultValue = "1") int pageNum
+			, @RequestParam(defaultValue = "") String searchType
+			, @RequestParam(defaultValue = "") String searchKeyword
+			, @RequestParam(defaultValue = "") String orderKey
+			, @RequestParam(defaultValue = "") String orderMethod) {
 		model.addAttribute("pageNum", pageNum);
 		model.addAttribute("searchType", searchType);
 		model.addAttribute("searchKeyword", searchKeyword);
@@ -59,7 +62,7 @@ public class SupplyCompanyController {
 
 			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
 				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-				model.addAttribute("targetURL", "/admin/customer/notice_list");
+				model.addAttribute("targetURL", "/admin/systemPreference/supplyCompany");
 				return "commons/result_process";
 			}
 

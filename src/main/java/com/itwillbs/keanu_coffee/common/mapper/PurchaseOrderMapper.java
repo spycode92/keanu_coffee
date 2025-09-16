@@ -41,7 +41,7 @@ public interface PurchaseOrderMapper {
 
 	List<SupplierProductContractDTO> selectProductAndSuppplier();
 
-	void insertProductOrderItem(@Param("orderIdx") int orderIdx, @Param("productIdx") int productIdx, @Param("quantity") double quantity);
+	void insertProductOrderItem(@Param("orderIdx") int orderIdx, @Param("productIdx") int productIdx, @Param("quantity") double quantity, @Param("contractPrice") int contractPrice);
 
 	void insertInboundWaiting(@Param("inboundWaitingNumber") String inboundWaitingNumber, @Param("orderIdx") int orderIdx, @Param("quantity") int quantity, @Param("numberOfItems") int numberOfItems, @Param("expectedArrivalDate") LocalDate expectedArrivalDate);
 

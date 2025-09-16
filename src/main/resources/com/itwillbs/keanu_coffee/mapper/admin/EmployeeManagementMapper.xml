@@ -268,6 +268,26 @@
 		where r.role_name = #{roleName}
 	</select>
 	
+	<!-- 직원개인인벤토리 생성 -->
+	<insert id="InsertEmployeeInventory">
+		INSERT INTO 
+			WAREHOUSE_LOCATION (location_name, rack, bay, level_position, location_type)
+		VALUES (
+			#{empNo},
+            'z',
+            -1,
+            'zz',
+            -1
+		)
+	</insert>
+	
+	<!-- 사번구하기 -->
+	<select id="selectEmpNo" parameterType="String" resultType="String">
+		SELECT MAX(emp_no)
+		FROM EMPLOYEE_INFO
+		WHERE emp_no like CONCAT(#{today}, '%')
+	</select>
+	
 	
 	
 </mapper>

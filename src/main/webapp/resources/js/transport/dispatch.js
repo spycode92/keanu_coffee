@@ -250,14 +250,13 @@ $(document).on("click", ".dispatchInfo", function() {
 			if (dispatch.status === "예약" || dispatch.status === "취소") {
 				$("#detail").hide();
 				$("#summary").show();
-				
 				const html = `
 					<tr>
 						<td>${formatDate(dispatch.dispatchDate)}</td>
 						<td>${dispatch.startSlot}</td>				
 						<td>${dispatch.regionName}</td>			
 						<td>${dispatch.totalVolume}</td>			
-						<td>${dispatch.status}</td>			
+						<td>${dispatch.status}</td>	
 					</tr>
 				`
 				$("#summary tbody").html(html);
@@ -270,13 +269,20 @@ $(document).on("click", ".dispatchInfo", function() {
 				        // 경유지(지점) 이름을 한 번만 출력하고, 품목은 하위 반복문으로 출력
 				        if (stop.deliveryConfirmations) {
 				            stop.deliveryConfirmations.forEach(dc => {
-				                dc.items?.forEach(item => {
+				                dc.items?.forEach((item, index) => {
+					console.log(item);
+									const orderItems = dc.items;
 				                    detailHtml += `
 				                        <tr>
-				                            <td>${stop.franchiseName}</td>
+				                            ${index === 0 ? `<td rowspan="${orderItems.length}">${stop.franchiseName}</td>` : ""}
 				                            <td>${item.itemName || "-"}</td>
 				                            <td class="text-right">${item.deliveredQty ?? 0} / ${item.orderedQty}</td>
 				                            <td>${stop.completeTime == null ? "대기" : item.status ===  "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전체반품"|| "-"}</td>
+											${index === 0 ? `<td rowspan="${orderItems.length}">
+												<button 
+													class="btn btn-confirm"
+													onclick="openDeliveryConfirmationDetail('${item.confirmationIdx}')">상세보기</button>
+											</td>` : ""}
 				                        </tr>
 				                    `;
 				                });
@@ -320,6 +326,7 @@ $(document).on("click", ".dispatchInfo", function() {
 				   		}
 					});
 					$("#timeline").html(timelineHtml);
+					renderDispatchMap("mapContainer", dispatch.franchises);
 			}
 		})
 		.fail((xhr, status, error) => {
@@ -360,6 +367,10 @@ function dispatchRequestData() {
 		status
 	}
 	
+}
+
+function openDeliveryConfirmationDetail(deliveryConfirmationIdx) {
+	window.open(`/transport/deliveryConfirmation/${deliveryConfirmationIdx}`, "수주확인서","width=700px,height=800px"); 
 }
 
 

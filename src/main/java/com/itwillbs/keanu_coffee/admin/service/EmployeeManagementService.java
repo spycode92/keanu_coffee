@@ -5,13 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
-import javax.servlet.http.HttpSession;
-
-import org.aspectj.lang.annotation.Around;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,13 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
-import com.itwillbs.keanu_coffee.common.aop.annotation.Insert;
 import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
 import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
-import com.itwillbs.keanu_coffee.common.dto.FileDTO;
-import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
-import com.itwillbs.keanu_coffee.common.utils.FileUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,10 +27,7 @@ public class EmployeeManagementService {
 	private final EmployeeManagementMapper employeeManagementMapper;
 	private final OrganizationMapper organizationMapper;
 	private final BCryptPasswordEncoder passwordEncoder;
-	private final FileMapper fileMapper;
 	
-	@Autowired
-	private HttpSession session;
 	
 	//직원목록선택
 	@Transactional(readOnly = true)
@@ -71,8 +58,6 @@ public class EmployeeManagementService {
 		String empPassword = passwordEncoder.encode("1234");
 		// empId생성
 		String empNo = empNoBuilder(employee);
-		//회사이메일생성
-		employee.setEmpEmail(employee.getEmpEmail()+"@keanu.com");
 		//empId, empPassword DTO 주입
 		employee.setEmpNo(empNo);
 		employee.setEmpPassword(empPassword);
@@ -80,24 +65,27 @@ public class EmployeeManagementService {
 		// 정보 입력 후 empIdx 받아오기
 		int inputCount = employeeManagementMapper.insertEmployeeInfo(employee);
 		
+		employeeManagementMapper.InsertEmployeeInventory(employee);
+		
 		return inputCount;
 	}
 	
 	
-	// empId 생성 메서드
+	// empNo 생성 메서드
 	public String empNoBuilder(EmployeeInfoDTO employee) {
-		//입력된휴대폰번호
-		String phone = employee.getEmpPhone();
-		//휴대폰번호 뒷 4자리
-		String last4Digits = phone.substring(phone.length() - 4);
 		//오늘 날짜 MMdd 형식
-		String today = new SimpleDateFormat("MMdd").format(new Date());
+		String today = new SimpleDateFormat("yyMMdd").format(new Date());
 		
-		// 랜덤 2자리 숫자
-		Random rnd = new Random();
-        int randomNum = rnd.nextInt(90) + 10; // 10 ~ 99
+		String maxEmpNo = employeeManagementMapper.selectEmpNo(today);
+		int nextSeq = 1;
+		if (maxEmpNo != null && maxEmpNo.length() == 10) {
+		    String seqStr = maxEmpNo.substring(6);
+		    nextSeq = Integer.parseInt(seqStr) + 1;
+		} else {
+		    nextSeq = 1; // 신규 생성 첫 번호
+		}
 		
-		return last4Digits + today + randomNum;
+		return today + String.format("%04d", nextSeq);
 	}
 	
 	//회원idx를 이용해서 회원정보 불러오기
@@ -109,10 +97,7 @@ public class EmployeeManagementService {
 	// 회원정보 업데이트 
 	@Transactional
 	@SystemLog(target = SystemLogTarget.EMPLOYEE_INFO)
-	public int modifyEmployeeInfo(EmployeeInfoDTO employee, Authentication authentication) throws IllegalStateException, IOException {
-		EmployeeDetail empDetail = (EmployeeDetail)authentication.getPrincipal();
-		Integer empIdx = empDetail.getEmpIdx();
-		employee.setEmpEmail(employee.getEmpEmail()+"@keanu.com");
+	public int modifyEmployeeInfo(EmployeeInfoDTO employee) throws IllegalStateException, IOException {
 		
 		// 새로 받은 비밀번호가 존재한다면 암호화
 		if(employee.getEmpPassword() != null && !employee.getEmpPassword().trim().isEmpty()) {
@@ -129,7 +114,6 @@ public class EmployeeManagementService {
 	// 관리자가 직원정보 업데이트
 	@SystemLog(target = SystemLogTarget.EMPLOYEE_INFO)
 	public void updateEmployeeInfo(EmployeeInfoDTO employee) {
-		employee.setEmpEmail(employee.getEmpEmail()+"@keanu.com");
 		employeeManagementMapper.updateEmployeeInfo(employee);
 	}
 	

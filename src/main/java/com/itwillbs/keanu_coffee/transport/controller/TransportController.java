@@ -1,6 +1,7 @@
 package com.itwillbs.keanu_coffee.transport.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -13,16 +14,12 @@ import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
-import com.itwillbs.keanu_coffee.transport.dto.AdministrativeRegionDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegionGroupViewDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO;
-import com.itwillbs.keanu_coffee.transport.dto.RegionFranchiseRouteDTO;
 import com.itwillbs.keanu_coffee.transport.dto.VehicleDTO;
-import com.itwillbs.keanu_coffee.transport.mapper.DispatchMapper;
 import com.itwillbs.keanu_coffee.transport.service.DispatchService;
 import com.itwillbs.keanu_coffee.transport.service.DriverService;
 import com.itwillbs.keanu_coffee.transport.service.RegionService;
-import com.itwillbs.keanu_coffee.transport.service.RouteService;
 import com.itwillbs.keanu_coffee.transport.service.VehicleService;
 
 import lombok.RequiredArgsConstructor;
@@ -38,7 +35,32 @@ public class TransportController {
 	
 	// 운송 대시보드
 	@GetMapping("/main")
-	public String dashboard() {
+	public String dashboard(Model model) {
+		// 배차대기(출고 요청) 요청 횟수
+		Integer pendingDispatchCount = dispatchService.selectPendingDispatchCount();
+		// 긴급 요청 
+		Integer urgentDispatchCount = dispatchService.selectUrgentDispatchCount();
+		// 기사의 상태별 횟수
+		Map<String, Object> result = dispatchService.selectAssignmentStatusCount();
+		
+		// 운행중인 상태의 횟수
+		Integer dispatchInProgressCount = ((Number) result.get("dispatchInProgressCount")).intValue();
+		// 배차 완료인 상태의 횟수
+		Integer dispatchCompletedCount = ((Number) result.get("dispatchCompletedCount")).intValue();
+		
+		// 배차 목록 (현재 날짜 기준)
+		List<DispatchRegionGroupViewDTO> dispatchList = dispatchService.selectAllDispatchByToday();
+		
+		// 수주확인서 목록 
+		List<Map<String, Object>> deliveryConfirmationList = dispatchService.selectAllDeliveryConfirmation();
+		
+		// 배차대기 횟수
+		model.addAttribute("pendingDispatchCount", pendingDispatchCount);
+		model.addAttribute("dispatchInProgressCount", dispatchInProgressCount);
+		model.addAttribute("dispatchCompletedCount", dispatchCompletedCount);
+		model.addAttribute("urgentDispatchCount", urgentDispatchCount);
+		model.addAttribute("dispatchList", dispatchList);
+		model.addAttribute("deliveryConfirmationList", deliveryConfirmationList);
 		return "/transport/dashboard";
 	}
 	

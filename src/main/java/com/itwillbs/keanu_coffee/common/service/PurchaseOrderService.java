@@ -64,9 +64,9 @@ public class PurchaseOrderService {
 	}
 	
 	@Transactional
-	public void addProductOrderItem(int orderIdx, int productIdx, double quantity) {
+	public void addProductOrderItem(int orderIdx, int productIdx, double quantity, int contractPrice) {
 
-		purchaseOrderMapper.insertProductOrderItem(orderIdx, productIdx, quantity);
+		purchaseOrderMapper.insertProductOrderItem(orderIdx, productIdx, quantity, contractPrice);
 	}
 
 	public List<OutboundOrderItemDTO> getLastMonthsDemand(int month, int year, int daysInLastMonth) {

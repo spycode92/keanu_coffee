@@ -9,7 +9,7 @@
     <style type="text/css">
     /* 검색/필터 바 */
 	.filters {
-		width: 70em;
+		width: 100%;
 	    border: 1px solid var(--border);
 	    border-radius: 12px;
 	    padding: 12px;
@@ -135,36 +135,38 @@
 		            </div>
 		        </form>    
 		    </div>
-            <div class="table-responsive" style="overflow-y:auto;">
-                <table id="franchiseTable" class="table franchise-table mb-0">
-                    <thead>
-                        <tr>
-                            <th>지점번호</th>
-                            <th>지점명</th>
-                            <th>지점장</th>
-                            <th>지점번호</th>
-                            <th>상태</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach items="${franchiseList}" var="franchise">
-                        	<tr data-franchise-idx="${franchise.franchiseIdx }" class="franchise-row">
-                        		<td>${franchise.franchiseIdx }</td>
-                        		<td>${franchise.franchiseName }</td>
-                        		<td>${franchise.franchiseManagerName }</td>
-                        		<td>${franchise.franchisePhone }</td>
-                        		<td>
-                        			<span class="badge
-						                  ${franchise.status eq '운영'   ? 'badge-confirmed' :
-						                    franchise.status eq '휴점' ? 'badge-warning'   :
-						                                                'badge-urgent'}">
-						                  ${franchise.status}
-									</span>
-                        		</td>
-                        	</tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
+		    <div class="card">
+	            <div class="table-responsive" style="overflow-y:auto;">
+	                <table id="franchiseTable" class="table franchise-table mb-0">
+	                    <thead>
+	                        <tr>
+	                            <th>지점번호</th>
+	                            <th>지점명</th>
+	                            <th>지점장</th>
+	                            <th>지점번호</th>
+	                            <th>상태</th>
+	                        </tr>
+	                    </thead>
+	                    <tbody>
+	                        <c:forEach items="${franchiseList}" var="franchise">
+	                        	<tr data-franchise-idx="${franchise.franchiseIdx }" class="franchise-row">
+	                        		<td>${franchise.franchiseIdx }</td>
+	                        		<td>${franchise.franchiseName }</td>
+	                        		<td>${franchise.franchiseManagerName }</td>
+	                        		<td>${franchise.franchisePhone }</td>
+	                        		<td>
+	                        			<span class="badge
+							                  ${franchise.status eq '운영'   ? 'badge-confirmed' :
+							                    franchise.status eq '휴점' ? 'badge-warning'   :
+							                                                'badge-urgent'}">
+							                  ${franchise.status}
+										</span>
+	                        		</td>
+	                        	</tr>
+	                        </c:forEach>
+	                    </tbody>
+	                </table>
+	            </div>
             </div>
             <!-- 페이징 -->
 		    <div class="pager">

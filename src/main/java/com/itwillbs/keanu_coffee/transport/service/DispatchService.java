@@ -1,15 +1,24 @@
 package com.itwillbs.keanu_coffee.transport.service;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.AlarmDTO;
+import com.itwillbs.keanu_coffee.common.dto.DisposalDTO;
+import com.itwillbs.keanu_coffee.common.dto.FileDTO;
+import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.service.AlarmService;
+import com.itwillbs.keanu_coffee.common.utils.FileUtils;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationItemDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
@@ -33,6 +42,8 @@ public class DispatchService {
 	private final RouteMapper routeMapper;
 	private final SimpMessagingTemplate messagingTemplate;
 	private final AlarmService alarmService;
+	private final HttpSession session;
+	private final FileMapper fileMapper;
 	
 	// 페이징을 위한 배차 수
 	@Transactional(readOnly = true)
@@ -45,6 +56,12 @@ public class DispatchService {
 	public List<DispatchRegionGroupViewDTO> selectAllDispatch(int startRow, int listLimit, String filter,
 			String searchKeyword) {
 		return dispatchMapper.selectAllDispatch(startRow, listLimit, filter, searchKeyword);
+	}
+	
+	// 배차 목록 (현재 날짜 기준)
+	@Transactional(readOnly = true)
+	public List<DispatchRegionGroupViewDTO> selectAllDispatchByToday() {
+		return dispatchMapper.selectAllDispatchByToday();
 	}
 
 	// 배차 요청 리스트
@@ -109,7 +126,6 @@ public class DispatchService {
 			
 			alarm.setRoleName("출고관리자");
 			alarm.setEmpAlarmMessage(outboundOrderIdx + "번 주문에 대한 배차등록이 완료되었습니다.");
-			
 			alarmService.insertAlarmByRole(alarm);
 			
 			Map<String, String> payload = new HashMap<>();
@@ -266,6 +282,7 @@ public class DispatchService {
 
 	// 배송 시작
 	@Transactional
+	@WorkingLog(target = WorkingLogTarget.DISPATCH_ASSIGNMENT)
 	public void updateDispatchStatusStart(DispatchRegisterRequestDTO request) {
 		request.setStatus("운행중");
 		// 차량 상태 업데이트
@@ -284,14 +301,14 @@ public class DispatchService {
 			dispatchMapper.updateOutboundOrderStatus(outboundOrderIdx, "출고완료");
 		}
 		
-		// 모든 기사 적재 확인
+		// 모든 기사 운송 시작 확인
 		if (request.getRequiresAdditional() == 'Y') {
 			// 같은 배차에 배정된 기사 수 카운트
 			int totalDrivers = dispatchMapper.selectCountAssigment(request.getDispatchIdx());
-			// 적재 완료한 기사 수 카운트
+			// 운송 시작 기사 수 카운트
 	        int completedDrivers = dispatchMapper.selectCountAssignmentsByStatus(request.getDispatchIdx(), request.getStatus());
 			
-	        // 모든 기사가 적재 완료일 때 상태 변경
+	        // 모든 기사가 운송중 때 상태 변경
 	        if (totalDrivers == completedDrivers) {
 	        	dispatchMapper.updateDispatchStatus(request.getDispatchIdx(), "운송중");
 	        	
@@ -316,7 +333,8 @@ public class DispatchService {
 
 	// 납품 완료 
 	@Transactional
-	public void updateDeliveryCompleted(DeliveryConfirmationDTO request) {
+	@WorkingLog(target = WorkingLogTarget.DELIVERY_CONFIRMATION)
+	public void updateDeliveryCompleted(DeliveryConfirmationDTO request, Integer empIdx) throws IllegalStateException, IOException {
 		// 출고 테이블 상태 변경 (운송 완료)
 		dispatchMapper.updateOutboundOrderStatus(request.getOutboundOrderIdx(), "운송완료");
 		
@@ -326,9 +344,34 @@ public class DispatchService {
 		// 수주확인서 업데이트
 		dispatchMapper.updateDeliveryConfirmation(request.getDeliveryConfirmationIdx(), request.getReceiverName());
 		
+		if (request.getFiles() != null && request.getFiles().length > 0) {
+			// 반품 사진 업로드
+			List<FileDTO> fileList = FileUtils.uploadFile(request, session);
+			
+			// 파일 DB 등록
+			if (!fileList.isEmpty()) {
+				fileMapper.insertFiles(fileList);
+			}
+		}
+		
+		
 		// 수주확인서 품목 업데이트
 		for (DeliveryConfirmationItemDTO item : request.getItems()) {
 			dispatchMapper.updateDeliveryConfirmationItem(item);
+			
+			// 부분 반품 또는 전량 반품이 있을 경우 폐기 테이블 데이터 입력
+			if ("REFUND".equals(item.getStatus()) || "PARTIAL_REFUND".equals(item.getStatus())) {
+				Integer receiptProductIdx = dispatchMapper.selectReceiptProductIdxForDisposal(request.getDeliveryConfirmationIdx(), item.getConfirmationItemIdx());
+				
+				DisposalDTO disposal = new DisposalDTO();
+				disposal.setEmpIdx(empIdx);
+				disposal.setReceiptProductIdx(receiptProductIdx);
+				disposal.setSection("TRANSPORT");
+				disposal.setDisposalAmount(item.getDeliveredQty());
+				disposal.setNote("배송 중 파손");
+				
+				dispatchMapper.insertDeliveryDisposal(disposal);
+			}
 		}
 	}
 
@@ -361,5 +404,41 @@ public class DispatchService {
 	// 배정된 기사의 상태
 	public String selectDispatchAssignment(Integer dispatchIdx, Integer vehicleIdx) {
 		return dispatchMapper.selectDispatchAssignment(dispatchIdx, vehicleIdx);
+	}
+
+	// 배차대기(출고 요청) 요청 횟수
+	@Transactional(readOnly = true)
+	public Integer selectPendingDispatchCount() {
+		return dispatchMapper.selectPendingDispatchCount();
+	}
+
+	// 기사의 배송 상태 횟수
+	@Transactional(readOnly = true)
+	public Map<String, Object> selectAssignmentStatusCount() {
+		return dispatchMapper.selectAssignmentStatusCount();
+	}
+
+	// 긴급 요청
+	@Transactional(readOnly = true)
+	public Integer selectUrgentDispatchCount() {
+		return dispatchMapper.selectUrgentDispatchCount();
+	}
+
+	// 수주확인서 목록
+	@Transactional(readOnly = true)
+	public List<Map<String, Object>> selectAllDeliveryConfirmation() {
+		return dispatchMapper.selectAllDeliveryConfirmation();
+	}
+	// 수주확인서 상세 조회
+	@Transactional(readOnly = true)
+	public DeliveryConfirmationDTO selectDeliveryConfirmationByDeliveryConfirmationIdx(
+			Integer deliveryConfirmationIdx) {
+		return dispatchMapper.selectDeliveryConfirmationByDeliveryConfirmationIdx(deliveryConfirmationIdx);
+	}
+
+	// 기사 이름 조회
+	@Transactional(readOnly = true)
+	public String selectDriverName(Integer deliveryConfirmationIdx) {
+		return dispatchMapper.selectDriverName(deliveryConfirmationIdx);
 	}
 }

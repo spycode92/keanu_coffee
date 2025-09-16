@@ -1,6 +1,12 @@
 package com.itwillbs.keanu_coffee.inventory.controller;
 
+
+
+
+import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.security.core.Authentication;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
 import com.itwillbs.keanu_coffee.inventory.dto.WarehouseInfoDTO;
 import com.itwillbs.keanu_coffee.inventory.service.InventoryService;
@@ -55,7 +62,21 @@ public class InventoryController {
 	}
 	
 	@GetMapping("/moveInventory")
-	public String moveInventory() {
+	public String moveInventory(Authentication authentication, Model model) {
+		
+	// get any inventory items currently in the employees virtual location so that the employee does not
+	// have to search to find what the inventoryIdx of the item the are placing is
+		EmployeeDetail employeeDetail = (EmployeeDetail)authentication.getPrincipal();
+//		int[] inventoryItemsInEmployeesVirtualLocation = inventoryService.getInventoryItemsInEmployeesVirtualLocation(principal.getEmpIdx());
+//		System.out.println("authentication" + authentication);
+		System.out.println("employee idx : " + employeeDetail.getEmpIdx());
+		List<InventoryDTO> result = inventoryService.getInventoryItemsInEmployeesVirtualLocation(employeeDetail.getEmpIdx());
+		List<InventoryDTO> inventoryItemsInEmployeesVirtualLocation = result == null ? new ArrayList<InventoryDTO>() : result;
+		
+		model.addAttribute("employeeInventory", inventoryItemsInEmployeesVirtualLocation);
+		
+		
+		
 		
 		return "inventory/move_inventory";
 	}

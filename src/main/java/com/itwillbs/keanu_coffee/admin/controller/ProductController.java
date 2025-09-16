@@ -42,10 +42,13 @@ public class ProductController {
 	private final ProductService productService;
 
 	@GetMapping("")
-	public String systemPreference(Model model, @RequestParam(defaultValue = "1") int pageNum,
-			@RequestParam(defaultValue = "") String searchType, @RequestParam(defaultValue = "") String searchKeyword,
-			@RequestParam(defaultValue = "") String orderKey, @RequestParam(defaultValue = "") String orderMethod,
-			@RequestParam(defaultValue = "") String filterCategoryIdx) {
+	public String systemPreference(Model model
+			, @RequestParam(defaultValue = "1") int pageNum
+			, @RequestParam(defaultValue = "") String searchType
+			, @RequestParam(defaultValue = "") String searchKeyword
+			, @RequestParam(defaultValue = "") String orderKey
+			, @RequestParam(defaultValue = "") String orderMethod
+			, @RequestParam(defaultValue = "") String filterCategoryIdx) {
 		model.addAttribute("pageNum", pageNum);
 		model.addAttribute("searchType", searchType);
 		model.addAttribute("searchKeyword", searchKeyword);
@@ -62,7 +65,7 @@ public class ProductController {
 
 			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
 				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-				model.addAttribute("targetURL", "/admin/customer/notice_list");
+				model.addAttribute("targetURL", "/admin/systemPreference/product");
 				return "commons/result_process";
 			}
 
@@ -110,20 +113,22 @@ public class ProductController {
 	@PostMapping("/modifyCategory")
 	@ResponseBody
 	public ResponseEntity<Map<String, String>> modifyCategory(@RequestBody CommonCodeDTO category) {
-		System.out.println(category);
 		Map<String, String> response = new HashMap<>();
 		try {
 			productService.modifyCategory(category);
 			response.put("result", "success");
 			response.put("message", "카테고리가 수정되었습니다.");
+			
 			return ResponseEntity.ok(response);
 		} catch (DuplicateKeyException e) {
 			response.put("result", "fail");
 			response.put("message", "중복된 카테고리명입니다.");
+			
 			return ResponseEntity.status(409).body(response);
 		} catch (Exception e) {
 			response.put("result", "error");
 			response.put("message", "서버 오류가 발생했습니다.");
+			
 			return ResponseEntity.status(500).body(response);
 		}
 	}
@@ -132,12 +137,16 @@ public class ProductController {
 	@PostMapping("/removeCategory")
 	@ResponseBody
 	public ResponseEntity<Map<String, String>> removeCategory(@RequestBody CommonCodeDTO category) {
+		
 		Integer commonCodeIdx = category.getCommonCodeIdx();
+		
 		category = productService.getCategoryInfoByCategoryIdx(commonCodeIdx);
+		
 		// 서비스에서: 이 카테고리를 참조하는 상품이 있는지 체크
 		boolean removed = productService.removeCategoryIfUnused(category);
 
 		Map<String, String> response = new HashMap<>();
+		
 		if (removed) {
 			response.put("result", "success");
 			response.put("message", "카테고리가 삭제되었습니다.");
@@ -153,9 +162,12 @@ public class ProductController {
 	@PostMapping("/addProduct")
 	@ResponseBody
 	public ResponseEntity<String> addProduct(@ModelAttribute ProductDTO product) throws IOException {
+		
 		Boolean result = productService.addProduct(product);
+		
 		if (result) {
 			return ResponseEntity.ok().header("Content-Type", "text/plain; charset=UTF-8").body("상품이 등록되었습니다.");
+//			return ResponseEntity.ok().body("상품이 등록되었습니다.ddddddddd");
 		}
 
 		return ResponseEntity.ok().header("Content-Type", "text/plain; charset=UTF-8").body("상품등록에 실패하였습니다.");
@@ -174,17 +186,18 @@ public class ProductController {
 	@PostMapping("/modifyProduct")
 	@ResponseBody
 	public ResponseEntity<Map<String, String>> modifyProduct(@ModelAttribute ProductDTO product) throws IOException {
-		Boolean result = productService.modifyProduct(product);
-		Map<String, String> res = new HashMap();
+		Boolean isModified = productService.modifyProduct(product);
+		Map<String, String> result = new HashMap<String, String>();
 
-		if (result) {
-			res.put("result", "success");
-			res.put("msg", "상품정보가 수정되었습니다");
-			return ResponseEntity.ok(res);
+		if (isModified) {
+			result.put("result", "success");
+			result.put("msg", "상품정보가 수정되었습니다");
+		} else {
+			result.put("result", "error");
+			result.put("msg", "잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오. ");
 		}
-		res.put("result", "error");
-		res.put("msg", "잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오. ");
-		return ResponseEntity.ok(res);
+		
+		return ResponseEntity.ok(result);
 	}
 
 	@PostMapping("/removeProduct")
@@ -192,17 +205,18 @@ public class ProductController {
 	public ResponseEntity<Map<String, String>> removeProduct(@RequestBody ProductDTO product) throws IOException {
 		product = productService.getProductDetail(product);
 
-		Boolean result = productService.deleteProduct(product);
-		Map<String, String> res = new HashMap();
+		Boolean isDeleted = productService.deleteProduct(product);
+		Map<String, String> result = new HashMap<String, String>();
 
-		if (result) {
-			res.put("result", "success");
-			res.put("msg", "상품정보가 수정되었습니다");
-			return ResponseEntity.ok(res);
+		if (isDeleted) {
+			result.put("result", "success");
+			result.put("msg", "상품정보가 수정되었습니다");
+		} else {
+			result.put("result", "error");
+			result.put("msg", "잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오. ");
 		}
-		res.put("result", "error");
-		res.put("msg", "잠시후 다시시도 하십시오.<br>등록된 계약이 없나 확인하십시오. ");
-		return ResponseEntity.ok(res);
+		
+		return ResponseEntity.ok(result);
 	}
 
 	@GetMapping("/getProductList")

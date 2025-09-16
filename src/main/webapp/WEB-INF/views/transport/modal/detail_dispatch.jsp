@@ -38,6 +38,7 @@
                                 <th>품목</th>
                                 <th>반품수량/출고수량</th>
                                 <th>상태</th>
+                                <th>납품확인서</th>
                             </tr>
                         </thead>
                         <tbody><!-- JS 렌더링 --></tbody>
@@ -45,12 +46,13 @@
                 </div>
                 <h3 style="margin:12px 0 6px">배송 현황</h3>
             	<div class="timeline" id="timeline"><!-- 단계 표시 --></div>
+				<div id="map" ></div>
             </div>
             <div class="modal-foot">
             <button type="button"
-                    class="btn btn-secondary"
+                    class="btn btn-confirm"
                     onclick="ModalManager.closeModal(document.getElementById('detailModal'))">
-                닫기
+                확인
             </button>
             </div>
         </div>
