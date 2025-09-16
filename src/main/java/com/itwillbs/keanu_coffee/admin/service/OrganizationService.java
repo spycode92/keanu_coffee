@@ -113,7 +113,8 @@ public class OrganizationService {
 		
 		//팀 삭제
 		int deletedTeam = organizationMapper.deleteTeam(teamIdx);
-	    return deletedTeam == 1;
+	    
+		return deletedTeam == 1;
 	}
 	
 	// 직책삭제
@@ -128,12 +129,14 @@ public class OrganizationService {
 		
 		// 직책삭제
 		int affectedRows = organizationMapper.deleteRole(roleIdx);
+		
 		return affectedRows == 1;
 	}
 	
 	//부서 이름수정
 	@SystemLog(target = SystemLogTarget.COMMON_CODE)
 	public boolean modifyDepartmentName(int idx, String departmentName) {
+		
 		int affectedRows = organizationMapper.updateDepartment(idx, departmentName);
 		
 		return  affectedRows == 1;
@@ -142,6 +145,7 @@ public class OrganizationService {
 	//팀이름수정
 	@SystemLog(target = SystemLogTarget.TEAM)
 	public boolean modifyTeamName(int idx, String teamName) {
+		
 		int affectedRows = organizationMapper.updateTeam(idx, teamName);
 		
 		return  affectedRows == 1;
@@ -158,22 +162,27 @@ public class OrganizationService {
 	//권한목록 가져오기
 	@Transactional(readOnly = true)
 	public List<CommonCodeDTO> getAuthorityList() {
+		
 		return organizationMapper.selectAuthorityList();
 	}
 	
 	//직책별 권한정보 가져오기
 	@Transactional(readOnly = true)
 	public List<Map<String, Object>> getAuthrityInfo(Integer roleIdx) {
+		
 		return organizationMapper.selectAuthorityInfo(roleIdx);
 	}
 	
 	//직책별 권한 업데이트
 	@Transactional
 	@SystemLog(target = SystemLogTarget.ROLE_AUTHO )
-	public void modifyRoleAutho(Map<String, Object> data) {
+	public void modifyRoleAutho(Map<String, Object> data) throws Exception {
+		
 		Integer roleIdx = (Integer) data.get("roleIdx");
-	    List<Integer> addedAuthorities = (List<Integer>) data.get("addedAuthorities");
+	   
+		List<Integer> addedAuthorities = (List<Integer>) data.get("addedAuthorities");
 	    List<Integer> removedAuthorities = (List<Integer>) data.get("removedAuthorities");
+	    
 	    try {
             if (!removedAuthorities.isEmpty()) {
                 organizationMapper.deleteAuthorities(roleIdx, removedAuthorities);
@@ -190,47 +199,38 @@ public class OrganizationService {
 	//권한이름수정
 	@SystemLog(target = SystemLogTarget.COMMON_CODE)
 	public Boolean modifyAuthoName(Map<String, Object> data) {
+		
 		Integer authoIdx = (Integer)data.get("authoIdx");
 		String authoName = (String)data.get("authoName");
+		
 		int updateCount = organizationMapper.updateAuthoName(authoIdx, authoName);
+		
 		return updateCount > 0;
 	}
 
 	//권한삭제
 	@SystemLog(target = SystemLogTarget.COMMON_CODE)
-	public Map<String, String> removeAuthoName(CommonCodeDTO common) {
-		Map<String, String> result = new HashMap<>();
-		
+	public Boolean removeAuthoName(CommonCodeDTO common) {
 		Integer authoIdx = common.getCommonCodeIdx();
-		int exitsRoleAuthoCount = organizationMapper.countRoleAutho(authoIdx);
-		// 삭제할 권한이 직책에 부여되어 있다면
-		if (exitsRoleAuthoCount > 0) {
-			result.put("result", "fail");
-			result.put("msg", "권한이 부여된 직책이 있습니다.");
-			return result;
+		int existRoleAuthoCount = organizationMapper.countRoleAutho(authoIdx);
+		
+		if(existRoleAuthoCount == 0) {
+			//삭제할 권한이 직책에 부여되지 않았을 경우 삭제
+			organizationMapper.deleteAutho(authoIdx);
 		}
-		//삭제할 권한이 직책에 부여되지 않았을 경우 삭제
-		organizationMapper.deleteAutho(authoIdx);
-		result.put("result", "success");
-		result.put("msg", "권한이 삭제되었습니다.");
-		return result;
+		
+		return existRoleAuthoCount == 0;
 	}
 	
 	//권한 추가
 	@SystemLog(target = SystemLogTarget.COMMON_CODE)
-	public Map<String, String> addAutho(CommonCodeDTO common) {
-		Map<String, String> result = new HashMap<>();
-
-		int insertCount = organizationMapper.insertAutho(common);
+	public Boolean addAutho(CommonCodeDTO common) {
 		
-		if(insertCount > 0) {
-			result.put("result", "success");
-			result.put("msg", "권한이 추가되었습니다.");
-		}
-		result.put("result", "fail");
-		result.put("msg", "권한 추가에 실패하였습니다.");
-		return result;
+		int insertCount = organizationMapper.insertAutho(common);
+
+		return insertCount > 0;
 	}
+	
 	//부서 정보 가져오기
 	public CommonCodeDTO selectDept(Integer departmentIdx) {
 		
@@ -238,15 +238,17 @@ public class OrganizationService {
 	}
 	//팀 정보 가져오기
 	public TeamDTO selectTeam(Integer teamIdx) {
+		
 		return organizationMapper.selectTeam(teamIdx);
 	}
 	//직책 정보가져오기
 	public RoleDTO selectRole(Integer roleIdx) {
+		
 		return organizationMapper.selectRole(roleIdx);
 	}
 	//권한정보가져오기
 	public CommonCodeDTO selectAuthoName(CommonCodeDTO common) {
-		// TODO Auto-generated method stub
+
 		return organizationMapper.selectAuthoName(common);
 	}
 

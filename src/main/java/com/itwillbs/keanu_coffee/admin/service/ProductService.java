@@ -85,7 +85,7 @@ public class ProductService {
 	
 	//상품등록
 	@Transactional
-	@SystemLog(target = SystemLogTarget.PRODUCT)
+//	@SystemLog(target = SystemLogTarget.PRODUCT)
 	public Boolean addProduct(ProductDTO product) throws IOException {
 		String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		//상품 이름 중복 체크
@@ -102,6 +102,7 @@ public class ProductService {
 		if (!fileList.isEmpty()) {
 	        fileMapper.insertFiles(fileList);
 	    }
+//		return 1 > 0;
 		return insertCount > 0;
 	}
 	

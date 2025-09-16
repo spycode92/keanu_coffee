@@ -11,7 +11,8 @@
 <title>운송관리대시보드</title>
 <!-- 기본 양식 -->
 <link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
-<link href="${pageContext.request.contextPath}/resources/css/common/common_sample.css" rel="stylesheet">
+<%-- <link href="${pageContext.request.contextPath}/resources/css/common/common_sample.css" rel="stylesheet"> --%>
+<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
