@@ -21,19 +21,18 @@
             </div>
             <div class="modal-body">
                 <!-- 프로필 + 파일 입력 + 이름/성별 -->
-				<div style="display: flex; gap: 2rem; margin-bottom: 1rem;">
-				    <!-- 오른쪽: 이름/성별 -->
-				    <div style="flex:1; display:flex; flex-direction: column; gap:1rem;">
-				        <div class="field">
-				            <label class="form-label">이름</label>
-				            <input type="text" id="addEmpName" name="empName" required class="form-control" placeholder="한글만입력가능합니다.">
-				        </div>
-				        <div class="field">
-				            <label class="form-label">성별</label>
-				            <div class="seg-radio" style="display:flex; gap:1rem;">
-				                <label><input type="radio" name="empGender" id="male" value="남자" checked required> 남자</label>
-				                <label><input type="radio" name="empGender" id="female" value="여자"> 여자</label>
-				            </div>
+				<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1rem;">
+				    <div class="field" >
+				        <label class="form-label">이름</label>
+				        <input type="text" id="addEmpName" name="empName" required class="form-control" placeholder="한글만입력가능합니다.">
+				    </div>
+				    <div class="field">
+				        <label class="form-label">성별</label>
+				        <div class="seg-radio">
+				            <input type="radio" id="male" name="empGender" value="남자" checked>
+				            <label for="male">남자</label>
+				            <input type="radio" id="female" name="empGender" value="여자">
+				            <label for="female">여자</label>
 				        </div>
 				    </div>
 				</div>

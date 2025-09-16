@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
         defaultBtn.classList.remove('btn-secondary');
 		getOutboundData().then(() =>{
 			const OutboundChartData = outboundProcessChartData(outboundRawData);
-			console.log("출고데이터",OutboundChartData);
 			upgradeOutboundOverallChart(OutboundChartData);
 		});
 		getDayInbound().then( () => {
@@ -187,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	    
 	    // 날짜 정렬
 	    const dates = Object.keys(grouped).sort();
-	    console.log(grouped);
 	    // Chart.js 형태로 변환
 	    return {
 	        labels: dates,  // X축: 날짜들
@@ -249,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				onClick: (event, elements) => {
 					if (!elements.length) return;
 					
-					console.log(elements);
 					const idx = elements[0].index;
 	                const dateKey = overallChart.data.labels[idx];
 					
@@ -306,7 +303,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	    // 카테고리명 정렬
 	    const categories = Object.keys(grouped).sort();
 	    
-	    console.log('카테고리별 집계:', grouped);
 	    
 	    // Chart.js 형태로 변환
 	    return {
@@ -484,7 +480,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		return ajaxGet(`/admin/dashboard/outbound/${needData}?startDate=${startDate}&endDate=${endDate}`
 			)
 			.then((data)=>{
-				console.log(data);
 				outboundRawData = data;
 			
 			}).catch((data)=>{
@@ -631,10 +626,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	    });
 	
 	    const categories = Object.keys(grouped).sort();
-		console.log(categories);
-		console.log(categories.map(c => grouped[c].수주완료));
-		console.log(categories.map(c => grouped[c].폐기));
-		console.log(categories.map(c => grouped[c].미출고));
 	    return {
 	        labels: categories,
 	        datasets: [
@@ -800,7 +791,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		return ajaxGet(`/admin/dashboard/disposal/${needData}?startDate=${startDate}&endDate=${endDate}`
 			)
 			.then((data)=>{
-				console.log("어어엉어",data)
 				disposalRawData = data;
 			}).catch((data)=>{
 				console.log("error " + data)	

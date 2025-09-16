@@ -17,16 +17,22 @@
                 </button>
             </div>
             <div class="modal-body" >
-                <div class="field" >
-                    <div style=" display:flex; gap:1rem; min-width:150px;">
-                        <button class="btn btn-primary searchSupplier" >공급업체검색</button>
-                        <select id="addContractSupplierSelect" name="supplierIdx" class="form-select supplierSelectList" required>
-                        </select>
-                        <button class="btn btn-primary searchProduct" >상품검색</button>
-                        <select id="addContractProductSelect" name="productIdx" class="form-select productSelectList"  required>
-                        </select>
-                    </div>
-                </div>
+				<div class="field">
+				    <div style="display:flex; gap:2rem; min-width:150px;">
+				        <!-- 공급업체 섹션 -->
+				        <div style="display:flex; flex-direction: column; gap:0.5rem;">
+				            <button class="btn btn-primary searchSupplier">공급업체검색</button>
+				            <select id="addContractSupplierSelect" name="supplierIdx" class="form-select supplierSelectList" required>
+				            </select>
+				        </div>
+				        <!-- 상품 섹션 -->
+				        <div style="display:flex; flex-direction: column; gap:0.5rem;">
+				            <button class="btn btn-primary searchProduct">상품검색</button>
+				            <select id="addContractProductSelect" name="productIdx" class="form-select productSelectList" required>
+				            </select>
+				        </div>
+				    </div>
+				</div>
                 <div class="field mb-3">
                     <label class="form-label">계약 단가(원)</label>
                     <input type="number" id="contractPrice" name="contractPrice" class="form-control" min="0" max="2147483647" required>

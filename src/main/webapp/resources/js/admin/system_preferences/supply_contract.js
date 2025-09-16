@@ -141,8 +141,6 @@ $(function(){
 	    var supplierIdx = $(this).data('supplieridx');  // data-supplieridx 값 가져오기
 	    var supplierName = $(this).find('td').text();  // 해당 행의 공급업체 이름 가져오기
 	
-	    console.log("선택된 공급업체 idx:", supplierIdx);
-	    console.log("선택된 공급업체 이름:", supplierName);
 	
 	    // 원하는 동작 추가 예:
 	    // 예를 들면, input 박스에 선택된 공급업체 이름 넣기
@@ -233,7 +231,6 @@ $(function(){
             dataType: 'json',
             success: function(data) {
                 if (!data) return;
-				console.log(data);
                 $('#detailContractSupplierSelect').val(data.supplier.supplierIdx);
                 $('#detailContractProductSelect').val(data.product.productIdx);
                 $('#detailContractPrice').val(data.contractPrice);
@@ -302,7 +299,6 @@ $(function(){
     // 상세보기 열기
     $('#contractTable').on('click', 'tr', function() {
         const contractIdx = $(this).closest('tr').data('contract-idx');
-		console.log(contractIdx);
         openContractDetailModal(contractIdx);
     });
 
@@ -380,10 +376,12 @@ $(function(){
                 ajaxPost('/admin/systemPreference/supplyContract/deleteContractDetail',
                     dataToDelete
 				).then(function(response) {
-                        Swal.fire(response.title, response.msg, response.result);
+                        Swal.fire(response.title, response.msg, response.result).then(()=>{
+	
                         const detailModal = document.getElementById('contractDetailModal');
 						window.location.reload();
                         ModalManager.closeModal(detailModal);
+						})
                     }).catch(function() {
                         Swal.fire('오류', '삭제 중 오류가 발생했습니다.', 'error');
                 });

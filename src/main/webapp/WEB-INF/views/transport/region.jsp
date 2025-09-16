@@ -13,9 +13,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" ></script>
 <link
-	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
-	rel="stylesheet">
-<link
 	href="${pageContext.request.contextPath}/resources/css/common/common.css"
 	rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -30,6 +27,7 @@
 <script
 	src="${pageContext.request.contextPath}/resources/js/transport/route.js"
 	defer></script>
+<script src="https://kit.fontawesome.com/a96e186b03.js" crossorigin="anonymous"></script>
 <style type="text/css">
 /* 컨테이너 */
 .region-container {
@@ -67,21 +65,13 @@ margin-top: 0.5rem;
 
 .region-card input,
 .region-card select,
-.region-card .btn {
+.region-card {
 	width:100%; 
 	padding:0.5rem; 
 	margin-top:0.25rem; 
 	margin-bottom:0.75rem;
 	border:1px solid var(--border); 
 	border-radius: var(--radius);
-}
-
-
-.region-card .btn {
-	background: var(--primary);
-	color: var(--primary-foreground);
-	font-weight: var(--font-weight-medium);
-	cursor: pointer;
 }
 
 .region-card button:hover { 
@@ -102,7 +92,11 @@ margin-top: 0.5rem;
 
 
 /* 리스트 드래그 */
-#franchiseList { list-style:none; padding:0; margin:1rem 0; }
+#franchiseList { 
+	list-style:none; 
+	padding:0; 
+	margin:1rem; 
+}
 #franchiseList li {
 	background: var(--accent);
 	color: var(--foreground);
@@ -111,6 +105,10 @@ margin-top: 0.5rem;
 #franchiseList li.dragging { 
 	opacity:0.5; 
 	background: var(--secondary); 
+}
+
+#franchiseTable {
+	margin-bottom: 1rem;
 }
 
 .region-item {
@@ -122,7 +120,8 @@ margin-top: 0.5rem;
   margin-bottom: 8px;
 }
 
-.region-name {
+#regionName {
+  width: 94%;
   flex: 1;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -144,24 +143,29 @@ margin-top: 0.5rem;
   margin-bottom: 9px;
 }
 
-.icon-btn {
-  background: #f5f5f5;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 0.9rem;
-  padding: 6px;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
+.btn.edit:hover { 
+   background: var(--primary); 
+   color: var(--primary-foreground); 
+} 
 
-.icon-btn.edit:hover {
-  background: var(--primary);
-  color: var(--primary-foreground);
-}
-
-.icon-btn.delete:hover {
+.btn.delete:hover {
   background: var(--destructive);
   color: var(--destructive-foreground);
+}
+
+#saveRouteBtn {
+	display: none;
+}
+
+.dong-del {
+	cursor: pointer; 
+	color: #9ca3af;       
+	transition: color 0.2s, transform 0.2s;
+}
+
+.dong-del:hover {
+	color: #dc2626;         
+	transform: scale(1.2);  
 }
 </style>
 </head>
@@ -198,8 +202,12 @@ margin-top: 0.5rem;
 								<div class="region-item" >
 									<input class="region-name" value="${region.commonCodeName}"/>
 								  	<div class="region-actions">
-								    	<button type="button" class="icon-btn edit" onclick="editRegion('${region.commonCodeIdx}', '${region.commonCodeName}')">✎</button>
-								    	<button type="button" class="icon-btn delete" onclick="deleteRegion('${region.commonCodeIdx}')">🗑</button>
+								    	<button type="button" class="btn edit" onclick="editRegion('${region.commonCodeIdx}', '${region.commonCodeName}')">
+								    		<i class="fa-solid fa-pen"></i>
+								    	</button>
+								    	<button type="button" class="btn delete" onclick="deleteRegion('${region.commonCodeIdx}')">
+								    		<i class="fa-solid fa-trash"></i>
+								    	</button>
 								  	</div>
 								</div>
 							</c:forEach>
@@ -231,7 +239,7 @@ margin-top: 0.5rem;
 				<select id="dongSelect">
  					<option value="">-- 시/도 선택 --</option>
 				</select> 
-				<button id="addMappingBtn">범위 추가</button>
+				<button class="btn btn-primary" id="addMappingBtn">범위 추가</button>
 
 
 				<h3>설정된 구역</h3>
@@ -267,7 +275,7 @@ margin-top: 0.5rem;
 					</thead>
 					<tbody></tbody>
 				</table>
-				<button id="saveRouteBtn" >순서 저장</button>
+				<button class="btn btn-primary" id="saveRouteBtn" >순서 저장</button>
 			</div>
 		</div>
 	</section>

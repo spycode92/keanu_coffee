@@ -161,7 +161,6 @@ $(function () {
 				ajaxPost(`/admin/systemPreference/product/removeCategory`,
 	                { commonCodeIdx: categoryIdx }
 				).then(function (event) {
-						console.log(event.responseText);
 	                    Swal.fire(event.responseText, '카테고리가 삭제되었습니다.', 'success');
 	                    loadCategoryList().then(()=>{
 			                renderCategoryListInModal();
@@ -252,7 +251,6 @@ $(function () {
 	
 	//상품상세모달창열기
 	$('#productTable').on('click', 'tr', function() {
-		console.log(this);
 	    const productIdx = $(this).data('productidx');
 	    if (!productIdx) {
 	        Swal.fire('오류', '상품 정보를 불러올 수 없습니다.', 'error');
@@ -282,7 +280,6 @@ $(function () {
 	            $('#detailProductFrom').val(product.productFrom);
 	            $('#detailNote').val(product.note);
 	            $('#detailProductStatus').val(product.status);
-				console.log(product);
 	            // 이미지(썸네일/다운로드)
 	            if (product.file.fileIdx) {
 	                $('#detailProductImagePreview')
@@ -344,7 +341,6 @@ $(function () {
 	
 	//상품상세보기>삭제
 	$(document).on('click', '.btn-delete', function() {
-		console.log(detailProductIdx);
 		Swal.fire({
 	        title: '정말 삭제하시겠습니까?',
 	        icon: 'warning',

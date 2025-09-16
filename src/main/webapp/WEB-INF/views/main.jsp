@@ -41,20 +41,17 @@
 const pageName = "main";
 
 function subscribePage() {
-	console.log("여기왔어요");
 	// top.jsp - function subscribeRoom(roomId, callback) {} 함수 호출하여 채팅방 구독 요청
 	// => 콜백함수로 전달할 익명함수 정의 시 익명함수 파라미터에 메세지를 전달받을 파라미터 선언
 	//    (callback(JSON.parse(outputMsg.body)); 형태로 콜백함수 호출이 일어남)
 	subscribeRoom(pageName, function(message) {
 		// 전달받은 채팅메세지를 채팅 메세지 영역에 추가
-		console.log("메세지전달됐음", message);
 	});
 }
 // ====================================
 // 채팅메세지 전송 요청을 수행할 함수
 function requestSendMessage() {
 	let messageContent = "ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ";
-	console.log("메세지 전송 준비 : " + messageContent);
 	
 	// top.jsp - sendMessage() 함수(function sendMessage(roomId, messageContent) {}) 호출하여 메세지 전송 요청
 	sendMessage(pageName, messageContent);

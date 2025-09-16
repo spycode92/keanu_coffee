@@ -1,7 +1,6 @@
 package com.itwillbs.keanu_coffee.admin.controller;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -68,7 +66,7 @@ public class EmployeeManagementController {
 
 			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
 				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
-				model.addAttribute("targetURL", "/admin/customer/notice_list");
+				model.addAttribute("targetURL", "/admin/employeeManagement");
 				return "commons/result_process";
 			}
 
@@ -88,7 +86,6 @@ public class EmployeeManagementController {
 	public EmployeeInfoDTO getOneEmployeeInfo(HttpSession session, Authentication authentication) {
 		EmployeeInfoDTO employee = new EmployeeInfoDTO();
 		EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
-		String empNo = authentication.getName();
 		Integer empIdx = empDetail.getEmpIdx();
 
 		employee = employeeManagementService.getOneEmployeeInfoByEmpIdx(empIdx);
@@ -99,8 +96,13 @@ public class EmployeeManagementController {
 	@PostMapping("/modifyEmployeeInfo")
 	public String modifyEmployeeInfo(EmployeeInfoDTO employee, HttpServletRequest request,
 			Authentication authentication) throws IllegalStateException, IOException {
-		int updateCount = employeeManagementService.modifyEmployeeInfo(employee, authentication);
-		String refererUrl = request.getHeader("Referer");
+		int updateCount = employeeManagementService.modifyEmployeeInfo(employee);
+		
+		String refererUrl = "";
+		
+		if(updateCount>0) {
+			refererUrl = request.getHeader("Referer");
+		}
 
 		if (refererUrl != null && !refererUrl.isEmpty()) {
 			return "redirect:" + refererUrl;
@@ -153,7 +155,6 @@ public class EmployeeManagementController {
 	@PostMapping("/resetPw")
 	@ResponseBody
 	public Map<String, Object> resetPw(@RequestBody EmployeeInfoDTO employee) {
-		System.out.println(employee);
 		// AJAX결과 리턴 객체 생성
 		Map<String, Object> result = new HashMap<>();
 

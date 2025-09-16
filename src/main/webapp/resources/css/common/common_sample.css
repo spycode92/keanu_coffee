@@ -1,56 +1,65 @@
 :root {
-    --font-size: 14px;
-    --background: rgb(156, 177, 250);
-    --foreground: oklch(0.145 0 0);
-    --card: rgb(175 199 237);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: rgb(86, 95, 254);
-    --primary-foreground: oklch(1 0 0);
-    --secondary: oklch(0.95 0.0058 264.53);
-    --secondary-foreground: #030213;
-    --muted: rgb(99, 134, 253);
-    --muted-foreground: rgb(0, 0, 0);
-    --accent: #e9ebef;
-    --accent-foreground: #030213;
-    --destructive: #d4183d;
+    --font-size: 20px;
+    --background: #f6f7fb;
+    --foreground: #0f172a;
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    --primary: #1f4dc6; 
+    --primary-foreground: #ffffff;
+    --secondary: #f1f5f9;  
+    --secondary-foreground: #0f172a;
+    --muted: #f1f5f9;
+    --muted-foreground: #475569;
+    --accent: #eef2f6;
+    --accent-foreground: #0f172a;
+    --destructive: #dc2626;
     --destructive-foreground: #ffffff;
-    --border: rgb(18, 36, 103);
-    --input: transparent;
-    --input-background: rgb(182, 209, 252);
-    --switch-background: rgb(128, 128, 128);
+    --border: #e2e8f0;
+    --input: #ffffff;
+    --input-background: #ffffff;
+    --switch-background: #cbd5e1;
     --font-weight-medium: 500;
     --font-weight-normal: 400;
     --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.646 0.222 41.116);
-    --chart-2: oklch(0.6 0.118 184.704);
-    --chart-3: oklch(0.398 0.07 227.392);
-    --chart-4: oklch(0.828 0.189 84.429);
-    --chart-5: oklch(0.769 0.188 70.08);
+    --chart-1: #1f4dc6;
+    --chart-2: #0ea5e9;
+    --chart-3: #14b8a6;
+    --chart-4: #f59e0b;
+    --chart-5: #ef4444;
     --radius: 0.625rem;
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.145 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.145 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.78 0.07 254.08 / 0.88);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: rgb(192, 192, 192);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.396 0.141 25.723);
-    --destructive-foreground: oklch(0.637 0.237 25.331);
-    --border: oklch(0.269 0 0);
-    --input: oklch(0.269 0 0);
+    --background: #0b1220;
+    --foreground: #e5eaf3;
+    --card: #0f172a;
+    --card-foreground: #e5eaf3;
+    --popover: #0f172a;
+    --popover-foreground: #e5eaf3;
+    --primary: #5b7cff;
+    --primary-foreground: #0b1220;
+    --secondary: #111827;
+    --secondary-foreground: #e5eaf3;
+    --muted: #0f1a2b;
+    --muted-foreground: #9aa7b7;
+    --accent: #0f1a2b;
+    --accent-foreground: #e5eaf3;
+    --destructive: #b91c1c;
+    --destructive-foreground: #ffecec;
+    --border: #182235;
+    --input: #141c2a;
+    --input-background: #141c2a;
+  	--switch-background: #334155;
     --ring: oklch(0.439 0 0);
+    
+    /* 차트 다크 톤(선택) */
+	--chart-1: #5b7cff;
+	--chart-2: #38bdf8;
+	--chart-3: #2dd4bf;
+	--chart-4: #fbbf24;
+	--chart-5: #f87171;
 }
 
 body {
@@ -128,7 +137,7 @@ body {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 0.5rem;
-    width: 99%;
+    width: 100%;
     color: var(--foreground);
 }
 
@@ -154,6 +163,12 @@ body {
 }
 
 .nav-item:hover {
+    background-color: var(--accent);
+    text-decoration: none;
+    color: var(--foreground);
+}
+
+.nav-item.active {
     background-color: var(--accent);
     text-decoration: none;
     color: var(--foreground);
@@ -192,7 +207,7 @@ body {
 
 /* Table */
 .table {
-    width: 99%;
+    width: 100%;
     border-collapse: collapse;
 }
 
@@ -390,11 +405,11 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 99%;
-    height: 99%;
+    width: 100%;
+    height: 100%;
     background-color: var(--background);
     z-index: 50;
-    transform: translateX(-99%);
+    transform: translateX(-100%);
     transition: transform 0.3s;
 }
 
@@ -492,7 +507,7 @@ body {
 .dashboard-layout {
   display: flex;
   min-height: 90vh;
-  width: 99%;
+  width: 100%;
 }
 
 .sidebar {
@@ -500,10 +515,11 @@ body {
   background: var(--secondary, #ececf0);
   transition: width 0.3s, transform 0.3s;
   overflow: hidden;
-  min-height: 99vh;
+  min-height: 100vh;
   box-shadow: 2px 0 8px rgba(0,0,0,0.03);
   position: relative;
   z-index: 20;
+  padding: 0.7em;
 }
 
 .sidebar ul {
@@ -736,7 +752,6 @@ body {
 
 .modal-body {
   padding: 14px 16px;
-  overflow: auto;
 }
 
 .modal-foot {

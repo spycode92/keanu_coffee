@@ -141,7 +141,6 @@ let EmpData = "";
 function getEmpData(empIdx) {
 	ajaxGet('/admin/employeeManagement/getEmployeeDetailByIdx',{empIdx : empIdx})
 		.then(data => {
-			console.log('직원 상세정보 : ' + data);
 			EmpData = data;
 			populateEmployeeDetail(EmpData);
 			return data
@@ -302,6 +301,8 @@ function onModifyDeptChange() {
 	});
 }
 
+	
+
 
 
 
@@ -431,6 +432,45 @@ document.addEventListener("DOMContentLoaded", function() {
 	        $(this).removeClass('is-valid');
 	    }
 	});
+	
+	//수정모달 정보저장하기
+	form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const submitBtn = this.querySelector('[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = '저장 중...';
+        
+        // 기존 파일 전송용 함수 사용 (FormData 그대로 전송)
+        ajaxPostWithFile('/admin/employeeManagement/updateEmployee', '#modifyEmployeeForm')
+            .then(response => {
+                // SweetAlert 성공 메시지
+                Swal.fire({
+                    icon: 'success',
+                    title: '저장 완료',
+                    text: '직원 정보가 수정되었습니다.',
+                    timer: 1500,
+                }).then(() => {
+                    ModalManager.closeModal(document.getElementById('modifyEmployeeModal'));
+                    location.reload();
+                });
+            })
+            .catch(error => {
+                console.error('수정 오류:', error);
+                
+                // SweetAlert 오류 메시지
+                Swal.fire({
+                    icon: 'error',
+                    title: '저장 실패',
+                    text: '저장 중 오류가 발생했습니다.',
+                    confirmButtonText: '확인'
+                });
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '저장';
+            });
+    });
 
 
 });

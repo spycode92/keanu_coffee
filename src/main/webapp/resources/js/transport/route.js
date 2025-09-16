@@ -6,6 +6,8 @@ let  allData = [];
 $("#routeRegionSelect").change(function() {
 	const regionName = $(this).val();
 	
+	$("#saveRouteBtn").show();
+	
 	$.getJSON(FRANCHISE_ROUTE_URL)
 		.done(function(data) {
 			allData = data;

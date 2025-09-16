@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -88,7 +89,8 @@ public class PurchaseOrderController {
 
 //	@GetMapping("/trigger")
 //	public void triggerManually() throws IOException {
-	@Scheduled(cron = "0 * * * * *") // every minute
+//	@Scheduled(cron = "0 0 0 * * *") // every day
+//	@Scheduled(cron = "0 * * * * *") // every minute
 	public void triggerAutomatically() throws IOException {
 	    // your logic here
 	
@@ -120,8 +122,10 @@ public class PurchaseOrderController {
         
 //        retreive product demand from last month and last month a year ago
         List<OutboundOrderItemDTO> lastMonthsDemandItems = purchaseOrderService.getLastMonthsDemand(month, year, daysInLastMonth);
+        
         List<OutboundOrderItemDTO> lastMonthsDemandItemsYearAgo = purchaseOrderService.getLastMonthsDemandYearAgo((month), (year - 1), daysInLastMonth21);
-        System.out.println("list of average demand for last month's items per day : " + lastMonthsDemandItems);
+        
+//        System.out.println("list of average demand for last month's items per day : " + lastMonthsDemandItems);
         
         //divide last month by last month a year ago
         Map<Integer, Double> denominatorMap = lastMonthsDemandItemsYearAgo.stream()
@@ -239,7 +243,7 @@ public class PurchaseOrderController {
             
              // add these two lists together
              Map<Integer, Double> quantityMap2 = new HashMap<>();
-
+             System.out.println("**************************Inbound waiting quantities: " + inboundWaitingQuantity);
              // Combine both lists
              Stream.concat(inventoryQuantity.stream(), inboundWaitingQuantity.stream())
                  .forEach(dto -> quantityMap2.merge(dto.getProductIdx(), dto.getQuantity(), Double::sum));
@@ -323,17 +327,34 @@ public class PurchaseOrderController {
 		    //get supplier for each product
 		    List<SupplierProductContractDTO> productAndSuppplier = purchaseOrderService.getProductAndSuppplier();
 		    // change the dto to a map 
-		    Map<Integer, Integer> productAndSuppplierToMap = productAndSuppplier.stream()
+//		    Map<Integer, Integer> productAndSuppplierToMap = productAndSuppplier.stream()
+//		    	    .collect(Collectors.toMap(
+//		    	    		SupplierProductContractDTO::getProductIdx,
+//		    	    		SupplierProductContractDTO::getSupplierIdx
+//		    	    		SupplierProductContractDTO::getContractPrice
+//		    	    ));
+		    Map<Integer, SupplierProductContractDTO> productToContractMap = productAndSuppplier.stream()
 		    	    .collect(Collectors.toMap(
-		    	    		SupplierProductContractDTO::getProductIdx,
-		    	    		SupplierProductContractDTO::getSupplierIdx
+		    	        SupplierProductContractDTO::getProductIdx,
+		    	        Function.identity() // use the whole DTO as the value
 		    	    ));
 		    
 		    
 //		    make a list of orders that need to be made organized by supplier
+//		    Map<Integer, List<OutboundOrderItemDTO>> ordersBySupplier = finalOrders.stream()
+//		    	    .collect(Collectors.groupingBy(order -> 
+//		    	    productAndSuppplierToMap.getOrDefault(order.getProductIdx(), -1) // -1 for unknown supplier
+//		    	    ));
 		    Map<Integer, List<OutboundOrderItemDTO>> ordersBySupplier = finalOrders.stream()
-		    	    .collect(Collectors.groupingBy(order -> 
-		    	    productAndSuppplierToMap.getOrDefault(order.getProductIdx(), -1) // -1 for unknown supplier
+		    	    .collect(Collectors.groupingBy(order -> {
+		    	        SupplierProductContractDTO contract = productToContractMap.get(order.getProductIdx());
+		    	        return (contract != null) ? contract.getSupplierIdx() : -1;
+		    	    }));
+		    
+		    Map<Integer, Integer> productToContractPriceMap = productAndSuppplier.stream()
+		    	    .collect(Collectors.toMap(
+		    	        SupplierProductContractDTO::getProductIdx,
+		    	        SupplierProductContractDTO::getContractPrice
 		    	    ));
 		    
 		    
@@ -359,16 +380,16 @@ public class PurchaseOrderController {
 		        // Generate a unique PO number per supplier
 		        MakePurchaseOrderNumber mpon = new MakePurchaseOrderNumber(purchaseOrderService);
 		        String purchaseOrderNumber = mpon.MakePurchaseOrderNo();
-		        System.out.println(purchaseOrderNumber);
+//		        System.out.println(purchaseOrderNumber);
 		        LocalDateTime now = LocalDateTime.now();
 		        
 		        // make order_idx from last 9 digits of purchase order
 		        String[] parts = purchaseOrderNumber.split("-");
-		        System.out.println("parts : " + parts);
+//		        System.out.println("parts : " + parts);
 		        String datePart = parts[1].substring(2);      // "250804"
-		        System.out.println("datePart : " + datePart);
+//		        System.out.println("datePart : " + datePart);
 		        String sequencePart = parts[2];               // "001"
-		        System.out.println("sequencePart : " + sequencePart);
+//		        System.out.println("sequencePart : " + sequencePart);
 
 		        int orderIdx = Integer.parseInt(datePart + sequencePart); // result: 250804001
 //		        String[] parts = purchaseOrderNumber != null ? purchaseOrderNumber.split("-") : new String[0];
@@ -417,15 +438,16 @@ public class PurchaseOrderController {
 		        int finalOrderIdx = orderIdx;  // getting error that orderIdx needs to be effectively final
 		        // Add all items to that order
 		        orders.forEach(order -> {
+		        	int contractPrice = productToContractPriceMap.get(order.getProductIdx());
 		            System.out.println("  Product " + order.getProductIdx() + ", Qty " + order.getQuantity());
-		            purchaseOrderService.addProductOrderItem(finalOrderIdx, order.getProductIdx(), order.getQuantity());
+		            purchaseOrderService.addProductOrderItem(finalOrderIdx, order.getProductIdx(), order.getQuantity(), contractPrice);
 		        });
 		    });
 
 		    
 		    
 		    
-// make a pdf of product order -- no time
+// make a pdf of product order -- no t
 		
 //	       String filePath = "temp/purchase_order.pdf";
 	//        purchaseOrderGenerator.generatePurchaseOrder("output/purchase_order.pdf");

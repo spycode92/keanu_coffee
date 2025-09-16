@@ -34,7 +34,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class InventoryDTO {
-	private String inventoryIdx;
+	private int inventoryIdx;
 	private int receiptProductIdx;
 	private int locationIdx;
 	private String locationName;
@@ -45,5 +45,14 @@ public class InventoryDTO {
 	private Date expirationDate;
 	private Timestamp createdAt;
 	private Timestamp updatedAt;
+	
+	
+	public InventoryDTO(int inventoryIdx, int receiptProductIdx) {
+		super();
+		this.inventoryIdx = inventoryIdx;
+		this.receiptProductIdx = receiptProductIdx;
+	}
+	
+	
 	
 }

@@ -13,6 +13,9 @@
 <link
 	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
 	rel="stylesheet">
+<link
+	href="${pageContext.request.contextPath}/resources/css/common/common.css"
+	rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script
 	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
@@ -29,34 +32,6 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 .content {
 	height: 630px;
 }
-
-/* 4) 버튼 */
-.btn{
-	height: 36px;
-  	padding: 0 14px;
-  	border: 1px solid var(--border);
-  	border-radius: var(--radius);
-  	background: var(--background);
-  	color: var(--foreground);
-  	font-weight: 600;
-  	transition: background .12s, border-color .12s, box-shadow .12s, color .12s;
-}
-.btn:hover{ background: #f8fafc; border-color: #cbd5e1; }
-.btn:focus-visible{ outline: 2px solid var(--ring); outline-offset: 2px; }
-
-.btn-primary{
-  	background: var(--primary);
-  	color: var(--primary-foreground);
-  	border-color: transparent;
-}
-.btn-primary:hover{ filter: brightness(0.95); }
-
-.btn-secondary{
-  	background: var(--secondary);
-  	color: var(--secondary-foreground);
-}
-
-
 
 .badge {
 	display: inline-block;
@@ -283,97 +258,95 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
-	<section class="container">
+	<section class="content">
 		<header>
 	        <h1>차량 관리</h1>
 	        <div style="display:flex; gap:8px">
-	            <button class="btn secondary" id="openCreate">+ 차량 등록</button>
-	            <button class="btn danger" id="bulkDelete">선택 삭제</button>
+	            <button class="btn btn-primary" id="openCreate">+ 차량 등록</button>
+	            <button class="btn btn-cancel" id="bulkDelete">선택 삭제</button>
 	        </div>
         </header>
-		<div class="content">
-			<!-- 검색/필터 -->
-	        <form class="filters" aria-label="검색 및 필터">
-	            <div class="field">
-	                <select id="filterStatus" name="filter">
-	                    <option value="전체">전체</option>
-	                    <option value="미배정">미배정</option>
-	                    <option value="대기">대기</option>
-	                    <option value="운행중">운행중</option>
-	                    <option value="사용불가">사용불가</option>
-	                </select>
-	            </div>
-	            <div class="search">
-	                <input id="filterText" type="text" name="searchKeyword" placeholder="차량번호 검색" />
-	            </div>
-	            <div class="actions">
-	                <button class="btn" id="btnSearch">검색</button>
-	            </div>
-	        </form>
-			<div>
-				<h3>차량목록</h3>
-				<c:choose>
-					<c:when test="${empty vehicleList}">
-						<div class="empty-result">검색된 차량이 없습니다.</div>
-					</c:when>
-					<c:otherwise>
-						<table class="table" id="vehicleTable">
-							<thead>
-								<tr>
-									<th><input type="checkbox" id="checkAll" /></th>
-									<th>차량번호</th>
-									<th>차종유형</th>
-									<th>적재량</th>
-									<th>제조사/모델명</th>
-									<th>연식</th>
-									<th>고정기사명</th>
-									<th>상태</th>
+		<!-- 검색/필터 -->
+        <form class="filters" aria-label="검색 및 필터">
+            <div class="field">
+                <select id="filterStatus" name="filter">
+                    <option value="전체">전체</option>
+                    <option value="미배정">미배정</option>
+                    <option value="대기">대기</option>
+                    <option value="운행중">운행중</option>
+                    <option value="사용불가">사용불가</option>
+                </select>
+            </div>
+            <div class="search">
+                <input id="filterText" type="text" name="searchKeyword" placeholder="차량번호 검색" />
+            </div>
+            <div class="actions">
+                <button class="btn btn-primary" id="btnSearch">검색</button>
+            </div>
+        </form>
+		<div>
+			<h3>차량목록</h3>
+			<c:choose>
+				<c:when test="${empty vehicleList}">
+					<div class="empty-result">검색된 차량이 없습니다.</div>
+				</c:when>
+				<c:otherwise>
+					<table class="table" id="vehicleTable">
+						<thead>
+							<tr>
+								<th><input type="checkbox" id="checkAll" /></th>
+								<th>차량번호</th>
+								<th>차종유형</th>
+								<th>적재량</th>
+								<th>제조사/모델명</th>
+								<th>연식</th>
+								<th>고정기사명</th>
+								<th>상태</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach var="vehicle" items="${vehicleList}">
+								<tr class="rowLink" data-vehicle-id="${vehicle.vehicleIdx}" data-status="${vehicle.status}">
+									<td><input type="checkbox" class="rowCheck"/></td>
+									<td>${vehicle.vehicleNumber}</td>
+									<td>${vehicle.vehicleType}</td>
+									<td>
+										<c:choose>
+											<c:when test="${vehicle.capacity == 1000 }">
+												1.0t
+											</c:when>
+											<c:otherwise>
+												1.5t
+											</c:otherwise>
+										</c:choose>
+									</td>
+									<td>${vehicle.manufacturerModel}</td>
+									<td>${vehicle.manufactureYear}</td>
+									<td>
+										<c:if test="${vehicle.driverName != null}">${vehicle.driverName}</c:if>
+									</td>
+									<td>
+										<c:choose>
+											<c:when test="${vehicle.status eq '미배정'}">
+												<span class="badge unassigned">${vehicle.status}</span>
+											</c:when>
+											<c:when test="${vehicle.status eq '대기'}">
+												<span class="badge wait">${vehicle.status}</span>
+											</c:when>
+											<c:when test="${vehicle.status eq '운행중'}">
+												<span class="badge run">${vehicle.status}</span>
+											</c:when>
+											<c:otherwise>
+												<span class="badge left">${vehicle.status}</span>
+											</c:otherwise>
+										</c:choose>
+									</td>
 								</tr>
-							</thead>
-							<tbody>
-								<c:forEach var="vehicle" items="${vehicleList}">
-									<tr class="rowLink" data-vehicle-id="${vehicle.vehicleIdx}" data-status="${vehicle.status}">
-										<td><input type="checkbox" class="rowCheck"/></td>
-										<td>${vehicle.vehicleNumber}</td>
-										<td>${vehicle.vehicleType}</td>
-										<td>
-											<c:choose>
-												<c:when test="${vehicle.capacity == 1000 }">
-													1.0t
-												</c:when>
-												<c:otherwise>
-													1.5t
-												</c:otherwise>
-											</c:choose>
-										</td>
-										<td>${vehicle.manufacturerModel}</td>
-										<td>${vehicle.manufactureYear}</td>
-										<td>
-											<c:if test="${vehicle.driverName != null}">${vehicle.driverName}</c:if>
-										</td>
-										<td>
-											<c:choose>
-												<c:when test="${vehicle.status eq '미배정'}">
-													<span class="badge unassigned">${vehicle.status}</span>
-												</c:when>
-												<c:when test="${vehicle.status eq '대기'}">
-													<span class="badge wait">${vehicle.status}</span>
-												</c:when>
-												<c:when test="${vehicle.status eq '운행중'}">
-													<span class="badge run">${vehicle.status}</span>
-												</c:when>
-												<c:otherwise>
-													<span class="badge left">${vehicle.status}</span>
-												</c:otherwise>
-											</c:choose>
-										</td>
-									</tr>
-								</c:forEach>
-							</tbody>
-						</table>
-					</c:otherwise>
-				</c:choose>
-			</div>
+							</c:forEach>
+						</tbody>
+					</table>
+				</c:otherwise>
+			</c:choose>
 		</div>
 		<jsp:include page="/WEB-INF/views/inc/pagination.jsp">
 			<jsp:param value="/transport/vehicle" name="pageUrl"/>

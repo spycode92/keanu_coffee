@@ -221,7 +221,6 @@ public class OrganizationController {
 	@GetMapping("/getAutho")
 	public ResponseEntity<List<Map<String, Object>>> getRolesAutho(@RequestParam Integer roleIdx) {
 		List<Map<String, Object>> authority = organizationService.getAuthrityInfo(roleIdx);
-		System.out.println("authority size: " + (authority != null ? authority.size() : "null")); // 결과 확인
 
 		return ResponseEntity.ok(authority);
 	}

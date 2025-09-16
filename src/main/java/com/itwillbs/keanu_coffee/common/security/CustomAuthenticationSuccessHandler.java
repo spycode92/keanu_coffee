@@ -30,42 +30,33 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 		// 인증 정보를 MyUserDetails 객체로 변환 => getPrincipal() 메서드로 Principal 객체 얻어와서 변환
 		EmployeeDetail employeeDetail = (EmployeeDetail)authentication.getPrincipal();
 		
-		
 		String roleName = employeeDetail.getRole().getRoleName();
 		String redirectURL = "/main";
 		switch(roleName) {
 			case "최고관리자" : redirectURL = "/admin/dash";
+				break;
 			case "시스템관리자" : redirectURL = "/admin/systemPreference/dept";
+				break;
 			case "입고관리자" : redirectURL = "/inbound/main";
+				break;
 			case "입고평사원" : redirectURL = "/inbound/management";
+				break;
 			case "출고관리자" : redirectURL = "/outbound/main";
+				break;
 			case "출고평사원" : redirectURL = "/outbound/management";
+				break;
 			case "재고관리자" : redirectURL = "/inventory/main";
+				break;
 			case "재고평사원" : redirectURL = "/inventory//inventory/inventoryToMove";
+				break;
 			case "운송관리자" : redirectURL = "/transport/main";
-			case "운송기사" : redirectURL = "/transport/myPage/" + empNo;
+				break;
+			case "운송기사" : redirectURL = "/transport/mypage/" + empNo;
+				break;
 		}
-		// 사용자 권한 확인
-		if(employeeDetail.getRole().getRoleName().contains("최고관리자")) { // 관리자 권한들(ADMIN, ADMIN_2, ...)
-			response.sendRedirect("/admin/dash");
-		} else { // 일반 사용자 권한
-			// 로그인 폼으로 이동 시 직전 페이지 이동시키기
-			HttpSession session = request.getSession();
-			String prevPage = (String)session.getAttribute("prevPage"); //이전경로가져오기
-			session.removeAttribute("prevPage"); // 이전경로 기록 제거 
-			
-			// 이전 경로가 있을 경우 이전 경로로 리다이렉트, 아니면 메인페이지로 리다이렉트
-			String redirectURL = "/";
-			
-			if(prevPage != null) { // 이전 경로 있을 경우 루트("/") 대신 이전 경로로 교체
-				redirectURL = prevPage; // 주의! redirect:뒤에 슬래시(/) 붙이지 않는다
-			}
-			
-			response.sendRedirect(redirectURL);
-			
-		}
-		
-		
+		response.sendRedirect(redirectURL);
 	}
-
+	
+	
 }
+

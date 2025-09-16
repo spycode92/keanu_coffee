@@ -609,7 +609,6 @@ $(function () {
 			originalAuthorities.add(value);
 			currentAuthorities.add(value);
 		})
-		console.log('직급의 초기 권한:', Array.from(originalAuthorities));
 	}
 	
 	// 현재 체크박스 상태 저장
@@ -660,7 +659,6 @@ $(function () {
             saveButton.text('변경사항 없음');
             saveButton.removeClass('btn-primary').addClass('btn-secondary');
             
-            console.log('변경사항 없음');
         }
     }
 	
@@ -672,7 +670,6 @@ $(function () {
         const value = checkbox.val();
         const isChecked = checkbox.is(':checked');
 
-		console.log(`권한 ${value} 상태 변경: ${isChecked ? '체크됨' : '해제됨'}`);
 		// 현재 상태 업데이트
         updateCurrentState();
         // 저장 버튼 상태 업데이트
@@ -693,11 +690,6 @@ $(function () {
             return;
         }
 
-		console.log('저장할 데이터:');
-        console.log('선택된 직책 ID:', selectedRoleIdx);
-        console.log('추가된 권한:', changes.added);
-        console.log('제거된 권한:', changes.removed);
-        console.log('현재 전체 권한:', Array.from(currentAuthorities));
 		//DB저장 로직 함수 호출(roleIdx, 현재선택된권한모록)
 		saveRoleAuthorities(changes);
 	});
@@ -732,11 +724,11 @@ $(function () {
             console.error('저장 실패:', error);
         });
 	}
+	
 	// 수정버튼
 	$('.btn-edit-autho').on('click','',function(){
 		const authoIdx = $(this).data('authoidx');
 		const authoName = $(this).data('authoname');
-		console.log(authoIdx);
 		Swal.fire({
 	        title: '직책명을 수정하세요',
 	        input: 'text',
@@ -862,8 +854,6 @@ $(function () {
 	        if (result.isConfirmed && result.value) {
 	            const { authoCode, authoName } = result.value;
 	            
-	            console.log('입력된 권한 코드:', authoCode);
-	            console.log('입력된 권한명:', authoName);
 	            
 	            // 여기서 AJAX 호출로 권한 추가
 	            ajaxPost('/admin/systemPreference/dept/addAutho', 
@@ -888,7 +878,6 @@ $(function () {
 	                    text: '권한 추가에 실패했습니다.',
 	                    confirmButtonText: '확인'
 	                });
-	                console.error('권한 추가 실패:', error);
 	            });
 	        }
 	    });
@@ -902,5 +891,4 @@ $(function () {
 	const checkBox = $('#authoList').find('input[type="checkbox"]');
 	checkBox.hide();
 	$('#btnSaveAutho').hide();
-	console.log(selectedRoleIdx);
 });
