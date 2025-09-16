@@ -9,7 +9,7 @@
     <title>관리자페이지 - 상품 관리</title>
     <style type="text/css">
     /* 검색/필터 바 */
-	.filters {
+	.pfilters {
 		width: 100%;
 	    border: 1px solid var(--border);
 	    border-radius: 12px;
@@ -20,23 +20,23 @@
 	    align-items: center; /* 세로 중앙 */
 	}
 	/* 고정폭 제거 → 그리드가 폭을 관리하도록 */
-	.filters .field{ display:flex; gap:6px; margin-right: 1.5em;}
-	.filters select{ width:100%; height:38px; }
-	.filters .search{ display:flex; }
-	.filters input{ width:100%; height:38px; }
+	.pfilters .field{ display:flex; gap:6px; margin-right: 1.5em;}
+	.pfilters select{ width:100%; height:38px; }
+	.pfilters .search{ display:flex; }
+	.pfilters input{ width:100%; height:38px; }
 	
-	.filters input, .filters select{
+	.pfilters input, .pfilters select{
 	  padding:0 10px; border:1px solid var(--border); border-radius:10px; background:#fff;
 	}
 	
 	/* 버튼은 오른쪽 끝 */
-	.filters .actions{
+	.pfilters .actions{
 		display:flex; 
 		width: 100%;
 		justify-content:center; 
 		align-items:center;
 	}
-	.filters .actions .btn{ 
+	.pfilters .actions .btn{ 
 		height:38px; 
 		width: 10em;
 		display: flex;
@@ -45,58 +45,9 @@
 	
 	/* 반응형: 좁아지면 세로 스택 */
 	@media (max-width: 900px){
-	  .filters{ grid-template-columns: 1fr; }
-	  .filters .actions{ justify-content: stretch; }
-	  .filters .actions .btn{ width:100%; }
-	}
-	/* 페이징(.pager: 앞서 만든 공용 클래스가 있다면 그대로 사용) */
-	.pager{
-	  	display:flex;
-	  	align-items:center;
-	  	justify-content:center;
-	  	margin-top:24px; /* 기존 30px에서 약간 컴팩트 */
-	}
-	.pager > div{
-	  	display:flex;
-	  	align-items:center;
-	  	flex-wrap:wrap;
-	  	gap:8px;
-	}
-	.pager > div a,
-	.pager > div input[type="button"],
-	.pager > div strong{
-		display:inline-flex;
-	  	align-items:center;
-	  	justify-content:center;
-	  	min-width:36px;
-	  	height:36px;
-	  	padding:0 12px;
-	  	border:1px solid #cbd5e1;
-	  	border-radius:8px;
-	  	background:#fff;
-	  	color:#0f172a;
-	  	text-decoration:none;
-	  	font-size:.95rem;
-	  	line-height:1;
-	  	transition:background .12s ease, border-color .12s ease, color .12s ease, box-shadow .12s ease;
-	}
-	.pager > div a:hover,
-	.pager > div input[type="button"]:not([disabled]):hover{ background:#f8fafc; border-color:#94a3b8; }
-	.pager > div input[disabled]{ opacity:.45; pointer-events:none; cursor:not-allowed; }
-	.pager > div strong{
-	  background:#2563eb; border-color:#2563eb; color:#fff; cursor:default;
-	}
-	
-	/* 반응형 */
-	@media (max-width: 900px){
-	  .filters{ grid-template-columns: 1fr; }
-	  .filters .actions .btn{ width:100%; }
-	}
-	@media (max-width: 640px){
-	  .pager > div a,
-	  .pager > div input[type="button"],
-	  .pager > div strong{
-	    min-width:32px; height:32px; padding:0 10px; font-size:.9rem;
+	  .pfilters{ grid-template-columns: 1fr; }
+	  .pfilters .actions{ justify-content: stretch; }
+	  .pfilters .actions .btn{ width:100%; }
 	}
     </style>
    	<sec:csrfMetaTags/>
@@ -119,7 +70,7 @@
 			    <button id="btnAddProduct" class="btn btn-primary">상품 추가</button>
 			</div>
 			<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
-		    	<form class="filters" aria-label="검색 및 필터">
+		    	<form class="pfilters" aria-label="검색 및 필터">
 		    		<div class="field">
 			    		<select class="categories" name="filterCategoryIdx" class="form-control" ></select>
 		            </div>
