@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자페이지 - 시스템알림</title>
+<title>작업로그</title>
 <!-- 기본 양식 -->
 <sec:csrfMetaTags/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -21,7 +21,7 @@
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 <section class="content">
 	<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-		<h4>시스템 알림</h4>
+		<h4>작업로그</h4>
 		<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary" data-target="#addEmployeeModal">
 	</div>
 	<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
@@ -73,17 +73,17 @@
 						</c:choose>
 					</th>
 					<th >
-						알림메세지
+						로그메세지
 					</th>
 					
 				</tr>
-				<c:forEach var="notification" items="${notificationList }">
-					<tr class="system-row" data-emp-idx="${notification.logIdx}">
-						<td>${notification.logIdx }</td>
-						<td><fmt:formatDate value="${notification.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-						<td>${notification.empNo }</td>
-						<td>${notification.subSection }</td>
-						<td>${notification.logMessage }</td>
+				<c:forEach var="workingLog" items="${workingLogList }">
+					<tr class="workingLog-row" data-emp-idx="${workingLog.logIdx}">
+						<td>${workingLog.logIdx }</td>
+						<td><fmt:formatDate value="${workingLog.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+						<td>${workingLog.empNo }</td>
+						<td>${workingLog.subSection }</td>
+						<td>${workingLog.logMessage }</td>
 					</tr>
 				</c:forEach>
 			</table>
