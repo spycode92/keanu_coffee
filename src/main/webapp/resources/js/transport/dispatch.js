@@ -100,7 +100,7 @@ function assignBtn() {
 	$("#assignedDriverList").append(`
 		<div class="driver-item" data-vehicle-idx="${vehicleIdx}">
 			<span>${driverName} ${capacity} (${vehicleType})</span>
-			<button class="removeDriverBtn">X</button>
+			<i class="fa-solid fa-delete-left removeDriverBtn"></i>
 		</div>`);
 	
 	// 이미 선택한 기사 목록에서 비활성화
@@ -370,7 +370,7 @@ function dispatchRequestData() {
 }
 
 function openDeliveryConfirmationDetail(deliveryConfirmationIdx) {
-	window.open(`/transport/deliveryConfirmation/${deliveryConfirmationIdx}`, "수주확인서","width=700px,height=800px"); 
+	window.open(`/transport/deliveryConfirmation/${deliveryConfirmationIdx}`, "수주확인서","width=900px,height=800px"); 
 }
 
 

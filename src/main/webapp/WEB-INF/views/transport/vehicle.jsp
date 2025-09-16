@@ -10,15 +10,10 @@
 <title>운송관리대시보드</title>
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link
-	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
-	rel="stylesheet">
-<link
-	href="${pageContext.request.contextPath}/resources/css/common/common.css"
-	rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/transport/vehicle.js" defer></script>
 <style type="text/css">
 .container {
@@ -33,32 +28,9 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 	height: 630px;
 }
 
-.badge {
-	display: inline-block;
-	padding: 2px 8px;
-	border-radius: 999px;
-	font-size: .8rem;
-	font-weight: 700
-}
-
 .badge.unassigned {
-  background: #fef3c7; /* amber-100 */
-  color: #92400e;      /* amber-900 */
-}
-
-.badge.wait { /* 대기 */
 	background: #e5e7eb;
-	color: #111827
-}
-
-.badge.run { /* 운행중 */
-	background: #dbeafe;
-	color: #1e40af
-}
-
-.badge.left { /* 퇴사 */
-	background: #fee2e2;
-	color: #991b1b
+	color: #111827;
 }
 
 /* 모달 */
@@ -281,7 +253,7 @@ header { display: flex; align-items: center; justify-content: space-between; gap
                 <input id="filterText" type="text" name="searchKeyword" placeholder="차량번호 검색" />
             </div>
             <div class="actions">
-                <button class="btn btn-primary" id="btnSearch">검색</button>
+                <button class="btn btn-confirm" id="btnSearch">검색</button>
             </div>
         </form>
 		<div>
@@ -331,13 +303,13 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 												<span class="badge unassigned">${vehicle.status}</span>
 											</c:when>
 											<c:when test="${vehicle.status eq '대기'}">
-												<span class="badge wait">${vehicle.status}</span>
+												<span class="badge badge-waiting">${vehicle.status}</span>
 											</c:when>
 											<c:when test="${vehicle.status eq '운행중'}">
-												<span class="badge run">${vehicle.status}</span>
+												<span class="badge badge-normal">${vehicle.status}</span>
 											</c:when>
 											<c:otherwise>
-												<span class="badge left">${vehicle.status}</span>
+												<span class="badge badge-urgent">${vehicle.status}</span>
 											</c:otherwise>
 										</c:choose>
 									</td>

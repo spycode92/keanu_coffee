@@ -20,12 +20,6 @@
 <script src="${pageContext.request.contextPath}/resources/js/transport/dispatch.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/transport/kakao_map.js"></script>
 <style type="text/css">
-.container {
-    max-width: 1264px;
-    margin: 0 auto;
-    padding: 0 16px;
-}
-
 header {
     display: flex;
     align-items: center;
@@ -48,6 +42,34 @@ button:disabled {
 
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field input { height: 38px; border: 1px solid var(--border); border-radius: 10px; padding: 0 10px; background: #f9fafb; }
+
+#detailItems, #assignList, .driver-item {
+	font-size: 0.91rem;
+}
+
+.assignListWrapper {
+	height: 450px;
+	overflow-y: scroll;
+}
+
+/* 스크롤바 전체 */
+.assignListWrapper::-webkit-scrollbar {
+  width: 8px; /* 스크롤바 너비 */
+}
+
+.assignListWrapper::-webkit-scrollbar-thumb {
+  background: #d3d3d3; /* 연한 회색 (lightgray) */
+  border-radius: 10px;
+}
+
+.assignListWrapper::-webkit-scrollbar-track {
+  background: #f9f9f9; /* 트랙은 더 연한 색 */
+  border-radius: 10px;
+}
+
+.removeDriverBtn {
+	cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -77,7 +99,7 @@ button:disabled {
                 <input id="filterText" type="text" name="searchKeyword" placeholder="기사명 / 차량번호 / 구역명 검색" />
             </div>
             <div class="actions">
-                <button class="btn btn-primary" id="btnSearch">검색</button>
+                <button class="btn btn-confirm" id="btnSearch">검색</button>
             </div>
         </form>
 
@@ -125,19 +147,19 @@ button:disabled {
 		                			<td>
 		                				<c:choose>
 		                					<c:when test="${dispatch.status eq '완료'}">
-		                						<span class="badge done">완료</span>
+		                						<span class="badge badge-confirmed">완료</span>
 		                					</c:when>
 		                					<c:when test="${dispatch.status eq '예약'}">
-		                						<span class="badge book">예약</span>
+		                						<span class="badge badge-waiting">예약</span>
 		                					</c:when>
 		                					<c:when test="${dispatch.status eq '적재완료'}">
-		                						<span class="badge loaded">적재완료</span>
+		                						<span class="badge badge-pending">적재완료</span>
 		                					</c:when>
 		                					<c:when test="${dispatch.status eq '운행중'}">
-		                						<span class="badge run">운행중</span>
+		                						<span class="badge badge-normal">운행중</span>
 		                					</c:when>
 		                					<c:otherwise>
-		                						<span class="badge cancel">취소</span>
+		                						<span class="badge badge-urgent">취소</span>
 		                					</c:otherwise>
 		                				</c:choose>
 		                			</td>
