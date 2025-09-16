@@ -31,9 +31,12 @@ public class FranchiseController {
 	private final FranchiseService franchiseService;
 
 	@GetMapping("")
-	public String franchiseManagement(Model model, @RequestParam(defaultValue = "1") int pageNum,
-			@RequestParam(defaultValue = "") String searchType, @RequestParam(defaultValue = "") String searchKeyword,
-			@RequestParam(defaultValue = "") String orderKey, @RequestParam(defaultValue = "") String orderMethod) {
+	public String franchiseManagement(Model model
+			, @RequestParam(defaultValue = "1") int pageNum
+			, @RequestParam(defaultValue = "") String searchType
+			, @RequestParam(defaultValue = "") String searchKeyword
+			, @RequestParam(defaultValue = "") String orderKey
+			, @RequestParam(defaultValue = "") String orderMethod) {
 
 		model.addAttribute("pageNum", pageNum);
 		model.addAttribute("searchType", searchType);
@@ -85,8 +88,11 @@ public class FranchiseController {
 	@PostMapping("/modifyFranchise")
 	@ResponseBody
 	public ResponseEntity<Map<String, String>> modifyFranchiseInfo(@RequestBody FranchiseDTO franchise) {
+		
 		Map<String, String> resultMap = new HashMap<String, String>();
+		
 		int updateCount = franchiseService.modifyFranchiseInfo(franchise);
+		
 		if (updateCount == 0) {
 			resultMap.put("result", "failure");
 			resultMap.put("msg", "지점 정보 수정실패!");
@@ -95,6 +101,7 @@ public class FranchiseController {
 
 		resultMap.put("result", "success");
 		resultMap.put("msg", "지점 정보 수정 완료!");
+		
 		return ResponseEntity.ok(resultMap);
 
 	}

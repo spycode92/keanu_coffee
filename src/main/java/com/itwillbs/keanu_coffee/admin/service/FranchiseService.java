@@ -1,16 +1,8 @@
 package com.itwillbs.keanu_coffee.admin.service;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
-import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +13,6 @@ import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
 import com.itwillbs.keanu_coffee.transport.dto.AdministrativeRegionDTO;
 import com.itwillbs.keanu_coffee.transport.dto.MappingDTO;
 import com.itwillbs.keanu_coffee.transport.dto.RouteDTO;
-import com.itwillbs.keanu_coffee.transport.mapper.RegionMapper;
-import com.itwillbs.keanu_coffee.transport.mapper.RouteMapper;
 import com.itwillbs.keanu_coffee.transport.service.RouteService;
 
 import lombok.RequiredArgsConstructor;
@@ -32,11 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class FranchiseService {
 	
 	private final FranchiseMapper franchiseMapper;
-	private final RegionMapper regionMapper;
 	private final RouteService routeService;
-	
-	@Autowired
-	private HttpSession session;
 	
 	//지점목록선택
 	@Transactional(readOnly = true)
@@ -44,12 +30,14 @@ public class FranchiseService {
 			int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod) {
 		
 		List<FranchiseDTO> List = franchiseMapper.selectFranchiseList(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
+		
 		return List;
 	}
 	
 	// 지점 목록 갯수
 	@Transactional(readOnly = true)
 	public int getFranchiseCount(String searchType, String searchKeyword) {
+		
 		return franchiseMapper.countFranchise(searchType, searchKeyword );
 	}
 	
@@ -57,9 +45,11 @@ public class FranchiseService {
 	@Transactional
 	@SystemLog(target = SystemLogTarget.FRANCHISE)
 	public void addFranchiseInfo(FranchiseDTO franchise) {
+		
 		franchiseMapper.insertFranchiseInfo(franchise);
 		
 		AdministrativeRegionDTO administrativeRegionDTO = franchiseMapper.selectAdministartiveRegionInfo(franchise);
+		
 		// 새로등록한 지점의 행정구역이 행정구역테이블에 없을때
 		if (administrativeRegionDTO == null) {
 			//행정정보등록(중복된값이없을경우에만)
@@ -83,6 +73,7 @@ public class FranchiseService {
 	//지점상세정보조회
 	@Transactional(readOnly = true)
 	public FranchiseDTO getFranchiseDetail(Integer franchiseIdx) {
+		
 		return franchiseMapper.selectFranchiseDetail(franchiseIdx);
 	}
 	
@@ -90,6 +81,7 @@ public class FranchiseService {
 	@Transactional
 	@SystemLog(target = SystemLogTarget.FRANCHISE)
 	public int modifyFranchiseInfo(FranchiseDTO franchise) {
+		
 		FranchiseDTO ogData = franchiseMapper.selectFranchiseDetail(franchise.getFranchiseIdx());
 		//지점 정보 수정
 		int updateCount = franchiseMapper.updateFranchiseInfo(franchise);
@@ -129,21 +121,25 @@ public class FranchiseService {
 				franchiseMapper.insertAdministrativeRegionInfo(franchise);
 			}
 		}
+		
 		return updateCount;
 	}
 
 	// 등록된 구역이 있는지 확인
 	public boolean countFranchiseByRegion(Integer regionIdx) {
+		
 		return franchiseMapper.countFranchiseByRegion(regionIdx) > 0;
 	}
 
 	// bcode로 프랜차이점 찾기
 	public List<FranchiseDTO> findByBcode(String bcode) {
+		
 		return franchiseMapper.selectBecode(bcode);
 	}
 
 	// 구역 정보 추가
 	public void updateRegionIdx(Integer franchiseIdx, Integer regionIdx) {
+		
 		franchiseMapper.updateRegionIdx(franchiseIdx, regionIdx);
 	}
 
