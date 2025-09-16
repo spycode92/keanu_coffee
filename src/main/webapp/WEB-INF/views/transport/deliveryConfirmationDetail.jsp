@@ -8,7 +8,8 @@
 <meta charset="UTF-8">
 <title>수주확인서</title>
 <link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
-<link href="${pageContext.request.contextPath}/resources/css/common/common_sample.css" rel="stylesheet">
+<%-- <link href="${pageContext.request.contextPath}/resources/css/common/common_sample.css" rel="stylesheet"> --%>
+<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/transport/dispatch.js"></script>

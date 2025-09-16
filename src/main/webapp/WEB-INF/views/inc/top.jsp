@@ -200,10 +200,13 @@
 	  color: #333;
 	}
 </style>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/common/web_socket.js"></script>
+<script src="https://kit.fontawesome.com/a96e186b03.js" crossorigin="anonymous"></script>
+
 <c:if test="${not empty accessDeniedMessage }">
 	<script type="text/javascript">
 		Swal.fire({
@@ -250,7 +253,7 @@
 			</div>
 		</div>
 		<div id="alarm-wrapper">
-			<a id="noti" href="javascript:void(0)" onclick="notification()"><img src="/resources/images/alarm.png" id="alarm-image" /></a>
+			<a id="noti" href="javascript:void(0)" onclick="notification()"><i class="fa-solid fa-bell"></i></a>
 			<span id="alarm-badge"></span>
        		<div id="notification-box">
 				<div id="notification-header">
