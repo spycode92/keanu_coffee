@@ -22,7 +22,7 @@ public class InventoryScheduler {
 	 */
 	
 	// 임박 재고 조회 (매일 00시 30분(= 밤 12시 반))
-	@Scheduled(cron = "0 30 0 * * *")
+	@Scheduled(cron = "0 30 0 * * *", zone = "Asia/Seoul")
     public void runImminentStockCheck() {
     	
         System.out.println("⏰ [Scheduler] 임박 재고 체크 실행");
