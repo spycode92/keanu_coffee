@@ -141,5 +141,9 @@ public interface DispatchMapper {
 	// 수주확인서 목록
 	List<Map<String, Object>> selectAllDeliveryConfirmation();
 
+	// 수주확인서 및 목록 조회
 	DeliveryConfirmationDTO selectDeliveryConfirmationByDeliveryConfirmationIdx(Integer deliveryConfirmationIdx);
+
+	// 기사 이름 조회
+	String selectDriverName(Integer deliveryConfirmationIdx);
 }

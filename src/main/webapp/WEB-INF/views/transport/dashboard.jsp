@@ -295,9 +295,9 @@ button:disabled {
 							<td>${deliveryConfirmation.emp_name}</td>
 							<td>${deliveryConfirmation.franchise_name}</td>
 							<td>${deliveryConfirmation.receiver_name}</td>
-							<td>수주확인서${delivery_confirmation_idx}</td>
+							<td>수주확인서${deliveryConfirmation.delivery_confirmation_idx}</td>
 							<td>
-								<button class="btn btn-confirm" onclick="openDeliveryConfirmationDetail('${delivery_confirmation_idx}')">상세보기</button>
+								<button class="btn btn-confirm" onclick="openDeliveryConfirmationDetail('${deliveryConfirmation.delivery_confirmation_idx}')">상세보기</button>
 							</td>
 						</tr>
 					</c:forEach>

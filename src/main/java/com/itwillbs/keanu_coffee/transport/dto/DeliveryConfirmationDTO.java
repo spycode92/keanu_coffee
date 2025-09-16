@@ -22,6 +22,7 @@ public class DeliveryConfirmationDTO implements FileUploadHelpper {
 	   private char requiresAdditional;
 	   private Timestamp updatedAt;
 	   private String franchiseName; // 지점명추가
+	   private FileDTO file;
 	   
 	   private List<DeliveryConfirmationItemDTO> items;
 	   

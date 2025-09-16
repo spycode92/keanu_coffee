@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -192,7 +193,21 @@ public class DispatchController {
 	
 	// 수주확인서 새창
 	@GetMapping("/deliveryConfirmation/{deliveryConfirmationIdx}")
-	public String getDeliveryConfirmationDetail(@PathVariable Integer deliveryConfirmationIdx) {
+	public String getDeliveryConfirmationDetail(@PathVariable Integer deliveryConfirmationIdx, Model model) {
+		// 수주확인서 상세 조회
+		DeliveryConfirmationDTO confirmationDTO = dispatchService.selectDeliveryConfirmationByDeliveryConfirmationIdx(deliveryConfirmationIdx);
+		// 기사 이름 조회
+		String driverName = dispatchService.selectDriverName(deliveryConfirmationIdx);
+		
+		if (confirmationDTO == null || driverName == null) {
+			model.addAttribute("msg", "수주확인서 정보를 불러올 수 없습니다.");
+			model.addAttribute("targetURL", "/transport/deliveryConfirmation");
+			return "commons/result_process";
+		}
+		
+		model.addAttribute("confirmationDTO", confirmationDTO);
+		model.addAttribute("driverName", driverName);
+		
 		return "/transport/deliveryConfirmationDetail";
 	}
 }

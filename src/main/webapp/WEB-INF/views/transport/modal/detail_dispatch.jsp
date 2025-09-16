@@ -38,6 +38,7 @@
                                 <th>품목</th>
                                 <th>반품수량/출고수량</th>
                                 <th>상태</th>
+                                <th>납품확인서</th>
                             </tr>
                         </thead>
                         <tbody><!-- JS 렌더링 --></tbody>
