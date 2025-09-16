@@ -229,6 +229,7 @@ public class InventoryActionsController {
 		        splitInventory(inventoryDTO, qtyMoving, destinationName, locationIdxOfDestinationName);
 		    }
 		}
+		
 //		if(destinationType.equals("pickingZone")) {
 //		// these actions are changing the locationidx and the location name to the employeeidx of the person moving
 //			if(moveType.equals("pickUp")) {
