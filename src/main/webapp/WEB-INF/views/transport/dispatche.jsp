@@ -79,7 +79,6 @@ button:disabled {
             <h1>배차 관리</h1>
             <div style="display:flex; gap:8px">
                 <button class="btn btn-primary" id="openRegister">+ 배차 등록</button>
-                <button onclick="location.href='/transport/mypage/${pageContext.request.userPrincipal.name}'">기사마이페이지</button>
                 <button class="btn btn-confirm" onclick="location.href='/transport/region'">구역관리</button>
             </div>
         </header>
@@ -99,13 +98,13 @@ button:disabled {
                 <input id="filterText" type="text" name="searchKeyword" placeholder="기사명 / 차량번호 / 구역명 검색" />
             </div>
             <div class="actions">
-                <button class="btn btn-confirm" id="btnSearch">검색</button>
+                <button class="btn btn-primary" id="btnSearch">검색</button>
             </div>
         </form>
 
         <!-- 배차 목록 -->
-        <section style="margin-top:14px">
-            <h3>배차목록</h3>
+        <h3>배차목록</h3>
+        <section class="card" style="margin-top:14px">
             <c:choose>
             	<c:when test="${empty dispatchList}">
             		<div class="empty-result">검색된 배차가 없습니다.</div>

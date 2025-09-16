@@ -28,7 +28,7 @@
 
 .card-grid {
 	display: grid;
-	grid-template-columns: repeat(5, minmax(220px, 1fr));
+	grid-template-columns: repeat(4, minmax(220px, 1fr));
 	gap: 1rem;
 	align-items: start; /* 세로로 늘어지는 거 방지 */
 	margin-bottom: 1em;
@@ -48,17 +48,21 @@
 	border: 0;
 	padding: 0;
 	margin: 0 0 6px;
-	font-size: .95rem;
-	color: var(- -muted-foreground);
+	font-size: 1.2rem;
+	text-align: center;
+	color: var(--muted-foreground);
+	font-weight: bold;
 }
 
 /* 숫자: 강조 */
 .card-grid .kpi-value {
-	font-size: 1.75rem;
+	font-size: 2rem;
 	font-weight: 700;
 	line-height: 1.1;
 	margin: 4px 0 6px;
-	color: var(- -foreground);
+	color: var(--foreground);
+	text-align: center;
+	margin-top: .5em;
 }
 
 /* 보조 텍스트 */
@@ -141,67 +145,66 @@ button:disabled {
 		<div>
 			<section class="card-grid">
 				<div class="card">
-					<div class="card-header">배차대기</div>
-					<div class="kpi-value">${pendingDispatchCount}</div>
+					<div class="card-header">배차대기(일)</div>
+					<div class="kpi-value">${pendingDispatchCount}건</div>
 				</div>
 				<div class="card">
-					<div class="card-header">배송중</div>
-					<div class="kpi-value">${dispatchInProgressCount}</div>
+					<div class="card-header">배송중(일)</div>
+					<div class="kpi-value">${dispatchInProgressCount}건</div>
 				</div>
 				<div class="card">
-					<div class="card-header">배송완료</div>
-					<div class="kpi-value">${dispatchCompletedCount}</div>
+					<div class="card-header">배송완료(일)</div>
+					<div class="kpi-value">${dispatchCompletedCount}건</div>
 				</div>
 				<div class="card">
 					<div class="card-header">긴급요청</div>
-					<div class="kpi-value">${urgentDispatchCount}</div>
+					<div class="kpi-value">${urgentDispatchCount}건</div>
 				</div>
 			</section>
 		</div>
 		<!-- 그래프 그리드 -->
-	    <section class="content">
-		    <div class="card">
-		        <div class="card-header d-flex justify-content-between align-items-center">
-				    <!-- 왼쪽: 제목 + 날짜 선택기 -->
-				    <div class="d-flex align-items-center gap-2">
-				        <div class="date-selection">
-				            <div class="d-flex align-items-center gap-2">
-				                <div>
-				                    <input type="date" id="baseDate" class="form-control date-input-small" style="max-width:100px">
-				                </div>
-				                <div>
-				                    <span id="dateRangeInfo" class="text-muted" style="font-size: 0.8rem; max-width: 200px;">
-				                        <!-- 계산된 범위 표시 -->
-				                    </span>
-				                </div>
-				            </div>
-				        </div>
-				    </div>
-		            <div class="period-selector-wrapper">
-		                <div class="btn-group" role="group" aria-label="그래프 선택">
-		                    <button type="button" class="btn btn-secondary btn-sm" data-period="daily">일별</button>
-		                    <button type="button" class="btn btn-secondary btn-sm" data-period="weekly">주별</button>
-		                    <button type="button" class="btn btn-secondary btn-sm" data-period="monthly">월별</button>
-		                </div>
-		            </div>
-		        </div>
-		        <div class="dashboard-charts">
-		            <br>
-		            <!-- 운송/출고 차트 -->
-		            <div class="chart-card">
-		                <h3 class="card-title" id="outbound_title">출고/운송 현황</h3>
-		                <canvas id="OBoverallChart" style="width:80%; height:100%;"></canvas>
-		            </div>
-		            <br>
-		            <!-- 폐기량 꺽은선차트 -->
-		            <div class="chart-card">
-		                <h3 class="card-title">폐기 현황1</h3>
-		                <canvas id="disposalChart" style="width:80%; height:100%;"></canvas>
-		            </div>
-		        </div>
-		    </div>
-	    </section>
-		<div style="margin-bottom: 2em;">
+	    <div class="card">
+	        <div class="card-header d-flex justify-content-between align-items-center">
+			    <!-- 왼쪽: 제목 + 날짜 선택기 -->
+			    <div class="d-flex align-items-center gap-2">
+			        <div class="date-selection">
+			            <div class="d-flex align-items-center gap-2">
+			                <div>
+			                    <input type="date" id="baseDate" class="form-control date-input-small" style="max-width:100px">
+			                </div>
+			                <div>
+			                    <span id="dateRangeInfo" class="text-muted" style="font-size: 0.8rem; max-width: 200px;">
+			                        <!-- 계산된 범위 표시 -->
+			                    </span>
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+	            <div class="period-selector-wrapper">
+	                <div class="btn-group" role="group" aria-label="그래프 선택">
+	                    <button type="button" class="btn btn-secondary btn-sm" data-period="daily">일별</button>
+	                    <button type="button" class="btn btn-secondary btn-sm" data-period="weekly">주별</button>
+	                    <button type="button" class="btn btn-secondary btn-sm" data-period="monthly">월별</button>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="dashboard-charts">
+	            <br>
+	            <!-- 운송/출고 차트 -->
+	            <div class="chart-card">
+	                <h3 class="card-title" id="outbound_title">출고/운송 현황</h3>
+	                <canvas id="OBoverallChart" style="width:80%; height:100%;"></canvas>
+	            </div>
+	            <br>
+	            <!-- 폐기량 꺽은선차트 -->
+	            <div class="chart-card">
+	                <h3 class="card-title">폐기 현황1</h3>
+	                <canvas id="disposalChart" style="width:80%; height:100%;"></canvas>
+	            </div>
+	        </div>
+	    </div>
+
+		<div style="margin-bottom: 2em;" class="card">
 			<div
 				style="display: flex; justify-content: space-between; align-items: center;">
 				<h3>오늘 배차 목록</h3>
@@ -273,7 +276,7 @@ button:disabled {
 		</div>
 		<%-- 상세 모달(배차 클릭 시) --%>
 		<jsp:include page="/WEB-INF/views/transport/modal/detail_dispatch.jsp"></jsp:include>
-		<div>
+		<div class="card">
 			<h3>수주확인서 목록</h3>
 			<table class="table">
 				<thead>

@@ -107,11 +107,11 @@
                 <input id="filterText" type="text" name="searchKeyword" placeholder="이름/차량번호 검색 가능" />
             </div>
             <div class="actions">
-                <button class="btn btn-confirm" id="btnSearch">검색</button>
+                <button class="btn btn-primary" id="btnSearch">검색</button>
             </div>
         </form>
-		<div>
-			<h3>기사목록</h3>
+		<h3>기사목록</h3>
+		<div class="card">
 			<c:choose>
 				<c:when test="${empty driverList}">
 					<div class="empty-result">검색된 기사가 없습니다.</div>

@@ -253,11 +253,11 @@ header { display: flex; align-items: center; justify-content: space-between; gap
                 <input id="filterText" type="text" name="searchKeyword" placeholder="차량번호 검색" />
             </div>
             <div class="actions">
-                <button class="btn btn-confirm" id="btnSearch">검색</button>
+                <button class="btn btn-primary" id="btnSearch">검색</button>
             </div>
         </form>
-		<div>
-			<h3>차량목록</h3>
+		<h3>차량목록</h3>
+		<div class="card">
 			<c:choose>
 				<c:when test="${empty vehicleList}">
 					<div class="empty-result">검색된 차량이 없습니다.</div>
