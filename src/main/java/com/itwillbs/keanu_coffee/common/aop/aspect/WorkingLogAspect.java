@@ -19,6 +19,7 @@ import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.TimeUtils;
 import com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationItemDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegisterRequestDTO;
 import com.itwillbs.keanu_coffee.transport.mapper.DispatchMapper;
 
@@ -110,36 +111,29 @@ public class WorkingLogAspect {
 	        }
 	        //운송완료
 	        if (methodName.equals("updateDeliveryCompleted")) {
-	        	System.out.println("여기왔어");
 	        	DeliveryConfirmationDTO deliveryConfirmation = (DeliveryConfirmationDTO) args[0];
 	        	slog.setSubSection("운송완료");
 	        	
 	        	Integer deliveryConfirmationIdx = deliveryConfirmation.getDeliveryConfirmationIdx();
 	        	deliveryConfirmation = dispatchMapper.selectDeliveryConfirmationByDeliveryConfirmationIdx(deliveryConfirmationIdx);
 	        	
-	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	        	System.out.println(deliveryConfirmation);
-	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-	        	
-//	        	slog.setTargetIdx(dispatchIdx);
-//	        	if (errorMessage == null) {
-//	        		slog.setLogMessage(
-//	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
-//	        						empName + "(" + empNo + ") "  + " 운전기사가 " + dispatchRegisterRequest.getOrderIds()
-//	        						+ "번 주문의 운송을 시작합니다."
-//	        				);
-//	        	} else {
-//	        		slog.setLogMessage(
-//	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
-//	        						empName + "(" + empNo + ") "  + " 운전기사가 " + dispatchRegisterRequest.getOrderIds()
-//	        						+ "번 주문의 운송 중 에러 발생"
-//	        				);
-//	        	}
+	        	slog.setTargetIdx(deliveryConfirmation.getDeliveryConfirmationIdx());
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	        						empName + "(" + empNo + ") "  + " 운전기사가 " + deliveryConfirmation.getOutboundOrderIdx()
+	        						+ "번 주문의 운송을 완료하였습니다."
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	        						empName + "(" + empNo + ") "  + " 운전기사가 " + deliveryConfirmation.getOutboundOrderIdx()
+	        						+ "번 주문의 운송 완료중 에러 발생"
+	        				);
+	        	}
 	        }
 	        	        
-//	        logmapper.insertSystemLog(slog);
+	        logmapper.insertSystemLog(slog);
 	    }
 			
 		
