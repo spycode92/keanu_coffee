@@ -30,6 +30,8 @@ public interface InventoryMoveMapper {
 	void insertInventory(InventoryDTO inventory);
 	//재고수량 업데이트
 	void updateInventoryQuantity(@Param("quantity")int quantity, @Param("inventoryIdx")int inventoryIdx);
+	//재고데이터삭제
+	void deleteInventoryDataByInventoryIdx(int originalInventoryIdx);
 
 
 

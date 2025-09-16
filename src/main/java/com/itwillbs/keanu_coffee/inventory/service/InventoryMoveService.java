@@ -62,21 +62,21 @@ public class InventoryMoveService {
 		// 해당위치 재고수량
 		int OriginalInventoryQuantity = inventory.getQuantity();
 		int OriginalInventoryIdx = inventory.getInventoryIdx();
-		
+		// insert데이터 만들기
+		inventory.setLocationIdx(location.getLocationIdx());
+		inventory.setLocationName(location.getLocationName());
+		inventory.setQuantity(moveQuantity);
+		//이동할 물량만큼 카트에 추가
+		inventoryMoveMapper.insertInventory(inventory);
+
 		//재고의 수량이 이동할 물건보다 많을때(남기고가져갈때)
 		if(OriginalInventoryQuantity > moveQuantity) {
 			int remainQuantity = OriginalInventoryQuantity - moveQuantity;
-			// insert데이터 만들기
-			inventory.setLocationIdx(location.getLocationIdx());
-			inventory.setLocationName(location.getLocationName());
-			inventory.setQuantity(moveQuantity);
-			//이동할 물량만큼 인벤토리 추가
-			inventoryMoveMapper.insertInventory(inventory);
 			//이동한 물량만큼 재고 차감
 			inventoryMoveMapper.updateInventoryQuantity(remainQuantity, OriginalInventoryIdx);
-			
-		} else if(OriginalInventoryQuantity == moveQuantity) { //모든 재고의 물건을 옮길때
-			
+		} else if(OriginalInventoryQuantity == moveQuantity) { 
+			//해당위치의 해당물건 데이터 삭제
+			inventoryMoveMapper.deleteInventoryDataByInventoryIdx(OriginalInventoryIdx);
 		} else {
 			throw new IllegalArgumentException(
 		            String.format("이동 가능한 수량을 다시 확인하십시오. 현재재고(%d)", OriginalInventoryQuantity));
