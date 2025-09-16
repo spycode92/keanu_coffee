@@ -7,17 +7,11 @@
 <head>
 <meta charset="UTF-8">
 <title>수주확인서</title>
+<link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resources/css/common/common_sample.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link
-	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
-	rel="stylesheet">
-<link
-	href="${pageContext.request.contextPath}/resources/css/common/common_sample.css"
-	rel="stylesheet">
-<script
-	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/js/transport/dispatch.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/transport/dispatch.js"></script>
 <style type="text/css">
 /* 전체 레이아웃 */
 body {

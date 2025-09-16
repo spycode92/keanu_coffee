@@ -10,21 +10,14 @@
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>운송관리대시보드</title>
 <!-- 기본 양식 -->
+<link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resources/css/common/common_sample.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link
-	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
-	rel="stylesheet">
-<link
-	href="${pageContext.request.contextPath}/resources/css/common/common_sample.css"
-	rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2b14d97248052db181d2cfc125eaa368&libraries=services"></script>	
-<script
-	src="${pageContext.request.contextPath}/resources/js/transport/dispatch.js"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/js/transport/kakao_map.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/transport/dispatch.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/transport/kakao_map.js"></script>
 <style type="text/css">
 .container {
     max-width: 1264px;

@@ -566,7 +566,7 @@
       )
     	ORDER BY 
     		ds.delivery_sequence ASC
-    	LIMIT 1;
+    	LIMIT 1
 	</select>
 	
 	<!-- 경유지 테이블 상태 변경 -->
@@ -713,6 +713,7 @@
 			fa.franchise_idx = ds.franchise_idx
 		ORDER BY
 			dc.updated_at DESC
+		LIMIT 3
 	</select>
 	
 	<!-- 기사 이름 조회 -->
@@ -815,7 +816,7 @@
 	
 
 	<!-- 수주 확인서 매핑 리절트맵 -->
-	<resultMap id="deliveryConfirmationMap2" type="DeliveryConfirmationDTO">
+	<resultMap id="deliveryConfirmationAddFranchiseNameMap" type="DeliveryConfirmationDTO">
 	    <id property="deliveryConfirmationIdx" column="delivery_confirmation_idx"/>
 	    <result property="dispatchAssignmentIdx" column="dispatch_assignment_idx"/>
 	    <result property="dispatchStopIdx" column="dispatch_stop_idx"/>
@@ -830,7 +831,7 @@
 	                resultMap="deliveryConfirmationItemMap"/>
 	</resultMap>
 	<!-- 수주확인서 상세 -->
-	<select id="selectDeliveryConfirmationByDeliveryConfirmationIdx" resultMap="deliveryConfirmationMap2">
+	<select id="selectDeliveryConfirmationByDeliveryConfirmationIdx" resultMap="deliveryConfirmationAddFranchiseNameMap">
 		SELECT
 			dc.delivery_confirmation_idx
 			, dc.outbound_order_idx
