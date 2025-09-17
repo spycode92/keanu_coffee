@@ -3,6 +3,7 @@ package com.itwillbs.keanu_coffee.inventory.dto;
 import java.sql.Timestamp;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -22,6 +23,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class WarehouseLocationDTO {
 	public WarehouseLocationDTO(String locationName, char rack, int bay, String levelPosition, int width,
 			int height, int depth, int locationType) {

@@ -241,7 +241,7 @@
 			<script type="text/javascript">
 				const role = "${pageContext.request.userPrincipal.principal.role.roleName}";
 			</script>
-			<div id="employeeInfo" class="profile-popover" role="menu" aria-hidden="true" >
+			<div id="employeeInfo" class="profile-popover" role="menu"  >
 				<span class="changeInfo"><button type="button" class="btn btn-link" data-modal-target="change-info-modal"> 정보 변경</button></span>
 				<span class="logout" >
 					<button type="button" class="btn btn-secondary" data-action="logout">로그아웃</button>
