@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -93,6 +94,43 @@
 	    overflow: hidden;      /* 넘치는 텍스트는 숨김 */
 	    text-overflow: ellipsis; /* ... 처리 (옵션) */
 	}
+	
+	/* 수량조절 모달 전용 */
+#quantityUpdateModal .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-size: 0.95rem;
+}
+
+/* 현재 수량 라인 */
+#quantityUpdateModal .current-qty {
+    font-weight: 600;
+    margin-bottom: 0.5em;
+    font-size: 1.2rem;
+}
+
+/* 값 강조 */
+#quantityUpdateModal .current-qty span {
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+/* 입력 박스 */
+#quantityUpdateModal input[type="number"] {
+    width: 140px;
+    padding: 6px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    text-align: right;
+    margin-bottom: 0.5em;
+}
+
+#quantityUpdateModal label {
+	font-size: 1.2rem;
+	margin-right: 0.2em;
+}
 </style>
 </head>
 <body>
@@ -229,11 +267,13 @@
 	            </thead>
 	            <tbody id="tbodyRealtime">
 				    <c:forEach var="item" items="${inventoryList}">
-				        <tr data-idx="${item.receipt_product_idx}">
+				        <tr data-idx="${item.receipt_product_idx}" 
+				        	data-location-idx="${item.location_idx}"
+				        	data-current-quantity="${item.current_quantity}">
 				            <td>${item.location_name}</td>
 				            <td>${item.product_name}</td>
 				            <td>${item.product_idx}</td>
-				            <td><fmt:formatNumber value="${item.current_quantity}" type="number"/></td>
+				            <td ><fmt:formatNumber value="${item.current_quantity}" type="number"/></td>
 				            <td>BOX</td>
 				            <td>
 				                <c:choose>
@@ -396,11 +436,47 @@
 	
 	
 	        <div class="modal-foot">
+	            <button class="btn btn-update" onclick="ModalManager.openModal(document.getElementById('quantityUpdateModal'))">수량 조절</button>
 	            <button class="btn btn-secondary" onclick="ModalManager.closeModal(document.getElementById('lotModal'))">닫기</button>
 	        </div>
 	    	</div>
 	    </div>
 	</div>
+    <!-- ========================= 수량 조절 모달 ========================= -->
+    <div class="modal" id="quantityUpdateModal">
+     	<div class="modal-card sm">
+     		<div class="modal-head">
+	            <h3>수량조절</h3>
+	            <button class="modal-close-btn" onclick="ModalManager.closeModal(document.getElementById('quantityUpdateModal'))">✕</button>
+	        </div>
+	        <div class="modal-body">
+	        	<form action="/inventory/updateInventory"
+	        		  method="post">
+	        		<sec:csrfInput/>
+	        		<input type="hidden" name="locationIdx" id="currentLocationIdx" />
+	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdx"/>
+	        		<input type="hidden" name="isDisposal" id="isDisposal"/>
+					<div class="current-qty">
+					    현재수량 : <span id="currentQuantity"></span> Box
+					</div>
+		        	<div>
+		        		 <label for="updateQty" id="updateQty">수량 업데이트</label>
+		        		 <input type="number" name="adjustQuantity" id="updateQty"/>
+		        	</div>
+		        	<div>
+		        		 <label for="totalQty">변경된 수량</label>
+		        		 <input type="number" name="quantity" id="totalQty" readonly/>
+		        	</div>
+			     	<div class="modal-foot">
+			        	<button type="submit" class="btn btn-update" >수정</button>
+				        <button type="button" class="btn btn-secondary" onclick="resetLotModal(); ModalManager.closeModal(document.getElementById('quantityUpdateModal'))">닫기</button>
+					</div>
+	        	</form>
+	        </div>
+     	</div>
+    </div>
+    
+    
     <!-- ========================= /LOT 상세 모달 ========================= -->
 
     <script>
@@ -502,6 +578,15 @@
 	    $('#tbodyRealtime').on('click', 'tr', function() {
 	    	const idx = $(this).data('idx');   // ✅ receipt_product_idx 가져오기
 		    if (!idx) return;
+	    	
+	        // 수량 조절 모달창에 필요한 값 input에 넣기
+	        const receiptProductIdx = $(this).data('idx');
+	        const locationIdx = $(this).data('location-idx');
+	        const currentQuantity = $(this).data("current-quantity");
+	        
+	        $('#currentReceiptProductIdx').val(parseInt(receiptProductIdx));
+	        $('#currentLocationIdx').val(parseInt(locationIdx));
+	        $("#currentQuantity").text(currentQuantity);
 		
 		    // Ajax로 상세 데이터 요청
 		    $.getJSON('${pageContext.request.contextPath}/inventory/detail', { idx: idx }, function(data) {
@@ -553,11 +638,34 @@
 		        } else {
 		            $box.append('<div class="logline"><div class="logleft">데이터 없음</div><div class="logright">-</div></div>');
 		        }
-		
 		        // 모달 열기
 		        ModalManager.openModalById('lotModal');
 		    });
 		});
+	    /* ====================== 변경 후 수량  ====================== */
+	    $(document).on("input", "#updateQty",  function() {
+	    	const baseQty = parseInt($("#currentQuantity").text().trim() || "0", 10);
+	    	const delta = parseInt($(this).val() || "0", 10);
+	    	
+	    	const newQty = baseQty + delta;
+	    	
+	    	if (newQty >= baseQty) {
+	    		$("#isDisposal").val(false);
+	    	} else {
+	    		$("#isDisposal").val(true);
+	    	}
+	    	
+	    	// 변경된 수량
+	    	$("#totalQty").val(parseInt(newQty));
+	    });
+	    
+	    // 수량 조절 모달 초기화
+	    function resetLotModal() {
+	        const form = document.querySelector("#quantityUpdateModal form");
+	        if (form) {
+	            form.reset();  // form 전체 input 초기화
+	        }
+	    }
 					    
 	    /* ====================== 초기화 버튼 ====================== */
 	    $('#btnReset').on('click', function(){

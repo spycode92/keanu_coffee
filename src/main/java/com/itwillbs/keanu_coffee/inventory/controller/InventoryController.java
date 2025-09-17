@@ -46,6 +46,8 @@ public class InventoryController {
 		
 		return "inventory/inventory_location_history";
 	}
+	
+	// 재고 업데이트
 	@GetMapping("/updateInventory")
 	public String updateInventory() {
 		

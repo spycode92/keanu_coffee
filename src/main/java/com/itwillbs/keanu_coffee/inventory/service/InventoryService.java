@@ -3,8 +3,11 @@ package com.itwillbs.keanu_coffee.inventory.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.itwillbs.keanu_coffee.common.dto.DisposalDTO;
 import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
+import com.itwillbs.keanu_coffee.inventory.dto.InventoryUpdateDTO;
 import com.itwillbs.keanu_coffee.inventory.dto.WarehouseInfoDTO;
 import com.itwillbs.keanu_coffee.inventory.mapper.InventoryMapper;
 
@@ -32,6 +35,25 @@ public class InventoryService {
 		
 		return inventoryMapper.selectInventoryItemsInEmployeesVirtualLocation(empIdx);
 		
+	}
+
+
+	// 재고 수량 업데이트
+	@Transactional
+	public void updateInventoryQuantity(InventoryUpdateDTO request, Integer empIdx) {
+		inventoryMapper.updateInventoryQuantity(request);
+		
+		// 수량 감소 시 폐기 처리
+		if (request.getIsDisposal()) {
+			DisposalDTO disposal = new DisposalDTO();
+			disposal.setEmpIdx(empIdx);
+			disposal.setSection("INVENTORY");
+			disposal.setReceiptProductIdx(request.getReceiptProductIdx());
+			disposal.setDisposalAmount(request.getAdjustQuantity());
+			disposal.setNote("실물 재고 수량과 다름");
+			
+			inventoryMapper.insertDisposal(disposal);
+		}
 	}
 
 
