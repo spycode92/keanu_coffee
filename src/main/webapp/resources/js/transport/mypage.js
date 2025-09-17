@@ -432,8 +432,6 @@ $(document).on("input", ".delivered-qty", function() {
 	// 주문 단위로 반품 수량 입력 여부로 버튼 활성/비활성
 	const btn = tbody.find(`.complateBtn[data-order-idx="${orderIdx}"]`);
 	
-	console.log(orderIdx);
-	
 	// 모든 수량 입력되었을 경우 활성화
 	let enableBtn = allFilled;
 	
