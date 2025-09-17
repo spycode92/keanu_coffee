@@ -118,6 +118,7 @@ body {
 	padding: 6px 12px;
 	border-radius: 4px;
 	cursor: pointer;
+	margin-bottom: 0.8em;
 }
 
 .download-area input[type="button"]:hover {
@@ -184,13 +185,15 @@ body {
 					</c:forEach>
 				</tbody>
 			</table>
-
-			<c:if test="${not empty confirmationDTO.file}">
+			<c:if test="${not empty confirmationDTO.fileList}">
 				<div class="download-area">
-					${confirmationDTO.file.originalFileName} <a
-						href="/file/${confirmationDTO.file.fileIdx}"> <input
-						type="button" value="다운로드" />
+					<c:forEach var="file" items="${confirmationDTO.fileList}">
+						${file.originalFileName} 
+						<a href="/file/${file.fileIdx}"> 
+						<input type="button" value="다운로드" />
 					</a>
+					<br>
+					</c:forEach>
 				</div>
 			</c:if>
 		</div>

@@ -94,6 +94,7 @@ public class DispatchController {
 	// 배차 상세 정보
 	@GetMapping("/dispatch/detail/{dispatchIdx}/{vehicleIdx}")
 	public ResponseEntity<?> getDispatchInfo(@PathVariable Integer dispatchIdx, @PathVariable Integer vehicleIdx) {
+		System.out.println("________+++++++++++++++++++++++++++" +dispatchIdx);
 		String status = dispatchService.getDispatchStatus(dispatchIdx);
 		
 		if (status.equals("예약") || status.equals("취소")) {
