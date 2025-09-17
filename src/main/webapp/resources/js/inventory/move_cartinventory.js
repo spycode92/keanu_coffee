@@ -1,5 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
+	//로케이션정보가져오기
+//	getLocationList();
 
+	// 모든 tr 요소 선택 (tbody 내부)
+	const rows = document.querySelectorAll('#cartList tbody tr');
+	
+	rows.forEach(row => {
+	    row.addEventListener('click', () => {
+	        // data 속성값 읽기
+	        const lotNumber = row.getAttribute('data-lotNumber');
+	        const quantity = parseInt(row.getAttribute('data-maxQuantity'), 10);
+			
+			selectLotNumber = lotNumber;
+			
+			maxQuantity = quantity;
+	
+	        // 또는 input 요소에 값 채우기
+	        const lotInput = document.getElementById('mi_lotNumber');
+	        if (lotInput) lotInput.value = lotNumber;
+			searchProductByLotNum(lotNumber);
+			checkBeforeMove();
+	    });
+	});
+	
     //공통 이벤트 핸들러
     function addInputEvents(inputId, callback) {
         const input = document.getElementById(inputId);
@@ -20,23 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // LOT 번호 입력 처리
-    function handleLotNumber(lotNumber) {
-        if(lotNumber) {
-            searchProductByLotNum(lotNumber);
-        }
-    }
-    
     // 로케이션 이름 입력 처리
     function handleLocationName(locationName) {
         if(locationName) {
-            selectedLocationItems = [];
-            searchInventoryByLocation(locationName);
+            isLocationExist(locationName);
+			checkBeforeMove();
         }
     }
     
     // 이벤트 등록
-    addInputEvents('mi_lotNumber', handleLotNumber);
     addInputEvents('mi_locationName', handleLocationName);
 	
 	//카트에담을 상품갯수 입력시 실행
@@ -57,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 	
 	//카트에담기 버튼 클릭이벤트
-	document.getElementById('mi_addCart').addEventListener('click', function(event) {
+	document.getElementById('mi_moveToLocation').addEventListener('click', function(event) {
 		event.preventDefault();
 		// 현재 input 값들 가져오기
 	    const lotNumber = document.getElementById('mi_lotNumber').value.trim();
@@ -80,15 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
 	    }
 		//한번더 유효성 검사
 		if(checkQuantity(quantity)){
-			addToCart();
+			cartToLocation();
 		}
 	});
 });
 
 let selectLotNumber = "";
 let selectLocationName = "";
+let maxQuantity = "";
 let selectQuantity = "";
-let selectedLocationItems = [];
 
 //상품찾기
 function searchProductByLotNum(lotNumber){
@@ -101,8 +116,6 @@ function searchProductByLotNum(lotNumber){
 				url = data.fileIdx ? '/file/thumbnail/' + data.fileIdx : '/resources/images/default_product.jpg';
 				$('#productPreview').attr('src',url).show();
 				selectLotNumber = lotNumber;
-				resetQuantity();
-				checkInventory();
 				console.log("여기까지");
             } else {
                 Swal.fire({
@@ -125,62 +138,21 @@ function searchProductByLotNum(lotNumber){
 		});
 }
 
-//재고위치찾기
-function searchInventoryByLocation(locationName){
-	ajaxGet(`/inventory/move/getInventoryLocation/${locationName}`)
-		.then(data => {
-			if(data.success) {
-				data.inventoryList.forEach(function(inventory) {
-                    selectedLocationItems.push({
-						lotNumber: inventory.lotNumber
-						, quantity: inventory.quantity
-					})
-                });
-				selectLocationName = locationName;
-				resetQuantity();
-				checkInventory();
-            } else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: '조회 실패',
-                    text: data.message,
-                    confirmButtonText: '확인'
-                }).then(()=>{
-					resetQuantity();
-				})
-            }
-		})
-		.catch(err => {
-			Swal.fire({
-                icon: 'error',
-                title: '오류 발생',
-                text: '서버와의 통신 중 오류가 발생했습니다.',
-                confirmButtonText: '확인'
-            });
-		});
+//로케이션이존재하는지체크
+function getLocationList() {
+	ajaxGet("/inventory/move/getLocationList")
+	.then(data => {
+		console.log(data);
+	})
 }
 
-//선택한 위치에 선택한 재고 있나 검사
-function checkInventory(){
+//상품, 위치, 상품수량 체크
+function checkBeforeMove(){
 	//둘다입력됐을때만 함수실행
 	if(!selectLotNumber || !selectLocationName) {
 	    return; 
     }
 	
-    // 해당 상품이 해당 로케이션에 없는 경우
-	const foundItem = selectedLocationItems.find(item => item.lotNumber === selectLotNumber);
-	console.log("파운드아이템",foundItem);
-	
-	if(!foundItem) {
-        Swal.fire({
-            icon: 'error',
-            title: '재고 없음',
-            text: '해당 상품은 해당 로케이션에 존재하지 않습니다.',
-            confirmButtonText: '확인'
-        });
-        return;
-    }
-	const maxQuantity = foundItem.quantity;
 	resetQuantity();
 	// 선택한 로케이션에 해당 상품이 재고로 존재할때
     $('#mi_quantity')
@@ -188,7 +160,6 @@ function checkInventory(){
 		.attr('max', maxQuantity)
 		.attr('placeholder', '최대수량 : ' + maxQuantity)
 	    .val('');                  // 기존 값 초기화 (옵션)
-
 }
 
 //상품갯수 초기화
@@ -202,28 +173,37 @@ function resetQuantity(){
 
 //상품갯수체크
 function checkQuantity(quantity){
-	const maxQuantity = parseInt($('#mi_quantity').prop('max'));//숫자변환
+	const parseMaxQuantity = parseInt($('#mi_quantity').prop('max'));//숫자변환
 	const qty = parseInt(quantity);//숫자변환
 	
-	if (quantity > maxQuantity) {
+	if (qty > parseMaxQuantity) {
         $('#mi_quantity').val('');
 		
 		Swal.fire({
             icon: 'error',
             title: '최대수량 초과',
-            text: '현재 위치에 상품의 갯수를 초과하였습니다.',
+            text: '선택 가능한 상품의 갯수를 초과하였습니다.',
             confirmButtonText: '확인'
         });
-    } else {
-        $('#mi_quantity').val(quantity); // input 값 설정
-		selectQuantity = quantity;
+    } else if(qty < 1){
+		$('#mi_quantity').val('');
+		
+		Swal.fire({
+            icon: 'error',
+            title: '최소 수량 미만',
+            text: '최소 선택 갯수는 상품의 1개 입니다.',
+            confirmButtonText: '확인'
+        });
+	}else {
+        $('#mi_quantity').val(qty); // input 값 설정
+		selectQuantity = qty;
 		return true;
     }
 }
 
 //카트에담기 동작함수
-function addToCart(){
-	ajaxPost("/inventory/move/addCart",
+function cartToLocation(){
+	ajaxPost("/inventory/move/moveLocation",
 		{lotNumber : selectLotNumber
 		 , locationName : selectLocationName
 		 , quantity :selectQuantity }
@@ -249,7 +229,25 @@ function addToCart(){
 			
 }
 
-
+//존재하는 로케이션인지 확인후 selectLocationName에 저장
+function isLocationExist(locationName){
+	ajaxGet(`/inventory/move/isLocationExist/${locationName}`)
+	.then((data) => {
+		selectLocationName = locationName;
+	}).catch(() =>{
+		Swal.fire({
+            icon: 'error',
+            title: "실패" ,
+            text: '존재하지않는 로케이션입니다.',
+            confirmButtonText: '확인'
+        }).then(()=>{
+			selectLocationName = '';
+			$('#mi_locationName').focus();
+			$('#mi_locationName').val('');
+//			window.location.reload();
+		});
+	})
+}
 
 
 

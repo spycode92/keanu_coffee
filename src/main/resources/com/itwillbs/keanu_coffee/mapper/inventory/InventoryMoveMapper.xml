@@ -55,7 +55,7 @@
 			location_idx
 			, location_name
 		FROM WAREHOUSE_LOCATION
-		WHERE location_name = #{empNo}
+		WHERE location_name = #{locationName}
 	</select>
 	
 	<!-- 재고입력 -->
@@ -112,6 +112,24 @@
 		WHERE inventory_idx = #{inventoryIdx}
 	</delete>
 
+	<!-- 카트에담긴 재고상품 조회 -->
+	<select id="selectDetailInventoryListByLocationName"  resultType="Map">
+		SELECT
+			i.lot_number as lotNumber
+			, i.quantity as quantity
+			, p.product_name as productName
+		FROM INVENTORY i
+		LEFT JOIN PRODUCT p
+		ON i.product_idx = p.product_idx
+		WHERE i.location_name = #{locationName}
+	</select>
+	
+	<!-- 전체 로케이션 정보 조회 -->
+	<select id="selectAllLocationInfo" resultType="com.itwillbs.keanu_coffee.inventory.dto.WarehouseLocationDTO">
+		SELECT location_name
+		FROM WAREHOUSE_LOCATION
+		WHERE location_type != -1  
+	</select>
 
 
 

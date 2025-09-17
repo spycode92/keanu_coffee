@@ -1,6 +1,7 @@
 package com.itwillbs.keanu_coffee.inventory.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -30,7 +31,7 @@ public interface InventoryMoveMapper {
 	InventoryDTO selectInventoryByLocationNAmeAndLotNumber(InventoryDTO inventory);
 	
 	//로케이션이름으로 로케이션정보조회
-	WarehouseLocationDTO selectLocationByLocationName(String empNo);
+	WarehouseLocationDTO selectLocationByLocationName(String locationName);
 	
 	//재고 입력
 	void insertInventory(InventoryDTO inventory);
@@ -42,6 +43,10 @@ public interface InventoryMoveMapper {
 	int selectCountSameReceiptIdxAtLocation(InventoryDTO inventory);
 	// 직원카트의 정보 업데이트
 	void updateInventory(InventoryDTO inventory);
+	// 카트에 담긴 재고 정보 조회
+	List<Map<String, Object>> selectDetailInventoryListByLocationName(String locationName);
+	//전체로케이션 정보 조회
+	List<WarehouseLocationDTO> selectAllLocationInfo();
 
 
 

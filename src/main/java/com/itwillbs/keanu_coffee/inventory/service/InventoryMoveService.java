@@ -2,6 +2,7 @@ package com.itwillbs.keanu_coffee.inventory.service;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -57,8 +58,6 @@ public class InventoryMoveService {
 		WarehouseLocationDTO location = inventoryMoveMapper.selectLocationByLocationName(empNo);
 		//받은 로케이션이름과 로트번호로 해당위치 재고정보조회해오기
 		inventory = inventoryMoveMapper.selectInventoryByLocationNAmeAndLotNumber(inventory);
-		System.out.println("11111111111111111111111111");
-		System.out.println(inventory);
 		// 해당위치 재고수량
 		int OriginalInventoryQuantity = inventory.getQuantity();
 		int OriginalInventoryIdx = inventory.getInventoryIdx();
@@ -87,12 +86,31 @@ public class InventoryMoveService {
 
 		} else if(OriginalInventoryQuantity == moveQuantity) { 
 			//해당위치의 해당물건 데이터 삭제
-			System.out.println("ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ");
 			inventoryMoveMapper.deleteInventoryDataByInventoryIdx(OriginalInventoryIdx);
 		} else {
 			throw new IllegalArgumentException(
 		            String.format("이동 가능한 수량을 다시 확인하십시오. 현재재고(%d)", OriginalInventoryQuantity));
 		}
+		
+	}
+	
+	//카트페이지 카트에담겨있는 재고정보
+	public List<Map<String, Object>> getInventoryInfo(String empNo) {
+		return inventoryMoveMapper.selectDetailInventoryListByLocationName(empNo);
+	}
+	
+	//전체 로케이션정보 조회
+	public List<WarehouseLocationDTO> getAllLocationInfo() {
+		return inventoryMoveMapper.selectAllLocationInfo();
+	}
+	//로케이션 
+	public Boolean getLocationCount(String locationName) {
+		WarehouseLocationDTO location = inventoryMoveMapper.selectLocationByLocationName(locationName);
+		
+		return location != null;
+	}
+	//카트에서 로케이션으로 물건이동
+	public void moveInventory(InventoryDTO inventory, Authentication authentication) {
 		
 	}
 

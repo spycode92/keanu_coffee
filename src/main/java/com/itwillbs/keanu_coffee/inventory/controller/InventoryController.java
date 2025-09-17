@@ -67,6 +67,12 @@ public class InventoryController {
 		return "inventory/move_inventory";
 	}
 	
+	@GetMapping("/moveInventory/cart")
+	public String moveInventoryCart(Authentication authentication, Model model) {
+		
+		return "redirect:/inventory/move/cart";
+	}
+	
 	@GetMapping("/updatedInventory")
 	public String updatedInventory() {
 		
