@@ -1,0 +1,15 @@
+.modal,
+.modal-card,
+.modal-body {
+	overflow-x: hidden !important;
+	box-sizing: border-box; /* padding 포함한 크기 계산 */
+	max-width: 100%;
+}
+
+#pageJumpModal #pageInput {
+	width: 100%;          /* 모달 안에서 가로 꽉 채움 */
+	padding: 10px 14px;   /* 입력 영역 여유 있게 */
+	font-size: 1.1rem;    /* 글자 크기 확대 */
+	border-radius: 6px;   /* 둥근 모서리 */
+	box-sizing: border-box;
+}
