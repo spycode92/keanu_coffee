@@ -1,6 +1,8 @@
 package com.itwillbs.keanu_coffee.common.aop.aspect;
 
 
+import java.util.Map;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -18,6 +20,8 @@ import com.itwillbs.keanu_coffee.common.mapper.LogMapper;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.utils.TimeUtils;
 import com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO;
+import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
+import com.itwillbs.keanu_coffee.inventory.mapper.InventoryMoveMapper;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationItemDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegisterRequestDTO;
@@ -33,6 +37,7 @@ import lombok.extern.log4j.Log4j2;
 public class WorkingLogAspect {
 	private final DispatchMapper dispatchMapper;
 	private final LogMapper logmapper;
+	private final InventoryMoveMapper inventoryMoveMapper;
 	
 //	@Around("@annotation(com.itwillbs.keanu_coffee.common.aop.annotation.Insert)")
 //	@Around("execution(* com.itwillbs.keanu_coffee.admin.service.*.insertEmployeeInfo(..))")
@@ -104,8 +109,7 @@ public class WorkingLogAspect {
 	            } else {
 	                slog.setLogMessage(
 	                		slog.getSection() + ">" + slog.getSubSection() + " : "  + 
-	                				empName + "(" + empNo + ") "  + " 운전기사가 " + dispatchRegisterRequest.getOrderIds()
-	                				+ "번 주문의 운송 중 에러 발생"
+	                				empName + "(" + empNo + ") "  + " 운전기사가 운송 시작 중 에러 발생"
 	                );
 	            }
 	        }
@@ -127,13 +131,66 @@ public class WorkingLogAspect {
 	        	} else {
 	        		slog.setLogMessage(
 	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
-	        						empName + "(" + empNo + ") "  + " 운전기사가 " + deliveryConfirmation.getOutboundOrderIdx()
-	        						+ "번 주문의 운송 완료중 에러 발생"
+	        						empName + "(" + empNo + ") "  + " 운전기사가 운송 완료중 에러 발생"
+	        				);
+	        	}
+	        }
+	        
+	        // 카트에담기
+	        if (methodName.equals("addCart")) {
+	        	InventoryDTO inventory = (InventoryDTO) args[0];
+	        	slog.setSubSection("재고이동");
+	        	
+	        	String productName = inventoryMoveMapper.selectProductName(inventory.getLotNumber());
+	        	
+	        	
+	        	slog.setTargetIdx(inventory.getInventoryIdx());
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	        						empName + "(" + empNo + ") "  + " 사원이 " + inventory.getLocationName() 
+	        						+ "의 " + productName + "(" + inventory.getLotNumber() + ")을 " 
+	        						+ inventory.getQuantity() +"개 카트에 담았습니다."
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	        						empName + "(" + empNo + ") "  + " 사원이 로케이션→카트 재고이동중 에러 발생."  
+	        				);
+	        	}
+	        }
+	        
+	        // 로케이션으로 재고이동
+	        if (methodName.equals("moveInventory")) {
+	        	InventoryDTO inventory = (InventoryDTO) args[0];
+	        	slog.setSubSection("재고이동");
+	        	
+	        	String productName = inventoryMoveMapper.selectProductName(inventory.getLotNumber());
+	        	
+	        	slog.setTargetIdx(inventory.getInventoryIdx());
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	        						empName + "(" + empNo + ") "  + " 사원이 " + productName + 
+	        						"(" + inventory.getLotNumber() + ")을 " + inventory.getQuantity() +"개 "
+	        						+ inventory.getLocationName() + "에 진열 하였습니다."
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	        						empName + "(" + empNo + ") "  + " 사원이 카트→로케이션 재고이동중 에러 발생."  
 	        				);
 	        	}
 	        }
 	        	        
 	        logmapper.insertSystemLog(slog);
+//	        System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+//	        System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+//	        System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+//	        System.out.println(slog);
+//	        System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+//	        System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+//	        System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
 	    }
 			
 		

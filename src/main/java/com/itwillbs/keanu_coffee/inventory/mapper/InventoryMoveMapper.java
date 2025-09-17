@@ -43,10 +43,14 @@ public interface InventoryMoveMapper {
 	int selectCountSameReceiptIdxAtLocation(InventoryDTO inventory);
 	// 직원카트의 정보 업데이트
 	void updateInventory(InventoryDTO inventory);
-	// 카트에 담긴 재고 정보 조회
+	// 카트에 담긴 재고리스트 정보 조회
 	List<Map<String, Object>> selectDetailInventoryListByLocationName(String locationName);
+	
 	//전체로케이션 정보 조회
 	List<WarehouseLocationDTO> selectAllLocationInfo();
+	
+	//상품 이름조회하기
+	String selectProductName(String lotNumber);
 
 
 

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
+import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
 import com.itwillbs.keanu_coffee.inventory.dto.WarehouseInfoDTO;
@@ -48,6 +50,7 @@ public class InventoryMoveService {
 	
 	//카트에 추가
 	@Transactional
+	@WorkingLog(target = WorkingLogTarget.INVENTORY)
 	public void addCart(InventoryDTO inventory, Authentication authentication) {
 		//사번
 		String empNo = authentication.getName();
@@ -111,6 +114,8 @@ public class InventoryMoveService {
 	}
 	
 	//카트에서 로케이션으로 물건이동
+	@Transactional
+	@WorkingLog(target = WorkingLogTarget.INVENTORY)
 	public void moveInventory(InventoryDTO inventory, Authentication authentication) {
 		//사번
 		String empNo = authentication.getName();

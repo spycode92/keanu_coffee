@@ -19,7 +19,7 @@
 <body>
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 <section class="content">
-    <form class="card d-flex" action="/inventory/moveInventory" method="post"  id="moveToCartForm" style="gap: 1.5rem; max-width: 600px; margin: auto;">
+    <form class="card d-flex" action="/inventory/moveInventory" method="post"  id="moveToCartForm" style="gap: 1.5rem; max-width: 500px; margin: auto;">
         <sec:csrfInput/>
         
         <!-- 상품 이미지 프리뷰 영역: 가로 공간 약 35% -->
@@ -42,7 +42,7 @@
             </div>
 
             <div class="form field mb-3">
-                <label class="form-label" for="mi_locationName">로케이션 이름</label>
+                <label class="form-label" for="mi_locationName">상품의 로케이션</label>
                 <input class="form-control" id="mi_locationName" type="text" name="locationName">
             </div>
 
@@ -52,7 +52,7 @@
             </div>
             
             <div style="text-align: right;">
-                <button class="btn btn-primary" type="button" id="mi_addCart" onclick="javascript:void(0)">카트에담기</button>
+                <button class="btn btn-primary" type="button" id="mi_addCart" onclick="javascript:void(0)">이동</button>
             </div>
         </div>
     </form>

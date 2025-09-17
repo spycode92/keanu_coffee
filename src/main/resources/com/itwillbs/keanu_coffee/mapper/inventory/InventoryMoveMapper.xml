@@ -59,7 +59,7 @@
 	</select>
 	
 	<!-- 재고입력 -->
-	<insert id="insertInventory">
+	<insert id="insertInventory" useGeneratedKeys="true" keyProperty="inventoryIdx">
 		INSERT INTO INVENTORY
 		(receipt_product_idx
 		, location_idx
@@ -96,7 +96,7 @@
 	</select>
 	
 	<!-- 직원 카트의 물건갯수 수정 -->
-	<update id="updateInventory">
+	<update id="updateInventory" useGeneratedKeys="true" keyProperty="inventoryIdx">
 		UPDATE INVENTORY
 		SET 
 			quantity = quantity + #{quantity}
@@ -129,6 +129,15 @@
 		SELECT location_name
 		FROM WAREHOUSE_LOCATION
 		WHERE location_type != -1  
+	</select>
+	
+	<!-- lotNumber로 상품이름 조회 -->
+	<select id="selectProductName" resultType="STring">
+		SELECT product_name
+		FROM RECEIPT_PRODUCT rp
+		LEFT JOIN PRODUCT p
+		ON p.product_idx = rp.product_idx
+		WHERE rp.lot_number = #{lotNumber}
 	</select>
 
 
