@@ -47,18 +47,18 @@ public class InventoryMoveService {
 	
 	//카트에 추가
 	@Transactional
-	public Boolean addCart(InventoryDTO inventory, Authentication authentication) {
+	public void addCart(InventoryDTO inventory, Authentication authentication) {
 		//사번
 		String empNo = authentication.getName();
-		
 		//이동할 수량
 		int moveQuantity = inventory.getQuantity();
 		
 		//카트정보 조회해오기
 		WarehouseLocationDTO location = inventoryMoveMapper.selectLocationByLocationName(empNo);
-		
 		//받은 로케이션이름과 로트번호로 해당위치 재고정보조회해오기
 		inventory = inventoryMoveMapper.selectInventoryByLocationNAmeAndLotNumber(inventory);
+		System.out.println("11111111111111111111111111");
+		System.out.println(inventory);
 		// 해당위치 재고수량
 		int OriginalInventoryQuantity = inventory.getQuantity();
 		int OriginalInventoryIdx = inventory.getInventoryIdx();
@@ -66,24 +66,34 @@ public class InventoryMoveService {
 		inventory.setLocationIdx(location.getLocationIdx());
 		inventory.setLocationName(location.getLocationName());
 		inventory.setQuantity(moveQuantity);
-		//이동할 물량만큼 카트에 추가
-		inventoryMoveMapper.insertInventory(inventory);
+		
+		//내 카트에 해당물건이 이미 들어있는지 체크
+		int sameReceiptIdxCount = inventoryMoveMapper.selectCountSameReceiptIdxAtLocation(inventory);
+		
+		if(sameReceiptIdxCount > 0) {
+			// 내카트에 해당 물건이 있다면 수량갱신
+			inventoryMoveMapper.updateInventory(inventory);
+		} else {//내 카트에 해당 물건이 없다면
+			//이동할 물량만큼 인벤토리테이블에 생성
+			inventoryMoveMapper.insertInventory(inventory);
+		}
 
 		//재고의 수량이 이동할 물건보다 많을때(남기고가져갈때)
 		if(OriginalInventoryQuantity > moveQuantity) {
+
 			int remainQuantity = OriginalInventoryQuantity - moveQuantity;
 			//이동한 물량만큼 재고 차감
 			inventoryMoveMapper.updateInventoryQuantity(remainQuantity, OriginalInventoryIdx);
+
 		} else if(OriginalInventoryQuantity == moveQuantity) { 
 			//해당위치의 해당물건 데이터 삭제
+			System.out.println("ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ");
 			inventoryMoveMapper.deleteInventoryDataByInventoryIdx(OriginalInventoryIdx);
 		} else {
 			throw new IllegalArgumentException(
 		            String.format("이동 가능한 수량을 다시 확인하십시오. 현재재고(%d)", OriginalInventoryQuantity));
 		}
 		
-		
-		return null;
 	}
 
 

@@ -48,6 +48,7 @@
                 <label class="form-label" for="mi_quantity">상품 갯수</label>
                 <input class="form-control" id="mi_quantity" type="number" name="quantity" min="1" required readonly>
             </div>
+            
             <div style="text-align: right;">
                 <button class="btn btn-primary" type="button" id="mi_addCart" onclick="javascript:void(0)">카트에담기</button>
             </div>

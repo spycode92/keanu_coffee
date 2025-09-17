@@ -229,14 +229,23 @@ function addToCart(){
 		 , locationName : selectLocationName
 		 , quantity :selectQuantity }
 	).then(data => {
-	
+		Swal.fire({
+            icon: 'success',
+            title: "성공" ,
+            text: data.message,
+            confirmButtonText: '확인'
+        }).then(()=>{
+			window.location.reload();
+		});
 	}).catch(err=> {
 		Swal.fire({
             icon: 'error',
-            title: '최대수량 초과',
+            title: "실패" ,
             text: err.message,
             confirmButtonText: '확인'
-        });
+        }).then(()=>{
+			window.location.reload();
+		});
 	});
 			
 }

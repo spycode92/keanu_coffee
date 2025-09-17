@@ -81,22 +81,20 @@ public class InventoryMoveController {
 	@ResponseBody
 	public ResponseEntity<Map<String,Object>> addCart(@RequestBody InventoryDTO inventory, Authentication authentication){
 		Map<String,Object> result = new HashMap<String, Object>();
-		
 		try {
 			//카트에 추가 
-			Boolean isAdded = inventoryMoveService.addCart(inventory, authentication);
+			inventoryMoveService.addCart(inventory, authentication);
+	        result.put("message", "상품을 카트에 담았습니다.");
 		} catch (IllegalArgumentException  e) {
-			result.put("success", false);
+			result.put("icon", "warning");
 	        result.put("message", e.getMessage());
 	        return ResponseEntity.badRequest().body(result);
 		} catch (Exception e) {
 	        // 기타 시스템 오류
-	        result.put("success", false);
+			result.put("icon", "warning");
 	        result.put("message", "시스템 오류가 발생했습니다.");
 	        return ResponseEntity.internalServerError().body(result);
 	    }
-		
-		
 		
 		return ResponseEntity.ok(result);
 	}

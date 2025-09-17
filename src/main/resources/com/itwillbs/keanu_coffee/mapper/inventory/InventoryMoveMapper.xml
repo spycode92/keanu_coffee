@@ -17,11 +17,11 @@
 	<!-- 상품의 사진 선택 -->
 	<select id="selectProductFileByLotNum" resultType="fileDTO">
 		SELECT f.file_idx
-		FROM INVENTORY i
+		FROM RECEIPT_PRODUCT rp
 		LEFT JOIN FILE f
 		ON f.target_table = 'PRODUCT'
-		AND f.target_table_idx = i.product_idx
-		WHERE i.lot_number = #{lotNumber}
+		AND f.target_table_idx = rp.product_idx
+		WHERE rp.lot_number = #{lotNumber}
 	</select>
 	
 	<!-- 로케이션 존재유무 체크 -->
@@ -52,8 +52,8 @@
 	<!-- 로케이션정보 조회 -->
 	<select id="selectLocationByLocationName" resultType="com.itwillbs.keanu_coffee.inventory.dto.WarehouseLocationDTO">	
 		SELECT 
-			location_idx AS locationIdx
-			, location_name AS locationName
+			location_idx
+			, location_name
 		FROM WAREHOUSE_LOCATION
 		WHERE location_name = #{empNo}
 	</select>
@@ -68,7 +68,7 @@
 		, quantity
 		, lot_number
 		, manufacture_date
-		expiration_date)
+		, expiration_date)
 		VALUES
 		(#{receiptProductIdx}
 		, #{locationIdx}
@@ -84,8 +84,33 @@
 	<update id="updateInventoryQuantity">
 		UPDATE INVENTORY
 		SET quantity = #{quantity}
-		WHERE `inventory_idx` = #{inventoryIdx}
+		WHERE inventory_idx = #{inventoryIdx}
 	</update>
+	
+	<!-- 카트에 동일receiptProduct가 들어있나 확인 -->
+	<select id="selectCountSameReceiptIdxAtLocation" resultType="int">
+		SELECT COUNT(*)
+		FROM INVENTORY
+		WHERE receipt_product_idx = #{receiptProductIdx}
+		AND location_name = #{locationName} 
+	</select>
+	
+	<!-- 직원 카트의 물건갯수 수정 -->
+	<update id="updateInventory">
+		UPDATE INVENTORY
+		SET 
+			quantity = quantity + #{quantity}
+		WHERE
+			location_name = #{locationName}
+		AND
+			lot_number = #{lotNumber}
+	</update>
+	
+	<!-- 재고물건이동 물건0개시 데이터삭제 -->
+	<delete id="deleteInventoryDataByInventoryIdx">
+		DELETE FROM INVENTORY
+		WHERE inventory_idx = #{inventoryIdx}
+	</delete>
 
 
 
