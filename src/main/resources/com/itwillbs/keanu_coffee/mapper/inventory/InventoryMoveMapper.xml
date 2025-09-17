@@ -48,10 +48,13 @@
 		AND
 			lot_number = #{lotNumber}
 	</select>
+	
 	<!-- 로케이션정보 조회 -->
 	<select id="selectLocationByLocationName" resultType="com.itwillbs.keanu_coffee.inventory.dto.WarehouseLocationDTO">	
-		SELECT *
-		FROM WAREHOSE_LOCATION
+		SELECT 
+			location_idx AS locationIdx
+			, location_name AS locationName
+		FROM WAREHOUSE_LOCATION
 		WHERE location_name = #{empNo}
 	</select>
 	
@@ -72,7 +75,7 @@
 		, #{locationName}
 		, #{productIdx}
 		, #{quantity}
-		, #{lotNumber
+		, #{lotNumber}
 		, #{manufactureDate}
 		, #{expirationDate})
 	</insert>
