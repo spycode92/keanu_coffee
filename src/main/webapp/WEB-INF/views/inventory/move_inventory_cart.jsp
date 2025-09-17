@@ -21,7 +21,7 @@
     <form class="card d-flex" action="/inventory/moveInventory" method="post"  id="moveTolocationForm" style="gap: 1.5rem; max-width: 500px; margin: auto;">
         <sec:csrfInput/>
 
-        <div>
+        <div class="w-99">
 		    <!-- 제목 영역: 테이블 위 -->
 		    <div class="d-flex justify-content-between align-items-center mb-3">
 		        <h1 class="card-title">재고 이동</h1>
@@ -31,8 +31,8 @@
 		    </div>
 		
 		    <!-- 테이블 영역 -->
-		    <div class="form field mb-3" id="cartList">
-		        <table class="table table-bordered mb-4">
+		    <div class="form field mb-3 w-99" id="cartList">
+		        <table class="table table-bordered mb-4 ">
 		            <thead>
 		                <tr class="bg-muted-foreground">
 		                    <th class="text-center">lot번호</th>
@@ -52,33 +52,35 @@
 		        </table>
 		    </div>
 		
-		    <!-- 이미지 + 폼 입력 영역 flex 컨테이너 -->
-		    <div class="d-flex gap-4 align-items-start">
-		        <!-- 상품 이미지 프리뷰 영역 -->
-		        <div class="flex-shrink-0" style="min-width: 150px; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; display: flex; justify-content: center; align-items: center;">
-		            <img id="productPreview" src="${defaultProductImageUrl}" alt="상품 이미지" style="max-width: 100%; height: auto; border-radius: var(--radius);">
-		        </div>
-		
-		        <!-- 폼 입력 영역 -->
-		        <div class="flex-grow-1">
-		            <div class="form field mb-3">
-		                <label class="form-label" for="mi_lotNumber">상품 lot번호</label>
-		                <input class="form-control" id="mi_lotNumber" type="text" name="lotNumber" readonly>
-		            </div>
-		            <div class="form field mb-3">
-		                <label class="form-label" for="mi_locationName">로케이션 이름</label>
-		                <input class="form-control" id="mi_locationName" type="text" name="locationName">
-		            </div>
-		            <div class="form field mb-3">
-		                <label class="form-label" for="mi_quantity">상품 갯수</label>
-		                <input class="form-control" id="mi_quantity" type="number" name="quantity" min="1" required readonly>
-		            </div>
-		            
-		            <div class="text-right">
-		                <button class="btn btn-primary" type="button" id="mi_moveToLocation">카트에담기</button>
-		            </div>
-		        </div>
-		    </div>
+			<!-- 이미지 + 폼 입력 영역 flex 컨테이너 -->
+			<div class="d-flex gap-4 align-items-start w-99">
+			    <!-- 상품 이미지 프리뷰 영역 -->
+			    <div style="min-width: 150px; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; display: flex; justify-content: center; align-items: center;">
+			        <img id="productPreview" src="${defaultProductImageUrl}" alt="상품 이미지" style="max-width: 100%; height: auto; border-radius: var(--radius);">
+			    </div>
+			    
+			    <!-- 폼 입력 영역 -->
+			    <div class="w-99">
+			        <div class="form field mb-3">
+			            <label class="form-label" for="mi_lotNumber">상품 lot번호</label>
+			            <input class="form-control" id="mi_lotNumber" type="text" name="lotNumber" readonly>
+			        </div>
+			        <div class="form field mb-3">
+			            <label class="form-label" for="mi_locationName">이동할 로케이션</label>
+			            <input class="form-control" id="mi_locationName" type="text" name="locationName">
+			        </div>
+			        <div class="form field mb-3">
+			            <label class="form-label" for="mi_quantity">상품 갯수</label>
+			            <input class="form-control" id="mi_quantity" type="number" name="quantity" min="1" required readonly>
+			        </div>
+			        
+			        <!-- 버튼을 오른쪽 정렬 -->
+			        <div class="d-flex justify-content-between">
+			            <div></div> <!-- 빈 공간 -->
+			            <button class="btn btn-primary" type="button" id="mi_moveToLocation">이동</button>
+			        </div>
+			    </div>
+			</div>
 		</div>
     </form>
 </section>
