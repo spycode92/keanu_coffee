@@ -4,18 +4,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
+import com.itwillbs.keanu_coffee.common.dto.SweetAlertIcon;
+import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
+import com.itwillbs.keanu_coffee.common.utils.MakeAlert;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
+import com.itwillbs.keanu_coffee.inventory.dto.InventoryUpdateDTO;
 import com.itwillbs.keanu_coffee.inventory.service.InventorySearchService;
 import com.itwillbs.keanu_coffee.inventory.service.InventoryService;
 
@@ -115,25 +122,22 @@ public class InventorySearchController {
     
     // 수량 조절 업데이트
     @PostMapping("/updateInventory")
-    public String modifyInventoryQuantity(@RequestParam Map<String, Object> request, Model model) {
-    	System.out.println(request + ">>>>>>>>>>>>>");
+    public String modifyInventoryQuantity(
+    		@ModelAttribute InventoryUpdateDTO request, 
+    		Authentication authentication,
+    		RedirectAttributes redirectAttributes) {
     	
-    	Integer locationIdx = (Integer) request.get("locationIdx");
-    	Integer receiptProductIdx = (Integer) request.get("receiptProductIdx");
-    	Integer quantity = (Integer) request.get("quantity");
-    	
-    	boolean success = inventoryService.updateInventoryQuantity(locationIdx, receiptProductIdx, quantity);
-    	
-    	
-    	if (request == null) {
-			model.addAttribute("msg", "재고 수량을 업데이트 할 수 없습니다.");
-			model.addAttribute("targetURL", "/inventory/stockCheck");
-			return "commons/result_process";
-    	}
-    	
-    	
-    	
-    	return "";
+		EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
+		Integer empIdx = empDetail.getEmpIdx();
+		
+    	try {
+    		inventoryService.updateInventoryQuantity(request, empIdx);
+    		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "성공", "재고수량변경");
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.ERROR, "실패", "재고수량업데이트실패");
+		}
+    	return "redirect:/inventory/stockCheck";
     }
     
 }

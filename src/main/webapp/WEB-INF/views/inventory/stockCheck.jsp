@@ -265,11 +265,13 @@
 	            </thead>
 	            <tbody id="tbodyRealtime">
 				    <c:forEach var="item" items="${inventoryList}">
-				        <tr data-idx="${item.receipt_product_idx}" data-location-idx="${item.location_idx}">
+				        <tr data-idx="${item.receipt_product_idx}" 
+				        	data-location-idx="${item.location_idx}"
+				        	data-current-quantity="${item.current_quantity}">
 				            <td>${item.location_name}</td>
 				            <td>${item.product_name}</td>
 				            <td>${item.product_idx}</td>
-				            <td><fmt:formatNumber value="${item.current_quantity}" type="number"/></td>
+				            <td ><fmt:formatNumber value="${item.current_quantity}" type="number"/></td>
 				            <td>BOX</td>
 				            <td>
 				                <c:choose>
@@ -451,20 +453,21 @@
 	        		<sec:csrfInput/>
 	        		<input type="hidden" name="locationIdx" id="currentLocationIdx" />
 	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdx"/>
+	        		<input type="hidden" name="isDisposal" id="isDisposal"/>
 					<div class="current-qty">
 					    현재수량 : <span id="currentQuantity"></span> Box
 					</div>
 		        	<div>
 		        		 <label for="updateQty" id="updateQty">수량 업데이트</label>
-		        		 <input type="number" id="updateQty"/>
+		        		 <input type="number" name="adjustQuantity" id="updateQty"/>
 		        	</div>
 		        	<div>
-		        		 <label for="updateQty" id="updateQty">변경된 수량</label>
-		        		 <input type="number" name="quantity" id="totalQty" disabled/>
+		        		 <label for="updateQty">변경된 수량</label>
+		        		 <input type="number" name="quantity" id="totalQty" readonly/>
 		        	</div>
 			     	<div class="modal-foot">
 			        	<button type="submit" class="btn btn-update" >수정</button>
-				        <button type="button" class="btn btn-secondary" onclick="ModalManager.closeModal(document.getElementById('quantityUpdateModal'))">닫기</button>
+				        <button type="button" class="btn btn-secondary" onclick="resetLotModal(); ModalManager.closeModal(document.getElementById('quantityUpdateModal'))">닫기</button>
 					</div>
 	        	</form>
 	        </div>
@@ -577,9 +580,11 @@
 	        // 수량 조절 모달창에 필요한 값 input에 넣기
 	        const receiptProductIdx = $(this).data('idx');
 	        const locationIdx = $(this).data('location-idx');
+	        const currentQuantity = $(this).data("current-quantity");
 	        
-	        $('#currentReceiptProductIdx').val(receiptProductIdx);
-	        $('#currentLocationIdx').val(locationIdx);
+	        $('#currentReceiptProductIdx').val(parseInt(receiptProductIdx));
+	        $('#currentLocationIdx').val(parseInt(locationIdx));
+	        $("#currentQuantity").text(currentQuantity);
 		
 		    // Ajax로 상세 데이터 요청
 		    $.getJSON('${pageContext.request.contextPath}/inventory/detail', { idx: idx }, function(data) {
@@ -615,7 +620,6 @@
 		            let sum = 0;
 		            data.locations.forEach(loc => {
 		                sum += loc.qty;
-		                $("#currentQuantity").text(sum);
 		                $box.append(
 		                    '<div class="logline">' +
 		                        '<div class="logleft">' + loc.location_name + '</div>' +
@@ -636,6 +640,30 @@
 		        ModalManager.openModalById('lotModal');
 		    });
 		});
+	    /* ====================== 변경 후 수량  ====================== */
+	    $(document).on("input", "#updateQty",  function() {
+	    	const baseQty = parseInt($("#currentQuantity").text().trim() || "0", 10);
+	    	const delta = parseInt($(this).val() || "0", 10);
+	    	
+	    	const newQty = baseQty + delta;
+	    	
+	    	if (newQty >= baseQty) {
+	    		$("#isDisposal").val(false);
+	    	} else {
+	    		$("#isDisposal").val(true);
+	    	}
+	    	
+	    	// 변경된 수량
+	    	$("#totalQty").val(parseInt(newQty));
+	    });
+	    
+	    // 수량 조절 모달 초기화
+	    function resetLotModal() {
+	        const form = document.querySelector("#quantityUpdateModal form");
+	        if (form) {
+	            form.reset();  // form 전체 input 초기화
+	        }
+	    }
 					    
 	    /* ====================== 초기화 버튼 ====================== */
 	    $('#btnReset').on('click', function(){
