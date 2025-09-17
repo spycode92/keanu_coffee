@@ -5,6 +5,8 @@
 <html>
 <head>
 <title>Home</title>
+<sec:csrfMetaTags/>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 
@@ -78,6 +80,172 @@
 	            <input type="submit" value="로그인">
 	        </form>
 	    </div>
+	    
+	    <button id="loginTransportBtn">운송관리자</button>
+	    <button id="logindriverBtn">기사</button>
+	    <button id="loginOutboundBtn">출고관리자</button>
+	    <button id="loginOutboundPersonBtn">출고사원</button>
+	    <button id="logininboundBtn">입고관리자</button>
+	    <button id="logininboundPersonBtn">입고사원</button>
+	    <button id="logininventoryBtn">재고관리자</button>
+	    <button id="logininventoryPersonBtn">재고관리자</button>
 	</div>
+	<script type="text/javascript">
+	const { token, header } = getCsrf();
+	$("#loginTransportBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "kimgs",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/transport/main"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	
+	$("#logindriverBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "54320747",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/transport/mypage/54320747"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	$("#loginOutboundBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "90110826",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/outbound/main"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	$("#loginOutboundPersonBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "gompange",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/outbound/outboundManagement/"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	$("#logininboundBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "19900826",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/inbound/main"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	$("#logininboundPersonBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "33330827",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/inbound/management"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	$("#logininventoryBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "54320827",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/inventory/main"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	$("#logininventoryPersonBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "54322746",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/inventory/inventoryToMove"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	
+	</script>
 </body>
 </html>
