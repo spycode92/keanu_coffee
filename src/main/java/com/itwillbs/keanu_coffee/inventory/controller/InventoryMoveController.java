@@ -140,13 +140,10 @@ public class InventoryMoveController {
 	@ResponseBody
 	public ResponseEntity<Map<String,Object>> moveLocation(@RequestBody InventoryDTO inventory, Authentication authentication){
 		Map<String,Object> result = new HashMap<String, Object>();
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-		System.out.println(inventory);
-		System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
 		try {
-			//카트에 추가 
+			//카트에서 로케이션으로 진열
 			inventoryMoveService.moveInventory(inventory, authentication);
-	        result.put("message", "상품을 카트에 담았습니다.");
+	        result.put("message", "상품진열을 완료하였습니다.");
 		} catch (IllegalArgumentException  e) {
 			result.put("icon", "warning");
 	        result.put("message", e.getMessage());

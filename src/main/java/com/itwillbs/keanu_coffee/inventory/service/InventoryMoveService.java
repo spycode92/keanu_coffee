@@ -109,9 +109,69 @@ public class InventoryMoveService {
 		
 		return location != null;
 	}
+	
 	//카트에서 로케이션으로 물건이동
 	public void moveInventory(InventoryDTO inventory, Authentication authentication) {
+		//사번
+		String empNo = authentication.getName();
+		//이동할 수량
+		int moveQuantity = inventory.getQuantity();
 		
+		//내 카트의 정보 조회
+		InventoryDTO myCart = new InventoryDTO();
+		myCart.setLocationName(empNo);
+		myCart.setLotNumber(inventory.getLotNumber());
+		
+		myCart = inventoryMoveMapper.selectInventoryByLocationNAmeAndLotNumber(myCart);
+				
+		//목적지 로케이션 정보 조회
+		WarehouseLocationDTO Destinationlocation = inventoryMoveMapper.selectLocationByLocationName(inventory.getLocationName());
+		
+		//받은 로케이션이름과 로트번호로 목적지 재고정보조회해오기
+		inventory = inventoryMoveMapper.selectInventoryByLocationNAmeAndLotNumber(inventory);
+		
+		// 내카트의 물건 수량 체크
+		int OriginalCartQuantity = myCart.getQuantity();
+		int OriginalInventoryIdx = myCart.getInventoryIdx();
+		
+		// insert데이터 만들기
+		myCart.setLocationIdx(Destinationlocation.getLocationIdx());
+		myCart.setLocationName(Destinationlocation.getLocationName());
+		myCart.setQuantity(moveQuantity);
+		
+		
+		//목적지에 해당 물건이 이미 들어있는지 체크
+		int sameReceiptIdxCount = 0; 
+		if(inventory != null) {		
+			sameReceiptIdxCount = inventoryMoveMapper.selectCountSameReceiptIdxAtLocation(inventory);
+		}
+		
+		
+		if(sameReceiptIdxCount > 0) {
+			// 목적지에 해당 물건이 들어있다면
+			//목적지에 추가할 수량 설정
+			inventory.setQuantity(moveQuantity);
+			
+			inventoryMoveMapper.updateInventory(inventory);
+		} else {//목적지에 물건이 없다면
+			//이동할 물량만큼 인벤토리테이블에 생성
+			inventoryMoveMapper.insertInventory(myCart);
+		}
+
+		//카트의 수량이 이동할 물건보다 많을때(남기고진열)
+		if(OriginalCartQuantity > moveQuantity) {
+
+			int remainQuantity = OriginalCartQuantity - moveQuantity;
+			//이동한 물량만큼 카트 수량 차감
+			inventoryMoveMapper.updateInventoryQuantity(remainQuantity, OriginalInventoryIdx);
+
+		} else if(OriginalCartQuantity == moveQuantity) { 
+			//해당위치의 해당물건 데이터 삭제
+			inventoryMoveMapper.deleteInventoryDataByInventoryIdx(OriginalInventoryIdx);
+		} else {
+			throw new IllegalArgumentException(
+		            String.format("이동 가능한 수량을 다시 확인하십시오. 현재카트의 물건수량(%d)", OriginalCartQuantity));
+		}
 	}
 
 
