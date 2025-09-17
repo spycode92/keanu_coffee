@@ -124,10 +124,12 @@
     border-radius: 6px;
     font-size: 0.9rem;
     text-align: right;
+    margin-bottom: 0.5em;
 }
 
-#updateQty {
+#quantityUpdateModal label {
 	font-size: 1.2rem;
+	margin-right: 0.2em;
 }
 </style>
 </head>
@@ -462,7 +464,7 @@
 		        		 <input type="number" name="adjustQuantity" id="updateQty"/>
 		        	</div>
 		        	<div>
-		        		 <label for="updateQty">변경된 수량</label>
+		        		 <label for="totalQty">변경된 수량</label>
 		        		 <input type="number" name="quantity" id="totalQty" readonly/>
 		        	</div>
 			     	<div class="modal-foot">
