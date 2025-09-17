@@ -248,8 +248,6 @@ public class DispatchService {
 			dispatchStop.setDispatchStopStatus("대기");
 			dispatchStop.setUrgent('N');
 			
-			System.out.println("dispatchStop" + dispatchStop);
-			
 			// 경유지 데이터 등록
 			dispatchMapper.insertDispatchStop(dispatchStop);
 			
@@ -257,8 +255,6 @@ public class DispatchService {
 			confirmation.setDispatchAssignmentIdx(assigmentIdx);
 			confirmation.setDispatchStopIdx(dispatchStop.getDispatchStopIdx());
 			confirmation.setOutboundOrderIdx(stopReq.getOutboundOrderIdx());
-			
-			System.out.println("confirmation" + confirmation);
 			
 			// 수주확인서 데이터 등록
 			dispatchMapper.insertDeliveryConfirmation(confirmation);
@@ -269,8 +265,6 @@ public class DispatchService {
 				confirmItem.setProductIdx(itemReq.getProductIdx());
 				confirmItem.setItemName(itemReq.getItemName());
 				confirmItem.setOrderedQty(itemReq.getOrderedQty());
-				
-				System.out.println("itemReq" + itemReq);
 				
 				// 수주확인서 품목 데이터 등록
 				dispatchMapper.insertDeliveryConfirmationItem(confirmItem);
