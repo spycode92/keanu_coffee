@@ -66,21 +66,13 @@ public class InventoryController {
 	@GetMapping("/moveInventory")
 	public String moveInventory(Authentication authentication, Model model) {
 		
-	// get any inventory items currently in the employees virtual location so that the employee does not
-	// have to search to find what the inventoryIdx of the item the are placing is
-		EmployeeDetail employeeDetail = (EmployeeDetail)authentication.getPrincipal();
-//		int[] inventoryItemsInEmployeesVirtualLocation = inventoryService.getInventoryItemsInEmployeesVirtualLocation(principal.getEmpIdx());
-//		System.out.println("authentication" + authentication);
-		System.out.println("employee idx : " + employeeDetail.getEmpIdx());
-		List<InventoryDTO> result = inventoryService.getInventoryItemsInEmployeesVirtualLocation(employeeDetail.getEmpIdx());
-		List<InventoryDTO> inventoryItemsInEmployeesVirtualLocation = result == null ? new ArrayList<InventoryDTO>() : result;
-		
-		model.addAttribute("employeeInventory", inventoryItemsInEmployeesVirtualLocation);
-		
-		
-		
-		
 		return "inventory/move_inventory";
+	}
+	
+	@GetMapping("/moveInventory/cart")
+	public String moveInventoryCart(Authentication authentication, Model model) {
+		
+		return "redirect:/inventory/move/cart";
 	}
 	
 	@GetMapping("/updatedInventory")
