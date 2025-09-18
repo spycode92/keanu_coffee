@@ -173,7 +173,7 @@ function loadCompleted() {
 		requiresAdditional: $("#assignTable tbody tr").data("requires-additional"),
 		stops: selectedStops
 	};
-
+	
 	Swal.fire({
 		title: "적재를 완료하시겠습니까?",
 		showCancelButton: true,
@@ -268,7 +268,7 @@ $(document).on("click", ".detail-btn", function() {
 								${index === 0 ? `<td rowspan="${orderItems.length}" data-label="지점명">${stop.franchiseName}</td>` : ""}
 								<td data-label="품목명">${item.itemName}</td>
 								<td data-label="주문수량">${item.orderedQty}</td>
-							  	<td data-label="납품수량">
+							  	<td data-label="반품수량">
 								    <input type="number"
 								           class="delivered-qty"
 								           data-ordered-qty="${item.orderedQty}"
@@ -278,20 +278,9 @@ $(document).on("click", ".detail-btn", function() {
 										   ${item.status === "OK" || item.status === "REFUND" || item.status === "PARTIAL_REFUND" ? "disabled" : ""}
 											 />
 							  	</td>
-								<td class="status-cell">${stop.completeTime == null ? "대기" : item.status === "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전량반품" || "-"}</td>
+								<td class="status-cell" data-label="상태">${stop.completeTime == null ? "대기" : item.status === "OK" ? "완료" : item.status === "PARTIAL_REFUND" ? "부분반품" : "전량반품" || "-"}</td>
 								${index === 0 ? `
 								      <td rowspan="${orderItems.length}" class="btn-cell btn-pc">
-								          <button class="complateBtn btn btn-secondary"
-								                  data-franchise-idx="${stop.franchiseIdx}" 
-								                  data-dispatch-stop-idx="${stop.dispatchStopIdx}" 
-								                  data-order-idx="${dc.outboundOrderIdx}"
-								                  data-confirmation-item-idx="${item.confirmationItemIdx}" disabled>
-								            납품완료
-								          </button>
-								      </td>` : ""}
-								
-								  ${index === orderItems.length - 1 ? `
-								      <td class="btn-cell btn-mobile">
 								          <button class="complateBtn btn btn-secondary"
 								                  data-franchise-idx="${stop.franchiseIdx}" 
 								                  data-dispatch-stop-idx="${stop.dispatchStopIdx}" 
@@ -309,57 +298,16 @@ $(document).on("click", ".detail-btn", function() {
 			renderTimeline();
 
 			$("#detailItems tbody").html(detailHtml);
+			renderFileName(currentDispatch);
 			renderDispatchMap("mapContainer", dispatch.franchises);
-		});
-
-	// 버튼 클릭 시 
-	if (status === "적재완료") {
-		$("#complateBtn").prop("disabled", true);
-		btn.text("운송시작");
-		// 운송 시작 상태 변경 
-		btn.off("click").on("click", function() {
-			$.ajax({
-				url: MYPAGE_DISPATCH_START_URL,
-				type: "POST",
-				contentType: "application/json; charset=UTF-8",
-				data: JSON.stringify({
-					dispatchIdx: parseInt(dispatchIdx),
-					vehicleIdx: parseInt(vehicleIdx),
-					requiresAdditional
-				}),
-				beforeSend(xhr) {
-					if (token && header) xhr.setRequestHeader(header, token);
-				},
-				success: function() {
-					$("#complateBtn").prop("disabled", false);
-					Swal.fire("운송시작", "운행을 시작합니다.", "success").then(() => {
-						location.reload();
-					});
-
-				},
-				error: function(xhr) {
-					Swal.fire("에러", xhr.responseText, "error");
-				}
-			})
-		});
-	} else if (status === "운행중") {
-		btn.text("복귀");
-		const allDone = timelineData.every(s => s.status === "납품완료");
-
-		if (!allDone) {
-			btn.prop("disabled", !allDone);
-		}
-
-		btn.off("click").on("click", function() {
-			Swal.fire({
-				title: "복귀하시겠습니까?",
-				showDenyButton: true,
-				confirmButtonText: "복귀",
-				denyButtonText: "취소"
-			}).then((result) => {
-				if (result.isConfirmed) {
+			// 버튼 클릭 시 
+			if (status === "적재완료") {
+				$("#complateBtn").prop("disabled", true);
+				btn.text("운송시작");
+				// 운송 시작 상태 변경 
+				btn.off("click").on("click", function() {
 					$.ajax({
-						url: MYPAGE_DELIVERY_RETURN_URL,
+						url: MYPAGE_DISPATCH_START_URL,
 						type: "POST",
 						contentType: "application/json; charset=UTF-8",
 						data: JSON.stringify({
@@ -371,18 +319,59 @@ $(document).on("click", ".detail-btn", function() {
 							if (token && header) xhr.setRequestHeader(header, token);
 						},
 						success: function() {
-							Swal.fire("운행종료", "운행을 종료합니다.", "success").then(() => {
+							$("#complateBtn").prop("disabled", false);
+							Swal.fire("운송시작", "운행을 시작합니다.", "success").then(() => {
 								location.reload();
 							});
+		
 						},
 						error: function(xhr) {
 							Swal.fire("에러", xhr.responseText, "error");
 						}
-					});
+					})
+				});
+			} else if (status === "운행중") {
+				btn.text("복귀");
+				const allDone = timelineData.every(s => s.status === "납품완료");
+				renderFileName(currentDispatch);
+				if (!allDone) {
+					btn.prop("disabled", !allDone);
 				}
-			})
+		
+				btn.off("click").on("click", function() {
+					Swal.fire({
+						title: "복귀하시겠습니까?",
+						showDenyButton: true,
+						confirmButtonText: "복귀",
+						denyButtonText: "취소"
+					}).then((result) => {
+						if (result.isConfirmed) {
+							$.ajax({
+								url: MYPAGE_DELIVERY_RETURN_URL,
+								type: "POST",
+								contentType: "application/json; charset=UTF-8",
+								data: JSON.stringify({
+									dispatchIdx: parseInt(dispatchIdx),
+									vehicleIdx: parseInt(vehicleIdx),
+									requiresAdditional
+								}),
+								beforeSend(xhr) {
+									if (token && header) xhr.setRequestHeader(header, token);
+								},
+								success: function() {
+									Swal.fire("운행종료", "운행을 종료합니다.", "success").then(() => {
+										location.reload();
+									});
+								},
+								error: function(xhr) {
+									Swal.fire("에러", xhr.responseText, "error");
+								}
+							});
+						}
+					})
+				});
+			}
 		});
-	}
 });
 
 // 반품 수량 입력할 때 이벤트
@@ -521,6 +510,8 @@ $(document).on("click", ".complateBtn", function() {
 				success: function() {
 					$("#detailActionBtn").prop("disabled", false);
 					Swal.fire("납품완료되었습니다..", "", "success").then(() => {
+						$('#files').val('');
+						$('#productImagePreviewContainer').empty();
 						location.reload();
 					});
 				}
@@ -530,6 +521,62 @@ $(document).on("click", ".complateBtn", function() {
 
 
 });
+
+
+//이미지미리보기
+$(document).on("change", "#files", function (e) {
+    const files = e.target.files;
+	// 이미지 여러개 담을 div
+	const previewContainer = $('#productImagePreviewContainer'); 
+	// 이미지 여러개 담는 div 초기화
+	previewContainer.empty();
+	
+	if (files && files.length > 0) {
+		for (const file of files) {
+			if (file.type.startsWith("image/")) {
+				const reader = new FileReader();
+				reader.onload = function (evt) {
+		    		const img = $('<img>')
+                        .attr('src', evt.target.result)
+                        .css({
+                            'max-width': '120px',
+                            'max-height': '120px',
+                            'margin': '5px',
+                            'border': '1px solid #ccc',
+                            'border-radius': '6px'
+                        });
+					 previewContainer.append(img);
+		        };
+				reader.readAsDataURL(file);
+			}
+		}
+	}
+});
+
+// 파일 다운로드 화면 구현
+function renderFileName(currentDispatch) {
+	let html = "";
+	
+	currentDispatch.franchises.forEach((stop) => {
+		if (stop.deliveryConfirmations) {
+			 stop.deliveryConfirmations.forEach((dc) => {
+				if (dc.fileList.length > 0) {
+						dc.fileList.forEach((file) => {
+							html += `
+							<div class="download-area">
+								${file.originalFileName} <a
+									href="/file/${file.fileIdx}"> <input
+									type="button" value="다운로드" />
+								</a>
+							</div>
+							`
+					});
+				}
+			})
+		}
+	});
+	$("#fileDownloadContainer").html(html);
+}
 
 function renderTimeline() {
 	let html = "";
@@ -576,5 +623,4 @@ function formatDate(timestamp) {
 
 $(document).ready(function() {
 	$("#btnLoadCompleted").on("click", loadCompleted);
-
 });

@@ -1,11 +1,11 @@
 // 본사 주소
-var headOffice = new kakao.maps.LatLng(35.096256307681, 129.04247384597);
+var headOffice = new kakao.maps.LatLng(35.1584163, 129.0620714);
 
 function renderDispatchMap(containerId, stops) {
 	var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
     mapOption = {
         center: headOffice, // 지도의 중심좌표
-        level: 3 // 지도의 확대 레벨
+        level: 2 // 지도의 확대 레벨
     }; 
 
 	// 지도 생성
@@ -16,6 +16,16 @@ function renderDispatchMap(containerId, stops) {
 	// 출발지는 무조건 본사에서 시작
 	var coords = [headOffice];
 	
+    var startMarker = new kakao.maps.Marker({
+        map: map,
+        position: headOffice
+    });
+
+    var startInfo = new kakao.maps.InfoWindow({
+        content: `<div style="width:150px;text-align:center;padding:6px 0; font-size:0.6rem;">본사</div>`
+    });
+    startInfo.open(map, startMarker);
+
 	// 경유지 순서대로 정렬
 	stops.sort((a, b) => a.deliverySequence - b.deliverySequence);
 	
@@ -24,7 +34,8 @@ function renderDispatchMap(containerId, stops) {
 			if (status === kakao.maps.services.Status.OK) {
 				var coord = new kakao.maps.LatLng(result[0].y, result[0].x);
 				
-				coords.push(coord)
+				coords.push(coord);
+				
 				
 				// 마커 생성
 				var marker = new kakao.maps.Marker({
@@ -33,7 +44,7 @@ function renderDispatchMap(containerId, stops) {
 				});
 				
 				var infowindow = new kakao.maps.InfoWindow({
-					content: `<div style="width:180px;text-align:center;padding:6px 0;">${stop.franchiseName}</div>`
+					content: `<div style="width:150px;text-align:center;padding:6px 0; font-size:0.6rem;">${stop.franchiseName}</div>`
 				})
 				infowindow.open(map, marker);
 				

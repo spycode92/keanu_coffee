@@ -80,7 +80,7 @@
 			#{empIdx}
 			, #{section}
 			, #{receiptProductIdx}
-			, #{disposalAmount}
+			, ABS(#{disposalAmount})
 			, #{note}
 		)
 	</insert>
