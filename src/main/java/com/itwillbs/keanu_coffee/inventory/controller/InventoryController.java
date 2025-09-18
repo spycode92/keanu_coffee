@@ -88,14 +88,7 @@ public class InventoryController {
 	}
 	
 	@GetMapping("/inventoryToMove")
-	public String inventoryToMove(Model model) {
-		// when page loads it fills up with inventory items that need to be moved from pallet zone to picking zone
-//		List<InventoryDTO> inboundDTO = inventoryService.getInventoryThatNeedsToMoveFromInbound();
-//		List<InventoryDTO> outboundDTO = inventoryService.getInventoryThatNeedsToMoveToOutbound();
-//		
-//		model.addAttribute("inventoryToMove", inboundDTO);
-//		model.addAttribute("inventoryToMove", outboundDTO);
-		
+	public String inventoryToMove() {
 		
 		return "inventory/inventory_to_move";
 	}
