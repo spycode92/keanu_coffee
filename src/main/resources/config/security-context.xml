@@ -31,7 +31,8 @@
 	<http auto-config="true">
 		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/main" access="isAuthenticated()" />
-		<intercept-url pattern="/admin/**" access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')" />
+<!-- 		<intercept-url pattern="/admin/**" access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')" /> -->
+		<intercept-url pattern="/admin/**" access="isAuthenticated()" />
 		<intercept-url pattern="/inbound/**" access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')" />
 		<intercept-url pattern="/outbound/**" access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')" />
 		<intercept-url pattern="/inventory/**" access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')" />

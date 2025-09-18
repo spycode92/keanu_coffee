@@ -289,7 +289,7 @@
 				</ul>
 			</li>
 			</sec:authorize>
-			<sec:authorize access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')">
+<%-- 			<sec:authorize access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')"> --%>
 			<li>
 				<a href="/inbound/main"><span>입고 관리</span></a>
 				<ul class="submenu">
@@ -301,8 +301,8 @@
 			        <li><a href="/inbound/inboundRegister">입고요청</a></li>
 			    </ul>
 			</li>
-			</sec:authorize>
-			<sec:authorize access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')">
+<%-- 			</sec:authorize> --%>
+<%-- 			<sec:authorize access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')"> --%>
 			<li>
 				<a href="/outbound/main"><span>출고 관리</span></a>
 				<ul class="submenu">
@@ -315,8 +315,8 @@
 			        <li><a href="/outbound/outboundPicking">출고피킹</a></li>
 			    </ul>
 			</li>
-			</sec:authorize>
-			<sec:authorize access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')">
+<%-- 			</sec:authorize> --%>
+<%-- 			<sec:authorize access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')"> --%>
 			<li>
 				<a href="/inventory/main"><span>재고 현황</span></a>
 			    <ul class="submenu">
@@ -332,8 +332,8 @@
               <li><a href="/inventory/locationType">로케이션 지정</a></li>
 			  </ul>
 			</li>
-			</sec:authorize>
-			<sec:authorize access="hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')">
+<%-- 			</sec:authorize> --%>
+<%-- 			<sec:authorize access="hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')"> --%>
 			<li>
 				<a href="/transport/main"><span>운송관리</span></a>
 				<ul class="submenu">
@@ -342,19 +342,19 @@
 					<li><a href="/transport/dispatches">배차관리</a></li>
 				</ul>
 			</li>
-			</sec:authorize>
-			<sec:authorize access="isAuthenticated()">
+<%-- 			</sec:authorize> --%>
+<%-- 			<sec:authorize access="isAuthenticated()"> --%>
 				<li>
 					<ul class="submenu">
 						<li><a href="/admin/dash">통계</a></li>
 						<li><a href="/admin/workingLog">작업관리</a></li>
 					</ul>
 				</li>
-			</sec:authorize>
-			<li>
-				<a href="/guide"><span>가이드페이지</span></a>
+<%-- 			</sec:authorize> --%>
+<!-- 			<li> -->
+<!-- 				<a href="/guide"><span>가이드페이지</span></a> -->
 				
-			</li>
+<!-- 			</li> -->
       
 		</ul>
 	</aside>
