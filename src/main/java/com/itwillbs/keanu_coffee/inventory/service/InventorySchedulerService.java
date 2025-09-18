@@ -48,10 +48,4 @@ public class InventorySchedulerService {
         }
     }
     
-	// ❌ 만료 재고 알림은 하지 않음 → 조회 제외 용도만
-    // 만료 재고 조회 (조회 제외 용도)
-    public List<InventoryDTO> selectExpiredStock() {
-        return inventorySchedulerMapper.selectExpiredStock();
-    }
-    
 }

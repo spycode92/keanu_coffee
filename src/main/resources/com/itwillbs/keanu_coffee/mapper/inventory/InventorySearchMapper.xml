@@ -60,26 +60,23 @@
 	        <if test="locationType != null and locationType != '' and locationType != '전체'">
 	            AND w.location_type = #{locationType} 
 	        </if>
-			
-			<!-- 📌 추가: 만료 제외 조건 -->
-        	AND r.expiration_date &gt;= CURDATE()
-			
+	
 	        <!-- 날짜 조건 -->
-			<if test="mfgDate != null and mfgDate != '' and (expDate == null or expDate == '')">
-			    <!-- 제조일자만 입력 시: 해당 일자 이상 -->
-			    AND r.manufacture_date &gt;= #{mfgDate}
-			</if>
-			
-			<if test="expDate != null and expDate != '' and (mfgDate == null or mfgDate == '')">
-			    <!-- 유통기한만 입력 시: 해당 일자 이하 -->
-			    AND r.expiration_date &lt;= #{expDate}
-			</if>
-			
-			<if test="mfgDate != null and mfgDate != '' and expDate != null and expDate != ''">
-			    <!-- 둘 다 입력 시: 구간 검색 -->
-			    AND r.manufacture_date &gt;= #{mfgDate}
-			    AND r.expiration_date &lt;= #{expDate}
-			</if>
+	        <if test="mfgDate != null and mfgDate != '' and (expDate == null or expDate == '')">
+	            <!-- 제조일자만 입력 시: 해당 일자 이상 -->
+	            AND r.manufacture_date &gt;= #{mfgDate}
+	        </if>
+	        
+	        <if test="expDate != null and expDate != '' and (mfgDate == null or mfgDate == '')">
+	            <!-- 유통기한만 입력 시: 해당 일자 이하 -->
+	            AND r.expiration_date &lt;= #{expDate}
+	        </if>
+	        
+	        <if test="mfgDate != null and mfgDate != '' and expDate != null and expDate != ''">
+	            <!-- 둘 다 입력 시: 구간 검색 -->
+	            AND r.manufacture_date &gt;= #{mfgDate}
+	            AND r.expiration_date &lt;= #{expDate}
+	        </if>
 	
 	        <!-- 재고 상태 -->
 	        <if test="stockStatus != null and stockStatus != '' and stockStatus != '전체'">
@@ -99,8 +96,8 @@
 	
 	        <!-- ✅ 카테고리 필터 -->
 	        <if test="category != null and category != '' and category != '전체'">
-			    AND c.common_code_idx = #{category}
-			</if>
+	            AND c.common_code_idx = #{category}
+	        </if>
 	    </where>
 	</select>
 	
@@ -153,25 +150,22 @@
 	            AND w.location_type = #{locationType}
 	        </if>
 	        
-	        <!-- 📌 추가: 만료 제외 조건 -->
-        	AND r.expiration_date &gt;= CURDATE()
-	        
 	        <!-- 날짜 조건 -->
-			<if test="mfgDate != null and mfgDate != '' and (expDate == null or expDate == '')">
-			    <!-- 제조일자만 입력 시: 해당 일자 이상 -->
-			    AND r.manufacture_date &gt;= #{mfgDate}
-			</if>
-			
-			<if test="expDate != null and expDate != '' and (mfgDate == null or mfgDate == '')">
-			    <!-- 유통기한만 입력 시: 해당 일자 이하 -->
-			    AND r.expiration_date &lt;= #{expDate}
-			</if>
-			
-			<if test="mfgDate != null and mfgDate != '' and expDate != null and expDate != ''">
-			    <!-- 둘 다 입력 시: 구간 검색 -->
-			    AND r.manufacture_date &gt;= #{mfgDate}
-			    AND r.expiration_date &lt;= #{expDate}
-			</if>
+	        <if test="mfgDate != null and mfgDate != '' and (expDate == null or expDate == '')">
+	            <!-- 제조일자만 입력 시: 해당 일자 이상 -->
+	            AND r.manufacture_date &gt;= #{mfgDate}
+	        </if>
+	        
+	        <if test="expDate != null and expDate != '' and (mfgDate == null or mfgDate == '')">
+	            <!-- 유통기한만 입력 시: 해당 일자 이하 -->
+	            AND r.expiration_date &lt;= #{expDate}
+	        </if>
+	        
+	        <if test="mfgDate != null and mfgDate != '' and expDate != null and expDate != ''">
+	            <!-- 둘 다 입력 시: 구간 검색 -->
+	            AND r.manufacture_date &gt;= #{mfgDate}
+	            AND r.expiration_date &lt;= #{expDate}
+	        </if>
 	
 	        <!-- 재고 상태 필터 -->
 	        <if test="stockStatus != null and stockStatus != '' and stockStatus != '전체'">
@@ -191,8 +185,8 @@
 	
 	        <!-- 카테고리 필터 -->
 	        <if test="category != null and category != '' and category != '전체'">
-			    AND c.common_code_idx = #{category}
-			</if>
+	            AND c.common_code_idx = #{category}
+	        </if>
 	    </where>
 	
 	    <!-- 정렬 조건 -->

@@ -12,7 +12,4 @@ public interface InventorySchedulerMapper {
 	// 임박 재고 조회 + 알림 처리
 	List<InventoryDTO> selectImminentStock();
 	
-	// 만료 재고 조회
-    List<InventoryDTO> selectExpiredStock();
-    
 }

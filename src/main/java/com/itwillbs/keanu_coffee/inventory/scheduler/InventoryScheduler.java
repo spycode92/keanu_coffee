@@ -32,9 +32,6 @@ public class InventoryScheduler {
         // 임박 재고 알림 처리
         inventorySchedulerService.getImminentStock();
         
-        // 만료 재고 확인
-        inventorySchedulerService.selectExpiredStock();
-
     }
 	
 	// 일요일 새벽 1시 적정재고 계산

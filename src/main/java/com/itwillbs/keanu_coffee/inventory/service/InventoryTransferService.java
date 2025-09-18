@@ -1,6 +1,7 @@
 package com.itwillbs.keanu_coffee.inventory.service;
 
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class InventoryTransferService {
         return inventoryTransferMapper.selectPickingZoneStock();
     }
 
-    // 최근 7일 출고량으로 적정재고 계산
+ // 최근 7일 출고량으로 적정재고 계산
     public void updatePickingZoneTargetStock() {
         // 최근 7일 출고량 가져오기 → resultType=map 이므로 Map으로 받음
         List<Map<String, Object>> avgList = inventoryTransferMapper.selectLast7DaysOutbound();
@@ -41,9 +42,9 @@ public class InventoryTransferService {
         for (Map<String, Object> row : avgList) {
             // Map에서 값 꺼내오기
             Integer productIdx = (Integer) row.get("productIdx");
-            Long totalOutbound = (Long) row.get("totalOutbound"); // SUM()은 Long으로 리턴
+            Long totalOutbound = ((BigDecimal) row.get("totalOutbound")).longValue(); // ✅ BigDecimal → long 변환
 
-            if (productIdx != null && totalOutbound != null) {
+            if (productIdx != null) {
                 int avg = (int) (totalOutbound / 7); // 하루 평균 출고량
                 int target = avg * 2;               // 이틀치 → 적정재고(100%)
 
