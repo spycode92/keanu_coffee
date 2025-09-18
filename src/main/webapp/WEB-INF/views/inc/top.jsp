@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		<ul>
 			<sec:authorize access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')">
 			<li class="menu-item">
-				<span>관리자페이지</span>
+				<a href="#"><span>관리자페이지</span></a>
 <!-- 				<a href=""><span>물류부서관리</span></a> -->
 				<ul class="submenu ${fn:contains(uri, '/admin') ? 'open' : ''}">
 					<li><a href="/admin/employeeManage">직원관리</a></li>
