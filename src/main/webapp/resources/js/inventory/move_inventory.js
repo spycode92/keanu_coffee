@@ -263,11 +263,11 @@ function init() {
 	btnScanQR.addEventListener("click", function() {
 		console.log("QR 버튼 클릭됨");
 		ModalManager.openModalById("qrScannerModal");
-		
+		//큐알스캔후 콜백함수실행
 		startCamera((scannedText) => {
 			if (scannedText.startsWith("LOT")){
 				$('#mi_lotNumber').val(scannedText);
-				selectLotNumber = $('#mi_lotNumber').val(scannedText);
+//				selectLotNumber = $('#mi_lotNumber').val(scannedText);
 				searchProductByLotNum(scannedText);
 //				resetQuantity();
 //				checkInventory();
