@@ -69,9 +69,9 @@ public class AdminController {
 	}
 
 	// 로그
-	@GetMapping("/log")
+	@GetMapping("/workingLog")
 	public String workingTree() {
-		return "redirect:/admin/workingLog";
+		return "redirect:/workingLog";
 	}
 
 	// 대시보드
@@ -79,7 +79,8 @@ public class AdminController {
 	public String dashboard() {
 		return "redirect:/statistics/1";
 	}
-
+	
+	//알림페이지
 	@GetMapping("/sysNoti")
 	public String systemNotification() {
 		return "redirect:/admin/systemnotification";

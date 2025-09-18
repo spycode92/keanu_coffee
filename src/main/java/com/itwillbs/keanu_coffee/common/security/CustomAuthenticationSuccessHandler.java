@@ -43,11 +43,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 				break;
 			case "출고관리자" : redirectURL = "/outbound/main";
 				break;
-			case "출고평사원" : redirectURL = "/outbound/management";
+			case "출고평사원" : redirectURL = "/outbound/outboundManagement";
 				break;
 			case "재고관리자" : redirectURL = "/inventory/main";
 				break;
-			case "재고평사원" : redirectURL = "/inventory//inventory/inventoryToMove";
+			case "재고평사원" : redirectURL = "/inventory/moveInventory";
 				break;
 			case "운송관리자" : redirectURL = "/transport/main";
 				break;

@@ -13,6 +13,7 @@
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet" />
 	<link href="${pageContext.request.contextPath}/resources/css/inbound/inboundDetailAndInspection.css" rel="stylesheet" />
+	<link href="${pageContext.request.contextPath}/resources/css/inbound/inboundDetail.css" rel="stylesheet" />
 	
 	
 	<!-- ============================================ 가격 계산 ============================================ -->
@@ -90,11 +91,9 @@
 			<div class="kv-grid">
 				<div class="kv-item">
 					<div class="kv-label">입고번호</div>
-					<div class="kv-value" style="display:flex; align-items:center; gap:.5rem;">
-				        <a id="inboundLink" class="inbound-link">
-							<c:out value="${inboundDetailData.ibwaitNumber}" default="-"/>
-				        </a>
-				    </div>
+					<div class="kv-value">
+					    <c:out value="${inboundDetailData.ibwaitNumber}" default="-" />
+					</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고일자</div>
@@ -124,7 +123,7 @@
 				</div>
 				
 				<div class="kv-item">
-					<div class="kv-label">발주번호(PO)</div>
+					<div class="kv-label">(PO)</div>
 					<div class="kv-value"><c:out value="${inboundDetailData.orderNumber}" default="-"/></div>
 				</div>
 				

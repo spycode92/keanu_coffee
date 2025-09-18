@@ -59,3 +59,5 @@ public class readQRCode {
         String qrLink = readQR(filePath, charset, hashMap);
     }
 }
+
+

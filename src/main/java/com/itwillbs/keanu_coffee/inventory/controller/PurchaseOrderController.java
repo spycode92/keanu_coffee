@@ -89,7 +89,7 @@ public class PurchaseOrderController {
 
 //	@GetMapping("/trigger")
 //	public void triggerManually() throws IOException {
-//	@Scheduled(cron = "0 0 0 * * *") // every day
+	@Scheduled(cron = "0 0 0 * * *") // every day
 //	@Scheduled(cron = "0 * * * * *") // every minute
 	public void triggerAutomatically() throws IOException {
 	    // your logic here
@@ -112,7 +112,7 @@ public class PurchaseOrderController {
     	
     	//create a list of alpha values       
         //get Previous Month's  average daily Demand
-          LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now();
         YearMonth lastMonth = YearMonth.from(today.minusMonths(1));
         YearMonth lastMonth2 = YearMonth.from(today.minusYears(1));
         int month = lastMonth.getMonthValue();
@@ -243,7 +243,7 @@ public class PurchaseOrderController {
             
              // add these two lists together
              Map<Integer, Double> quantityMap2 = new HashMap<>();
-             System.out.println("**************************Inbound waiting quantities: " + inboundWaitingQuantity);
+//             System.out.println("**************************Inbound waiting quantities: " + inboundWaitingQuantity);
              // Combine both lists
              Stream.concat(inventoryQuantity.stream(), inboundWaitingQuantity.stream())
                  .forEach(dto -> quantityMap2.merge(dto.getProductIdx(), dto.getQuantity(), Double::sum));
@@ -375,7 +375,7 @@ public class PurchaseOrderController {
 //		    });
 
 		    ordersBySupplier.forEach((supplierId, orders) -> {
-		        System.out.println("Supplier " + supplierId + ":");
+//		        System.out.println("Supplier " + supplierId + ":");
 
 		        // Generate a unique PO number per supplier
 		        MakePurchaseOrderNumber mpon = new MakePurchaseOrderNumber(purchaseOrderService);
@@ -439,7 +439,7 @@ public class PurchaseOrderController {
 		        // Add all items to that order
 		        orders.forEach(order -> {
 		        	int contractPrice = productToContractPriceMap.get(order.getProductIdx());
-		            System.out.println("  Product " + order.getProductIdx() + ", Qty " + order.getQuantity());
+//		            System.out.println("  Product " + order.getProductIdx() + ", Qty " + order.getQuantity());
 		            purchaseOrderService.addProductOrderItem(finalOrderIdx, order.getProductIdx(), order.getQuantity(), contractPrice);
 		        });
 		    });

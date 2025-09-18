@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style>
 	#alarm-wrapper {
@@ -200,10 +201,30 @@
 	  color: #333;
 	}
 </style>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/common/web_socket.js"></script>
+<script src="https://kit.fontawesome.com/a96e186b03.js" crossorigin="anonymous"></script>
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", () => {
+	  document.querySelectorAll(".menu-item > a").forEach((anchor) => {
+	    anchor.addEventListener("click", (e) => {
+	      e.preventDefault();
+
+	      // 모든 submenu 닫기
+	      document.querySelectorAll(".submenu").forEach((sm) => sm.classList.remove("open"));
+
+	      // 클릭한 메뉴만 열기
+	      const submenu = anchor.nextElementSibling;
+	      if (submenu) {
+	        submenu.classList.add("open");
+	      }
+	    });
+	  });
+	});
+</script>
 <c:if test="${not empty accessDeniedMessage }">
 	<script type="text/javascript">
 		Swal.fire({
@@ -238,7 +259,7 @@
 			<script type="text/javascript">
 				const role = "${pageContext.request.userPrincipal.principal.role.roleName}";
 			</script>
-			<div id="employeeInfo" class="profile-popover" role="menu" aria-hidden="true" >
+			<div id="employeeInfo" class="profile-popover" role="menu"  >
 				<span class="changeInfo"><button type="button" class="btn btn-link" data-modal-target="change-info-modal"> 정보 변경</button></span>
 				<span class="logout" >
 					<button type="button" class="btn btn-secondary" data-action="logout">로그아웃</button>
@@ -250,7 +271,7 @@
 			</div>
 		</div>
 		<div id="alarm-wrapper">
-			<a id="noti" href="javascript:void(0)" onclick="notification()"><img src="/resources/images/alarm.png" id="alarm-image" /></a>
+			<a id="noti" href="javascript:void(0)" onclick="notification()"><i class="fa-solid fa-bell" id="alarm-image"></i></a>
 			<span id="alarm-badge"></span>
        		<div id="notification-box">
 				<div id="notification-header">
@@ -269,13 +290,14 @@
 
 <div class="dashboard-layout">
   <!-- 사이드바 -->
+  	<c:set var="uri" value="${pageContext.request.requestURI}" />
 	<aside id="sidebar" class="sidebar">
 		<ul>
 			<sec:authorize access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')">
-			<li>
+			<li class="menu-item">
 				<span>관리자페이지</span>
 <!-- 				<a href=""><span>물류부서관리</span></a> -->
-				<ul class="submenu">
+				<ul class="submenu ${fn:contains(uri, '/admin') ? 'open' : ''}">
 					<li><a href="/admin/employeeManage">직원관리</a></li>
 					<li><a href="/admin/preference/dept">조직관리</a></li>
 					<li><a href="/admin/preference/supplyCompany">공급업체관리</a></li>
@@ -286,10 +308,10 @@
 				</ul>
 			</li>
 			</sec:authorize>
-			<sec:authorize access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')">
-			<li>
-				<a href="/inbound/main"><span>입고 관리</span></a>
-				<ul class="submenu">
+<%-- 			<sec:authorize access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')"> --%>
+			<li class="menu-item">
+				<a href="#"><span>입고 관리</span></a>
+				<ul class="submenu ${fn:contains(uri, '/inbound') ? 'open' : ''}">
 			        <li><a href="/inbound/main">대시보드</a></li>
 			        <li><a href="/inbound/management">입고조회</a></li>
 			        <li><a href="/inbound/inboundDetail">입고조회 > 상세</a></li>
@@ -298,11 +320,11 @@
 			        <li><a href="/inbound/inboundRegister">입고요청</a></li>
 			    </ul>
 			</li>
-			</sec:authorize>
-			<sec:authorize access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')">
-			<li>
-				<a href="/outbound/main"><span>출고 관리</span></a>
-				<ul class="submenu">
+<%-- 			</sec:authorize> --%>
+<%-- 			<sec:authorize access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')"> --%>
+			<li class="menu-item">
+				<a href="#"><span>출고 관리</span></a>
+				<ul class="submenu ${fn:contains(uri, '/outbound') ? 'open' : ''}">
 			        <li><a href="/outbound/main">대시보드</a></li>
 			        <li><a href="/outbound/outboundManagement">출고조회</a></li>
 			        <li><a href="/outbound/outboundDetail">출고조회 > 상세</a></li>
@@ -312,46 +334,48 @@
 			        <li><a href="/outbound/outboundPicking">출고피킹</a></li>
 			    </ul>
 			</li>
-			</sec:authorize>
-			<sec:authorize access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')">
-			<li>
-				<a href="/inventory/main"><span>재고 현황</span></a>
-			    <ul class="submenu">
+<%-- 			</sec:authorize> --%>
+<%-- 			<sec:authorize access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')"> --%>
+			<li class="menu-item">
+				<a href="#"><span>재고 현황</span></a>
+			    <ul class="submenu ${fn:contains(uri, '/inventory') ? 'open' : ''}">
+			        <li><a href="/inventory/main">대시보드</a></li>
 			        <li><a href="/inventory/stockCheck">재고 조회</a></li>
 			        <li><a href="/inventory/productHistory">제품 위치 기록</a></li>
-              <li><a href="/inventory/updateInventory">재고 업데이트</a></li>
-              <li><a href="/inventory/updateWarehouse">창고 업데이트</a></li>
-              <li><a href="/inventory/moveInventory">재고를 옮기다</a></li>
-              <li><a href="/inventory/updatedInventory">업데이트된 재고 테이블</a></li>
-              <li><a href="/inventory/inventoryToMove">이동할 재고</a></li>
-
-              <li><a href="/inventory/qrScanner">QR 스캐너</a></li>
-              <li><a href="/inventory/locationType">로케이션 지정</a></li>
+	                <li><a href="/inventory/updateInventory">재고 업데이트</a></li>
+	                <li><a href="/inventory/updateWarehouse">창고 업데이트</a></li>
+	                <li><a href="/inventory/moveInventory">재고를 옮기다</a></li>
+	                <li><a href="/inventory/updatedInventory">업데이트된 재고 테이블</a></li>
+	                <li><a href="/inventory/inventoryToMove">이동할 재고</a></li>
+	                <li><a href="/inventory/qrScanner">QR 스캐너</a></li>
+	                <li><a href="/inventory/locationType">로케이션 지정</a></li>
 			  </ul>
 			</li>
-			</sec:authorize>
-			<sec:authorize access="hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')">
-			<li>
-				<a href="/transport/main"><span>운송관리</span></a>
-				<ul class="submenu">
+<%-- 			</sec:authorize> --%>
+<%-- 			<sec:authorize access="hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')"> --%>
+			<li class="menu-item">
+				<a href="#"><span>운송관리</span></a>
+				<ul class="submenu ${fn:contains(uri, '/transport') ? 'open' : ''}">
+					<li><a href="/transport/main">대시보드</a></li>
 					<li><a href="/transport/drivers">기사관리</a></li>
 					<li><a href="/transport/vehicle">차량관리</a></li>
 					<li><a href="/transport/dispatches">배차관리</a></li>
 				</ul>
-			</li>
-			</sec:authorize>
-			<sec:authorize access="isAuthenticated()">
+			</li >
+<%-- 			</sec:authorize> --%>
+<%-- 			<sec:authorize access="isAuthenticated()"> --%>
 				<li>
-					<ul class="submenu">
+					<a href="#"><span>기타정보</span></a>
+					<ul class="submenuetc">
 						<li><a href="/admin/dash">통계</a></li>
-						<li><a href="/admin/workingLog">작업관리</a></li>
+						<li><a href="/admin/workingLog">작업로그</a></li>
 					</ul>
 				</li>
-			</sec:authorize>
-			<li>
-				<a href="/guide"><span>가이드페이지</span></a>
+<%-- 			</sec:authorize> --%>
+<!-- 			<li> -->
+<!-- 				<a href="/guide"><span>가이드페이지</span></a> -->
 				
-			</li>
+<!-- 			</li> -->
       
 		</ul>
 	</aside>

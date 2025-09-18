@@ -7,20 +7,13 @@
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
-<title>운송관리대시보드</title>
-<!-- 기본 양식 -->
+<title>기사관리</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<link
-	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
-	rel="stylesheet">
-<link
-	href="${pageContext.request.contextPath}/resources/css/common/common.css"
-	rel="stylesheet">
-<script
-	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/js/transport/driver.js"></script>
+<link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/transport/driver.js"></script>
 <style type="text/css">
 .vehicle-empty {
 	display:flex; 
@@ -40,44 +33,6 @@
 	margin-top:8px; 
 	display:flex; 
 	justify-content:flex-end; 
-}
-
-.badge {
-	display: inline-block;
-	padding: 2px 8px;
-	border-radius: 999px;
-	font-size: 1rem;
-	font-weight: 700
-}
-
-.badge.reserve { /* 예약 */
-	background: #f3e8ff; /* 연보라 */
-	color: #6b21a8;      /* 진한 보라 */
-}
-
-.badge.wait { /* 대기 */
-	background: #e5e7eb;
-	color: #111827;
-}
-
-.badge.run { /* 운행중 */
-	background: #dbeafe;
-	color: #1e40af;
-}
-
-.badge.work { /* 재직 */
-	background: #dcfce7; /* 연한 초록 */
-	color: #166534;      /* 진한 초록 */
-}
-
-.badge.rest { /* 휴직 */
-	background: #fef9c3; /* 연한 노랑 */
-	color: #92400e;      /* 진한 갈색/주황 */
-}
-
-.badge.left { /* 퇴사 */
-	background: #fee2e2;
-	color: #991b1b;
 }
 
 .btn.disabled {
@@ -128,28 +83,29 @@
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	<section class="content">
 		<div>
-			<h1>기사관리</h1>
+			<h3>기사관리</h3>
 		</div>
-<!-- 		<div class="content"> -->
-		<!-- 검색/필터 -->
-        <form class="filters" aria-label="검색 및 필터">
-            <div class="field">
-                <select id="filterStatus" name="filter">
-                    <option value="전체">전체</option>
-                    <option value="대기">대기</option>
-                    <option value="예약">예약</option>
-                    <option value="운행중">운행중</option>
-                </select>
-            </div>
-            <div class="search">
-                <input id="filterText" type="text" name="searchKeyword" placeholder="이름/차량번호 검색 가능" />
-            </div>
-            <div class="actions">
-                <button class="btn btn-primary" id="btnSearch">검색</button>
-            </div>
-        </form>
-		<div>
-			<h3>기사목록</h3>
+		<%-- 검색/필터 --%>
+		<div class="filterWrapper">
+	        <form class="filters" aria-label="검색 및 필터">
+	            <div class="field">
+	                <select id="filterStatus" name="filter">
+	                    <option value="전체">전체</option>
+	                    <option value="대기">대기</option>
+	                    <option value="예약">예약</option>
+	                    <option value="운행중">운행중</option>
+	                </select>
+	            </div>
+	            <div class="search">
+	                <input id="filterText" type="text" name="searchKeyword" placeholder="이름/차량번호 검색 가능" />
+	            </div>
+	            <div class="actions">
+	                <button class="btn btn-primary" id="btnSearch">검색</button>
+	            </div>
+	        </form>
+		</div>
+        <%-- 기사목록 --%>
+		<div class="card">
 			<c:choose>
 				<c:when test="${empty driverList}">
 					<div class="empty-result">검색된 기사가 없습니다.</div>
@@ -187,26 +143,26 @@
 									<td>
 										<c:choose>
 											<c:when test="${driver.status eq '운행중'}">
-												<span class="badge run">운행중</span>
+												<span class="badge badge-normal">운행중</span>
 											</c:when>
 											<c:when test="${not empty driver.status && driver.status ne '운행중'}">
-												<span class="badge wait">대기</span>
+												<span class="badge badge-waiting">대기</span>
 											</c:when>
 											<c:otherwise>
-												<span class="badge reserve">예약</span>
+												<span class="badge badge-urgent">예약</span>
 											</c:otherwise>
 										</c:choose>
 									</td>
 									<td>
 										<c:choose>
 											<c:when test="${driver.empStatus eq '재직'}">
-												<span class="badge work">재직</span>
+												<span class="badge badge-confirmed">재직</span>
 											</c:when>
 											<c:when test="${driver.empStatus eq '휴직'}">
-												<span class="badge rest">휴직</span>
+												<span class="badge badge-warning">휴직</span>
 											</c:when>
 											<c:otherwise>
-												<span class="badge left">퇴직</span>
+												<span class="badge badge-urgent">퇴직</span>
 											</c:otherwise>
 										</c:choose>
 									</td>
@@ -219,12 +175,11 @@
 				</c:otherwise>
 			</c:choose> 
 		</div>
-<!-- 		</div> -->
 		<jsp:include page="/WEB-INF/views/inc/pagination.jsp">
 			<jsp:param value="/transport/drivers" name="pageUrl"/>
 		</jsp:include>
 	</section>
-	<!-- 기사 상세 + 차량 배정/변경 모달 -->
+	<%-- 기사 상세 + 차량 배정/변경 모달 --%>
 	<jsp:include page="/WEB-INF/views/transport/modal/detail_driver.jsp"></jsp:include>
 	</body>
 </html>

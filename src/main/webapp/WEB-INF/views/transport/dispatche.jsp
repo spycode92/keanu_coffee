@@ -2,16 +2,16 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
-<title>운송관리대시보드</title>
-<!-- 기본 양식 -->
+<title>배차관리</title>
 <link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
-<link href="${pageContext.request.contextPath}/resources/css/common/common_sample.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
@@ -19,12 +19,6 @@
 <script src="${pageContext.request.contextPath}/resources/js/transport/dispatch.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/transport/kakao_map.js"></script>
 <style type="text/css">
-.container {
-    max-width: 1264px;
-    margin: 0 auto;
-    padding: 0 16px;
-}
-
 header {
     display: flex;
     align-items: center;
@@ -47,42 +41,73 @@ button:disabled {
 
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field input { height: 38px; border: 1px solid var(--border); border-radius: 10px; padding: 0 10px; background: #f9fafb; }
+
+#detailItems, #assignList, .driver-item {
+	font-size: 0.91rem;
+}
+
+.assignListWrapper {
+	height: 450px;
+	overflow-y: scroll;
+}
+
+/* 스크롤바 전체 */
+.assignListWrapper::-webkit-scrollbar {
+  width: 8px; /* 스크롤바 너비 */
+}
+
+.assignListWrapper::-webkit-scrollbar-thumb {
+  background: #d3d3d3; /* 연한 회색 (lightgray) */
+  border-radius: 10px;
+}
+
+.assignListWrapper::-webkit-scrollbar-track {
+  background: #f9f9f9; /* 트랙은 더 연한 색 */
+  border-radius: 10px;
+}
+
+.removeDriverBtn {
+	cursor: pointer;
+}
 </style>
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
     <div class="content">
         <header>
-            <h1>배차 관리</h1>
+            <h3>배차 관리</h3>
             <div style="display:flex; gap:8px">
-                <button class="btn btn-primary" id="openRegister">+ 배차 등록</button>
-                <button onclick="location.href='/transport/mypage/${pageContext.request.userPrincipal.name}'">기사마이페이지</button>
-                <button class="btn btn-confirm" onclick="location.href='/transport/region'">구역관리</button>
+            	<sec:authorize access="isAuthenticated()">
+            		<sec:authorize access="hasAnyAuthority('TRANSPORT_WRITE')">
+		                <button class="btn btn-primary" id="openRegister">+ 배차 등록</button>
+		                <button class="btn btn-confirm" onclick="location.href='/transport/region'">구역관리</button>
+            		</sec:authorize>
+            	</sec:authorize>
             </div>
         </header>
-        <!-- 검색/필터 -->
-        <form class="filters card" aria-label="검색 및 필터">
-            <div class="field">
-                <select id="filterStatus" name="filter">
-                    <option value="전체">전체</option>
-                    <option value="예약">예약</option>
-                    <option value="적재완료">적재완료</option>
-                    <option value="운행중">운행중</option>
-                    <option value="완료">완료</option>
-                    <option value="취소">취소</option>
-                </select>
-            </div>
-            <div class="search">
-                <input id="filterText" type="text" name="searchKeyword" placeholder="기사명 / 차량번호 / 구역명 검색" />
-            </div>
-            <div class="actions">
-                <button class="btn btn-primary" id="btnSearch">검색</button>
-            </div>
-        </form>
-
-        <!-- 배차 목록 -->
-        <section style="margin-top:14px">
-            <h3>배차목록</h3>
+        <%-- 검색/필터 --%>
+        <div class="filterWrapper">
+	        <form class="filters" aria-label="검색 및 필터">
+	            <div class="field">
+	                <select id="filterStatus" name="filter">
+	                    <option value="전체">전체</option>
+	                    <option value="예약">예약</option>
+	                    <option value="적재완료">적재완료</option>
+	                    <option value="운행중">운행중</option>
+	                    <option value="완료">완료</option>
+	                    <option value="취소">취소</option>
+	                </select>
+	            </div>
+	            <div class="search">
+	                <input id="filterText" type="text" name="searchKeyword" placeholder="기사명 / 차량번호 / 구역명 검색" />
+	            </div>
+	            <div class="actions">
+	                <button class="btn btn-primary" id="btnSearch">검색</button>
+	            </div>
+	        </form>
+        </div>
+		<%-- 배차 목록 --%>
+        <section class="card" style="margin-top:14px">
             <c:choose>
             	<c:when test="${empty dispatchList}">
             		<div class="empty-result">검색된 배차가 없습니다.</div>
@@ -124,19 +149,19 @@ button:disabled {
 		                			<td>
 		                				<c:choose>
 		                					<c:when test="${dispatch.status eq '완료'}">
-		                						<span class="badge done">완료</span>
+		                						<span class="badge badge-confirmed">완료</span>
 		                					</c:when>
 		                					<c:when test="${dispatch.status eq '예약'}">
-		                						<span class="badge book">예약</span>
+		                						<span class="badge badge-waiting">예약</span>
 		                					</c:when>
 		                					<c:when test="${dispatch.status eq '적재완료'}">
-		                						<span class="badge loaded">적재완료</span>
+		                						<span class="badge badge-pending">적재완료</span>
 		                					</c:when>
 		                					<c:when test="${dispatch.status eq '운행중'}">
-		                						<span class="badge run">운행중</span>
+		                						<span class="badge badge-normal">운행중</span>
 		                					</c:when>
 		                					<c:otherwise>
-		                						<span class="badge cancel">취소</span>
+		                						<span class="badge badge-urgent">취소</span>
 		                					</c:otherwise>
 		                				</c:choose>
 		                			</td>
@@ -151,11 +176,9 @@ button:disabled {
 			<jsp:param value="/transport/dispatches" name="pageUrl"/>
 		</jsp:include>
 	</div>
-
-    <!-- 등록 모달 -->
+	<%-- 등록 모달 --%>
 	<jsp:include page="/WEB-INF/views/transport/modal/add_dispatch.jsp"></jsp:include>
-
-    <!-- 상세 모달(배차 클릭 시) -->
+	<%-- 상세 모달(배차 클릭 시) --%>
 	<jsp:include page="/WEB-INF/views/transport/modal/detail_dispatch.jsp"></jsp:include>
 </body>
 </html>

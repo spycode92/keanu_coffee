@@ -1,64 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
-<title>운송관리대시보드</title>
-<!-- 기본 양식 -->
+<title>차량관리</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link
-	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
-	rel="stylesheet">
-<link
-	href="${pageContext.request.contextPath}/resources/css/common/common.css"
-	rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/transport/vehicle.js" defer></script>
 <style type="text/css">
-.container {
-	max-width: 1264px;
-	margin: 0 auto;
-	padding: 0 16px;
-}
-
 header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 
-.content {
-	height: 630px;
-}
-
-.badge {
-	display: inline-block;
-	padding: 2px 8px;
-	border-radius: 999px;
-	font-size: .8rem;
-	font-weight: 700
-}
-
 .badge.unassigned {
-  background: #fef3c7; /* amber-100 */
-  color: #92400e;      /* amber-900 */
-}
-
-.badge.wait { /* 대기 */
 	background: #e5e7eb;
-	color: #111827
-}
-
-.badge.run { /* 운행중 */
-	background: #dbeafe;
-	color: #1e40af
-}
-
-.badge.left { /* 퇴사 */
-	background: #fee2e2;
-	color: #991b1b
+	color: #111827;
 }
 
 /* 모달 */
@@ -260,32 +222,38 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	<section class="content">
 		<header>
-	        <h1>차량 관리</h1>
+	        <h3>차량 관리</h3>
 	        <div style="display:flex; gap:8px">
-	            <button class="btn btn-primary" id="openCreate">+ 차량 등록</button>
-	            <button class="btn btn-cancel" id="bulkDelete">선택 삭제</button>
+	        	<sec:authorize access="isAuthenticated()">
+	        		<sec:authorize access="hasAnyAuthority('TRANSPORT_WRITE')">
+			            <button class="btn btn-primary" id="openCreate">+ 차량 등록</button>
+			            <button class="btn btn-cancel" id="bulkDelete">선택 삭제</button>
+	        		</sec:authorize>
+	        	</sec:authorize>
 	        </div>
         </header>
-		<!-- 검색/필터 -->
-        <form class="filters" aria-label="검색 및 필터">
-            <div class="field">
-                <select id="filterStatus" name="filter">
-                    <option value="전체">전체</option>
-                    <option value="미배정">미배정</option>
-                    <option value="대기">대기</option>
-                    <option value="운행중">운행중</option>
-                    <option value="사용불가">사용불가</option>
-                </select>
-            </div>
-            <div class="search">
-                <input id="filterText" type="text" name="searchKeyword" placeholder="차량번호 검색" />
-            </div>
-            <div class="actions">
-                <button class="btn btn-primary" id="btnSearch">검색</button>
-            </div>
-        </form>
-		<div>
-			<h3>차량목록</h3>
+		<%-- 검색/필터 --%>
+		<div class="filterWrapper">
+	        <form class="filters" aria-label="검색 및 필터">
+	            <div class="field">
+	                <select id="filterStatus" name="filter">
+	                    <option value="전체">전체</option>
+	                    <option value="미배정">미배정</option>
+	                    <option value="대기">대기</option>
+	                    <option value="운행중">운행중</option>
+	                    <option value="사용불가">사용불가</option>
+	                </select>
+	            </div>
+	            <div class="search">
+	                <input id="filterText" type="text" name="searchKeyword" placeholder="차량번호 검색" />
+	            </div>
+	            <div class="actions">
+	                <button class="btn btn-primary" id="btnSearch">검색</button>
+	            </div>
+	        </form>
+		</div>
+        <%-- 차량 목록 --%>
+		<div class="card">
 			<c:choose>
 				<c:when test="${empty vehicleList}">
 					<div class="empty-result">검색된 차량이 없습니다.</div>
@@ -331,13 +299,13 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 												<span class="badge unassigned">${vehicle.status}</span>
 											</c:when>
 											<c:when test="${vehicle.status eq '대기'}">
-												<span class="badge wait">${vehicle.status}</span>
+												<span class="badge badge-waiting">${vehicle.status}</span>
 											</c:when>
 											<c:when test="${vehicle.status eq '운행중'}">
-												<span class="badge run">${vehicle.status}</span>
+												<span class="badge badge-normal">${vehicle.status}</span>
 											</c:when>
 											<c:otherwise>
-												<span class="badge left">${vehicle.status}</span>
+												<span class="badge badge-urgent">${vehicle.status}</span>
 											</c:otherwise>
 										</c:choose>
 									</td>
@@ -351,9 +319,9 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 		<jsp:include page="/WEB-INF/views/inc/pagination.jsp">
 			<jsp:param value="/transport/vehicle" name="pageUrl"/>
 		</jsp:include>
-		<!-- 등록 모달 -->
+		<%-- 등록 모달 --%>
 		<jsp:include page="/WEB-INF/views/transport/modal/add_vehicle.jsp"></jsp:include>
-		<!-- 상세 모달 -->
+		<%-- 상세 모달 --%>
 		<jsp:include page="/WEB-INF/views/transport/modal/detail_vehicle.jsp"></jsp:include>
 	</section>
 </body>

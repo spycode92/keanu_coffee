@@ -54,8 +54,34 @@
 				location_idx = #{empIdx}
 				
 		</select>
-
-
-
-
+	
+	<!-- 재고수량 업데이트 -->
+	<update id="updateInventoryQuantity">
+		UPDATE
+			INVENTORY
+		SET 
+			quantity = #{quantity}
+		WHERE
+			location_idx = #{locationIdx}
+		AND
+			receipt_product_idx = #{receiptProductIdx}
+	</update>
+	
+	<!-- 폐기등록 -->
+	<insert id="insertDisposal">
+		INSERT INTO DISPOSAL (
+			emp_idx
+			, section
+			, receipt_product_idx
+			, disposal_amount
+			, note
+		)
+		VALUES (
+			#{empIdx}
+			, #{section}
+			, #{receiptProductIdx}
+			, ABS(#{disposalAmount})
+			, #{note}
+		)
+	</insert>
 </mapper>

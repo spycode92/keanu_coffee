@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
-<!-- 상세 모달 -->
+	<%-- 상세 모달 --%>
 	<div class="modal" id="editModal" aria-hidden="true">
 		<div class="modal-card" role="dialog" aria-modal="true"
 			aria-labelledby="editTitle">
@@ -54,8 +55,12 @@
 			</div>
 			<div class="modal-foot">
 				<button class="btn btn-cancel" id="cancelEdit">취소</button>
-				<button class="btn btn-confirm" id="saveEdit">저장</button>
-				<button class="btn btn-update" id="editBtn">수정</button>
+				<sec:authorize access="isAuthenticated()">
+					<sec:authorize access="hasAnyAuthority('TRANSPORT_WRITE')">
+						<button class="btn btn-confirm" id="saveEdit">저장</button>
+						<button class="btn btn-update" id="editBtn">수정</button>
+					</sec:authorize>
+				</sec:authorize>
 			</div>
 		</div>
 	</div>

@@ -8,9 +8,10 @@
 		SELECT *
 			FROM SYSTEM_LOG
 		<where>
-		<if test="searchType != ''">
-			${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
-		</if>
+			section = '시스템설정'
+			<if test="searchType != ''">
+				AND ${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
 		</where>
 		<if test="orderKey != ''">
 			ORDER BY ${orderKey} ${orderMethod}			
@@ -25,10 +26,10 @@
 		SELECT count(*)
 		FROM SYSTEM_LOG
 		<where>
-		<if test="searchType != ''">
-			${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
-		</if>
-
+			section = '시스템설정'
+			<if test="searchType != ''">
+				AND ${searchType} LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
 		</where>
 	</select>
 	

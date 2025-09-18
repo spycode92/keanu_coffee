@@ -23,7 +23,7 @@ public class SystemNotificationController {
 	private final SystemNotificationService systemNotificationService;
 
 	@GetMapping("")
-	public String workingLog(Model model, @RequestParam(defaultValue = "1") int pageNum,
+	public String systemLog(Model model, @RequestParam(defaultValue = "1") int pageNum,
 			@RequestParam(defaultValue = "") String searchType, @RequestParam(defaultValue = "") String searchKeyword,
 			@RequestParam(defaultValue = "created_at") String orderKey, @RequestParam(defaultValue = "desc") String orderMethod) {
 		model.addAttribute("pageNum", pageNum);
