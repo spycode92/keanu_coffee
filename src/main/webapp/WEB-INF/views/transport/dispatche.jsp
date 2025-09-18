@@ -9,8 +9,7 @@
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
-<title>운송관리대시보드</title>
-<!-- 기본 양식 -->
+<title>배차관리</title>
 <link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -76,7 +75,7 @@ button:disabled {
     <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
     <div class="content">
         <header>
-            <h1>배차 관리</h1>
+            <h3>배차 관리</h3>
             <div style="display:flex; gap:8px">
             	<sec:authorize access="isAuthenticated()">
             		<sec:authorize access="hasAnyAuthority('TRANSPORT_WRITE')">
@@ -86,28 +85,28 @@ button:disabled {
             	</sec:authorize>
             </div>
         </header>
-        <!-- 검색/필터 -->
-        <form class="filters card" aria-label="검색 및 필터">
-            <div class="field">
-                <select id="filterStatus" name="filter">
-                    <option value="전체">전체</option>
-                    <option value="예약">예약</option>
-                    <option value="적재완료">적재완료</option>
-                    <option value="운행중">운행중</option>
-                    <option value="완료">완료</option>
-                    <option value="취소">취소</option>
-                </select>
-            </div>
-            <div class="search">
-                <input id="filterText" type="text" name="searchKeyword" placeholder="기사명 / 차량번호 / 구역명 검색" />
-            </div>
-            <div class="actions">
-                <button class="btn btn-primary" id="btnSearch">검색</button>
-            </div>
-        </form>
-
-        <!-- 배차 목록 -->
-        <h3>배차목록</h3>
+        <%-- 검색/필터 --%>
+        <div class="filterWrapper">
+	        <form class="filters" aria-label="검색 및 필터">
+	            <div class="field">
+	                <select id="filterStatus" name="filter">
+	                    <option value="전체">전체</option>
+	                    <option value="예약">예약</option>
+	                    <option value="적재완료">적재완료</option>
+	                    <option value="운행중">운행중</option>
+	                    <option value="완료">완료</option>
+	                    <option value="취소">취소</option>
+	                </select>
+	            </div>
+	            <div class="search">
+	                <input id="filterText" type="text" name="searchKeyword" placeholder="기사명 / 차량번호 / 구역명 검색" />
+	            </div>
+	            <div class="actions">
+	                <button class="btn btn-primary" id="btnSearch">검색</button>
+	            </div>
+	        </form>
+        </div>
+		<%-- 배차 목록 --%>
         <section class="card" style="margin-top:14px">
             <c:choose>
             	<c:when test="${empty dispatchList}">
@@ -177,11 +176,9 @@ button:disabled {
 			<jsp:param value="/transport/dispatches" name="pageUrl"/>
 		</jsp:include>
 	</div>
-
-    <!-- 등록 모달 -->
+	<%-- 등록 모달 --%>
 	<jsp:include page="/WEB-INF/views/transport/modal/add_dispatch.jsp"></jsp:include>
-
-    <!-- 상세 모달(배차 클릭 시) -->
+	<%-- 상세 모달(배차 클릭 시) --%>
 	<jsp:include page="/WEB-INF/views/transport/modal/detail_dispatch.jsp"></jsp:include>
 </body>
 </html>
