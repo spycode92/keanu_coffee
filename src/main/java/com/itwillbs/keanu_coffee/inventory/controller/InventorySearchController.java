@@ -155,10 +155,10 @@ public class InventorySearchController {
     	
     	try {
     		inventoryService.disposalInventoryQuantity(request, disposal, empIdx);
-    		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "성공", "재고수량변경");
+    		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "성공", "폐기 완료");
     	} catch (Exception e) {
     		e.printStackTrace();
-    		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.ERROR, "실패", "재고수량업데이트실패");
+    		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.ERROR, "실패", "폐기 실패");
     	}
     	
     	return "redirect:/inventory/stockCheck";

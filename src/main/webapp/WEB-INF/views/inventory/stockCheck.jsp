@@ -507,7 +507,7 @@
 		        		 <input type="text" name="note" id="disposalReason"/>
 		        	</div>
 			     	<div class="modal-foot">
-			        	<button type="submit" class="btn btn-update" >수정</button>
+			        	<button type="submit" class="btn btn-update" >폐기</button>
 				        <button type="button" class="btn btn-secondary" onclick="resetDisposalModal(); ModalManager.closeModal(document.getElementById('inventoryDisposalModal'))">닫기</button>
 					</div>
 	        	</form>
