@@ -103,10 +103,21 @@
 					const tgt = byId("fieldInboundLocation");
 					if(tgt) tgt.textContent = inboundLocation || "-";
 					closeModal("modal-assign-location");
-					if(w.notify) w.notify("입고위치를 저장했어요.");
+
+					Swal.fire({
+						icon: 'success',
+						title: '성공',
+						text: '입고위치를 저장했어요.',
+						confirmButtonText: 'OK'
+					});
 				}catch(err){
 					console.error(err);
-					alert("입고위치 저장 실패: " + err.message);
+					Swal.fire({
+						icon: 'error',
+						title: '실패',
+						text: '입고위치 저장 실패: ' + err.message,
+						confirmButtonText: '확인'
+					});
 				}
 			});
 		}
@@ -114,18 +125,15 @@
 
 	/* ===================== 담당자 ===================== */
 	async function fetchManagerCandidates(){
-		// department_idx=2, role_idx=2 고정
 		const url = `${ctx()}/inbound/managerCandidates?departmentIdx=2&roleIdx=2`;
 		const res = await fetch(url, { method: "GET", headers: { "Accept": "application/json" } });
 		if(!res.ok){
 			const txt = await res.text().catch(()=> "");
 			throw new Error("HTTP " + res.status + " " + txt);
 		}
-		// 기대 형태: [{ employeeIdx: 10, employeeName: "홍길동" }, ...]
 		return res.json();
 	}
 	function populateManagerSelect(selectEl, list){
-		// 초기화(placeholder 유지)
 		selectEl.querySelectorAll('option:not([disabled])').forEach(o => o.remove());
 		list.forEach(function(emp){
 			const opt = d.createElement("option");
@@ -133,21 +141,16 @@
 			opt.textContent = String(emp.empName ?? emp.name ?? "");
 			selectEl.appendChild(opt);
 		});
-		// 현재 표시 중인 담당자 이름과 매칭해 선택
-		const currentName = selectEl.getAttribute("data-current-name") || byId("fieldManagerName")?.textContent || "";
-		if(currentName){
-			const found = Array.from(selectEl.options).find(o => o.textContent.trim() === currentName.trim());
-			if(found){ found.selected = true; }
-		}
 	}
+
 	function bindManager(){
 		const btn = byId("btnAssignManager");
 		const modalId = "modal-assign-manager";
 		if(btn){
 			btn.addEventListener("click", async function(e){
 				e.preventDefault();
+				updateSelectedCount();
 				try{
-					// 모달 열기 전에 후보 갱신
 					const selectEl = byId("managerSelect");
 					if(selectEl){
 						const list = await fetchManagerCandidates();
@@ -155,7 +158,12 @@
 					}
 				}catch(err){
 					console.error(err);
-					alert("담당자 목록을 불러오지 못했습니다: " + err.message);
+					Swal.fire({
+						icon: 'error',
+						title: '실패',
+						text: '담당자 목록을 불러오지 못했습니다: ' + err.message,
+						confirmButtonText: '확인'
+					});
 				}
 				openModal(modalId, btn);
 			});
@@ -163,28 +171,71 @@
 		qsa('#' + modalId + ' [data-close], #' + modalId + ' .modal-close-btn').forEach(function(el){
 			el.addEventListener("click", function(){ closeModal(modalId); });
 		});
+
 		const form = byId("formAssignManager");
 		if(form){
 			form.addEventListener("submit", async function(e){
 				e.preventDefault();
-				const ibwaitIdx = form.ibwaitIdx.value;
+
+				const checked = Array.from(document.querySelectorAll('input[name="selectedOrder"]:checked'))
+					.map(cb => cb.value);
+
+				if (checked.length === 0) {
+					Swal.fire({
+						icon: 'warning',
+						title: '선택 필요',
+						text: '담당자를 지정할 항목을 선택하세요.',
+						confirmButtonText: '확인'
+					});
+				    return;
+				}
+
 				const selectEl = byId("managerSelect");
 				const managerIdx = selectEl?.value || "";
 				const managerName = selectEl?.selectedOptions?.[0]?.textContent?.trim() || "";
+
 				if(!managerIdx){
-					alert("담당자를 선택해주세요.");
+					Swal.fire({
+						icon: 'warning',
+						title: '선택 필요',
+						text: '담당자를 선택해주세요.',
+						confirmButtonText: '확인'
+					});
 					selectEl?.focus();
 					return;
 				}
+
 				try{
-					await postJson(ctx() + "/inbound/updateManager", { ibwaitIdx, managerIdx, managerName }, form);
-					const tgt = byId("fieldManagerName");
-					if(tgt) tgt.textContent = managerName || "담당자 미정";
+					await postJson(ctx() + "/inbound/updateManagers", {
+						ibwaitIdxList: checked,
+						managerIdx,
+						managerName
+					}, form);
+
+					// ✅ 테이블 즉시 반영
+					checked.forEach(id => {
+						const row = document.querySelector(`input[name="selectedOrder"][value="${id}"]`)?.closest("tr");
+						if(row){
+							const cell = row.querySelector("td:nth-child(9)"); // 9번째 컬럼: 담당자
+							if(cell) cell.textContent = managerName;
+						}
+					});
+
 					closeModal(modalId);
-					if(w.notify) w.notify("담당자를 저장했어요.");
+					Swal.fire({
+						icon: 'success',
+						title: '성공',
+						text: '담당자를 일괄 지정했어요.',
+						confirmButtonText: 'OK'
+					});
 				}catch(err){
 					console.error(err);
-					alert("담당자 저장 실패: " + err.message);
+					Swal.fire({
+						icon: 'error',
+						title: '실패',
+						text: '담당자 저장 실패: ' + err.message,
+						confirmButtonText: '확인'
+					});
 				}
 			});
 		}
@@ -193,7 +244,6 @@
 	function bind(){
 		bindLocation();
 		bindManager();
-		// ESC 닫기(fallback)
 		if(!w.ModalManager){
 			d.addEventListener("keydown", function(ev){
 				if(ev.key === "Escape"){
@@ -208,3 +258,9 @@
 	else bind();
 
 })(window, document);
+
+function updateSelectedCount() {
+	const count = document.querySelectorAll('input[name="selectedOrder"]:checked').length;
+	const el = document.getElementById("selectedCount");
+	if (el) el.textContent = count;
+}
