@@ -407,7 +407,7 @@
 	                <div class="card-header">
 	                	<div class="d-flex justify-content-between align-items-center mb-3">
 		                	<h3 class="card-title">상품 정보</h3>
-	                		<button class="btn btn-primary" onclick="ModalManager.openModal(document.getElementById('inventoryDisposalModal'))">폐기</button>
+	                		<button class="btn btn-primary" onclick="resetDisposalModal(); ModalManager.openModal(document.getElementById('inventoryDisposalModal'))">폐기</button>
 	                	</div>
 	                </div>
 	                <div class="table-responsive">
@@ -441,7 +441,7 @@
 	
 	
 	        <div class="modal-foot">
-	            <button class="btn btn-update" onclick="ModalManager.openModal(document.getElementById('quantityUpdateModal'))">수량 조절</button>
+	            <button class="btn btn-update" onclick="resetLotModal(); ModalManager.openModal(document.getElementById('quantityUpdateModal'))">수량 조절</button>
 	            <button class="btn btn-secondary" onclick="ModalManager.closeModal(document.getElementById('lotModal'))">닫기</button>
 	        </div>
 	    	</div>
@@ -499,14 +499,14 @@
 					</div>
 		        	<div>
 		        		 <label for="updateQty" >폐기 수량</label>
-		        		 <input type="number" name="disposalAmount" id="updateQty"/>
+		        		 <input type="number" name="disposalAmount" id="disposalQty" min="1"/>
 		        	</div>
 		        	<div>
 		        		 <label for="disposalReason"> 폐기 사유</label>
 		        		 <input type="text" name="note" id="disposalReason"/>
 		        	</div>
 			     	<div class="modal-foot">
-			        	<button type="submit" class="btn btn-update" >수정</button>
+			        	<button type="submit" class="btn btn-update" >폐기</button>
 				        <button type="button" class="btn btn-secondary" onclick="resetDisposalModal(); ModalManager.closeModal(document.getElementById('inventoryDisposalModal'))">닫기</button>
 					</div>
 	        	</form>
@@ -706,12 +706,26 @@
 	    }
 	    
 		/* -------------------------------------------------------------------------- */
-	    // 수량 조절 모달 초기화
+	    // 재고 폐기 수량 검사 
+	    $('#disposalQty').on('input', function() {
+	    	const disposalAmount = parseInt($(this).val()) || 0;
+	    	const maxAmount = parseInt($('#currentQuantityD').val()) || 0;
+		    
+	    	if(disposalAmount < 1) {
+	    		Swal.fire('경고', '폐기 수량의 최소값은 1입니다.', 'warning');
+		        $(this).val(1);
+		    }
+			if(disposalAmount > maxAmount){
+				Swal.fire('경고', '최대 폐기 수량을 초과하였습니다.', 'warning');
+		        $(this).val(maxAmount);
+			}	    	
+		});
+		
+		// 재고 폐기 모달 초기화
 	    function resetDisposalModal() {
 	        const form = document.querySelector("#inventoryDisposalModal form");
-	        if (form) {
-	            form.reset();  // form 전체 input 초기화
-	        }
+	        form.querySelector("#disposalQty").value = "";
+	        form.querySelector("#disposalReason").value = "";
 	    }
 					    
 	    /* ====================== 초기화 버튼 ====================== */

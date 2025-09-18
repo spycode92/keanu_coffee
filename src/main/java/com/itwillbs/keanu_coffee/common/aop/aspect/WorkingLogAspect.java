@@ -16,6 +16,7 @@ import com.itwillbs.keanu_coffee.admin.mapper.OrganizationMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
 import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
 import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
+import com.itwillbs.keanu_coffee.common.dto.DisposalDTO;
 import com.itwillbs.keanu_coffee.common.dto.SystemLogDTO;
 import com.itwillbs.keanu_coffee.common.mapper.LogMapper;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
@@ -251,6 +252,30 @@ public class WorkingLogAspect {
 	        		slog.setLogMessage(
 	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
 	        						orderIdx + "(" + orderNumber + ")" + "번 발주주문 중 ."
+	        				);
+	        	}
+	        }
+	        // 재고폐기처리
+	        if (methodName.equals("disposalInventoryQuantity")) {
+	        	
+	        	DisposalDTO disposal = (DisposalDTO) args[1];
+	        	Integer receiptProductIdx = disposal.getReceiptProductIdx();
+	        	
+	        	String productName = inventoryMoveMapper.selectProductNameWithReceiptProductIdx(receiptProductIdx);
+	        	
+	        	slog.setSubSection("재고 폐기");
+	        	
+	        	slog.setTargetIdx(disposal.getDisposalIdx());
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	        						empName + "(" + empNo + ")이 " + productName + "(" + receiptProductIdx + ")상품 "
+	        						+ disposal.getDisposalAmount() + "개를 폐기하였습니다."
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	        						empName + "(" + empNo + ")이 " + productName + "(" + receiptProductIdx + ")상품 폐기중 에러발생."
 	        				);
 	        	}
 	        }

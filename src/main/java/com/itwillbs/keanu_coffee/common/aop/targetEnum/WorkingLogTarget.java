@@ -8,4 +8,5 @@ public enum WorkingLogTarget {
 	, DELIVERY_CONFIRMATION
 	, OUTBOUND_ORDER
 	, PURCHACE_ORDER
+	, DISPOSAL
 }
