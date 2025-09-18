@@ -5,8 +5,9 @@
 <html>
 <head>
 <title>Home</title>
+<sec:csrfMetaTags/>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
-<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 
 <style type="text/css">
 	body {
@@ -78,6 +79,221 @@
 	            <input type="submit" value="로그인">
 	        </form>
 	    </div>
+	    
+	    <button id="loginTransportBtn">운송관리자</button>
+	    <button id="logindriverBtn">기사</button>
+	    <button id="loginOutboundBtn">출고관리자</button>
+	    <button id="loginOutboundPersonBtn">출고사원</button>
+	    <button id="logininboundBtn">입고관리자</button>
+	    <button id="logininboundPersonBtn">입고사원</button>
+	    <button id="logininventoryBtn">재고관리자</button>
+	    <button id="logininventoryPersonBtn">재고사원</button>
 	</div>
+	<script type="text/javascript">
+	const { token, header } = getCsrf();
+	function getCsrf() {
+		const tokenMeta  = document.querySelector('meta[name="_csrf"]');
+		const headerMeta = document.querySelector('meta[name="_csrf_header"]');
+		return {
+			token:  tokenMeta  ? tokenMeta.content  : null,
+			header: headerMeta ? headerMeta.content : null
+		};
+	}
+	
+	$("#loginTransportBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "kimgs",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/transport/main"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	
+	$("#logindriverBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "54320747",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/transport/mypage/54320747"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	$("#loginOutboundBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "90110826",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/outbound/main"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	$("#loginOutboundPersonBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "gompange",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/outbound/outboundManagement/"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	$("#logininboundBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "inbound",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/inbound/main"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	$("#logininboundPersonBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "33330827",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/inbound/management"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	$("#logininventoryBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "54320827",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/inventory/main"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	$("#logininventoryPersonBtn").on("click", function() {
+		$.ajax({
+		    url: "/loginForSecurity",
+		    type: "POST",
+		    data: {
+		        empNo: "54322746",
+		        empPassword: "1234"
+		    },
+		    beforeSend: (xhr) => {
+		        xhr.setRequestHeader(header, token);
+		    },
+		    success: () => {
+		        location.href = "/inventory/moveInventory"; // 로그인 성공 후 이동
+		    },
+		    error: (xhr) => {
+		        console.error("로그인 실패", xhr.responseText);
+		    }
+		});
+	})
+	// 다크모드 관리
+	const DarkModeManager = {
+	    isDarkMode: localStorage.getItem('darkMode') === 'true' || 
+	                (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches),
+	    
+	    init: function() {
+	        this.updateDarkMode();
+	        this.bindEvents();
+	    },
+	    
+	    updateDarkMode: function() {
+	        const toggle = document.getElementById('dark-mode-toggle');
+	        if (this.isDarkMode) {
+	            document.documentElement.classList.add('dark');
+	            if (toggle) toggle.classList.add('active');
+	        } else {
+	            document.documentElement.classList.remove('dark');
+	            if (toggle) toggle.classList.remove('active');
+	        }
+	        localStorage.setItem('darkMode', this.isDarkMode);
+	    },
+	    
+	    toggle: function() {
+	        this.isDarkMode = !this.isDarkMode;
+	        this.updateDarkMode();
+	    },
+	    
+	    bindEvents: function() {
+	        const self = this;
+	        document.addEventListener('click', function(e) {
+	            if (e.target.id === 'dark-mode-toggle') {
+	                self.toggle();
+	            }
+	        });
+	    }
+	};
+	
+	document.addEventListener('DOMContentLoaded', function() {
+		
+	    DarkModeManager.init();
+	})
+	</script>
 </body>
 </html>

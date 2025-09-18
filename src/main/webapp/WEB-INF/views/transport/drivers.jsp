@@ -7,20 +7,13 @@
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
-<title>운송관리대시보드</title>
-<!-- 기본 양식 -->
+<title>기사관리</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<link
-	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
-	rel="stylesheet">
-<link
-	href="${pageContext.request.contextPath}/resources/css/common/common.css"
-	rel="stylesheet">
-<script
-	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/js/transport/driver.js"></script>
+<link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/transport/driver.js"></script>
 <style type="text/css">
 .vehicle-empty {
 	display:flex; 
@@ -90,27 +83,28 @@
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	<section class="content">
 		<div>
-			<h1>기사관리</h1>
+			<h3>기사관리</h3>
 		</div>
-<!-- 		<div class="content"> -->
-		<!-- 검색/필터 -->
-        <form class="filters" aria-label="검색 및 필터">
-            <div class="field">
-                <select id="filterStatus" name="filter">
-                    <option value="전체">전체</option>
-                    <option value="대기">대기</option>
-                    <option value="예약">예약</option>
-                    <option value="운행중">운행중</option>
-                </select>
-            </div>
-            <div class="search">
-                <input id="filterText" type="text" name="searchKeyword" placeholder="이름/차량번호 검색 가능" />
-            </div>
-            <div class="actions">
-                <button class="btn btn-primary" id="btnSearch">검색</button>
-            </div>
-        </form>
-		<h3>기사목록</h3>
+		<%-- 검색/필터 --%>
+		<div class="filterWrapper">
+	        <form class="filters" aria-label="검색 및 필터">
+	            <div class="field">
+	                <select id="filterStatus" name="filter">
+	                    <option value="전체">전체</option>
+	                    <option value="대기">대기</option>
+	                    <option value="예약">예약</option>
+	                    <option value="운행중">운행중</option>
+	                </select>
+	            </div>
+	            <div class="search">
+	                <input id="filterText" type="text" name="searchKeyword" placeholder="이름/차량번호 검색 가능" />
+	            </div>
+	            <div class="actions">
+	                <button class="btn btn-primary" id="btnSearch">검색</button>
+	            </div>
+	        </form>
+		</div>
+        <%-- 기사목록 --%>
 		<div class="card">
 			<c:choose>
 				<c:when test="${empty driverList}">
@@ -181,12 +175,11 @@
 				</c:otherwise>
 			</c:choose> 
 		</div>
-<!-- 		</div> -->
 		<jsp:include page="/WEB-INF/views/inc/pagination.jsp">
 			<jsp:param value="/transport/drivers" name="pageUrl"/>
 		</jsp:include>
 	</section>
-	<!-- 기사 상세 + 차량 배정/변경 모달 -->
+	<%-- 기사 상세 + 차량 배정/변경 모달 --%>
 	<jsp:include page="/WEB-INF/views/transport/modal/detail_driver.jsp"></jsp:include>
 	</body>
 </html>

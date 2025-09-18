@@ -101,7 +101,7 @@ public class InventoryActionsController {
 		
 		
 //		create a list of locations to be inserted into DB
-		System.out.println("locationList : " + locationList);
+//		System.out.println("locationList : " + locationList);
 		
 //		for(int i = 0; i < racks; i++) {
 //			char rack = letters[i];  // creates a letter for each rack
@@ -118,7 +118,7 @@ public class InventoryActionsController {
 		int startRackIndex = (lastRack - 'A') 
 //				;
 				+ 1; // Calculate the starting index based on lastRack
-		System.out.println("start rack index " + startRackIndex);
+//		System.out.println("start rack index " + startRackIndex);
 		for (int i = startRackIndex; i < 
 				startRackIndex + 
 				racks; i++) {  //this might need to be adjusted if there is no racks yet
@@ -137,7 +137,7 @@ public class InventoryActionsController {
 		            for (int l = 1; l <= positions; l++) { // include position 1
 		                String levelPosition = levelLetter + String.valueOf(l);
 		                String locationName = rack + "-" + paddedBay + "-" + levelPosition;
-		                System.out.println(locationName + "-" + rack + "-" + bay + "-" +levelPosition + "-" + width + "-" + height + "-" + depth + "-" + locationType);
+//		                System.out.println(locationName + "-" + rack + "-" + bay + "-" +levelPosition + "-" + width + "-" + height + "-" + depth + "-" + locationType);
 
 		                locationList.add(new WarehouseLocationDTO(
 		                    locationName, rack, bay, levelPosition, width, height, depth, locationType
@@ -193,7 +193,6 @@ public class InventoryActionsController {
 		if(inventoryId == 0) {
 			 receiptProductDTO = inventoryActionsService.getReceiptProduct(receiptID);
 		} else {
-			
 			inventoryDTO = inventoryActionsService.getquantity(inventoryId);
 		}
 		
@@ -229,6 +228,7 @@ public class InventoryActionsController {
 		        splitInventory(inventoryDTO, qtyMoving, destinationName, locationIdxOfDestinationName);
 		    }
 		}
+		
 //		if(destinationType.equals("pickingZone")) {
 //		// these actions are changing the locationidx and the location name to the employeeidx of the person moving
 //			if(moveType.equals("pickUp")) {
