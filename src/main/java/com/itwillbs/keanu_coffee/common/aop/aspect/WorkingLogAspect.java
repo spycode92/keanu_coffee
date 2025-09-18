@@ -1,6 +1,7 @@
 package com.itwillbs.keanu_coffee.common.aop.aspect;
 
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -179,6 +180,77 @@ public class WorkingLogAspect {
 	        		slog.setLogMessage(
 	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
 	        						empName + "(" + empNo + ") "  + " 사원이 카트→로케이션 재고이동중 에러 발생."  
+	        				);
+	        	}
+	        }
+	        
+	        // 입고완료처리
+	        if (methodName.equals("inspectionCompleteUpdate")) {
+	        	ReceiptProductDTO receiptProduct = (ReceiptProductDTO) args[0];
+	        	slog.setSubSection("입고처리");
+	        	
+//	        	String productName = inventoryMoveMapper.selectProductName(inventory.getLotNumber());
+	        	
+//	        	slog.setTargetIdx(inventory.getInventoryIdx());
+//	        	if (errorMessage == null) {
+//	        		slog.setLogMessage(
+//	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+//	        						empName + "(" + empNo + ") "  + " 사원이 " + productName + 
+//	        						"(" + inventory.getLotNumber() + ")을 " + inventory.getQuantity() +"개 "
+//	        						+ inventory.getLocationName() + "에 진열 하였습니다."
+//	        				);
+//	        	} else {
+//	        		slog.setLogMessage(
+//	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+//	        						empName + "(" + empNo + ") "  + " 사원이 카트→로케이션 재고이동중 에러 발생."  
+//	        				);
+//	        	}
+	        }
+	        
+	        // 출고 상태 변경(대기 -> 출고준비)
+	        if (methodName.equals("updateStatusDispatchWait")) {
+	        	String obwaitNumber = (String) args[0];
+	        	Long outboundOrderIdx = (Long) args[1];
+	        	
+	        	slog.setSubSection("출고준비완료");
+	        	
+	        	
+	        	
+	        	slog.setTargetIdx(outboundOrderIdx.intValue());
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	        						empName + "(" + empNo + ") "  + " 사원이 " + outboundOrderIdx + 
+	        						"(" + obwaitNumber + ")주문을 준비완료 하였습니다."
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	        						empName + "(" + empNo + ") "  + " 사원이 " + outboundOrderIdx + 
+	        						"(" + obwaitNumber + ")주문을 준비중 에러 발생"
+	        				);
+	        	}
+	        }
+	        // 발주처리 입고대기목록추가
+	        if (methodName.equals("updateStatusDispatchWait")) {
+	        	int orderIdx = (int) args[0];
+	        	String orderNumber = (String) args[1];
+	        	
+	        	LocalDate expectedArrivalDate = (LocalDate) args[4];
+	        	slog.setSubSection("출고준비완료");
+	        	
+	        	
+	        	
+	        	slog.setTargetIdx(orderIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	        					orderIdx + "(" + orderNumber + ")" + "번 발주주문 완료."
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	        						orderIdx + "(" + orderNumber + ")" + "번 발주주문 중 ."
 	        				);
 	        	}
 	        }
