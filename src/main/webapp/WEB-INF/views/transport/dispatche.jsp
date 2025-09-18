@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -77,8 +78,12 @@ button:disabled {
         <header>
             <h1>배차 관리</h1>
             <div style="display:flex; gap:8px">
-                <button class="btn btn-primary" id="openRegister">+ 배차 등록</button>
-                <button class="btn btn-confirm" onclick="location.href='/transport/region'">구역관리</button>
+            	<sec:authorize access="isAuthenticated()">
+            		<sec:authorize access="hasAnyAuthority('TRANSPORT_WRITE')">
+		                <button class="btn btn-primary" id="openRegister">+ 배차 등록</button>
+		                <button class="btn btn-confirm" onclick="location.href='/transport/region'">구역관리</button>
+            		</sec:authorize>
+            	</sec:authorize>
             </div>
         </header>
         <!-- 검색/필터 -->
