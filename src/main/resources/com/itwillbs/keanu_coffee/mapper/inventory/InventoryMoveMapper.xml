@@ -139,6 +139,15 @@
 		ON p.product_idx = rp.product_idx
 		WHERE rp.lot_number = #{lotNumber}
 	</select>
+	
+	<!-- receiptProductIdx로 상품 이름 조회 -->
+	<select id="selectProductNameWithReceiptProductIdx" resultType="String">
+		SELECT product_name
+		FROM RECEIPT_PRODUCT rp
+		LEFT JOIN PRODUCT p
+		ON p.product_idx = rp.product_idx
+		WHERE rp.receipt_product_idx = #{receiptProductIdx}
+	</select>
 
 
 
