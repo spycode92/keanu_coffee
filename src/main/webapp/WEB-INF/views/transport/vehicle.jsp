@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,12 +17,6 @@
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/transport/vehicle.js" defer></script>
 <style type="text/css">
-.container {
-	max-width: 1264px;
-	margin: 0 auto;
-	padding: 0 16px;
-}
-
 header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 
 .content {
@@ -234,8 +229,12 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 		<header>
 	        <h1>차량 관리</h1>
 	        <div style="display:flex; gap:8px">
-	            <button class="btn btn-primary" id="openCreate">+ 차량 등록</button>
-	            <button class="btn btn-cancel" id="bulkDelete">선택 삭제</button>
+	        	<sec:authorize access="isAuthenticated()">
+	        		<sec:authorize access="hasAnyAuthority('TRANSPORT_WRITE')">
+			            <button class="btn btn-primary" id="openCreate">+ 차량 등록</button>
+			            <button class="btn btn-cancel" id="bulkDelete">선택 삭제</button>
+	        		</sec:authorize>
+	        	</sec:authorize>
 	        </div>
         </header>
 		<!-- 검색/필터 -->
