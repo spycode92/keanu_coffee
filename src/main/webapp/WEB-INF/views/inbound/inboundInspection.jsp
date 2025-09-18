@@ -43,13 +43,9 @@
 			<div class="kv-grid">
 				<div class="kv-item">
 					<div class="kv-label">입고번호</div>
-					<div class="kv-value" style="display:flex; align-items:center; gap:.5rem;">
-				        <a id="inboundLink"
-						   class="inbound-link"
-						   data-ibwait-idx="${inboundDetailData.ibwaitIdx}">
-						    <c:out value="${inboundDetailData.ibwaitNumber}" default="-" />
-						</a>
-				    </div>
+					<div class="kv-value">
+					    <c:out value="${inboundDetailData.ibwaitNumber}" default="-" />
+					</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고일자</div>
@@ -118,7 +114,7 @@
 		<div class="card mb-3">
 			<div class="card-header d-flex justify-content-between align-items-center">
 				<div class="card-title">품목 내역</div>
-				<div class="muted">-</div>
+				<a href="${pageContext.request.contextPath}/inbound/qrTest" class="btn btn-secondary btn-sm">QR 테스트</a>
 			</div>
 
 			<div class="table-responsive">
@@ -149,16 +145,20 @@
 									    <!-- 상품명 -->
 									    <td colspan="2"><c:out value="${item.productName}" /></td>
 									    
-									    <!-- LOT넘버 -->
-									    <td>
-										    <input type="text" name="lotNumber" onclick="this.select()"
-										           value="<c:out value='${empty item.lotNumber ? "-" : item.lotNumber}'/>"
-										    />
+										<!-- LOT넘버 -->
+										<td>
+											<input type="text" 
+											       name="lotNumber" 
+											       class="lot-input"
+											       value="<c:out value='${empty item.lotNumber ? "-" : item.lotNumber}'/>"
+											       readonly
+											       data-index="${vs.index}"
+											       onclick="openQrModalForRow(this)" />
 										</td>
 									
 									    <!-- 수량 -->
 									    <td>
-									        <input type="number" class="quantity" value="${item.quantity}" data-index="${vs.index}" style="width:30%;"/>개
+									        <input type="number" class="quantity" value="${item.quantity}" data-index="${vs.index}" style="width:40%;"/>개
 									    </td>
 									
 									    <!-- 단위 -->
@@ -166,7 +166,7 @@
 									
 									    <!-- 단가 -->
 									    <td>
-									       ₩<input type="number" class="unitPrice" value="${item.unitPrice}" data-index="${vs.index}" style="width:50%"/>
+									       ₩<input type="number" class="unitPrice" value="${item.unitPrice}" data-index="${vs.index}" style="width:60%"/>
 									    </td>
 									
 									    <!-- 공급가액 -->
@@ -186,7 +186,7 @@
 									    
 									    <!-- 검수버튼 -->
 									    <td class="inspection">
-									        <input type="button" value="검수완료">
+									        <input type="button" class="btn btn-secondary btn-sm" value="검수완료">
 									    </td>
 									
 									    
@@ -214,7 +214,7 @@
 							<td id="grandTotalCell">
 								<fmt:formatNumber value="${grandTotal}" pattern="₩ #,##0" />
 							</td>
-							<td></td>
+							<td><button id="btnCommit" class="btn btn-secondary btn-sm" title="입고확정">입고확정</button></td>
 						</tr>
 					</tfoot>
 	<!-- ==============================================================================================================리스트 존========= -->
@@ -242,32 +242,14 @@
 				</div>
 			</div>
 
-			<div>
-				<div class="muted">변경 이력</div>
-				<table class="table" style="margin-top:.5rem;">
-					<thead>
-						<tr>
-							<th style="width:160px;">시간</th>
-							<th style="width:160px;">사용자</th>
-							<th>변경내용</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>2025-08-11 10:12</td>
-							<td>홍길동</td>
-							<td>입고 요청 등록</td>
-						</tr>
-						<tr>
-							<td>2025-08-11 13:40</td>
-							<td>김담당</td>
-							<td>부분입고 체크 — 수량 수정 (300 → 200)</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+			
 		</div>
 	</section>
+	
+	<script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
+	<jsp:include page="/WEB-INF/views/inbound/modal/modifyLotNumber.jsp" />
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/inspectionQRscanner.js"></script>
+	
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/inboundInspection.js"></script>
 </body>
 </html>

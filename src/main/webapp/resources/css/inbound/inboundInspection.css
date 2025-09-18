@@ -189,3 +189,8 @@
 		justify-content:flex-start; 
 	}
 }
+
+.btn,
+.btn-sm {
+	font-size: 1.0em;   /* 기존보다 1.5배 */
+}

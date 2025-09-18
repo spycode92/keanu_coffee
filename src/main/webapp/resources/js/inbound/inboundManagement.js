@@ -108,4 +108,17 @@ document.addEventListener("DOMContentLoaded", function () {
 			location.href = `${contextPath}/inbound/management?simpleKeyword=${encodeURIComponent(keyword)}`;
 		});
 	}
+	
+	
+});
+
+
+// 새로고침
+document.addEventListener("DOMContentLoaded", function () {
+	const reloadBtn = document.getElementById("btnReload");
+	if (reloadBtn) {
+		reloadBtn.addEventListener("click", function () {
+			location.reload(); // ✅ 현재 페이지 새로고침
+		});
+	}
 });
