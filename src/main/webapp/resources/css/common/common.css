@@ -634,11 +634,13 @@ body {
   padding: 0;
   list-style: none;
   display: none;
+/*   visibility: hidden; */
   
 }
 
 .submenu.open {
   display: block;
+/* 	visibility: visible; */
 }
 
 

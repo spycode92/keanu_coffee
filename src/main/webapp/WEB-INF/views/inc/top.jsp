@@ -208,30 +208,18 @@
 <script src="${pageContext.request.contextPath}/resources/js/common/web_socket.js"></script>
 <script src="https://kit.fontawesome.com/a96e186b03.js" crossorigin="anonymous"></script>
 <script type="text/javascript">
-// document.addEventListener("DOMContentLoaded", () => {
-// 	  document.querySelectorAll(".menu-item > a").forEach((anchor) => {
-// 	    anchor.addEventListener("click", (e) => {
-// 	      e.preventDefault();
-
-// 	      // 모든 submenu 닫기
-// 	      document.querySelectorAll(".submenu").forEach((sm) => sm.classList.remove("open"));
-
-// 	      // 클릭한 메뉴만 열기
-// 	      const submenu = anchor.nextElementSibling;
-// 	      if (submenu) {
-// 	        submenu.classList.add("open");
-// 	      }
-// 	    });
-// 	  });
-// 	});
-	
 document.addEventListener("DOMContentLoaded", () => {
 	  document.querySelectorAll(".menu-item > a").forEach((anchor) => {
 	    anchor.addEventListener("click", (e) => {
-	      e.preventDefault(); // a 태그 이동 막기
+	      e.preventDefault();
+
+	      // 모든 submenu 닫기
+	      document.querySelectorAll(".submenu").forEach((sm) => sm.classList.remove("open"));
+
+	      // 클릭한 메뉴만 열기
 	      const submenu = anchor.nextElementSibling;
 	      if (submenu) {
-	        submenu.classList.toggle("open");
+	        submenu.classList.add("open");
 	      }
 	    });
 	  });
@@ -320,7 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				</ul>
 			</li>
 			</sec:authorize>
-			<sec:authorize access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')">
+<%-- 			<sec:authorize access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')"> --%>
 			<li class="menu-item">
 				<a href="#"><span>입고 관리</span></a>
 				<ul class="submenu ${fn:contains(uri, '/inbound') ? 'open' : ''}">
@@ -332,8 +320,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			        <li><a href="/inbound/inboundRegister">입고요청</a></li>
 			    </ul>
 			</li>
-			</sec:authorize>
-			<sec:authorize access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')">
+<%-- 			</sec:authorize> --%>
+<%-- 			<sec:authorize access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')"> --%>
 			<li class="menu-item">
 				<a href="#"><span>출고 관리</span></a>
 				<ul class="submenu ${fn:contains(uri, '/outbound') ? 'open' : ''}">
@@ -346,8 +334,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			        <li><a href="/outbound/outboundPicking">출고피킹</a></li>
 			    </ul>
 			</li>
-			</sec:authorize>
-			<sec:authorize access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')">
+<%-- 			</sec:authorize> --%>
+<%-- 			<sec:authorize access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')"> --%>
 			<li class="menu-item">
 				<a href="#"><span>재고 현황</span></a>
 			    <ul class="submenu ${fn:contains(uri, '/inventory') ? 'open' : ''}">
@@ -363,8 +351,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	                <li><a href="/inventory/locationType">로케이션 지정</a></li>
 			  </ul>
 			</li>
-			</sec:authorize>
-			<sec:authorize access="hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')">
+<%-- 			</sec:authorize> --%>
+<%-- 			<sec:authorize access="hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')"> --%>
 			<li class="menu-item">
 				<a href="#"><span>운송관리</span></a>
 				<ul class="submenu ${fn:contains(uri, '/transport') ? 'open' : ''}">
@@ -373,20 +361,21 @@ document.addEventListener("DOMContentLoaded", () => {
 					<li><a href="/transport/vehicle">차량관리</a></li>
 					<li><a href="/transport/dispatches">배차관리</a></li>
 				</ul>
-			</li>
-			</sec:authorize>
-			<sec:authorize access="isAuthenticated()">
-				<li>
-					<ul class="submenu">
+			</li >
+<%-- 			</sec:authorize> --%>
+<%-- 			<sec:authorize access="isAuthenticated()"> --%>
+				<li class="menu-item">
+					<a href="#"><span>기타정보</span></a>
+					<ul class="submenu open">
 						<li><a href="/admin/dash">통계</a></li>
-						<li><a href="/admin/workingLog">작업관리</a></li>
+						<li><a href="/admin/workingLog">작업로그</a></li>
 					</ul>
 				</li>
-			</sec:authorize>
-			<li>
-				<a href="/guide"><span>가이드페이지</span></a>
+<%-- 			</sec:authorize> --%>
+<!-- 			<li> -->
+<!-- 				<a href="/guide"><span>가이드페이지</span></a> -->
 				
-			</li>
+<!-- 			</li> -->
       
 		</ul>
 	</aside>
