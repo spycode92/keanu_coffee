@@ -119,7 +119,7 @@
 	                      + "<td>"+item.productIdx+"</td>"
 	                      + "<td>"+(item.lotNumber || '-')+"</td>"
 	                      + "<td>"+item.quantity+"</td>"
-	                      + "<td>"+item.locationIdx+"</td>"
+	                      + "<td>"+item.locationName+"</td>"   // ✅ 수정
 	                      + "</tr>";
 	            });
 	        }

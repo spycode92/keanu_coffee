@@ -33,20 +33,36 @@ public class InventoryTransferService {
 
     // 최근 7일 출고량으로 적정재고 계산
     public void updatePickingZoneTargetStock() {
-    	// 최근 7일간 출고량 가져오기
-        List<OutboundOrderItemDTO> avgList = inventoryTransferMapper.selectLast7DaysOutbound();
-        
-        targetStockCache.clear();   // 기존 캐시 초기화
-        for (OutboundOrderItemDTO dto : avgList) {
-            int avg = dto.getQuantity() / 7;   // 하루 평균 출고량 (하루 평균(총합/7) 계산.)
-            int target = avg * 2;              // 이틀치 = 적정재고(100%) / (그 평균의 2일치(avg * 2)를 적정재고(100%)로 설정.)
-            targetStockCache.put(dto.getProductIdx(), target); // 이 값을 targetStockCache 라는 Map<productIdx, targetQty> 에 저장.
+        // 최근 7일 출고량 가져오기 → resultType=map 이므로 Map으로 받음
+        List<Map<String, Object>> avgList = inventoryTransferMapper.selectLast7DaysOutbound();
+
+        targetStockCache.clear(); // 기존 캐시 초기화
+
+        for (Map<String, Object> row : avgList) {
+            // Map에서 값 꺼내오기
+            Integer productIdx = (Integer) row.get("productIdx");
+            Long totalOutbound = (Long) row.get("totalOutbound"); // SUM()은 Long으로 리턴
+
+            if (productIdx != null && totalOutbound != null) {
+                int avg = (int) (totalOutbound / 7); // 하루 평균 출고량
+                int target = avg * 2;               // 이틀치 → 적정재고(100%)
+
+                targetStockCache.put(productIdx, target);
+            }
         }
+
+        // 확인용 로그
+        System.out.println("✅ targetStockCache 업데이트 완료: " + targetStockCache);
     }
 
     // 적정재고 캐시 가져오기
     public Map<Integer, Integer> getTargetStockCache() {
         return targetStockCache;
+    }
+
+    // 피킹존 보충 대상 조회
+    public List<Map<String, Object>> selectPickingZoneNeedsReplenishment() {
+        return inventoryTransferMapper.selectPickingZoneNeedsReplenishment();
     }
 	
 }

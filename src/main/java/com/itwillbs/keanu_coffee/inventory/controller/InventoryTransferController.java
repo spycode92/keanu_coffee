@@ -33,8 +33,9 @@ public class InventoryTransferController {
     @ResponseBody
     public Map<String, Object> getPickingZoneStock() {
         Map<String, Object> result = new HashMap<>();
-        result.put("pickingList", inventoryTransferService.selectPickingZoneStock()); // pickingList → 현재 피킹존에 있는 재고 목록 (INVENTORY + WAREHOUSE_LOCATION 조인).
-        result.put("targetMap", inventoryTransferService.getTargetStockCache());      // 적정재고 캐시 (스케줄러가 미리 계산해둔 적정재고 기준치.)
+        result.put("pickingList", inventoryTransferService.selectPickingZoneStock()); 
+        result.put("targetMap", inventoryTransferService.getTargetStockCache()); 
+        result.put("replenishmentList", inventoryTransferService.selectPickingZoneNeedsReplenishment()); // 추가
         return result;
     }
 	
