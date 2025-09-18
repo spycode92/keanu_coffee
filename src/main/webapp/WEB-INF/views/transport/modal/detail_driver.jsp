@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
-<!-- 기사 상세 + 차량 배정/변경 모달 -->
+		<%-- 기사 상세 + 차량 배정/변경 모달 --%>
         <div class="modal" id="formModal" aria-hidden="true">
             <div class="modal-card modal-form lg">
                 <div class="modal-head">
@@ -30,7 +30,7 @@
                             <input id="empStatus" disabled />
                         </div>
                     </div>
-					<!-- 차량 선택 -->
+                    <%-- 차량 선택 --%>
                     <div class="section-title">차량</div>
 					<div id="vehicleEmpty" class="vehicle-empty" style="display:none;">
 						<div class="vehicle-empty-text">배정된 차량이 없습니다.</div>
@@ -48,7 +48,7 @@
 							</sec:authorize>
 						</sec:authorize>
 					</div>
-					<!-- 배정됨/목록 영역 (배정 또는 선택 테이블) -->
+					<%-- 배정됨/목록 영역 (배정 또는 선택 테이블) --%>
 					<div id="vehicleTableWrap" style="display:none;">
 						<table class="table responsive" aria-label="차량 선택 테이블">
 					    <thead>
