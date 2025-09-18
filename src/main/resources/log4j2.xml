@@ -11,8 +11,8 @@
 		</Console>
 		
 		<RollingFile name="rollingFile"
-						fileName="./my_log/rolling_log.log"
-						filePattern="./my_log/rolling_log-%d{yyyy-MM-dd}%i.log">
+						fileName="/usr/local/tomcat/my_log/rolling_log.log"
+						filePattern="/usr/local/tomcat/my_log/rolling_log-%d{yyyy-MM-dd}%i.log">
 			<PatternLayout pattern="${layoutPattern}" />
 			
 			<Policies>
@@ -21,8 +21,8 @@
 		</RollingFile>
 		
 		<RollingFile name="rollingFileForSQL"
-						fileName="./my_log/rolling_log_sql.log"
-						filePattern="./my_log/rolling_log_sql-%d{yyyy-MM-dd}%i.log">
+						fileName="/usr/local/tomcat/my_log/rolling_log_sql.log"
+						filePattern="/usr/local/tomcat/my_log/rolling_log_sql-%d{yyyy-MM-dd}%i.log">
 			<PatternLayout pattern="${layoutPattern}" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="10MB" />
@@ -31,8 +31,8 @@
 		
 		<!-- 쿼리로그 저장 롤링파일 설정 -->
 	    <RollingFile name="RollingFileForQuery" 
-	    		fileName="./my_log/query.log"
-                filePattern="./my_log/archive/query-%d{yyyy-MM-dd}.log.gz">
+	    		fileName="/usr/local/tomcat/my_log/query.log"
+                filePattern="/usr/local/tomcat/my_log/archive/query-%d{yyyy-MM-dd}.log.gz">
 	        <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{1}] - %m%n"/>
 	        <Policies>
 	            <!-- 일별 롤링 -->

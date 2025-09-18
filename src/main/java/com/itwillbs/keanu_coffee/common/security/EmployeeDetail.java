@@ -1,5 +1,6 @@
 package com.itwillbs.keanu_coffee.common.security;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import lombok.ToString;
 @Getter
 public class EmployeeDetail implements UserDetails {
 	
+	private static final long serialVersionUID = 1L;
 	private String empNo;
 	private Integer empIdx;
 	private String empPassword;
