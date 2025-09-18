@@ -455,13 +455,12 @@
 	        		<sec:csrfInput/>
 	        		<input type="hidden" name="locationIdx" id="currentLocationIdx" />
 	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdx"/>
-	        		<input type="hidden" name="isDisposal" id="isDisposal"/>
 					<div class="current-qty">
 					    현재수량 : <span id="currentQuantity"></span> Box
 					</div>
 		        	<div>
 		        		 <label for="updateQty" id="updateQty">수량 업데이트</label>
-		        		 <input type="number" name="adjustQuantity" id="updateQty"/>
+		        		 <input type="number" name="adjustQuantity" id="updateQty" min="0"/>
 		        	</div>
 		        	<div>
 		        		 <label for="totalQty">변경된 수량</label>
@@ -648,12 +647,6 @@
 	    	const delta = parseInt($(this).val() || "0", 10);
 	    	
 	    	const newQty = baseQty + delta;
-	    	
-	    	if (newQty >= baseQty) {
-	    		$("#isDisposal").val(false);
-	    	} else {
-	    		$("#isDisposal").val(true);
-	    	}
 	    	
 	    	// 변경된 수량
 	    	$("#totalQty").val(parseInt(newQty));

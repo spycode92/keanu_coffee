@@ -124,14 +124,10 @@ public class InventorySearchController {
     @PostMapping("/updateInventory")
     public String modifyInventoryQuantity(
     		@ModelAttribute InventoryUpdateDTO request, 
-    		Authentication authentication,
     		RedirectAttributes redirectAttributes) {
-    	
-		EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
-		Integer empIdx = empDetail.getEmpIdx();
 		
     	try {
-    		inventoryService.updateInventoryQuantity(request, empIdx);
+    		inventoryService.updateInventoryQuantity(request);
     		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "성공", "재고수량변경");
     	} catch (Exception e) {
     		e.printStackTrace();

@@ -39,21 +39,8 @@ public class InventoryService {
 
 
 	// 재고 수량 업데이트
-	@Transactional
-	public void updateInventoryQuantity(InventoryUpdateDTO request, Integer empIdx) {
+	public void updateInventoryQuantity(InventoryUpdateDTO request) {
 		inventoryMapper.updateInventoryQuantity(request);
-		
-		// 수량 감소 시 폐기 처리
-		if (request.getIsDisposal()) {
-			DisposalDTO disposal = new DisposalDTO();
-			disposal.setEmpIdx(empIdx);
-			disposal.setSection("INVENTORY");
-			disposal.setReceiptProductIdx(request.getReceiptProductIdx());
-			disposal.setDisposalAmount(request.getAdjustQuantity());
-			disposal.setNote("실물 재고 수량과 다름");
-			
-			inventoryMapper.insertDisposal(disposal);
-		}
 	}
 
 
