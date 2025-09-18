@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
-	<!-- 등록(대기/추가 필요만) 모달 -->
+	<%-- 등록(대기/추가 필요만) 모달 --%>
     <div class="modal" id="assignModal" aria-hidden="true">
         <div class="modal-card lg" role="dialog" aria-modal="true" aria-labelledby="assignTitle">
             <div class="modal-head">
@@ -11,7 +11,7 @@
             </div>
             <div class="modal-body" style="overflow: auto; height: 500px;	">
                 <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px;">
-                    <!-- 좌: 대기/추가 필요 리스트 -->
+                	<%-- 좌: 대기/추가 필요 리스트 --%>
                     <div class="assignListWrapper">
                         <table class="table" id="assignList">
                             <thead>
@@ -27,7 +27,7 @@
                             <tbody><!-- JS 렌더링 --></tbody>
                         </table>
                     </div>
-                    <!-- 우: 선택건 조치 -->
+                    <%-- 우: 선택건 조치 --%>
                     <div>
                         <div class="field">
                             <label>선택된 배차</label>

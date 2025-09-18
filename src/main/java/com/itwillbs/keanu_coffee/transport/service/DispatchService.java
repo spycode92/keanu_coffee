@@ -2,8 +2,10 @@ package com.itwillbs.keanu_coffee.transport.service;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -215,15 +217,21 @@ public class DispatchService {
 		// 현재 기사 Assignment 상태를 적재완료로 갱신
 		dispatchMapper.updateAssigmentStatus(assigmentIdx, "적재완료");
 		
+		// 처리한 주문 모아두기
+		Set<Integer> outboundOrderIdxSet = new HashSet<>();
+		// 지점 중복 방지
+		Set<Integer> franchiseIdxSet = new HashSet<>(); 
+		
 		// 선택한 지점별 처리
 		for (DispatchCompleteRequest.StopComplete stopReq: request.getStops()) {
-			String currentStatus = dispatchMapper.selectOutboundOrderStatus(stopReq.getOutboundOrderIdx());
+			System.out.println("stopReq" + stopReq);
+		    if (!franchiseIdxSet.add(stopReq.getFranchiseIdx())) {
+		        // 이미 존재하는 지점이면 skip
+		        continue;
+		    }
 			
-			if ("적재완료".equals(currentStatus)) {
-				throw new IllegalStateException("이미 적재 완료된 주문입니다. 주문번호: " + stopReq.getOutboundOrderIdx());
-			}
-			
-			dispatchMapper.updateOutboundOrderStatus(stopReq.getOutboundOrderIdx(), "적재완료");
+			// 주문 저장(중복 제거)
+			outboundOrderIdxSet.add(stopReq.getOutboundOrderIdx());
 			
 			// 경로 조회
 			RouteDTO route = routeMapper.selectFranchise(stopReq.getFranchiseIdx());
@@ -261,6 +269,16 @@ public class DispatchService {
 				// 수주확인서 품목 데이터 등록
 				dispatchMapper.insertDeliveryConfirmationItem(confirmItem);
 			}
+		}
+		
+		for (Integer orderIdx: outboundOrderIdxSet) {
+			String currentStatus = dispatchMapper.selectOutboundOrderStatus(orderIdx);
+			
+			if ("적재완료".equals(currentStatus)) {
+				throw new IllegalStateException("이미 적재 완료된 주문입니다. 주문번호: " + orderIdx);
+			}
+			
+			dispatchMapper.updateOutboundOrderStatus(orderIdx, "적재완료");
 		}
 		
 		// 모든 기사 적재 확인

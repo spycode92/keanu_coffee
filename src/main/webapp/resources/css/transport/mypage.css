@@ -163,62 +163,58 @@ table th {
     display: block;
     text-align: right;
   }
-
-  .detail-table tbody tr {
+  
+ table, thead, tbody, tr, th, td {
     display: block;
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    margin-bottom: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, .05);
+    width: 100%;
   }
 
-  .detail-table td {
+  thead {
+    display: none; /* 모바일에서는 헤더 감춤 */
+  }
+
+  tr {
+    border: 1px solid #eee;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  td {
+    border: none;
+    padding: 6px 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 0;
-    border-bottom: 1px dashed #eef2ff;
-    padding: 6px 10px;
   }
 
-  .detail-table td:last-child {
-    border-bottom: 0;
+  td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #333;
+    flex-basis: 40%;
+    text-align: left;
   }
 
-  /* 공통 라벨 */
-  .detail-table td::before {
-    font-weight: 600;
-    color: #64748b;
-  }
-
-  /* 지점명(td[rowspan])은 독립 블록처럼 표시 */
-  .detail-table td[rowspan] {
+  /* 지점명은 카드 상단에 크게 */
+  td[rowspan] {
     display: block;
-    border-bottom: 1px solid #e5e7eb;
-    font-weight: 700;
-    font-size: .95rem;
-    background: #f9fafb;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 8px 10px;
+    border-bottom: 1px solid #ddd;
+    background: #f9f9f9;
   }
 
-  .detail-table td[rowspan]::before {
-    content: "지점명";
+  /* 납품완료 버튼은 카드 하단 고정 */
+  .btn-cell {
     display: block;
-    margin-bottom: 4px;
-    font-weight: 600;
-    color: #475569;
+    text-align: center;
+    margin-top: 0.75rem;
   }
-
-/*   나머지 td 라벨 지정 */
-  .detail-table td:nth-child(2)::before { content: "품목명"; }
-  .detail-table td:nth-child(3)::before { content: "주문수량"; }
-  .detail-table td:nth-child(4)::before { content: "반품수량"; }
-  .detail-table td:nth-child(5)::before { content: "상태"; }
-  .detail-table td:nth-child(6)::before { content: "작업"; }
-
-  .dark table {
-   	 color: black;
+  .btn-cell .btn {
+    width: 100%;
   }
   
    #files {
@@ -357,4 +353,232 @@ table th {
 	background-color: #f3f4f6; /* 비활성화일 때 약간 진한 회색 */
 	color: #9ca3af;            /* 글씨도 연하게 */
 	cursor: not-allowed;       /* 클릭 불가 표시 */
+}
+
+/* 파일 다운로드 */
+.download-area {
+	margin-top: 15px;
+	padding: 10px;
+	background-color: #f7f7f7;
+	border: 1px dashed #aaa;
+	border-radius: 4px;
+	font-size: 0.9rem;
+}
+
+.download-area input[type="button"] {
+	background: #007bff;
+	border: none;
+	color: #fff;
+	padding: 6px 12px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.download-area input[type="button"]:hover {
+	background: #0056b3;
+}
+
+#alarm-wrapper {
+	position: relative;
+	display: inline-block;
+}
+
+#alarm-image {
+	width: 25px;
+	height: 25px;
+	vertical-align: bottom;
+}
+
+/* 알람 아이콘 뱃지 */
+#alarm-badge {
+	position: absolute;
+	/* 우측 하단 고정 */
+	bottom: 0;
+	right: 0;
+	width: 8px;
+	height: 8px;
+	background-color: red;
+	border-radius: 50%; /* 원형 */
+	display: none; /* 처음 로딩 시 숨김 */
+}
+
+#noti:hover {
+    transform: translateY(-2px);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+#noti:active {
+    transform: translateY(0);
+    transition: background-color 0.1s ease, transform 0.1s ease;
+}
+
+/* 					notification button */
+#notification-box {
+	display: none;
+	position: absolute;
+	width: 300px;
+	border-radius: 20px;
+	box-shadow: 0 3.2px 16.2px rgba(0, 0, 0, 0.3);
+	margin-top: 200px;
+	right: 20px;
+	background-color: #fff;
+	padding: 20px;
+}
+
+#notification-box > ul > li:nth-child(odd) {
+	background-color: #d9d9d9;
+}
+
+#notification-box > h3 {
+	padding: 5px;
+	border-bottom: #333 solid 2px;
+}
+
+#notification-box > ul > span {
+	float: right;
+	margin-left: auto;
+}
+#notification-box > ul > li {
+	margin-top: 5px;
+}
+#small-menu {
+	display:none;
+}
+
+/* notification */
+#notification-box {
+    position: absolute;
+    top: 100%; 
+/* 	    right: 240px;   */
+    margin-top: 0.5em; 
+    width: 420px;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 100;
+    padding-top: 0;
+}
+
+#notification-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+#notification-list li {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+}
+
+#notification-list li:hover {
+    background: #f9f9f9;
+}
+
+#notification-list li .dot {
+    font-size: 14px;
+}
+
+#notification-header {
+	display: flex; 
+	justify-content: space-between; 
+	align-items: center;
+	border-bottom: 1px solid #ddd;
+	position: sticky;
+	top: 0;
+	background: white;
+	width: 370px;
+	z-index: 999;
+}
+
+#notification-header a {
+	color: black;
+}
+
+.no-notification {
+    padding: 10px;
+    color: #888;
+    text-align: center;
+}
+
+#notification-box #notification-list li {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+    background-color: white;
+    white-space: nowrap;       
+  	overflow: hidden;          /* 넘치는 텍스트 감춤 */
+  	text-overflow: ellipsis; 
+}
+
+#notification-list li:hover {
+    background: #f9f9f9;
+}
+
+#notification-box h3 {
+    position: sticky;
+    top: -20px;
+    background: white;
+	padding: 10px;
+    margin: 0;
+    font-size: 1.2em;
+    z-index: 10;
+}
+
+.read-status {
+    font-size: 12px;
+    color: #888;
+    margin-left: 10px;
+}
+.no-notification {
+    text-align: center;
+    color: #999;
+    padding: 10px;
+}
+
+.circle {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+.circle.read {
+    background-color: #ccc; 
+}
+.circle.unread {
+    background-color: red;
+}
+
+#notification-header  div {
+	display: flex;
+	gap: 20px;
+	cursor: pointer;
+	color: black;
+}
+
+
+.noti-message {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #333;
+}
+
+#files {
+	display: none;
+	margin-top: 0.5em;
 }

@@ -3,8 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
-
-		<!-- 등록 모달 -->
+		<%-- 등록 모달 --%>
 		<div class="modal" id="createModal" aria-hidden="true">
 			<div class="modal-card modal-form.lg" role="dialog" aria-modal="true"
 				aria-labelledby="createTitle">

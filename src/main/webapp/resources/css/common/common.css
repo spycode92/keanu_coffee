@@ -518,7 +518,6 @@ body {
 .sidebar {
   width: 200px;
   background: var(--secondary, #ececf0);
-  transition: width 0.3s, transform 0.3s;
   overflow: hidden;
   min-height: 100vh;
   box-shadow: 2px 0 8px rgba(0,0,0,0.03);
@@ -634,7 +633,18 @@ body {
   margin-left: 8px;    /* 약간만 들여쓰기 */
   padding: 0;
   list-style: none;
-  
+  display: none;
+}
+
+.submenu.open {
+  display: block;
+}
+
+.submenuetc {
+	margin-top: 0;  /* 위쪽 최소 간격 */
+  	margin-left: 8px;    /* 약간만 들여쓰기 */
+  	padding: 0;
+  	list-style: none;
 }
 
 
@@ -647,6 +657,19 @@ body {
 }
 
 .submenu a.active {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: var(--font-weight-medium);
+}
+/* 하위 메뉴 항목 */
+.submenuetc li {
+  padding: 0 0 0 0px; /* 들여쓰기 + 세로 간격 최소화 */
+  font-size: 0.85em; /* 상위보다 작은 글씨 */
+  color: var(--muted-foreground, #555);
+  transition: background 0.15s;
+}
+
+.submenuetc a.active {
   background-color: var(--primary);
   color: var(--primary-foreground);
   font-weight: var(--font-weight-medium);

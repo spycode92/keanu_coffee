@@ -63,3 +63,10 @@
   padding-right: .25rem;   /* 좌우 패딩 줄여서 폭 절약 */
   white-space: nowrap;     /* 줄바꿈 방지 */
 }
+
+.btn,
+.btn-sm {
+	font-size: 1.0em;   /* 기존보다 1.5배 */
+}
+
+
