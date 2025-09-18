@@ -65,7 +65,7 @@
             </div>
         </section>
         <%-- 배차 요청 목록 --%>
-        <section class="card" style="margin-top:12px">
+        <section class="card" style="margin-top:12px; max-height: 650px; overflow: auto;">
             <h2>배차 요청 목록</h2>
             <table class="responsive-table" id="assignTable">
                 <thead>
