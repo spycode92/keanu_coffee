@@ -236,4 +236,10 @@ public class InboundController {
 		private Long ibwaitIdx; 
 		private String inboundLocation; 
 	}
+	
+	// test
+	@GetMapping("/qrTest")
+    public String qrTestPage() {
+        return "/inbound/qrTest";
+    }
 }

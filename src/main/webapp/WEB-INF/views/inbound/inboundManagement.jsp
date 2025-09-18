@@ -103,14 +103,16 @@
 					</span>
 		        </div>
 		        <div class="d-flex gap-2">
-					<button id="btnAssignManager" class="btn btn-primary btn-sm">담당자지정</button>
+					<a href="${pageContext.request.contextPath}/inbound/qrTest" class="btn btn-secondary btn-sm">QR 테스트</a>
+		        	<div class="page-actions">
+					    <button id="btnScanQR" class="btn btn-primary btn-sm">QR 스캔</button>
+						<button id="btnAssignManager" class="btn btn-primary btn-sm">담당자지정</button>
+					</div>
 		            <a href="${pageContext.request.contextPath}/inbound/management/excel?
 				    	status=${param.status}&orderInboundKeyword=${param.orderInboundKeyword}
 				    	&vendorKeyword=${param.vendorKeyword}&inStartDate=${param.inStartDate}
 				    	&inEndDate=${param.inEndDate}&simpleKeyword=${param.simpleKeyword}"
 				   		class="btn btn-secondary btn-sm">엑셀 다운로드</a>
-					<a href="#" id="settings-button" class="btn btn-secondary btn-sm">설정</a>
-		            <a href="#" class="btn btn-secondary btn-sm">선택삭제</a>
 		        </div>
 		    </div>
 			<div class="table-responsive">
@@ -278,6 +280,9 @@
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/pageJumpModal.js"></script>
 	<jsp:include page="/WEB-INF/views/inbound/modal/modifyManager.jsp" />
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/modify.js"></script>
+	<jsp:include page="/WEB-INF/views/inbound/modal/qrScannerModal.jsp" />
+	<script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/qrScanner.js"></script>
 	
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script> const contextPath = "${pageContext.request.contextPath}";</script>
