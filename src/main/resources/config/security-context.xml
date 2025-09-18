@@ -29,6 +29,11 @@
 		isFullyAuthenticated()					인증을 하고, 자동 로그인 기능을 사용하지 않은 유저만 접근 가능
 		 -->
 	<http auto-config="true">
+		<!-- X-frame 옵션 같은 도메인 내 iframe 접근이 허용 -->
+	    <headers>
+	        <frame-options policy="SAMEORIGIN" />
+	    </headers>
+	
 		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/main" access="isAuthenticated()" />
 <!-- 		<intercept-url pattern="/admin/**" access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')" /> -->
