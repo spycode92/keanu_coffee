@@ -364,9 +364,9 @@ document.addEventListener("DOMContentLoaded", () => {
 			</li >
 <%-- 			</sec:authorize> --%>
 <%-- 			<sec:authorize access="isAuthenticated()"> --%>
-				<li class="menu-item">
+				<li>
 					<a href="#"><span>기타정보</span></a>
-					<ul class="submenu open">
+					<ul class="submenuetc">
 						<li><a href="/admin/dash">통계</a></li>
 						<li><a href="/admin/workingLog">작업로그</a></li>
 					</ul>
