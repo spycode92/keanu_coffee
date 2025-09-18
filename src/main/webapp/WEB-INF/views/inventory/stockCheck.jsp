@@ -404,7 +404,12 @@
 	        <div class="modal-body">
 	            <!-- 상품 정보 -->
 	            <div class="card" style="padding:12px;">
-	                <div class="card-header"><h3 class="card-title">상품 정보</h3></div>
+	                <div class="card-header">
+	                	<div class="d-flex justify-content-between align-items-center mb-3">
+		                	<h3 class="card-title">상품 정보</h3>
+	                		<button class="btn btn-primary" onclick="ModalManager.openModal(document.getElementById('inventoryDisposalModal'))">폐기</button>
+	                	</div>
+	                </div>
 	                <div class="table-responsive">
 	                    <table class="table">
 	                        <tbody>
@@ -450,7 +455,7 @@
 	            <button class="modal-close-btn" onclick="ModalManager.closeModal(document.getElementById('quantityUpdateModal'))">✕</button>
 	        </div>
 	        <div class="modal-body">
-	        	<form action="/inventory/updateInventory"
+	        	<form action="/inventory/disposalInventory"
 	        		  method="post">
 	        		<sec:csrfInput/>
 	        		<input type="hidden" name="locationIdx" id="currentLocationIdx" />
@@ -470,6 +475,39 @@
 			     	<div class="modal-foot">
 			        	<button type="submit" class="btn btn-update" >수정</button>
 				        <button type="button" class="btn btn-secondary" onclick="resetLotModal(); ModalManager.closeModal(document.getElementById('quantityUpdateModal'))">닫기</button>
+					</div>
+	        	</form>
+	        </div>
+     	</div>
+    </div>
+    
+    <!-- ========================= 재고폐기 모달 ========================= -->
+    <div class="modal" id="inventoryDisposalModal">
+     	<div class="modal-card sm">
+     		<div class="modal-head">
+	            <h3>재고폐기</h3>
+	            <button class="modal-close-btn" onclick="ModalManager.closeModal(document.getElementById('inventoryDisposalModal'))">✕</button>
+	        </div>
+	        <div class="modal-body">
+	        	<form action="/inventory/disposalInventory"
+	        		  method="post">
+	        		<sec:csrfInput/>
+	        		<input type="hidden" name="locationIdx" id="currentLocationIdxd" />
+	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdxd"/>
+					<div class="current-qty">
+					    현재수량 : <span id="currentQuantityD"></span> Box
+					</div>
+		        	<div>
+		        		 <label for="updateQty" id="updateQty">폐기 수량</label>
+		        		 <input type="number" name="disposalAmount" id="updateQty"/>
+		        	</div>
+		        	<div>
+		        		 <label for="disposalReason"> 폐기 사유</label>
+		        		 <input type="text" name="note" id="disposalReason"/>
+		        	</div>
+			     	<div class="modal-foot">
+			        	<button type="submit" class="btn btn-update" >수정</button>
+				        <button type="button" class="btn btn-secondary" onclick="resetDisposalModal(); ModalManager.closeModal(document.getElementById('inventoryDisposalModal'))">닫기</button>
 					</div>
 	        	</form>
 	        </div>
@@ -586,7 +624,11 @@
 	        
 	        $('#currentReceiptProductIdx').val(parseInt(receiptProductIdx));
 	        $('#currentLocationIdx').val(parseInt(locationIdx));
-	        $("#currentQuantity").text(currentQuantity);
+	        $('#currentQuantity').text(currentQuantity);
+	        $('#currentReceiptProductIdxd').val(parseInt(receiptProductIdx));
+	        $('#currentLocationIdxd').val(parseInt(locationIdx));
+	        $('#currentQuantityD').text(currentQuantity);
+
 		
 		    // Ajax로 상세 데이터 요청
 		    $.getJSON('${pageContext.request.contextPath}/inventory/detail', { idx: idx }, function(data) {
@@ -642,6 +684,7 @@
 		        ModalManager.openModalById('lotModal');
 		    });
 		});
+	    
 	    /* ====================== 변경 후 수량  ====================== */
 	    $(document).on("input", "#updateQty",  function() {
 	    	const baseQty = parseInt($("#currentQuantity").text().trim() || "0", 10);
@@ -662,6 +705,15 @@
 	    // 수량 조절 모달 초기화
 	    function resetLotModal() {
 	        const form = document.querySelector("#quantityUpdateModal form");
+	        if (form) {
+	            form.reset();  // form 전체 input 초기화
+	        }
+	    }
+	    
+		/* -------------------------------------------------------------------------- */
+	    // 수량 조절 모달 초기화
+	    function resetDisposalModal() {
+	        const form = document.querySelector("#inventoryDisposalModal form");
 	        if (form) {
 	            form.reset();  // form 전체 input 초기화
 	        }

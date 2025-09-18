@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
+import com.itwillbs.keanu_coffee.common.dto.DisposalDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.dto.SweetAlertIcon;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
@@ -137,6 +138,29 @@ public class InventorySearchController {
     		e.printStackTrace();
     		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.ERROR, "실패", "재고수량업데이트실패");
 		}
+    	
+    	return "redirect:/inventory/stockCheck";
+    }
+
+    // 수량 조절 업데이트
+    @PostMapping("/disposalInventory")
+    public String disposalInventoryQuantity(
+    		@ModelAttribute InventoryUpdateDTO request,
+    		@ModelAttribute DisposalDTO disposal,
+    		Authentication authentication,
+    		RedirectAttributes redirectAttributes) {
+    	
+    	EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
+    	Integer empIdx = empDetail.getEmpIdx();
+    	
+    	try {
+    		inventoryService.disposalInventoryQuantity(request, disposal, empIdx);
+    		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "성공", "재고수량변경");
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.ERROR, "실패", "재고수량업데이트실패");
+    	}
+    	
     	return "redirect:/inventory/stockCheck";
     }
     

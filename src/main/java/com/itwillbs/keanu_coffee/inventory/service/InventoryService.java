@@ -57,6 +57,16 @@ public class InventoryService {
 	}
 
 
+	@Transactional
+	public void disposalInventoryQuantity(InventoryUpdateDTO request, DisposalDTO disposal, Integer empIdx) {
+		//폐기수량
+    	int disposalAmount = disposal.getDisposalAmount();
+    	
+//    	inventoryMapper.updateInventoryQuantity(request);
+		
+	}
+
+
 
 //	public List<InventoryDTO> getInventoryThatNeedsToMoveFromInbound() {
 //		// TODO Auto-generated method stub
