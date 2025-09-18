@@ -142,7 +142,7 @@ public class InventorySearchController {
     	return "redirect:/inventory/stockCheck";
     }
 
-    // 
+    // 재고 폐기
     @PostMapping("/disposalInventory")
     public String disposalInventoryQuantity(
     		@ModelAttribute InventoryUpdateDTO request,

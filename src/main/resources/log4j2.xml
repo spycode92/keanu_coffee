@@ -97,12 +97,12 @@
 		</Logger>
 		
 		<!-- 스프링 시큐리티 패키지 관련 로거 추가 -->
-		<Logger name="org.springframework.security" level="DEBUG" additivity="false">
+		<Logger name="org.springframework.security" level="INFO" additivity="false">
 			<AppenderRef ref="console"></AppenderRef>
 		</Logger>
 		
 		<!-- CustomAccessDeniedHandler가 있는 패키지의 로거 추가 -->
-		<Logger name="com.itwillbs.keanu_coffee.common.security" level="DEBUG" additivity="false">
+		<Logger name="com.itwillbs.keanu_coffee.common.security" level="INFO" additivity="false">
 		    <AppenderRef ref="console"></AppenderRef>
 		    <AppenderRef ref="rollingFile"></AppenderRef>
 		</Logger>

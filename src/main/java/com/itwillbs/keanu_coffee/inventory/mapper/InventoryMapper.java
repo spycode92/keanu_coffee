@@ -21,6 +21,9 @@ public interface InventoryMapper {
 
 	// 폐기 등록
 	void insertDisposal(DisposalDTO disposal);
+	
+	//재고 삭제
+	void deleteInventory(InventoryUpdateDTO request);
 
 //	List<InventoryDTO> selectInventoryThatNeedsToMoveFromInbound();
 //
