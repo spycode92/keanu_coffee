@@ -61,9 +61,17 @@ public class InventoryService {
 	public void disposalInventoryQuantity(InventoryUpdateDTO request, DisposalDTO disposal, Integer empIdx) {
 		//폐기수량
     	int disposalAmount = disposal.getDisposalAmount();
+    	int currentQuantity = request.getQuantity();
+    	int remainQuantity = currentQuantity - disposalAmount;
     	
-//    	inventoryMapper.updateInventoryQuantity(request);
+    	//폐기수량을뺀 후 폐기
+    	request.setQuantity(remainQuantity);
+    	inventoryMapper.updateInventoryQuantity(request);
+    	
+    	disposal.setEmpIdx(empIdx);
+		disposal.setSection("INVENTORY");
 		
+    	inventoryMapper.insertDisposal(disposal);
 	}
 
 

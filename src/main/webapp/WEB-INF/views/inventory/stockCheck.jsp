@@ -495,10 +495,11 @@
 	        		<input type="hidden" name="locationIdx" id="currentLocationIdxd" />
 	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdxd"/>
 					<div class="current-qty">
-					    현재수량 : <span id="currentQuantityD"></span> Box
+						<label for="updateQty" >현재 수량</label>
+						<input type="number" name="quantity" id="currentQuantityD" readonly/>
 					</div>
 		        	<div>
-		        		 <label for="updateQty" id="updateQty">폐기 수량</label>
+		        		 <label for="updateQty" >폐기 수량</label>
 		        		 <input type="number" name="disposalAmount" id="updateQty"/>
 		        	</div>
 		        	<div>
@@ -625,9 +626,10 @@
 	        $('#currentReceiptProductIdx').val(parseInt(receiptProductIdx));
 	        $('#currentLocationIdx').val(parseInt(locationIdx));
 	        $('#currentQuantity').text(currentQuantity);
+	        //폐기모달 input
 	        $('#currentReceiptProductIdxd').val(parseInt(receiptProductIdx));
 	        $('#currentLocationIdxd').val(parseInt(locationIdx));
-	        $('#currentQuantityD').text(currentQuantity);
+	        $('#currentQuantityD').val(currentQuantity);
 
 		
 		    // Ajax로 상세 데이터 요청
