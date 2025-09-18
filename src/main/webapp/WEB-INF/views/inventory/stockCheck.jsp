@@ -460,13 +460,12 @@
 	        		<sec:csrfInput/>
 	        		<input type="hidden" name="locationIdx" id="currentLocationIdx" />
 	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdx"/>
-	        		<input type="hidden" name="isDisposal" id="isDisposal"/>
 					<div class="current-qty">
 					    현재수량 : <span id="currentQuantity"></span> Box
 					</div>
 		        	<div>
 		        		 <label for="updateQty" id="updateQty">수량 업데이트</label>
-		        		 <input type="number" name="adjustQuantity" id="updateQty"/>
+		        		 <input type="number" name="adjustQuantity" id="updateQty" min="0"/>
 		        	</div>
 		        	<div>
 		        		 <label for="totalQty">변경된 수량</label>
@@ -495,10 +494,11 @@
 	        		<input type="hidden" name="locationIdx" id="currentLocationIdxd" />
 	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdxd"/>
 					<div class="current-qty">
-					    현재수량 : <span id="currentQuantityD"></span> Box
+						<label for="updateQty" >현재 수량</label>
+						<input type="number" name="quantity" id="currentQuantityD" readonly/>
 					</div>
 		        	<div>
-		        		 <label for="updateQty" id="updateQty">폐기 수량</label>
+		        		 <label for="updateQty" >폐기 수량</label>
 		        		 <input type="number" name="disposalAmount" id="updateQty"/>
 		        	</div>
 		        	<div>
@@ -625,9 +625,10 @@
 	        $('#currentReceiptProductIdx').val(parseInt(receiptProductIdx));
 	        $('#currentLocationIdx').val(parseInt(locationIdx));
 	        $('#currentQuantity').text(currentQuantity);
+	        //폐기모달 input
 	        $('#currentReceiptProductIdxd').val(parseInt(receiptProductIdx));
 	        $('#currentLocationIdxd').val(parseInt(locationIdx));
-	        $('#currentQuantityD').text(currentQuantity);
+	        $('#currentQuantityD').val(currentQuantity);
 
 		
 		    // Ajax로 상세 데이터 요청
@@ -691,12 +692,6 @@
 	    	const delta = parseInt($(this).val() || "0", 10);
 	    	
 	    	const newQty = baseQty + delta;
-	    	
-	    	if (newQty >= baseQty) {
-	    		$("#isDisposal").val(false);
-	    	} else {
-	    		$("#isDisposal").val(true);
-	    	}
 	    	
 	    	// 변경된 수량
 	    	$("#totalQty").val(parseInt(newQty));
