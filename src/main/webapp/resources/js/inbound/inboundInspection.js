@@ -1,5 +1,6 @@
 // 테이블 요소 캐싱
 const itemsTable = document.getElementById("itemsTable");
+let currentRow = null;
 
 // ------------------------
 // 뒤로가기 버튼
@@ -142,3 +143,52 @@ document.getElementById("btnCommit").addEventListener("click", function() {
 		}
 	});
 });
+
+// ------------------------
+// 수동 입력 (모달 안에서 expectedLot 비교)
+// ------------------------
+document.addEventListener("DOMContentLoaded", () => {
+    const btnManualInput  = document.getElementById("btnManualInput");
+    const manualInputArea = document.getElementById("manualInputArea");
+    const manualLotNumber = document.getElementById("manualLotNumber");
+    const btnApplyManual  = document.getElementById("btnApplyManual");
+    const qrModal         = document.getElementById("qrModal");
+
+    // ① 수동 입력 버튼 클릭 → 입력칸 보이기
+    btnManualInput?.addEventListener("click", () => {
+        manualInputArea.style.display = "block";
+        manualLotNumber.focus();
+    });
+
+    // ② 적용 버튼 클릭 → 현재 행의 expectedLot과 비교
+    btnApplyManual?.addEventListener("click", () => {
+	    const lotValue = manualLotNumber.value.trim();
+	    const expectedLot = document.getElementById("qrModal").dataset.expectedLot;
+	
+	    if (!lotValue) {
+	        Swal.fire("알림", "LOT 번호를 입력하세요 ❌", "warning");
+	        return;
+	    }
+	
+	    if (lotValue === expectedLot) {
+	        currentRow.querySelector("input[name=scannedLotNumber]").value = lotValue;
+	        currentRow.querySelector(".lotNumberDisplay").textContent = lotValue;
+	        currentRow.dataset.lotVerified = "true";
+			
+			//  스캔 버튼 숨기기
+			const lotBtn = currentRow.querySelector(".btn-lotScan");
+			if (lotBtn) {
+			    lotBtn.style.display = "none";   // 버튼 아예 안 보이게
+			}
+			
+	        Swal.fire("성공", "LOT 번호가 일치합니다 ✅", "success").then(() => {
+	            ModalManager.closeModalById("qrModal");
+	        });
+	    } else {
+	        Swal.fire("실패", `LOT 번호가 일치하지 않습니다 ❌<br>기대값: ${expectedLot}`, "error");
+	    }
+	});
+
+
+});
+

@@ -7,12 +7,6 @@ function clearInput(id) {
 	}
 }
 
-// 인쇄
-document.getElementById("btnPrint").addEventListener("click", function(e){
-    e.preventDefault();
-    window.print();
-});
-
 // ===== 선택 건수 표시 =====
 function updateSelectedCount() {
 	const count = document.querySelectorAll('input[name="selectedOrder"]:checked').length;
@@ -20,8 +14,17 @@ function updateSelectedCount() {
 	if (el) el.textContent = count;
 }
 
-// ===== DOM 준비 후 =====
 document.addEventListener("DOMContentLoaded", function () {
+
+	// --- 인쇄 ---
+	const printBtn = document.getElementById("btnPrint");
+	if (printBtn) {
+		printBtn.addEventListener("click", function (e) {
+			e.preventDefault();
+			window.print();
+		});
+	}
+
 
 	// --- 전체선택 체크박스 ---
 	const selectAll = document.querySelector(".select-all");
@@ -45,10 +48,27 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	});
 
-	// --- 상세 검색 버튼 ---
-	const btnSearch = document.querySelector(".btn-search");
-	if (btnSearch) {
-		btnSearch.addEventListener("click", function () {
+	// --- 간단 검색 (form submit 이벤트) ---
+	const simpleForm = document.getElementById("simpleSearchForm");
+	if (simpleForm) {
+		simpleForm.addEventListener("submit", function (e) {
+			const keyword = document.getElementById("simpleItemKeyword").value.trim();
+			if (!keyword) {
+				e.preventDefault(); // submit 막기
+				Swal.fire({
+					icon: "warning",
+					title: "입력 필요",
+					text: "발주번호 또는 입고번호를 입력하세요.",
+					confirmButtonText: "확인"
+				});
+			}
+		});
+	}
+
+	// --- 상세 검색 (form submit 이벤트) ---
+	const detailForm = document.getElementById("detailSearchForm");
+	if (detailForm) {
+		detailForm.addEventListener("submit", function (e) {
 			const status = document.getElementById("status").value;
 			const orderInboundKeyword = document.getElementById("orderInboundKeyword").value.trim();
 			const vendorKeyword = document.getElementById("vendorKeyword").value.trim();
@@ -57,25 +77,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			// 조건 없는 경우
 			if (!status && !orderInboundKeyword && !vendorKeyword && !inStartDate && !inEndDate) {
+				e.preventDefault(); // submit 막기
 				Swal.fire({
 					icon: "warning",
 					title: "검색 조건 없음",
 					text: "최소 한 가지 조건을 입력하세요.",
 					confirmButtonText: "확인"
 				});
-				return;
 			}
-
-			// 쿼리스트링 구성
-			const params = new URLSearchParams();
-			if (status) params.append("status", status);
-			if (orderInboundKeyword) params.append("orderInboundKeyword", orderInboundKeyword);
-			if (vendorKeyword) params.append("vendorKeyword", vendorKeyword);
-			if (inStartDate) params.append("inStartDate", inStartDate);
-			if (inEndDate) params.append("inEndDate", inEndDate);
-
-			// 검색결과 페이지 이동
-			location.href = `${contextPath}/inbound/management?${params.toString()}`;
 		});
 	}
 
@@ -96,35 +105,46 @@ document.addEventListener("DOMContentLoaded", function () {
 			updateSelectedCount();
 		});
 	}
-
-	// --- 간단 검색 버튼 ---
-	const btnSimpleSearch = document.getElementById("simpleSearchBtn");
-	if (btnSimpleSearch) {
-		btnSimpleSearch.addEventListener("click", function () {
-			const keyword = document.getElementById("simpleItemKeyword").value.trim();
-			if (!keyword) {
-				Swal.fire({
-					icon: "warning",
-					title: "입력 필요",
-					text: "발주번호 또는 입고번호를 입력하세요.",
-					confirmButtonText: "확인"
-				});
-				return;
-			}
-			location.href = `${contextPath}/inbound/management?simpleKeyword=${encodeURIComponent(keyword)}`;
-		});
-	}
-	
-	
 });
 
-
-// 새로고침
+// 새로고침 (검색조건 리셋 + 확인창)
 document.addEventListener("DOMContentLoaded", function () {
-	const reloadBtn = document.getElementById("btnReload");
-	if (reloadBtn) {
-		reloadBtn.addEventListener("click", function () {
-			location.reload(); // ✅ 현재 페이지 새로고침
-		});
-	}
+    const reloadBtn = document.getElementById("btnReload");
+    if (reloadBtn) {
+        reloadBtn.addEventListener("click", function () {
+            Swal.fire({
+                icon: "question",
+                title: "검색조건을 초기화하시겠습니까?",
+                text: "확인 시 현재 검색 조건이 모두 초기화되고 목록이 처음부터 표시됩니다.",
+                showCancelButton: true,
+                confirmButtonText: "예",
+                cancelButtonText: "아니오"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    // ✅ 검색조건 초기화 → 기본 목록으로 이동
+                    window.location.href = `${contextPath}/inbound/management`;
+                }
+            });
+        });
+    }
+});
+
+document.addEventListener("keydown", function (e) {
+    // F5 키 코드 = 116
+    if (e.key === "F5" || e.keyCode === 116) {
+        e.preventDefault(); // ✅ 기본 새로고침 막기
+        Swal.fire({
+            icon: "question",
+            title: "검색조건을 초기화하시겠습니까?",
+            text: "확인 시 현재 검색 조건이 모두 초기화되고 목록이 처음부터 표시됩니다.",
+            showCancelButton: true,
+            confirmButtonText: "예",
+            cancelButtonText: "아니오"
+        }).then(result => {
+            if (result.isConfirmed) {
+                // ✅ 검색조건 리셋 후 첫 페이지 이동
+                window.location.href = `${contextPath}/inbound/management`;
+            }
+        });
+    }
 });
