@@ -39,7 +39,7 @@
 		
 		
 		<!-- 검색/필터 ========================================================================================================-->
-		<form id="detailSearchForm" method="get" action="${pageContext.request.contextPath}/inbound/inboundManagement"
+		<form id="detailSearchForm" method="get" action="${pageContext.request.contextPath}/inbound/management"
 		      class="card mb-4 inbound-filters" style="display:none;">
 		    <div class="card-header d-flex justify-content-between align-items-center">
 		        <div class="card-title">검색 / 필터</div>
