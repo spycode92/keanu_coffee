@@ -84,7 +84,7 @@ public class InboundController {
 	    int totalCount = inboundService.getInboundCount(searchParams);
 		
 	    // 페이징
-		int listLimit = 15; // 한 페이지당 표시할 목록 수\
+		int listLimit = 10; // 한 페이지당 표시할 목록 수\
 		int startRow = (pageNum - 1) * listLimit;
 	    PageInfoDTO pageInfo = new PageInfoDTO();
 	    pageInfo.setPageNum(pageNum);

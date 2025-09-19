@@ -227,21 +227,26 @@
 
     <!-- INSERT receipt_product -->
     <insert id="insertReceiptProduct" parameterType="com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO">
-	    INSERT INTO RECEIPT_PRODUCT
-	    (ibwait_idx, supplier_idx, product_idx, lot_number, manufacture_date,
-	     expiration_date, quantity, received_at, emp_idx, created_at, updated_at)
-	    VALUES
-	    (#{ibwaitIdx,jdbcType=INTEGER},
-	     #{supplierIdx,jdbcType=INTEGER},
-	     #{productIdx,jdbcType=INTEGER},
-	     #{lotNumber,jdbcType=VARCHAR},
-	     #{manufactureDate,jdbcType=DATE},
-	     #{expirationDate,jdbcType=DATE},
-	     #{quantity,jdbcType=INTEGER},
-	     NOW(),
-	     #{empIdx,jdbcType=INTEGER},
-	     NOW(),
-	     NOW())
+		INSERT INTO RECEIPT_PRODUCT
+		(ibwait_idx, supplier_idx, product_idx, lot_number
+		,manufacture_date, expiration_date, quantity
+		,received_at, emp_idx, created_at, updated_at)
+		SELECT
+			 #{ibwaitIdx}
+			,po.supplier_idx
+			,#{productIdx}
+			,#{lotNumber}
+			,#{manufactureDate}
+			,#{expirationDate}
+			,#{quantity}
+			,NOW()
+			,#{empIdx}
+			,NOW()
+			,NOW()
+		FROM INBOUND_WAITING iw
+		JOIN PURCHASE_ORDER po
+			ON iw.order_idx = po.order_idx
+		WHERE iw.ibwait_idx = #{ibwaitIdx}
 	</insert>
 
     <!-- UPDATE receipt_product -->

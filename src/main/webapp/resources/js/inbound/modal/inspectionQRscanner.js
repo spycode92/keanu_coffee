@@ -2,7 +2,6 @@
 	console.log("inspectionQRscanner.js 로드됨");
 
 	const codeReader = new ZXing.BrowserMultiFormatReader();
-	let currentRow = null;
 	let scanning = false; // ✅ 중복 방지 플래그
 
 	function byId(id) { return document.getElementById(id); }
@@ -11,6 +10,10 @@
 	window.openQrModalForRow = function(btnEl) {
 		currentRow = btnEl.closest("tr"); // 버튼이 속한 행 기억
 		scanning = true;
+		
+		const expectedLot = currentRow.querySelector("input[name=expectedLotNumber]")?.value || "";
+		byId("qrModal").dataset.expectedLot = expectedLot;
+		
 		ModalManager.openModalById("qrModal"); // qrModal 모달 열기
 		startCamera();
 	};
@@ -58,6 +61,12 @@
 						scanning = false;
 						
 					    Swal.fire("성공", "LOT 번호 확인 완료 ✅<br>" + scannedLot, "success");
+	
+						//  스캔 버튼 숨기기
+						const lotBtn = currentRow.querySelector(".btn-lotScan");
+						if (lotBtn) {
+						    lotBtn.style.display = "none";   // 버튼 아예 안 보이게
+						}
 					
 					    ModalManager.closeModalById("qrModal");
 					    stopCamera();
@@ -92,3 +101,4 @@
 		}
 	});
 })();
+
