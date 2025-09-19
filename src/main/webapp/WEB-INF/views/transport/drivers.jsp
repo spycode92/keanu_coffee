@@ -149,7 +149,7 @@
 												<span class="badge badge-waiting">대기</span>
 											</c:when>
 											<c:otherwise>
-												<span class="badge badge-urgent">예약</span>
+												<span class="badge badge-urgent">미배정</span>
 											</c:otherwise>
 										</c:choose>
 									</td>
