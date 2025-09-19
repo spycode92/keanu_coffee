@@ -396,8 +396,8 @@
 	        	<form action="/inventory/disposalInventory"
 	        		  method="post">
 	        		<sec:csrfInput/>
-	        		<input type="hidden" name="locationIdx" id="currentLocationIdxdDisposald" />
-	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdxdDisposald"/>
+	        		<input type="hidden" name="locationIdx" id="currentLocationIdxd" />
+	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdxd"/>
 					<div class="current-qty">
 						<label for="updateQty" >현재 수량</label>
 						<input type="number" name="quantity" id="currentQuantityD" readonly/>
@@ -537,11 +537,11 @@
 	        $('#currentLocationIdx').val(parseInt(locationIdx));
 	        $('#currentQuantity').text(currentQuantity);
 	        //폐기모달 input
-	        $('#currentReceiptProductIdxdDisposal').val(parseInt(receiptProductIdx));
-	        $('#currentLocationIdxdDisposal').val(parseInt(locationIdx));
+	        $('#currentReceiptProductIdxd').val(parseInt(receiptProductIdx));
+	        $('#currentLocationIdxd').val(parseInt(locationIdx));
 	        $('#currentQuantityD').val(currentQuantity);
-
-		
+	        
+	        
 		    // Ajax로 상세 데이터 요청
 		    $.getJSON('${pageContext.request.contextPath}/inventory/detail', { idx: idx }, function(data) {
 		        // 상품 정보 채우기
