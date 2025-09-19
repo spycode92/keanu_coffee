@@ -7,6 +7,12 @@ function clearInput(id) {
 	}
 }
 
+// 인쇄
+document.getElementById("btnPrint").addEventListener("click", function(e){
+    e.preventDefault();
+    window.print();
+});
+
 // ===== 선택 건수 표시 =====
 function updateSelectedCount() {
 	const count = document.querySelectorAll('input[name="selectedOrder"]:checked').length;

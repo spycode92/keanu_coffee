@@ -28,6 +28,7 @@
 				<h1 class="card-title">입고 검수</h1>
 			</div>
 			<div class="page-actions">
+				<button id="btnAssignLocation" class="btn btn-primary btn-sm">입고위치지정</button>
 				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
 			</div>
 		</div>
@@ -45,7 +46,11 @@
 					<div class="kv-label">입고번호</div>
 					<div class="kv-value">
 					    <c:out value="${inboundDetailData.ibwaitNumber}" default="-" />
+					    <input type="hidden" id="inboundLink"
+						       data-ibwait-idx="${inboundDetailData.ibwaitIdx}"
+						       data-order-number="${inboundDetailData.orderNumber}" />
 					</div>
+					<input type="hidden" id="currentUser" data-emp-idx="${inboundDetailData.managerIdx}" />
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고일자</div>
@@ -138,7 +143,7 @@
 					    <c:choose>
 					        <c:when test="${not empty ibProductDetail}">
 					            <c:forEach var="item" items="${ibProductDetail}" varStatus="vs">
-					                <tr data-product-idx="${item.productIdx}" data-lot-number="${item.lotNumber}">
+					                <tr data-product-idx="${item.productIdx}" data-lot-verified="false">
 									    <!-- No. -->
 									    <td><c:out value="${vs.index + 1}" /></td>
 									
@@ -147,13 +152,14 @@
 									    
 										<!-- LOT넘버 -->
 										<td>
-											<input type="text" 
-											       name="lotNumber" 
-											       class="lot-input"
-											       value="<c:out value='${empty item.lotNumber ? "-" : item.lotNumber}'/>"
-											       readonly
-											       data-index="${vs.index}"
-											       onclick="openQrModalForRow(this)" />
+										    <!-- 숨겨진 lotNumber (DB값 보관용) -->
+										    <input type="hidden" name="expectedLotNumber" value="${item.lotNumber}" />
+											<!-- 스캔 LOT: 스캔 성공 후 채움 (비노출, 서버 전송/게이트용) -->
+										    <input type="hidden" name="scannedLotNumber" value="" />
+										    <!-- 사용자 표시용 -->
+										    <span class="lotNumberDisplay">-</span>
+										    <input type="button" class="btn btn-sm btn-lotScan" value="스캔하기"
+										           onclick="openQrModalForRow(this)" />
 										</td>
 									
 									    <!-- 수량 -->
@@ -214,7 +220,9 @@
 							<td id="grandTotalCell">
 								<fmt:formatNumber value="${grandTotal}" pattern="₩ #,##0" />
 							</td>
-							<td><button id="btnCommit" class="btn btn-secondary btn-sm" title="입고확정">입고확정</button></td>
+							<td>
+								<button id="btnCommit" class="btn btn-secondary btn-sm" title="입고확정" disabled>입고확정</button>
+							</td>
 						</tr>
 					</tfoot>
 	<!-- ==============================================================================================================리스트 존========= -->
@@ -245,11 +253,14 @@
 			
 		</div>
 	</section>
-	
 	<script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
+	
+	<jsp:include page="/WEB-INF/views/inbound/modal/modifyLocation.jsp" />
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/modify.js"></script>
 	<jsp:include page="/WEB-INF/views/inbound/modal/modifyLotNumber.jsp" />
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/inspectionQRscanner.js"></script>
 	
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/inboundInspection.js"></script>
 </body>
+<link href="${pageContext.request.contextPath}/resources/css/inbound/modal/detailSmallModal.css" rel="stylesheet" />
 </html>

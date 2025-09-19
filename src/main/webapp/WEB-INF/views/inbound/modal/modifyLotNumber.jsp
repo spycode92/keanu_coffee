@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<div class="modal" id="modifyLotNumber">
+<div class="modal" id="qrModal">
     <div class="modal-card modal-form md">
         <div class="modal-head">
             <h3>QR 코드 스캔</h3>
-            <button class="modal-close-btn" onclick="ModalManager.closeModalById('modifyLotNumber')">✕</button>
+            <button class="modal-close-btn" onclick="ModalManager.closeModalById('qrModal')">✕</button>
         </div>
         <div class="modal-body">
             <!-- 카메라 스캔 영역 -->

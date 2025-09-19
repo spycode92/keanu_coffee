@@ -1,6 +1,7 @@
 package com.itwillbs.keanu_coffee.inbound.controller;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
+import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.service.ExcelExportService;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO;
@@ -116,6 +119,7 @@ public class InboundController {
 		return "/inbound/inboundDetail";
 	}
 	
+	// 위치지정
 	@PostMapping(path="/updateLocation", consumes="application/json", produces="application/json")
 	@ResponseBody
 	public Map<String,Object> updateLocation(@RequestBody UpdateLocationReq req){
@@ -155,6 +159,10 @@ public class InboundController {
 										Model model) {
 		
 	    InboundDetailDTO inboundDetailData = inboundService.getInboundDetailData(ibwaitIdx);
+	    if (inboundDetailData != null && "대기".equals(inboundDetailData.getInboundStatus())) {
+	        inboundService.updateInboundStatus(ibwaitIdx, "검수중");
+	        inboundDetailData.setInboundStatus("검수중"); // 화면에도 반영
+	    }
 	    model.addAttribute("inboundDetailData", inboundDetailData);
 		
 	    List<InboundProductDetailDTO> ibProductDetail = inboundService.getInboundProductDetail(orderNumber);
@@ -163,12 +171,30 @@ public class InboundController {
 		return "/inbound/inboundInspection";
 	}
 	
+	// 검수완료
 	@PostMapping(path="/inspectionComplete", consumes="application/json", produces="application/json")
 	@ResponseBody
-	public Map<String,Object> inspectionComplete(@RequestBody ReceiptProductDTO dto) {
+	public Map<String,Object> inspectionComplete(@RequestBody ReceiptProductDTO dto, Authentication authentication) {
+		 // 현재 로그인 사용자 정보 가져오기
+		EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
+		Integer empIdx = empDetail.getEmpIdx();
+		dto.setEmpIdx(empIdx);
+		
+		// 데이터 존재 여부 확인 후 Insert or Update
 		boolean exists = inboundService.findDataExists(dto.getIbwaitIdx(), dto.getProductIdx(), dto.getLotNumber());
-		inboundService.inspectionCompleteUpdate(dto, exists);
-		return Map.of("ok", true);
+	    inboundService.inspectionCompleteUpdate(dto, exists);
+
+	    return Map.of("ok", true, "empIdx", empIdx);
+	}
+	
+	// 입고완료
+	@PostMapping(path="/commitInbound", consumes="application/json", produces="application/json")
+	@ResponseBody
+	public Map<String, Object> commitInbound(@RequestBody Map<String, Object> req) {
+	    Integer ibwaitIdx = Integer.valueOf(req.get("ibwaitIdx").toString());
+	    inboundService.updateInboundStatus(ibwaitIdx, "재고등록완료");
+
+	    return Map.of("ok", true, "ibwaitIdx", ibwaitIdx);
 	}
 	
 	// 엑셀 생성 컨트롤러
@@ -193,9 +219,6 @@ public class InboundController {
         searchParams.put("inStartDate", inStartDate);
         searchParams.put("inEndDate", inEndDate);
 
-        // --- DB 조회 ---
-        List<InboundManagementDTO> list = inboundMapper.selectInboundListForExcel(searchParams);
-
         // --- 엑셀 생성 ---
         Workbook workbook = excelExportService.createInboundManagementExcel(searchParams);
 
@@ -206,7 +229,6 @@ public class InboundController {
         workbook.write(response.getOutputStream());
         workbook.close();
     }
-
 
 	
 	// ====================================================================================================================================

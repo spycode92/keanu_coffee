@@ -113,6 +113,7 @@
 				    	&vendorKeyword=${param.vendorKeyword}&inStartDate=${param.inStartDate}
 				    	&inEndDate=${param.inEndDate}&simpleKeyword=${param.simpleKeyword}"
 				   		class="btn btn-secondary btn-sm">엑셀 다운로드</a>
+				   	<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
 				   	<button id="btnReload" class="btn btn-secondary btn-sm">새로고침</button>
 		        </div>
 		    </div>
