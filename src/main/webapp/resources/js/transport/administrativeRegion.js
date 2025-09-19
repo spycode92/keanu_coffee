@@ -218,7 +218,7 @@ $(document).on("click", ".delete-btn", function() {
 	Swal.fire({
 		title: "이 그룹 전체를 삭제하시겠습니까?",
 		showDenyButton: true,
-		confirmButtonText: "배정",
+		confirmButtonText: "삭제",
 	  	denyButtonText: "취소",
 	}).then((result) => {
 		if (result.isConfirmed) {
