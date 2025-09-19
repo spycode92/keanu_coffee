@@ -69,10 +69,47 @@ button:disabled {
 .removeDriverBtn {
 	cursor: pointer;
 }
+
+/* loading spinner */
+#loading_spinner{
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 99999;
+}
+.cv_spinner{
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: stretch;
+    justify-content: center;
+    align-items: baseline;
+    position: relative;
+}
+.spinner {
+  width: 100px;
+  height: 100px;
+  border: 15px #ddd solid;
+  border-top: 15px #2e93e6 solid;
+  border-radius: 50%;
+  animation: sp-anime 0.8s infinite linear;
+}
+@keyframes sp-anime {
+  100% {
+    transform: rotate(360deg);
+  }
+}
 </style>
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
+    <div id="loading_spinner">
+	    <div class="cv_spinner">
+	        <span class="spinner"></span>
+	    </div>
+	</div>
     <div class="content">
         <header>
             <h3>배차 관리</h3>

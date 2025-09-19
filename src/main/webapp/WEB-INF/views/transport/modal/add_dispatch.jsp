@@ -13,6 +13,11 @@
                 <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px;">
                 	<%-- 좌: 대기/추가 필요 리스트 --%>
                     <div class="assignListWrapper">
+                        <div id="loading_spinner">
+						    <div class="cv_spinner">
+						        <span class="spinner"></span>
+						    </div>
+						</div>
                         <table class="table" id="assignList">
                             <thead>
                                 <tr>

@@ -41,13 +41,14 @@ public class DispatchController {
 	
 	// 배차 요청 리스트
 	@GetMapping("/dispatch/list")
-	public ResponseEntity<List<DispatchRegionGroupViewDTO>> getAllDispatch() {
+	public ResponseEntity<List<DispatchRegionGroupViewDTO>> getAllDispatch() throws InterruptedException {
 		List<DispatchRegionGroupViewDTO> dispatchList = dispatchService.getDispatchList();
 		
 		if (dispatchList == null) {
 			return ResponseEntity.notFound().build();
 		}
 		
+		 Thread.sleep(2000);
 		return ResponseEntity.ok(dispatchList);
 	}
 	
