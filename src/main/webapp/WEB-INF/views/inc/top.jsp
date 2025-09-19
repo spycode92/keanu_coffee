@@ -341,14 +341,14 @@ document.addEventListener("DOMContentLoaded", () => {
 			    <ul class="submenu ${fn:contains(uri, '/inventory') ? 'open' : ''}">
 			        <li><a href="/inventory/main">대시보드</a></li>
 			        <li><a href="/inventory/stockCheck">재고 조회</a></li>
-			        <li><a href="/inventory/productHistory">제품 위치 기록</a></li>
-	                <li><a href="/inventory/updateInventory">재고 업데이트</a></li>
-	                <li><a href="/inventory/updateWarehouse">창고 업데이트</a></li>
-	                <li><a href="/inventory/moveInventory">재고를 옮기다</a></li>
-	                <li><a href="/inventory/updatedInventory">업데이트된 재고 테이블</a></li>
-	                <li><a href="/inventory/inventoryToMove">이동할 재고</a></li>
-	                <li><a href="/inventory/qrScanner">QR 스캐너</a></li>
-	                <li><a href="/inventory/locationType">로케이션 지정</a></li>
+<!-- 			        <li><a href="/inventory/productHistory">제품 위치 기록</a></li> -->
+<!-- 	                <li><a href="/inventory/updateInventory">재고 업데이트</a></li> -->
+	                <li><a href="/inventory/updateWarehouse">로케이션 생성</a></li>
+	                <li><a href="/inventory/moveInventory">재고 이동</a></li>
+<!-- 	                <li><a href="/inventory/updatedInventory">업데이트된 재고 테이블</a></li> -->
+	                <li><a href="/inventory/inventoryToMove">로케이션 이동 대상</a></li>
+<!-- 	                <li><a href="/inventory/qrScanner">QR 스캐너</a></li> -->
+<!-- 	                <li><a href="/inventory/locationType">로케이션 지정</a></li> -->
 			  </ul>
 			</li>
 <%-- 			</sec:authorize> --%>
