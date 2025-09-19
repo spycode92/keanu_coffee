@@ -1,21 +1,6 @@
 /**
  * 물류관리 ERP 시스템 공통 JavaScript
  */
-let ajaxActive = 0;
-
-$.ajaxSetup({
-	beforeSend: function () {
-		 ajaxActive++;
-        $('#loading_spinner').show();
-    },
-    complete: function () {
-         ajaxActive--;
-	    if (ajaxActive <= 0) {
-	      $('#loading_spinner').hide();
-	    }
-    }
-});
-
 
 console.log('common.js 로드됨');
 // 다크모드 관리
