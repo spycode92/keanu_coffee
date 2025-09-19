@@ -224,7 +224,7 @@ public class DispatchService {
 		
 		// 선택한 지점별 처리
 		for (DispatchCompleteRequest.StopComplete stopReq: request.getStops()) {
-			System.out.println("stopReq" + stopReq);
+//			System.out.println("stopReq" + stopReq);
 		    if (!franchiseIdxSet.add(stopReq.getFranchiseIdx())) {
 		        // 이미 존재하는 지점이면 skip
 		        continue;

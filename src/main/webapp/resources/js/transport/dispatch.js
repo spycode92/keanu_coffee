@@ -4,7 +4,7 @@ const ADD_DISPATCH_URL = "/transport/dispatch/add";
 const CANCEL_DISPATCH_URL = "/transport/dispatch/cancel";
 const DISPATCH_DETAIL_URL = "/transport/dispatch/detail";
 
-let assignedDrivers = [];
+let assignedDrivers = new Map();
 let totalVolume = 0;
 
 // 배차 등록 버튼 클릭 시 배차 요청 리스트
@@ -34,7 +34,7 @@ function openAddDispatchModal() {
 // 배차 요청 리스트 클릭 이벤트
 $(document).on("click", "input[name='dispatchPick']", function() {
 	// 이전 선택 초기화
-    assignedDrivers = [];                  // 배열 초기화
+    assignedDrivers = new Map();           // 배열 초기화
     $("#assignedDriverList").empty();      // 배정된 기사 목록 비우기
     $("#primaryDriverSelect").val("");     // 기본 기사 선택 초기화
     $("#extraDriverSelect").val("");       // 추가 기사 선택 초기화
@@ -92,13 +92,19 @@ function assignBtn() {
 		return;
 	}
 	
+	
+	if (assignedDrivers.has(empIdx)) {
+		Swal.fire({icon:'error', text:'이미 배정된 기사입니다.'}); 
+		return;
+	}
+	
 	// 배정된 기사 목록에 추가
-	assignedDrivers.push({
+	assignedDrivers.set(empIdx, {
 		vehicleIdx, driverName, vehicleType, volume, empIdx
-	});
+	})
 	
 	$("#assignedDriverList").append(`
-		<div class="driver-item" data-vehicle-idx="${vehicleIdx}">
+		<div class="driver-item" data-vehicle-idx="${vehicleIdx}" data-emp-idx="${empIdx}">
 			<span>${driverName} ${capacity} (${vehicleType})</span>
 			<i class="fa-solid fa-delete-left removeDriverBtn"></i>
 		</div>`);
@@ -107,9 +113,7 @@ function assignBtn() {
 	selected.prop("disabled", true);
 	
 	// 가용 용량 계산
-	const totalCapacity = assignedDrivers.reduce((sum, d) => {
-	    return sum + d.volume * 0.8;
-	}, 0);
+	const totalCapacity = Array.from(assignedDrivers.values()).reduce((sum, d) => sum + d.volume * 0.8, 0);
 	 $("#capacityInfo").val(`${totalVolume} / ${totalCapacity}`);
 
 	// 가용 용량 초과 시 추가 배차 안내 문구 출력
@@ -155,8 +159,7 @@ $(document).on("click", ".removeDriverBtn", function() {
 	parent.remove();
 
   	// 2) 배열에서 제거
-  	assignedDrivers = assignedDrivers.filter(d => d.vehicleIdx != vehicleIdx);
-  	assignedDrivers = assignedDrivers.filter(d => d.empIdx != empIdx);
+	assignedDrivers.delete(Number(empIdx));
 
   	// 3) select 옵션 다시 활성화
   	$(`#primaryDriverSelect option[value="${vehicleIdx}"]`).prop("disabled", false);
@@ -351,11 +354,12 @@ function dispatchRequestData() {
 	const regionIdx = parseInt(row.find("td:eq(3)").data("region-idx"));
 	
 	// 기사 배열화
-	const drivers = assignedDrivers.map((driver) => ({
-		vehicleIdx: driver.vehicleIdx || row.data("vehicle-idx"),
-		empIdx: driver.empIdx
-	}));
-	
+	const drivers = Array.from(assignedDrivers.values())
+		.map((driver) => ({
+			vehicleIdx: driver.vehicleIdx || row.data("vehicle-idx"),
+			empIdx: driver.empIdx
+		}));
+		
 	return {
 		orderIds,
 		dispatchDate,

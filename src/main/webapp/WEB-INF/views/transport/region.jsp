@@ -23,11 +23,6 @@
 <body>
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	<section class="content">
-		<c:if test="${not empty msg}">
-			<script type="text/javascript">
-				alert("${msg}");
-			</script>
-		</c:if>
 		<header>
 			<h3>구역 관리</h3>
 		</header>

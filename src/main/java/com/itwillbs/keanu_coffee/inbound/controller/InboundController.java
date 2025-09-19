@@ -63,36 +63,51 @@ public class InboundController {
 	// 입고조회
 	@GetMapping("/management")
 	public String showInboundManagement(
-			@RequestParam(required = false) String simpleKeyword,
+	        @RequestParam(required = false) String simpleKeyword,
 	        @RequestParam(required = false) String status,
 	        @RequestParam(required = false) String orderInboundKeyword,
 	        @RequestParam(required = false) String vendorKeyword,
-	        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inStartDate,
-	        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inEndDate,
-			@RequestParam(defaultValue = "1") int pageNum, Model model) {
-		
-		// 검색
+	        @RequestParam(required = false) String inStartDate,
+	        @RequestParam(required = false) String inEndDate,
+	        @RequestParam(defaultValue = "1") int pageNum,
+	        Model model) {
+
+	    // --- 날짜 변환 (빈 문자열이면 null 처리) ---
+	    LocalDate start = null;
+	    LocalDate end = null;
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	    if (inStartDate != null && !inStartDate.isBlank()) {
+	        start = LocalDate.parse(inStartDate, formatter);
+	    }
+	    if (inEndDate != null && !inEndDate.isBlank()) {
+	        end = LocalDate.parse(inEndDate, formatter);
+	    }
+
+	    // --- 검색 파라미터 맵 ---
 	    Map<String, Object> searchParams = new HashMap<>();
-	    searchParams.put("simpleKeyword", simpleKeyword);
-	    searchParams.put("status", status);
-	    searchParams.put("orderInboundKeyword", orderInboundKeyword);
-	    searchParams.put("vendorKeyword", vendorKeyword);
-	    searchParams.put("inStartDate", inStartDate);
-	    searchParams.put("inEndDate", inEndDate);
-	    
-	    // 전체 개수
+	    searchParams.put("simpleKeyword", simpleKeyword != null && !simpleKeyword.isBlank() ? simpleKeyword.trim() : null);
+	    searchParams.put("status", status != null && !status.isBlank() ? status.trim() : null);
+	    searchParams.put("orderInboundKeyword", orderInboundKeyword != null && !orderInboundKeyword.isBlank() ? orderInboundKeyword.trim() : null);
+	    searchParams.put("vendorKeyword", vendorKeyword != null && !vendorKeyword.isBlank() ? vendorKeyword.trim() : null);
+	    searchParams.put("inStartDate", start);
+	    searchParams.put("inEndDate", end);
+
+	    // --- 전체 개수 조회 ---
 	    int totalCount = inboundService.getInboundCount(searchParams);
-		
-	    // 페이징
-		int listLimit = 15; // 한 페이지당 표시할 목록 수\
-		int startRow = (pageNum - 1) * listLimit;
+
+	    // --- 페이징 처리 ---
+	    int listLimit = 10; // 한 페이지당 표시할 목록 수
+	    int startRow = (pageNum - 1) * listLimit;
+
 	    PageInfoDTO pageInfo = new PageInfoDTO();
 	    pageInfo.setPageNum(pageNum);
-	    pageInfo.setMaxPage((int)Math.ceil(totalCount / (double)listLimit));
-		
-		// 리스트(검색조건 + 페이징)
+	    pageInfo.setMaxPage((int) Math.ceil(totalCount / (double) listLimit));
+
+	    // --- 리스트 조회 ---
 	    List<InboundManagementDTO> orderDetailList = inboundService.getInboundList(searchParams, startRow, listLimit);
-	    
+
+	    // --- Model에 데이터 저장 ---
 	    model.addAttribute("pageInfo", pageInfo);
 	    model.addAttribute("orderList", orderDetailList);
 	    model.addAttribute("totalCount", totalCount);

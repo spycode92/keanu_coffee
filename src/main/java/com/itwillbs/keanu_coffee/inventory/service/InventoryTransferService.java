@@ -53,7 +53,7 @@ public class InventoryTransferService {
         }
 
         // 확인용 로그
-        System.out.println("✅ targetStockCache 업데이트 완료: " + targetStockCache);
+//        System.out.println("✅ targetStockCache 업데이트 완료: " + targetStockCache);
     }
 
     // 적정재고 캐시 가져오기

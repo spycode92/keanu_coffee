@@ -52,9 +52,9 @@ public class readQRCode {
         hashMap.put(EncodeHintType.ERROR_CORRECTION,
                     ErrorCorrectionLevel.L);
 
-        System.out.println(
-            "QRCode output: "
-            + readQR(filePath, charset, hashMap));
+//        System.out.println(
+//            "QRCode output: "
+//            + readQR(filePath, charset, hashMap));
         
         String qrLink = readQR(filePath, charset, hashMap);
     }

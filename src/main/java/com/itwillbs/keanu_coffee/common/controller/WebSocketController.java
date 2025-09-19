@@ -21,7 +21,7 @@ public class WebSocketController {
 		// ChatMessageDTO 객체에 로그인 한 사용자의 아이디를 발신자로 저장
 		// => 로그인한 사용자 정보는 Principal 객체를 주입받아 사용
 		message.setSender(principal.getName());
-		System.out.println("message : " + message);
+//		System.out.println("message : " + message);
 
 		// 특정 채팅방 구독자들에게 메세지 전송
 		// => SimpMessageTemplate 객체의 convertAndSend() 메서드 호출하여 특정 채팅방구독자들에게 메세지 전송

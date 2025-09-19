@@ -117,7 +117,7 @@ public class TransportController {
 			List<VehicleDTO> vehicleList = vehicleService.getVehicleList(pageInfoDTO.getStartRow(), listLimit, filter, searchKeyword);
 			
 			// 차량 리스트
-//			System.out.println(vehicleList);
+			System.out.println(vehicleList);
 			
 			model.addAttribute("vehicleList", vehicleList );
 		}

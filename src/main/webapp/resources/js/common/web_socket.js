@@ -193,7 +193,7 @@ function notification() {
 	fetch("/alarm/getAlarm")
 		.then(res => res.json()).then(data => {
 			isAllRead = true;
-			console.log(data);
+			// // console.log(data);
 			notificationList(data);
 		})
 		.catch(err => console.log("알림 조회 실패"));
@@ -251,7 +251,7 @@ function handleNotiClick(li) {
 //                window.location.href = link;
             }
 			notification();
-			console.log("이동안함");
+			// console.log("이동안함");
 		})
 		.catch(err => console.log(err));
 //	ajaxPost("/alarm/status/" + alarmIdx + "/read")

@@ -52,7 +52,7 @@ public class FileUtils {
 		try {
 			Path resultPath = Files.createDirectories(Paths.get(path).toAbsolutePath().normalize());
 		} catch (IOException e) {
-			System.out.println("서브 디렉토리 생성 실패 - " + path);
+//			System.out.println("서브 디렉토리 생성 실패 - " + path);
 			e.printStackTrace();
 		}
 		

@@ -12,7 +12,7 @@ public class ScheduledPurchaseOrderService {
         // Call your controller logic here, or better yet, move it into this service
 		
 		
-        System.out.println("Running daily task");
+//        System.out.println("Running daily task");
     }
 
 

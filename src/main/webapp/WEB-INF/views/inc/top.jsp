@@ -248,11 +248,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </c:if>
 <nav class="top-nav">
 	<jsp:include page="/WEB-INF/views/inc/change_info.jsp"></jsp:include> 
-	<div id="loading_spinner">
-	    <div class="cv_spinner">
-	        <span class="spinner"></span>
-	    </div>
-	</div>
 	<button id="sidebar-toggle" class="sidebar-toggle">&#9776;</button>
 	<span class="site-title">물류관리 ERP </span>
 	<div class="top-nav-actions" style="margin-left:auto; display:flex; align-items:center; gap:16px;">
@@ -319,10 +314,6 @@ document.addEventListener("DOMContentLoaded", () => {
 				<ul class="submenu ${fn:contains(uri, '/inbound') ? 'open' : ''}">
 			        <li><a href="/inbound/main">대시보드</a></li>
 			        <li><a href="/inbound/management">입고조회</a></li>
-			        <li><a href="/inbound/inboundDetail">입고조회 > 상세</a></li>
-			        <li><a href="/inbound/inboundInspection">입고조회 > 검수</a></li>
-			        <li><a href="/inbound/inboundConfirm">입고조회 > 확정</a></li>
-			        <li><a href="/inbound/inboundRegister">입고요청</a></li>
 			    </ul>
 			</li>
 <%-- 			</sec:authorize> --%>
@@ -332,11 +323,6 @@ document.addEventListener("DOMContentLoaded", () => {
 				<ul class="submenu ${fn:contains(uri, '/outbound') ? 'open' : ''}">
 			        <li><a href="/outbound/main">대시보드</a></li>
 			        <li><a href="/outbound/outboundManagement">출고조회</a></li>
-			        <li><a href="/outbound/outboundDetail">출고조회 > 상세</a></li>
-			        <li><a href="/outbound/outboundInspection">출고조회 > 검수</a></li>
-			        <li><a href="/outbound/outboundConfirm">출고조회 > 확정</a></li>
-			        <li><a href="/outbound/outboundRegister">출고요청</a></li>
-			        <li><a href="/outbound/outboundPicking">출고피킹</a></li>
 			    </ul>
 			</li>
 <%-- 			</sec:authorize> --%>
@@ -346,14 +332,14 @@ document.addEventListener("DOMContentLoaded", () => {
 			    <ul class="submenu ${fn:contains(uri, '/inventory') ? 'open' : ''}">
 			        <li><a href="/inventory/main">대시보드</a></li>
 			        <li><a href="/inventory/stockCheck">재고 조회</a></li>
-			        <li><a href="/inventory/productHistory">제품 위치 기록</a></li>
-	                <li><a href="/inventory/updateInventory">재고 업데이트</a></li>
-	                <li><a href="/inventory/updateWarehouse">창고 업데이트</a></li>
-	                <li><a href="/inventory/moveInventory">재고를 옮기다</a></li>
-	                <li><a href="/inventory/updatedInventory">업데이트된 재고 테이블</a></li>
-	                <li><a href="/inventory/inventoryToMove">이동할 재고</a></li>
-	                <li><a href="/inventory/qrScanner">QR 스캐너</a></li>
-	                <li><a href="/inventory/locationType">로케이션 지정</a></li>
+<!-- 			        <li><a href="/inventory/productHistory">제품 위치 기록</a></li> -->
+<!-- 	                <li><a href="/inventory/updateInventory">재고 업데이트</a></li> -->
+	                <li><a href="/inventory/updateWarehouse">로케이션 생성</a></li>
+	                <li><a href="/inventory/moveInventory">재고 이동</a></li>
+<!-- 	                <li><a href="/inventory/updatedInventory">업데이트된 재고 테이블</a></li> -->
+	                <li><a href="/inventory/inventoryToMove">로케이션 이동 대상</a></li>
+<!-- 	                <li><a href="/inventory/qrScanner">QR 스캐너</a></li> -->
+<!-- 	                <li><a href="/inventory/locationType">로케이션 지정</a></li> -->
 			  </ul>
 			</li>
 <%-- 			</sec:authorize> --%>
