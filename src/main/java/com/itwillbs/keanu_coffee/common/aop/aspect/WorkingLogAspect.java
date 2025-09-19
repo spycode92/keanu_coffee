@@ -87,9 +87,9 @@ public class WorkingLogAspect {
 	        Object[] args = pjp.getArgs();
 	        
 	        for(int i = 0; i< args.length; i++) {
-	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ ");
-	        	System.out.println("인덱스["+ i + "] :" + args[i]);
-	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ ");
+//	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ ");
+//	        	System.out.println("인덱스["+ i + "] :" + args[i]);
+//	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ ");
 	        }
 
 	        String methodName = pjp.getSignature().getName();

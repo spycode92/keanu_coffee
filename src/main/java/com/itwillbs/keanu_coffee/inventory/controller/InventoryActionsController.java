@@ -84,10 +84,10 @@ public class InventoryActionsController {
 		        lastRack = 'A';
 		    }
 		} else {
-		    System.out.println("No previous location found. Starting from default.");
+//		    System.out.println("No previous location found. Starting from default.");
 		}
 		
-		System.out.println("last rack : " + lastRack);
+//		System.out.println("last rack : " + lastRack);
 		
 		
 		char[] letters = new char[26];

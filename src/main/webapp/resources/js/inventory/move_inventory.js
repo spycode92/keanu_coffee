@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // LOT 번호 입력 처리
     function handleLotNumber(lotNumber) {
-		console.log("실행됐어요");
+//		console.log("실행됐어요");
         if(lotNumber) {
             searchProductByLotNum(lotNumber);
         }
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 로케이션 이름 입력 처리
     function handleLocationName(locationName) {
-	console.log("실행됐어요2321312321");
+//	console.log("실행됐어요2321312321");
         if(locationName) {
             selectedLocationItems = [];
             searchInventoryByLocation(locationName);
@@ -97,7 +97,7 @@ function searchProductByLotNum(lotNumber){
 	ajaxGet(`/inventory/move/getProductDetail/${lotNumber}`)
 		.then(data => {
 			if(data.success) {
-				console.log(data.fileIdx);
+//				console.log(data.fileIdx);
 				let url = "";
 				//상품이미지 보여주기
 				url = data.fileIdx ? '/file/thumbnail/' + data.fileIdx : '/resources/images/default_product.jpg';
@@ -171,7 +171,7 @@ function checkInventory(){
 	
     // 해당 상품이 해당 로케이션에 없는 경우
 	const foundItem = selectedLocationItems.find(item => item.lotNumber === selectLotNumber);
-	console.log("파운드아이템",foundItem);
+//	console.log("파운드아이템",foundItem);
 	
 	if(!foundItem) {
         Swal.fire({
@@ -255,13 +255,13 @@ function init() {
 	const btnScanQR = document.getElementById("qrScanner");
 	const qrModal = document.getElementById("qrScannerModal");
 	if (!btnScanQR || !qrModal) {
-		console.warn("QR 스캐너: 버튼 또는 모달 요소를 찾을 수 없습니다.");
+//		console.warn("QR 스캐너: 버튼 또는 모달 요소를 찾을 수 없습니다.");
 		return;
 	}
 
 	// 버튼 클릭 → 모달 열고 카메라 시작
 	btnScanQR.addEventListener("click", function() {
-		console.log("QR 버튼 클릭됨");
+//		console.log("QR 버튼 클릭됨");
 		ModalManager.openModalById("qrScannerModal");
 		//큐알스캔후 콜백함수실행
 		startCamera((scannedText) => {
@@ -310,7 +310,7 @@ if (document.readyState === "loading") {
 
 //웹소켓 구독 코드
 subscribeRoom("inventory", function(message) {
-    console.log("📦 새 재고 이벤트 발생!");
+//    console.log("📦 새 재고 이벤트 발생!");
 //    console.log("   roomId :", message.roomId);
 //    console.log("   sender :", message.sender);
 //    console.log("   text   :", message.message);

@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	function getInventory(){
 		return ajaxGet(`/admin/dashboard/inventory`)
 			.then((data)=>{
-				console.log(data);
+//				console.log(data);
 				inventoryRawData = data;
 			}).catch((data)=>{
 				console.log("error " + data)	
