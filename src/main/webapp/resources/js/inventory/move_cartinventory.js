@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		    checkQuantity(quantity);
 	});
 	
-	//카트에담기 버튼 클릭이벤트
+	//재고이동 버튼 클릭이벤트
 	document.getElementById('mi_moveToLocation').addEventListener('click', function(event) {
 		event.preventDefault();
 		// 현재 input 값들 가져오기
@@ -116,7 +116,7 @@ function searchProductByLotNum(lotNumber){
 				url = data.fileIdx ? '/file/thumbnail/' + data.fileIdx : '/resources/images/default_product.jpg';
 				$('#productPreview').attr('src',url).show();
 				selectLotNumber = lotNumber;
-				console.log("여기까지");
+//				console.log("여기까지");
             } else {
                 Swal.fire({
                     icon: 'warning',
@@ -201,7 +201,7 @@ function checkQuantity(quantity){
     }
 }
 
-//카트에담기 동작함수
+//재고이동 동작함수
 function cartToLocation(){
 	ajaxPost("/inventory/move/moveLocation",
 		{lotNumber : selectLotNumber
@@ -265,6 +265,7 @@ function init() {
 //		console.warn("QR 스캐너: 버튼 또는 모달 요소를 찾을 수 없습니다.");
 		return;
 	}
+	
 
 	// 버튼 클릭 → 모달 열고 카메라 시작
 	btnScanQR.addEventListener("click", function() {
@@ -277,6 +278,11 @@ function init() {
 				// 카트에 해당 로트넘버가 있을때
 				if(checkLotNumberInCart(scannedText)){
 //					selectLotNumber = $('#mi_lotNumber').val(scannedText);
+					const targetRow = document.querySelector(`tr[data-lotNumber="${scannedText}"]`);
+					
+					maxQuantity = targetRow.getAttribute('data-maxQuantity');
+					selectLotNumber = scannedText;
+					
 					$('#mi_lotNumber').val(scannedText);
 					searchProductByLotNum(scannedText);
 					checkBeforeMove();
@@ -290,6 +296,7 @@ function init() {
 				$('#mi_locationName').val(scannedText);
 				isLocationExist(scannedText);
 				checkBeforeMove();
+				$('#mi_locationName').blur();
 //				resetQuantity();
 //				checkInventory();
 			}

@@ -86,5 +86,6 @@
     </form>
 </section>
 <script src="${pageContext.request.contextPath}/resources/js/inventory/move_cartinventory.js"></script>
+<jsp:include page="/WEB-INF/views/commons/qrScannerVideo.jsp" />
 </body>
 </html>
