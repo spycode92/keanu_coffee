@@ -911,15 +911,15 @@ document.addEventListener('DOMContentLoaded', () => {
 	    });
 	}
 	
-	const statistics1 = document.getElementById("statistics1");
-	const statistics2 = document.getElementById("statistics2");
-	
-	statistics1.addEventListener('click', () =>{
-		window.location.href = "/admin/statistics1"		
-	});
-	statistics2.addEventListener('click', () =>{
-		window.location.href = "/admin/statistics2"		
-	});
+//	const statistics1 = document.getElementById("statistics1");
+//	const statistics2 = document.getElementById("statistics2");
+//	
+//	statistics1.addEventListener('click', () =>{
+//		window.location.href = "/admin/statistics1"		
+//	});
+//	statistics2.addEventListener('click', () =>{
+//		window.location.href = "/admin/statistics2"		
+//	});
 	
 	
 	

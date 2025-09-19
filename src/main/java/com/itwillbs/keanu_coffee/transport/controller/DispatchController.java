@@ -47,7 +47,6 @@ public class DispatchController {
 		if (dispatchList == null) {
 			return ResponseEntity.notFound().build();
 		}
-		
 		return ResponseEntity.ok(dispatchList);
 	}
 	

@@ -4,17 +4,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itwillbs.keanu_coffee.common.dto.CommonCodeDTO;
+import com.itwillbs.keanu_coffee.common.dto.DisposalDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
+import com.itwillbs.keanu_coffee.common.dto.SweetAlertIcon;
+import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
+import com.itwillbs.keanu_coffee.common.utils.MakeAlert;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
+import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
+import com.itwillbs.keanu_coffee.inventory.dto.InventoryUpdateDTO;
 import com.itwillbs.keanu_coffee.inventory.service.InventorySearchService;
+import com.itwillbs.keanu_coffee.inventory.service.InventoryService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/inventory")
 public class InventorySearchController {
 	private final InventorySearchService inventorySearchService;
+	private final InventoryService inventoryService;
 	
 	// KPI (총 SKU, 총 재고 수량)
 	@GetMapping("/metrics") // 재고 관리 화면의 KPI 지표(=metrics)
@@ -107,6 +119,45 @@ public class InventorySearchController {
     @ResponseBody
     public Map<String, Object> getInventoryDetail(@RequestParam("idx") int receiptProductIdx) {
         return inventorySearchService.selectInventoryDetail(receiptProductIdx);
+    }
+    
+    // 수량 조절 업데이트
+    @PostMapping("/updateInventory")
+    public String modifyInventoryQuantity(
+    		@ModelAttribute InventoryUpdateDTO request, 
+    		RedirectAttributes redirectAttributes) {
+		
+    	try {
+    		inventoryService.updateInventoryQuantity(request);
+    		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "성공", "재고수량변경");
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.ERROR, "실패", "재고수량업데이트실패");
+		}
+    	
+    	return "redirect:/inventory/stockCheck";
+    }
+
+    // 재고 폐기
+    @PostMapping("/disposalInventory")
+    public String disposalInventoryQuantity(
+    		@ModelAttribute InventoryUpdateDTO request,
+    		@ModelAttribute DisposalDTO disposal,
+    		Authentication authentication,
+    		RedirectAttributes redirectAttributes) {
+    	
+    	EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
+    	Integer empIdx = empDetail.getEmpIdx();
+    	
+    	try {
+    		inventoryService.disposalInventoryQuantity(request, disposal, empIdx);
+    		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "성공", "폐기 완료");
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.ERROR, "실패", "폐기 실패");
+    	}
+    	
+    	return "redirect:/inventory/stockCheck";
     }
     
 }

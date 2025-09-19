@@ -12,7 +12,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	// 클라이언트가 연결할 엔트포인트 등록
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/ws-noti") // "/ws-chat" URL 을 엔트포인트로 등록(클라이언트에서 new SockJS("/ws-chat") 형태로 엔드포인트 주소 지정)
+		registry.addEndpoint("/wss-noti") // "/ws-chat" URL 을 엔트포인트로 등록(클라이언트에서 new SockJS("/ws-chat") 형태로 엔드포인트 주소 지정)
 				.setAllowedOriginPatterns("*") // CORS 허용
 				.withSockJS(); // SockJS fallback 활성화
 	}

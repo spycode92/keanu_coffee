@@ -11,6 +11,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.AlarmDTO;
 import com.itwillbs.keanu_coffee.common.dto.PurchaseWithSupplierDTO;
 import com.itwillbs.keanu_coffee.common.mapper.PurchaseOrderMapper;
@@ -37,6 +39,7 @@ public class PurchaseOrderService {
 	}
 	
 	@Transactional
+	@WorkingLog(target = WorkingLogTarget.PURCHACE_ORDER)
 	public void addProductOrder(int orderIdx, String orderNumber, int supplierIdx, LocalDateTime orderDate, LocalDate expectedArrivalDate) {
 		
 		purchaseOrderMapper.insertProductOrder(orderIdx, orderNumber, supplierIdx, orderDate, expectedArrivalDate);	

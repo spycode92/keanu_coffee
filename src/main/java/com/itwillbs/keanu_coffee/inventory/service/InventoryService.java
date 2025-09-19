@@ -3,8 +3,13 @@ package com.itwillbs.keanu_coffee.inventory.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
+import com.itwillbs.keanu_coffee.common.dto.DisposalDTO;
 import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
+import com.itwillbs.keanu_coffee.inventory.dto.InventoryUpdateDTO;
 import com.itwillbs.keanu_coffee.inventory.dto.WarehouseInfoDTO;
 import com.itwillbs.keanu_coffee.inventory.mapper.InventoryMapper;
 
@@ -32,6 +37,35 @@ public class InventoryService {
 		
 		return inventoryMapper.selectInventoryItemsInEmployeesVirtualLocation(empIdx);
 		
+	}
+
+
+	// 재고 수량 업데이트
+	public void updateInventoryQuantity(InventoryUpdateDTO request) {
+		inventoryMapper.updateInventoryQuantity(request);
+	}
+
+
+	@Transactional
+	@WorkingLog(target = WorkingLogTarget.DISPOSAL)
+	public void disposalInventoryQuantity(InventoryUpdateDTO request, DisposalDTO disposal, Integer empIdx) {
+		//폐기수량
+    	int disposalAmount = disposal.getDisposalAmount();
+    	int currentQuantity = request.getQuantity();
+    	int remainQuantity = currentQuantity - disposalAmount;
+    	
+    	//폐기수량을뺀 후 폐기
+    	if(remainQuantity == 0) { //전량폐기시 재고테이블 정보 삭제
+    		inventoryMapper.deleteInventory(request);
+    	} else {
+    		request.setQuantity(remainQuantity);
+    		inventoryMapper.updateInventoryQuantity(request);
+    	}
+    	
+    	disposal.setEmpIdx(empIdx);
+		disposal.setSection("INVENTORY");
+		
+    	inventoryMapper.insertDisposal(disposal);
 	}
 
 

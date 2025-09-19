@@ -1,7 +1,18 @@
+.content {
+	height: 630px;
+}
+
 /* 검색/필터 바 */
+.filterWrapper {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+
 .filters {
 	width: 97%;
-    background: var(--muted);     
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 12px;
@@ -184,4 +195,8 @@
 .badge.loaded { /* 적재완료 */
 	background: #cffafe; 
 	color: #0e7490;     
+}
+
+.timeline {
+	font-size: 0.9rem;
 }

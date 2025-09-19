@@ -14,7 +14,7 @@
 
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet" />
-	<link href="${pageContext.request.contextPath}/resources/css/inbound/inboundDetailAndInspection.css" rel="stylesheet" />
+	<link href="${pageContext.request.contextPath}/resources/css/inbound/inboundInspection.css" rel="stylesheet" />
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 </head>
  

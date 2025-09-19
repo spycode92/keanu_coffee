@@ -3,166 +3,256 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.inbound.mapper.InboundMapper">
-	
-	<!-- 입고 리스트 출력 -->
-	<!-- ResultMap: SQL 결과를 DTO에 매핑 -->
+
+    <!-- ResultMap -->
     <resultMap id="InboundManagementResultMap" type="com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO">
-        <result column="발주번호" property="orderNumber" />
-        <result column="입고Idx" property="ibwaitIdx" />
-        <result column="입고번호" property="ibwaitNumber" />
-        <result column="입고일자" property="arrivalDate" />
-        <result column="공급업체" property="supplierName" />
-        <result column="상태" property="inboundStatus" />
-        <result column="품목수량" property="numberOfItems" />
-        <result column="입고예정수량" property="quantity" />
-        <result column="담당자" property="manager" />
-        <result column="비고" property="note" />
+        <result column="orderNumber"    property="orderNumber" />
+        <result column="ibwaitIdx"      property="ibwaitIdx" />
+        <result column="ibwaitNumber"   property="ibwaitNumber" />
+        <result column="arrivalDate"    property="arrivalDate" />
+        <result column="supplierName"   property="supplierName" />
+        <result column="inboundStatus"  property="inboundStatus" />
+        <result column="numberOfItems"  property="numberOfItems" />
+        <result column="quantity"       property="quantity" />
+        <result column="manager"        property="manager" />
+        <result column="note"           property="note" />
     </resultMap>
 
-    <!-- SELECT: 입고관리 리스트 조회 -->
-    <select id="selectInboundWaitingInfo" resultMap="InboundManagementResultMap">
-        SELECT 
-            po.order_number                          AS 발주번호,
-            iw.ibwait_idx                            AS 입고Idx,
-            iw.ibwait_number                         AS 입고번호,
-            iw.arrival_date                          AS 입고일자,
-            s.supplier_name                          AS 공급업체,
-            iw.inbound_status                        AS 상태,
-            COUNT(DISTINCT poi.product_idx)          AS 품목수량,
-            SUM(poi.quantity)                        AS 입고예정수량,
-            iw.manager                               AS 담당자,
-            iw.note                                  AS 비고
-        FROM PURCHASE_ORDER po
-        JOIN INBOUND_WAITING iw ON po.order_idx = iw.order_idx
-        JOIN PURCHASE_ORDER_ITEM poi ON po.order_idx = poi.order_idx
-        JOIN SUPPLIER s ON po.supplier_idx = s.supplier_idx
-        GROUP BY po.order_number, iw.ibwait_idx, iw.ibwait_number, iw.arrival_date, iw.manager, iw.note, iw.inbound_status, s.supplier_name
-        ORDER BY po.order_date DESC
-    </select>
-	
-	
-	<!-- inbound upgrade -->
-	<select id="selectInboundDetailData" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO">
-		SELECT 
-		    iw.ibwait_idx                            AS ibwaitIdx,
-		    iw.ibwait_number                         AS ibwaitNumber,
-		    iw.arrival_date                          AS arrivalDate,
-		    po.order_number                          AS orderNumber,
-		    po.inbound_classification                AS inboundClassification,
-		    s.supplier_name                          AS supplierName,
-		    iw.manager                               AS managerName,
-		    iw.inbound_location                      AS inboundLocation,
-		    iw.number_of_items                       AS numberOfItems,
-		    iw.quantity                              AS quantity,
-		    iw.inbound_status                        AS inboundStatus,
-		    SUM(poi.quantity * poi.unit_price * 1.1) AS totalPrice,
-		    iw.note                                  AS note
+    <!-- management 총 개수 -->
+	<select id="selectInboundCount" parameterType="map" resultType="int">
+		SELECT COUNT(*)
 		FROM INBOUND_WAITING iw
 		JOIN PURCHASE_ORDER po ON iw.order_idx = po.order_idx
 		JOIN SUPPLIER s ON po.supplier_idx = s.supplier_idx
-		JOIN PURCHASE_ORDER_ITEM poi ON po.order_idx = poi.order_idx
-		WHERE iw.ibwait_idx = #{ibwaitIdx }
-		GROUP BY iw.ibwait_idx, iw.ibwait_number, iw.arrival_date, po.order_number, po.inbound_classification,
-		         s.supplier_name, iw.manager, iw.inbound_location, iw.number_of_items,
-		         iw.quantity, iw.inbound_status, iw.note;
+		<where>
+			<if test="simpleKeyword != null and simpleKeyword != ''">
+				( po.order_number LIKE CONCAT('%', #{simpleKeyword}, '%')
+				  OR iw.ibwait_number LIKE CONCAT('%', #{simpleKeyword}, '%') )
+			</if>
+			<if test="status != null and status != ''">
+				AND iw.inbound_status = #{status}
+			</if>
+			<if test="orderInboundKeyword != null and orderInboundKeyword != ''">
+				AND ( po.order_number LIKE CONCAT('%', #{orderInboundKeyword}, '%')
+				      OR iw.ibwait_number LIKE CONCAT('%', #{orderInboundKeyword}, '%') )
+			</if>
+			<if test="vendorKeyword != null and vendorKeyword != ''">
+				AND s.supplier_name LIKE CONCAT('%', #{vendorKeyword}, '%')
+			</if>
+			<if test="inStartDate != null">
+				AND DATE(iw.arrival_date) <![CDATA[ >= ]]> #{inStartDate}
+			</if>
+			<if test="inEndDate != null">
+				AND DATE(iw.arrival_date) <![CDATA[ <= ]]> #{inEndDate}
+			</if>
+		</where>
 	</select>
 	
-	<!-- Detail 상품 정보 조회 -->
-	<select id="selectInboundProductDetail" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundProductDetailDTO">
-		SELECT 
-		    p.product_idx,
-		    poi.lot_number,
-		    p.product_name,
-		    p.product_volume,
-		    poi.quantity,
-		    poi.unit_price,
-		    (poi.quantity * poi.unit_price) AS amount,
-		    (poi.quantity * poi.unit_price * 0.1) AS tax,
-		    (poi.quantity * poi.unit_price * 1.1) AS totalPrice
-		FROM PURCHASE_ORDER_ITEM poi
-		JOIN PRODUCT p ON poi.product_idx = p.product_idx
-		JOIN PURCHASE_ORDER po ON poi.order_idx = po.order_idx
-		WHERE po.order_number = #{orderNumber}
-		ORDER BY p.product_name ASC;
-	</select>
 	
-	<!-- detail 로케이션 업데이트 -->
-	<update id="updateLocation">
-		UPDATE INBOUND_WAITING
-		SET
-			inbound_location = #{inboundLocation},
-			updated_at = NOW()
-		WHERE ibwait_idx = #{ibwaitIdx}
-	</update>
-	
-	<!-- 입고 매니저 조회 -->
-	<select id="selectEmployeeList" resultType="com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO">
+	<!-- management 리스트 조회 -->
+	<select id="selectInboundList" parameterType="map" resultMap="InboundManagementResultMap">
 		SELECT
-			emp_idx		AS empIdx,
-			emp_name	AS empName
-		FROM EMPLOYEE_INFO
-		WHERE department_idx = 2
-			AND role_idx = 2
-			AND emp_status = '재직'
+			iw.ibwait_idx       AS ibwaitIdx
+			,iw.ibwait_number   AS ibwaitNumber
+			,iw.arrival_date    AS arrivalDate
+			,iw.quantity        AS quantity
+			,iw.number_of_items AS numberOfItems
+			,iw.inbound_status  AS inboundStatus
+			,iw.manager         AS manager
+			,iw.note            AS note
+			,po.order_number    AS orderNumber
+			,s.supplier_name    AS supplierName
+		FROM INBOUND_WAITING iw
+		JOIN PURCHASE_ORDER po ON iw.order_idx = po.order_idx
+		JOIN SUPPLIER s ON po.supplier_idx = s.supplier_idx
+		<where>
+			<if test="simpleKeyword != null and simpleKeyword != ''">
+				( po.order_number LIKE CONCAT('%', #{simpleKeyword}, '%')
+				  OR iw.ibwait_number LIKE CONCAT('%', #{simpleKeyword}, '%') )
+			</if>
+			<if test="status != null and status != ''">
+				AND iw.inbound_status = #{status}
+			</if>
+			<if test="orderInboundKeyword != null and orderInboundKeyword != ''">
+				AND ( po.order_number LIKE CONCAT('%', #{orderInboundKeyword}, '%')
+				      OR iw.ibwait_number LIKE CONCAT('%', #{orderInboundKeyword}, '%') )
+			</if>
+			<if test="vendorKeyword != null and vendorKeyword != ''">
+				AND s.supplier_name LIKE CONCAT('%', #{vendorKeyword}, '%')
+			</if>
+			<if test="inStartDate != null">
+				AND DATE(iw.arrival_date) <![CDATA[ >= ]]> #{inStartDate}
+			</if>
+			<if test="inEndDate != null">
+				AND DATE(iw.arrival_date) <![CDATA[ <= ]]> #{inEndDate}
+			</if>
+		</where>
+		ORDER BY iw.ibwait_idx DESC
+		<if test="startRow != null and listLimit != null">
+		    LIMIT #{startRow}, #{listLimit}
+		</if>
 	</select>
 	
-	<!-- 입고 매니저 업데이트 -->
-	<update id="updateManager">
-		UPDATE INBOUND_WAITING
-	    SET
-	      	manager = #{managerName}
-	      , updated_at = NOW()
-	    WHERE ibwait_idx = #{ibwaitIdx}
-	</update>
-	
-	<!-- 데이터 여부 확인 -->
-	<select id="selectDataExists" resultType="boolean">
-		SELECT EXISTS(
-			SELECT 1
-			FROM RECEIPT_PRODUCT
-			WHERE ibwait_idx=#{ibwaitIdx}
-			AND product_idx=#{productIdx}
-		)
+	<!-- management 리스트 조회 -->
+	<select id="selectInboundListForExcel" parameterType="map" resultMap="InboundManagementResultMap">
+		SELECT
+			iw.ibwait_idx       AS ibwaitIdx
+			,iw.ibwait_number   AS ibwaitNumber
+			,iw.arrival_date    AS arrivalDate
+			,iw.quantity        AS quantity
+			,iw.number_of_items AS numberOfItems
+			,iw.inbound_status  AS inboundStatus
+			,iw.manager         AS manager
+			,iw.note            AS note
+			,po.order_number    AS orderNumber
+			,s.supplier_name    AS supplierName
+		FROM INBOUND_WAITING iw
+		JOIN PURCHASE_ORDER po ON iw.order_idx = po.order_idx
+		JOIN SUPPLIER s ON po.supplier_idx = s.supplier_idx
+		<where>
+			<if test="simpleKeyword != null and simpleKeyword != ''">
+				( po.order_number LIKE CONCAT('%', #{simpleKeyword}, '%')
+				  OR iw.ibwait_number LIKE CONCAT('%', #{simpleKeyword}, '%') )
+			</if>
+			<if test="status != null and status != ''">
+				AND iw.inbound_status = #{status}
+			</if>
+			<if test="orderInboundKeyword != null and orderInboundKeyword != ''">
+				AND ( po.order_number LIKE CONCAT('%', #{orderInboundKeyword}, '%')
+				      OR iw.ibwait_number LIKE CONCAT('%', #{orderInboundKeyword}, '%') )
+			</if>
+			<if test="vendorKeyword != null and vendorKeyword != ''">
+				AND s.supplier_name LIKE CONCAT('%', #{vendorKeyword}, '%')
+			</if>
+			<if test="inStartDate != null">
+				AND DATE(iw.arrival_date) <![CDATA[ >= ]]> #{inStartDate}
+			</if>
+			<if test="inEndDate != null">
+				AND DATE(iw.arrival_date) <![CDATA[ <= ]]> #{inEndDate}
+			</if>
+		</where>
+		ORDER BY iw.ibwait_idx DESC
 	</select>
-	
-	<!-- 1. INSERT: receipt_product -->
-	<insert id="insertReceiptProduct" parameterType="com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO">
-	    INSERT INTO RECEIPT_PRODUCT
-	    (ibwait_idx, supplier_idx, product_idx, lot_number, manufacture_date,
-	     expiration_date, quantity, received_at, emp_idx, created_at, updated_at)
-	    VALUES
-	    (#{ibwaitIdx}, #{supplierIdx}, #{productIdx}, #{lotNumber}, #{manufactureDate},
-	     #{expirationDate}, #{quantity}, NOW(), #{empIdx}, NOW(), NOW())
-	</insert>
-	
-	
-	<!-- 2. UPDATE: receipt_product (LOT도 수정 포함) -->
-	<update id="updateReceiptProduct" parameterType="com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO">
-	    UPDATE RECEIPT_PRODUCT
-	    SET lot_number   = #{lotNumber},
-	        quantity     = #{quantity},
-	        emp_idx      = #{empIdx},
-	        updated_at   = NOW()
-	    WHERE ibwait_idx = #{ibwaitIdx}
-	      AND product_idx = #{productIdx}
-	</update>
-	
-	
-	<!-- 3. UPDATE: purchase_order_item (가격, 수량, LOT 수정) -->
-	<update id="updatePurchaseOrderItemAfterInspection" parameterType="com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO">
-	    UPDATE PURCHASE_ORDER_ITEM
-	    SET lot_number  = #{lotNumber},
-	        quantity    = #{quantity},
-	        unit_price  = #{unitPrice},
-	        total_price = #{quantity} * #{unitPrice}
-	    WHERE order_idx = (
-	        SELECT order_idx
-	        FROM INBOUND_WAITING
-	        WHERE ibwait_idx = #{ibwaitIdx}
-	    )
-	    AND product_idx = #{productIdx}
+
+
+    <!-- 상세 데이터 -->
+    <select id="selectInboundDetailData" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO">
+        SELECT 
+            iw.ibwait_idx            AS ibwaitIdx,
+            iw.ibwait_number         AS ibwaitNumber,
+            iw.arrival_date          AS arrivalDate,
+            po.order_number          AS orderNumber,
+            po.inbound_classification AS inboundClassification,
+            s.supplier_name          AS supplierName,
+            iw.manager               AS managerName,
+            iw.inbound_location      AS inboundLocation,
+            iw.number_of_items       AS numberOfItems,
+            iw.quantity              AS quantity,
+            iw.inbound_status        AS inboundStatus,
+            SUM(poi.quantity * poi.unit_price * 1.1) AS totalPrice,
+            iw.note                  AS note
+        FROM INBOUND_WAITING iw
+        JOIN PURCHASE_ORDER po ON iw.order_idx = po.order_idx
+        JOIN SUPPLIER s ON po.supplier_idx = s.supplier_idx
+        JOIN PURCHASE_ORDER_ITEM poi ON po.order_idx = poi.order_idx
+        WHERE iw.ibwait_idx = #{ibwaitIdx}
+        GROUP BY iw.ibwait_idx, iw.ibwait_number, iw.arrival_date,
+                 po.order_number, po.inbound_classification,
+                 s.supplier_name, iw.manager, iw.inbound_location,
+                 iw.number_of_items, iw.quantity, iw.inbound_status, iw.note
+    </select>
+
+    <!-- 상세 상품 데이터 -->
+    <select id="selectInboundProductDetail" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundProductDetailDTO">
+        SELECT 
+             p.product_idx,
+             poi.lot_number,
+             p.product_name,
+             p.product_volume,
+             poi.quantity,
+             poi.unit_price,
+             (poi.quantity * poi.unit_price) AS amount,
+             (poi.quantity * poi.unit_price * 0.1) AS tax,
+             (poi.quantity * poi.unit_price * 1.1) AS totalPrice
+        FROM PURCHASE_ORDER_ITEM poi
+        JOIN PRODUCT p ON poi.product_idx = p.product_idx
+        JOIN PURCHASE_ORDER po ON poi.order_idx = po.order_idx
+        WHERE po.order_number = #{orderNumber}
+        ORDER BY p.product_name ASC
+    </select>
+
+    <!-- 로케이션 업데이트 -->
+    <update id="updateLocation">
+        UPDATE INBOUND_WAITING
+        SET inbound_location = #{inboundLocation},
+            updated_at = NOW()
+        WHERE ibwait_idx = #{ibwaitIdx}
+    </update>
+
+    <!-- 매니저 조회 -->
+    <select id="selectEmployeeList" resultType="com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO">
+        SELECT emp_idx AS empIdx,
+               emp_name AS empName
+        FROM EMPLOYEE_INFO
+        WHERE department_idx = 2
+          AND role_idx = 2
+          AND emp_status = '재직'
+    </select>
+
+    <!-- 매니저 업데이트 -->
+    <update id="updateManagers">
+	    UPDATE INBOUND_WAITING
+	    SET manager = #{managerName},
+	        updated_at = NOW()
+	    WHERE ibwait_idx IN
+	    <foreach collection="ibwaitIdxList" item="id" open="(" separator="," close=")">
+	        #{id}
+	    </foreach>
 	</update>
 
 
-	
+    <!-- 검수 데이터 존재 여부 -->
+    <select id="selectDataExists" resultType="int">
+        SELECT EXISTS(
+            SELECT 1
+            FROM RECEIPT_PRODUCT
+            WHERE ibwait_idx=#{ibwaitIdx}
+              AND product_idx=#{productIdx}
+              AND lot_number=#{lotNumber}
+        )
+    </select>
+
+    <!-- INSERT -->
+    <insert id="insertReceiptProduct" parameterType="com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO">
+        INSERT INTO RECEIPT_PRODUCT
+        (ibwait_idx, supplier_idx, product_idx, lot_number, manufacture_date,
+         expiration_date, quantity, received_at, emp_idx, created_at, updated_at)
+        VALUES
+        (#{ibwaitIdx}, #{supplierIdx}, #{productIdx}, #{lotNumber}, #{manufactureDate},
+         #{expirationDate}, #{quantity}, NOW(), #{empIdx}, NOW(), NOW())
+    </insert>
+
+    <!-- UPDATE receipt_product -->
+    <update id="updateReceiptProduct" parameterType="com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO">
+        UPDATE RECEIPT_PRODUCT
+        SET lot_number = #{lotNumber},
+            quantity   = #{quantity},
+            emp_idx    = #{empIdx},
+            updated_at = NOW()
+        WHERE ibwait_idx = #{ibwaitIdx}
+          AND product_idx = #{productIdx}
+    </update>
+
+    <!-- UPDATE purchase_order_item -->
+    <update id="updatePurchaseOrderItemAfterInspection" parameterType="com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO">
+        UPDATE PURCHASE_ORDER_ITEM
+        SET lot_number  = #{lotNumber},
+            quantity    = #{quantity},
+            unit_price  = #{unitPrice},
+            total_price = #{quantity} * #{unitPrice}
+        WHERE order_idx = (
+            SELECT order_idx FROM INBOUND_WAITING WHERE ibwait_idx = #{ibwaitIdx}
+        )
+          AND product_idx = #{productIdx}
+    </update>
 </mapper>

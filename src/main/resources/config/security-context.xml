@@ -29,9 +29,15 @@
 		isFullyAuthenticated()					인증을 하고, 자동 로그인 기능을 사용하지 않은 유저만 접근 가능
 		 -->
 	<http auto-config="true">
+		<!-- X-frame 옵션 같은 도메인 내 iframe 접근이 허용 -->
+	    <headers>
+	        <frame-options policy="SAMEORIGIN" />
+	    </headers>
+	
 		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/main" access="isAuthenticated()" />
-		<intercept-url pattern="/admin/**" access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')" />
+<!-- 		<intercept-url pattern="/admin/**" access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')" /> -->
+		<intercept-url pattern="/admin/**" access="isAuthenticated()" />
 		<intercept-url pattern="/inbound/**" access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')" />
 		<intercept-url pattern="/outbound/**" access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')" />
 		<intercept-url pattern="/inventory/**" access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')" />
@@ -42,7 +48,7 @@
 		
 		
 		<intercept-url pattern="/alarm/**" access="isAuthenticated()" />
-		<intercept-url pattern="/ws-noti/**" access="isAuthenticated()" />	
+		<intercept-url pattern="/wss-noti/**" access="isAuthenticated()" />	
 		<intercept-url pattern="/chat/**" access="isAuthenticated()" />	
 		<!-- 접근제한 처리 -->
 		<access-denied-handler ref="customAccessDeniedHandler"/>

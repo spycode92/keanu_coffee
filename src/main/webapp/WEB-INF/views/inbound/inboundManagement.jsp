@@ -11,13 +11,10 @@
 
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 	<link href="${pageContext.request.contextPath}/resources/css/inbound/inboundManagement.css" rel="stylesheet">
+	<link href="${pageContext.request.contextPath}/resources/css/inbound/modal/pageJumpModal.css" rel="stylesheet">
+	<link href="${pageContext.request.contextPath}/resources/css/inbound/modal/detailSmallModal.css" rel="stylesheet" />
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 
-	<style>
-		
-		
-		
-	</style>
 </head>
 <body>
 	<!-- 상단/사이드 레이아웃 -->
@@ -25,7 +22,11 @@
 
 	<!-- 반드시 content 안에서 시작 -->
 	<section class="content">
-
+                        <div id="loading_spinner">
+						    <div class="cv_spinner">
+						        <span class="spinner"></span>
+						    </div>
+						</div>
 		<!-- 페이지 타이틀 -->
 		<div class="d-flex justify-content-between align-items-center mb-2">
 		     <h1 class="card-title" style="margin:0;">입고관리</h1>
@@ -33,84 +34,58 @@
 
 		<!-- 간단 검색바 -->
 		<div class="card mb-3 inbound-simple-search d-flex align-items-center p-3 gap-2">
-		    <input type="text" class="form-control" id="simpleItemKeyword" placeholder="품목 코드/명 검색" />
+		    <input type="text" class="form-control" id="simpleItemKeyword" placeholder="발주번호/입고번호 검색" />
 		    <button class="btn btn-primary btn-sm" id="simpleSearchBtn">검색</button>
 		    <button class="btn btn-secondary btn-sm" id="toggleDetailSearchBtn">상세검색</button>
 		</div>
 		
-		<!-- 검색/필터 -->
+		<!-- 검색/필터 ========================================================================================================-->
 		<div class="card mb-4 inbound-filters" id="detailSearchCard" style="display:none;">
 			<div class="card-header d-flex justify-content-between align-items-center">
 				<div class="card-title">검색 / 필터</div>
 			</div>
-
-			<!-- 날짜 + 기준 -->
+			
+			<!-- 입고일자 기간 -->
 			<div class="row">
-				<div class="col-md-3">
-					<label class="form-label">검색 기준</label>
-					<select class="form-control search-select" id="dateBasis">
-						<option value="start" selected>시작일 기준</option>
-						<option value="end">종료일(완료일) 기준</option>
-						<option value="range">기간 기준</option>
-					</select>
-				</div>
-
-				<div class="col-md-3 date-field date-start">
-					<label class="form-label">입고 시작일</label>
-					<input type="date" class="form-control search-input" id="inStartDate" />
-				</div>
-
-				<div class="col-md-3 date-field date-end" style="display:none;">
-					<label class="form-label">입고 종료일(완료일)</label>
-					<input type="date" class="form-control search-input" id="inEndDate" />
-				</div>
-
-				<div class="col-md-3 date-field date-range" style="display:none;">
-					<label class="form-label">기간(시작)</label>
-					<input type="date" class="form-control search-input" id="inRangeStart" />
-				</div>
-				<div class="col-md-3 date-field date-range" style="display:none;">
-					<label class="form-label">기간(종료)</label>
-					<input type="date" class="form-control search-input" id="inRangeEnd" />
-				</div>
+			    <div class="col-md-3">
+			        <label class="form-label">입고 시작일</label>
+			        <input type="date" class="form-control search-input" id="inStartDate" />
+			    </div>
+			    <div class="col-md-3">
+			        <label class="form-label">입고 종료일</label>
+			        <input type="date" class="form-control search-input" id="inEndDate" />
+			    </div>
 			</div>
-
-			<!-- 1줄: 창고 · 상태 · 품목 -->
+			
+			<!-- 1줄: 상태 · 발주번호/입고번호 · 공급업체 -->
 			<div class="row">
-				<div class="col-md-3">
-					<label class="form-label">창고</label>
-					<select class="form-control search-select" id="warehouse">
-						<option value="">전체</option>
-						<option>중앙창고</option>
-						<option>동부창고</option>
-						<option>서부창고</option>
-					</select>
-				</div>
 				<div class="col-md-3">
 					<label class="form-label">상태</label>
 					<select class="form-control search-select" id="status">
 						<option value="">전체</option>
-						<option value="PENDING">대기</option>
-						<option value="CONFIRMED">확정</option>
-						<option value="COMPLETED">완료</option>
+						<option value="운송중">운송중</option>
+						<option value="대기">대기</option>
+						<option value="검수중">검수중</option>
+						<option value="검수완료">검수완료</option>
+						<option value="재고등록완료">재고등록완료</option>
+						<option value="취소">취소</option>
+						<option value="반려">반려</option>
 					</select>
 				</div>
-				<div class="col-md-3">
-					<label class="form-label">품목 코드/명</label>
-					<input type="text" class="form-control search-input" placeholder="예) SKU-0001" id="itemKeyword" />
+		
+				<div class="col-md-3 position-relative">
+					<label class="form-label">발주번호/입고번호</label>
+					<input type="text" class="form-control search-input" id="orderInboundKeyword" placeholder="예: PO20250901 또는 IB20250901-001" />
+					<button type="button" class="btn btn-clear-input" onclick="clearInput('orderInboundKeyword')">×</button>
 				</div>
-				<div class="col-md-3"></div>
-			</div>
-
-			<!-- 2줄: 공급업체만 -->
-			<div class="row">
-				<div class="col-md-3">
+		
+				<div class="col-md-3 position-relative">
 					<label class="form-label">공급업체</label>
-					<input type="text" class="form-control search-input" placeholder="업체명/코드 검색" id="vendorKeyword" />
+					<input type="text" class="form-control search-input" id="vendorKeyword" placeholder="업체명/코드 검색" />
+					<button type="button" class="btn btn-clear-input" onclick="clearInput('vendorKeyword')">×</button>
 				</div>
-				<div class="col-md-9"></div>
 			</div>
-
+		
 			<!-- 버튼 -->
 			<div class="row">
 				<div class="col-md-12 d-flex align-items-center gap-2 mt-3">
@@ -119,6 +94,7 @@
 				</div>
 			</div>
 		</div>
+		<!-- 검색/필터 끝 ========================================================================================================-->
 
 		
 		<!-- 액션 바 (rail로 좌우 여백 통일) -->
@@ -126,20 +102,28 @@
 		    <div class="card-header d-flex justify-content-between align-items-center">
 		        <div class="card-title">
 		            입고 목록
-		            <span class="text-muted" style="font-size: 0.9em;">검색결과: 총 <strong id="resultCount"></strong>건</span>
+		            <span class="text-muted" style="font-size: 0.9em;">
+					    검색결과: 총 <strong>${totalCount}</strong>건
+					</span>
 		        </div>
 		        <div class="d-flex gap-2">
-					<a href="#" class="btn btn-primary btn-sm">새 입고 등록</a>
-		            <a href="#" class="btn btn-secondary btn-sm">엑셀 다운로드</a>
-					<a href="#" id="settings-button" class="btn btn-secondary btn-sm">설정</a>
-		            <a href="#" class="btn btn-secondary btn-sm">선택삭제</a>
+					<a href="${pageContext.request.contextPath}/inbound/qrTest" class="btn btn-secondary btn-sm">QR 테스트</a>
+		        	<div class="page-actions">
+					    <button id="btnScanQR" class="btn btn-primary btn-sm">QR 스캔</button>
+						<button id="btnAssignManager" class="btn btn-primary btn-sm">담당자지정</button>
+					</div>
+		            <a href="${pageContext.request.contextPath}/inbound/management/excel?
+				    	status=${param.status}&orderInboundKeyword=${param.orderInboundKeyword}
+				    	&vendorKeyword=${param.vendorKeyword}&inStartDate=${param.inStartDate}
+				    	&inEndDate=${param.inEndDate}&simpleKeyword=${param.simpleKeyword}"
+				   		class="btn btn-secondary btn-sm">엑셀 다운로드</a>
 		        </div>
 		    </div>
 			<div class="table-responsive">
 				<table class="table">
 					<thead>
 						<tr>
-							<th style="width:36px;"><input type="checkbox" class="select-all" /></th>
+							<th><input type="checkbox" class="select-all" /></th>
 							<th>발주번호</th>
 							<th>입고번호</th>
 							<th>입고일자</th>
@@ -161,9 +145,7 @@
 					        <c:if test="${not empty order.orderNumber}">
 					            <tr>
 					                <!-- 체크박스 -->
-					                <td>
-					                    <input type="checkbox" name="selectedOrder" value="${order.ibwaitIdx}" />
-					                </td>
+					                <td><input type="checkbox" name="selectedOrder" value="${order.ibwaitIdx}" /></td>
 					
 					                <!-- 발주번호 (링크) -->
 					                <td>
@@ -216,19 +198,63 @@
 	<!-- ==============================================================================================================리스트 존========= -->				
 				</table>
 			</div>
-	
+			
+			<!-- 페이징 -->
 			<div class="d-flex justify-content-between align-items-center p-3">
-				<div class="text-muted">페이지 1 / 13</div>
+				<div class="text-muted">페이지 ${pageInfo.pageNum} / ${pageInfo.maxPage}</div>
 				<div class="d-flex gap-2">
-					<a href="#" class="btn btn-secondary btn-sm">« 처음</a>
-					<a href="#" class="btn btn-secondary btn-sm">‹ 이전</a>
-					<a href="#" class="btn btn-primary btn-sm">1</a>
-					<a href="#" class="btn btn-secondary btn-sm">2</a>
-					<a href="#" class="btn btn-secondary btn-sm">3</a>
-					<a href="#" class="btn btn-secondary btn-sm">다음 ›</a>
-					<a href="#" class="btn btn-secondary btn-sm">끝 »</a>
+					<c:if test="${pageInfo.pageNum > 1}">
+						<a href="?pageNum=1" class="btn btn-secondary btn-sm">« 처음</a>
+						<a href="?pageNum=${pageInfo.pageNum - 1}" class="btn btn-secondary btn-sm">‹ 이전</a>
+					</c:if>
+			
+					<%-- 버튼 최대 갯수 --%>
+					<c:set var="maxButtons" value="5" />
+			
+					<%-- 시작/끝 페이지 계산 --%>
+					<c:choose>
+						<%-- 현재 페이지가 마지막 5개 안에 들어가면 마지막 구간 고정 --%>
+						<c:when test="${pageInfo.pageNum > pageInfo.maxPage - (maxButtons - 1)}">
+						    <c:set var="start" value="${pageInfo.maxPage - (maxButtons - 1)}" />
+						    <c:set var="end" value="${pageInfo.maxPage}" />
+						</c:when>
+						<%-- 그 외에는 현재 페이지를 맨 앞에 --%>
+						<c:otherwise>
+						    <c:set var="start" value="${pageInfo.pageNum}" />
+						    <c:set var="end" value="${pageInfo.pageNum + (maxButtons - 1)}" />
+						</c:otherwise>
+					</c:choose>
+					
+					<c:if test="${start < 1}">
+					    <c:set var="start" value="1" />
+					</c:if>
+			
+					<%-- 페이지 버튼 출력 --%>
+					<c:forEach var="i" begin="${start}" end="${end}">
+						<c:if test="${i >= 1 && i <= pageInfo.maxPage}">
+							<c:choose>
+								<c:when test="${i == pageInfo.pageNum}">
+									<a href="?pageNum=${i}" class="btn btn-primary btn-sm">${i}</a>
+								</c:when>
+								<c:otherwise>
+									<a href="?pageNum=${i}" class="btn btn-secondary btn-sm">${i}</a>
+								</c:otherwise>
+							</c:choose>
+						</c:if>
+					</c:forEach>
+			
+					<%-- 다음 구간이 더 있으면 점프 모달 --%>
+					<c:if test="${end < pageInfo.maxPage}">
+						<button class="btn btn-light btn-sm" onclick="ModalManager.openModalById('pageJumpModal')">...</button>
+					</c:if>
+			
+					<c:if test="${pageInfo.pageNum < pageInfo.maxPage}">
+						<a href="?pageNum=${pageInfo.pageNum + 1}" class="btn btn-secondary btn-sm">다음 ›</a>
+						<a href="?pageNum=${pageInfo.maxPage}" class="btn btn-secondary btn-sm">끝 »</a>
+					</c:if>
 				</div>
 			</div>
+			
 		</div>
 
 		<!-- 공통 설정 모달 -->
@@ -252,33 +278,21 @@
 				</div>
 			</div>
 		</div>
-
 	</section>
-
+	
+	<jsp:include page="/WEB-INF/views/inbound/modal/pageJumpModal.jsp" />
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/pageJumpModal.js"></script>
+	<jsp:include page="/WEB-INF/views/inbound/modal/modifyManager.jsp" />
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/modify.js"></script>
+	<jsp:include page="/WEB-INF/views/inbound/modal/qrScannerModal.jsp" />
+	<script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/qrScanner.js"></script>
+	
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script> const contextPath = "${pageContext.request.contextPath}";</script>
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/inboundManagement.js"></script>
+	
 	<script>
-		$("#adminPage").click(function(){
-			location.href="/admin/main";
-		});
-
-		/* 검색 기준 토글 */
-		document.addEventListener('change', function(e) {
-			if (e.target && e.target.id === 'dateBasis') {
-				const basis = e.target.value;
-				document.querySelectorAll('.date-field').forEach(el => el.style.display = 'none');
-				if (basis === 'start') {
-					document.querySelectorAll('.date-start').forEach(el => el.style.display = '');
-				} else if (basis === 'end') {
-					document.querySelectorAll('.date-end').forEach(el => el.style.display = '');
-				} else if (basis === 'range') {
-					document.querySelectorAll('.date-range').forEach(el => el.style.display = '');
-				}
-			}
-		});
-		window.addEventListener('DOMContentLoaded', function() {
-			const sel = document.getElementById('dateBasis');
-			if (sel) sel.dispatchEvent(new Event('change'));
-		});
-		
 		document.getElementById('toggleDetailSearchBtn').addEventListener('click', function() {
 		    const detailCard = document.getElementById('detailSearchCard');
 		    if (detailCard.style.display === 'none') {
@@ -289,25 +303,7 @@
 		        this.textContent = '상세검색';
 		    }
 		});
-
-		// 간단 검색 버튼 클릭 이벤트
-		document.getElementById('simpleSearchBtn').addEventListener('click', function() {
-		    const keyword = document.getElementById('simpleItemKeyword').value.trim();
-		    if (keyword) {
-		        console.log("간단검색 품목 키워드:", keyword);
-		        // TODO: 여기에 AJAX 검색 로직 추가
-		    } else {
-		        alert("품목 코드/명을 입력하세요.");
-		    }
-		});
 	</script>
-	<script>
-		(function(){
-			var cntEl = document.getElementById('resultCount');
-			if(cntEl){
-				cntEl.textContent = '${displayCount}';
-			}
-		})();
-	</script>
+	
 </body>
 </html>

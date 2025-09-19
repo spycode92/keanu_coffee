@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -184,11 +185,13 @@
 				</thead>
 				<tbody id="tbodyRealtime">
 				    <c:forEach var="item" items="${inventoryList}">
-				        <tr data-idx="${item.receipt_product_idx}">
+				        <tr data-idx="${item.receipt_product_idx}" 
+				        	data-location-idx="${item.location_idx}"
+				        	data-current-quantity="${item.current_quantity}">
 				            <td>${item.location_name}</td>
 				            <td>${item.product_name}</td>
 				            <td>${item.product_idx}</td>
-				            <td><fmt:formatNumber value="${item.current_quantity}" type="number"/></td>
+				            <td ><fmt:formatNumber value="${item.current_quantity}" type="number"/></td>
 				            <td>BOX</td>
 				            <td>
 				                <c:choose>
@@ -294,6 +297,7 @@
 	
 	        <div class="modal-body">
 	            <!-- 상품 정보 -->
+
 	             <div class="card">
 	                <div class="card-header"><h3 class="card-title">상품 정보</h3></div>
 	                <div class="table-responsive">
@@ -338,10 +342,79 @@
 	
 			</div>
 	        <div class="modal-foot">
+	            <button class="btn btn-update" onclick="resetLotModal(); ModalManager.openModal(document.getElementById('quantityUpdateModal'))">수량 조절</button>
 	            <button class="btn btn-secondary" onclick="ModalManager.closeModal(document.getElementById('lotModal'))">닫기</button>
 	        </div>
 	    </div>
 	</div>
+    <!-- ========================= 수량 조절 모달 ========================= -->
+    <div class="modal" id="quantityUpdateModal">
+     	<div class="modal-card sm">
+     		<div class="modal-head">
+	            <h3>수량조절</h3>
+	            <button class="modal-close-btn" onclick="ModalManager.closeModal(document.getElementById('quantityUpdateModal'))">✕</button>
+	        </div>
+	        <div class="modal-body">
+	        	<form action="/inventory/disposalInventory"
+	        		  method="post">
+	        		<sec:csrfInput/>
+	        		<input type="hidden" name="locationIdx" id="currentLocationIdx" />
+	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdx"/>
+					<div class="current-qty">
+					    현재수량 : <span id="currentQuantity"></span> Box
+					</div>
+		        	<div>
+		        		 <label for="updateQty" id="updateQty">수량 업데이트</label>
+		        		 <input type="number" name="adjustQuantity" id="updateQty" min="0"/>
+		        	</div>
+		        	<div>
+		        		 <label for="totalQty">변경된 수량</label>
+		        		 <input type="number" name="quantity" id="totalQty" readonly/>
+		        	</div>
+			     	<div class="modal-foot">
+			        	<button type="submit" class="btn btn-update" >수정</button>
+				        <button type="button" class="btn btn-secondary" onclick="resetLotModal(); ModalManager.closeModal(document.getElementById('quantityUpdateModal'))">닫기</button>
+					</div>
+	        	</form>
+	        </div>
+     	</div>
+    </div>
+    
+    <!-- ========================= 재고폐기 모달 ========================= -->
+    <div class="modal" id="inventoryDisposalModal">
+     	<div class="modal-card sm">
+     		<div class="modal-head">
+	            <h3>재고폐기</h3>
+	            <button class="modal-close-btn" onclick="ModalManager.closeModal(document.getElementById('inventoryDisposalModal'))">✕</button>
+	        </div>
+	        <div class="modal-body">
+	        	<form action="/inventory/disposalInventory"
+	        		  method="post">
+	        		<sec:csrfInput/>
+	        		<input type="hidden" name="locationIdx" id="currentLocationIdxd" />
+	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdxd"/>
+					<div class="current-qty">
+						<label for="updateQty" >현재 수량</label>
+						<input type="number" name="quantity" id="currentQuantityD" readonly/>
+					</div>
+		        	<div>
+		        		 <label for="updateQty" >폐기 수량</label>
+		        		 <input type="number" name="disposalAmount" id="disposalQty" min="1"/>
+		        	</div>
+		        	<div>
+		        		 <label for="disposalReason"> 폐기 사유</label>
+		        		 <input type="text" name="note" id="disposalReason"/>
+		        	</div>
+			     	<div class="modal-foot">
+			        	<button type="submit" class="btn btn-update" >폐기</button>
+				        <button type="button" class="btn btn-secondary" onclick="resetDisposalModal(); ModalManager.closeModal(document.getElementById('inventoryDisposalModal'))">닫기</button>
+					</div>
+	        	</form>
+	        </div>
+     	</div>
+    </div>
+    
+    
     <!-- ========================= /LOT 상세 모달 ========================= -->
 
     <script>
@@ -449,6 +522,20 @@
 	    $('#tbodyRealtime').on('click', 'tr', function() {
 		    const idx = $(this).data('idx');
 		    if (!idx) return;
+	    	
+	        // 수량 조절 모달창에 필요한 값 input에 넣기
+	        const receiptProductIdx = $(this).data('idx');
+	        const locationIdx = $(this).data('location-idx');
+	        const currentQuantity = $(this).data("current-quantity");
+	        
+	        $('#currentReceiptProductIdx').val(parseInt(receiptProductIdx));
+	        $('#currentLocationIdx').val(parseInt(locationIdx));
+	        $('#currentQuantity').text(currentQuantity);
+	        //폐기모달 input
+	        $('#currentReceiptProductIdxd').val(parseInt(receiptProductIdx));
+	        $('#currentLocationIdxd').val(parseInt(locationIdx));
+	        $('#currentQuantityD').val(currentQuantity);
+
 		
 		    // Ajax로 상세 데이터 요청
 		    $.getJSON('${pageContext.request.contextPath}/inventory/detail', { idx: idx }, function(data) {
@@ -506,10 +593,53 @@
 				    );
 				}
 		
+
 		        // 모달 열기
 		        ModalManager.openModalById('lotModal');
 		    });
 		});
+	    
+	    /* ====================== 변경 후 수량  ====================== */
+	    $(document).on("input", "#updateQty",  function() {
+	    	const baseQty = parseInt($("#currentQuantity").text().trim() || "0", 10);
+	    	const delta = parseInt($(this).val() || "0", 10);
+	    	
+	    	const newQty = baseQty + delta;
+	    	
+	    	// 변경된 수량
+	    	$("#totalQty").val(parseInt(newQty));
+	    });
+	    
+	    // 수량 조절 모달 초기화
+	    function resetLotModal() {
+	        const form = document.querySelector("#quantityUpdateModal form");
+	        if (form) {
+	            form.reset();  // form 전체 input 초기화
+	        }
+	    }
+	    
+		/* -------------------------------------------------------------------------- */
+	    // 재고 폐기 수량 검사 
+	    $('#disposalQty').on('input', function() {
+	    	const disposalAmount = parseInt($(this).val()) || 0;
+	    	const maxAmount = parseInt($('#currentQuantityD').val()) || 0;
+		    
+	    	if(disposalAmount < 1) {
+	    		Swal.fire('경고', '폐기 수량의 최소값은 1입니다.', 'warning');
+		        $(this).val(1);
+		    }
+			if(disposalAmount > maxAmount){
+				Swal.fire('경고', '최대 폐기 수량을 초과하였습니다.', 'warning');
+		        $(this).val(maxAmount);
+			}	    	
+		});
+		
+		// 재고 폐기 모달 초기화
+	    function resetDisposalModal() {
+	        const form = document.querySelector("#inventoryDisposalModal form");
+	        form.querySelector("#disposalQty").value = "";
+	        form.querySelector("#disposalReason").value = "";
+	    }
 					    
 	    /* ====================== 초기화 버튼 ====================== */
 	    $('#btnReset').on('click', function(){
