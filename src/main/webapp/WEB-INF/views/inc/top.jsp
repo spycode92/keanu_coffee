@@ -248,6 +248,11 @@ document.addEventListener("DOMContentLoaded", () => {
 </c:if>
 <nav class="top-nav">
 	<jsp:include page="/WEB-INF/views/inc/change_info.jsp"></jsp:include> 
+	<div id="loading_spinner">
+	    <div class="cv_spinner">
+	        <span class="spinner"></span>
+	    </div>
+	</div>
 	<button id="sidebar-toggle" class="sidebar-toggle">&#9776;</button>
 	<span class="site-title">물류관리 ERP </span>
 	<div class="top-nav-actions" style="margin-left:auto; display:flex; align-items:center; gap:16px;">
