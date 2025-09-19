@@ -80,17 +80,19 @@
 	        </form>
 	    </div>
 	    
-	    <button id="loginTransportBtn">운송관리자</button>
-	    <button id="logindriverBtn">기사</button>
-	    <button id="loginOutboundBtn">출고관리자</button>
-	    <button id="loginOutboundPersonBtn">출고사원</button>
 	    <button id="logininboundBtn">입고관리자</button>
 	    <button id="logininboundPersonBtn">입고사원</button>
+	    <button id="loginOutboundBtn">출고관리자</button>
+	    <button id="loginOutboundPersonBtn">출고사원</button>
+	    <br>
 	    <button id="logininventoryBtn">재고관리자</button>
 	    <button id="logininventoryPersonBtn">재고사원</button>
+	    <button id="loginTransportBtn">운송관리자</button>
+	    <button id="logindriverBtn">기사</button>
 	</div>
 	<script type="text/javascript">
 	const { token, header } = getCsrf();
+	
 	function getCsrf() {
 		const tokenMeta  = document.querySelector('meta[name="_csrf"]');
 		const headerMeta = document.querySelector('meta[name="_csrf_header"]');
@@ -100,159 +102,40 @@
 		};
 	}
 	
-	$("#loginTransportBtn").on("click", function() {
-		$.ajax({
-		    url: "/loginForSecurity",
-		    type: "POST",
-		    data: {
-		        empNo: "kimgs",
-		        empPassword: "1234"
-		    },
-		    beforeSend: (xhr) => {
-		        xhr.setRequestHeader(header, token);
-		    },
-		    success: () => {
-		        location.href = "/transport/main"; // 로그인 성공 후 이동
-		    },
-		    error: (xhr) => {
-		        console.error("로그인 실패", xhr.responseText);
-		    }
-		});
-	})
+	// 로그인 버튼 함수
+	function login(empNo, redirectUrl) {
+	    $.ajax({
+	        url: "/loginForSecurity",
+	        type: "POST",
+	        data: {
+	            empNo: empNo,
+	            empPassword: 1234
+	        },
+	        beforeSend: (xhr) => {
+	            xhr.setRequestHeader(header, token);
+	        },
+	        success: () => {
+	            location.href = redirectUrl;
+	        },
+	        error: (xhr) => {
+	            console.error("로그인 실패", xhr.responseText);
+	        }
+	    });
+	}
 	
-	$("#logindriverBtn").on("click", function() {
-		$.ajax({
-		    url: "/loginForSecurity",
-		    type: "POST",
-		    data: {
-		        empNo: "54320747",
-		        empPassword: "1234"
-		    },
-		    beforeSend: (xhr) => {
-		        xhr.setRequestHeader(header, token);
-		    },
-		    success: () => {
-		        location.href = "/transport/mypage/54320747"; // 로그인 성공 후 이동
-		    },
-		    error: (xhr) => {
-		        console.error("로그인 실패", xhr.responseText);
-		    }
-		});
-	})
-	$("#loginOutboundBtn").on("click", function() {
-		$.ajax({
-		    url: "/loginForSecurity",
-		    type: "POST",
-		    data: {
-		        empNo: "90110826",
-		        empPassword: "1234"
-		    },
-		    beforeSend: (xhr) => {
-		        xhr.setRequestHeader(header, token);
-		    },
-		    success: () => {
-		        location.href = "/outbound/main"; // 로그인 성공 후 이동
-		    },
-		    error: (xhr) => {
-		        console.error("로그인 실패", xhr.responseText);
-		    }
-		});
-	})
-	$("#loginOutboundPersonBtn").on("click", function() {
-		$.ajax({
-		    url: "/loginForSecurity",
-		    type: "POST",
-		    data: {
-		        empNo: "gompange",
-		        empPassword: "1234"
-		    },
-		    beforeSend: (xhr) => {
-		        xhr.setRequestHeader(header, token);
-		    },
-		    success: () => {
-		        location.href = "/outbound/outboundManagement/"; // 로그인 성공 후 이동
-		    },
-		    error: (xhr) => {
-		        console.error("로그인 실패", xhr.responseText);
-		    }
-		});
-	})
-	$("#logininboundBtn").on("click", function() {
-		$.ajax({
-		    url: "/loginForSecurity",
-		    type: "POST",
-		    data: {
-		        empNo: "inbound",
-		        empPassword: "1234"
-		    },
-		    beforeSend: (xhr) => {
-		        xhr.setRequestHeader(header, token);
-		    },
-		    success: () => {
-		        location.href = "/inbound/main"; // 로그인 성공 후 이동
-		    },
-		    error: (xhr) => {
-		        console.error("로그인 실패", xhr.responseText);
-		    }
-		});
-	})
-	$("#logininboundPersonBtn").on("click", function() {
-		$.ajax({
-		    url: "/loginForSecurity",
-		    type: "POST",
-		    data: {
-		        empNo: "33330827",
-		        empPassword: "1234"
-		    },
-		    beforeSend: (xhr) => {
-		        xhr.setRequestHeader(header, token);
-		    },
-		    success: () => {
-		        location.href = "/inbound/management"; // 로그인 성공 후 이동
-		    },
-		    error: (xhr) => {
-		        console.error("로그인 실패", xhr.responseText);
-		    }
-		});
-	})
-	$("#logininventoryBtn").on("click", function() {
-		$.ajax({
-		    url: "/loginForSecurity",
-		    type: "POST",
-		    data: {
-		        empNo: "54320827",
-		        empPassword: "1234"
-		    },
-		    beforeSend: (xhr) => {
-		        xhr.setRequestHeader(header, token);
-		    },
-		    success: () => {
-		        location.href = "/inventory/main"; // 로그인 성공 후 이동
-		    },
-		    error: (xhr) => {
-		        console.error("로그인 실패", xhr.responseText);
-		    }
-		});
-	})
-	$("#logininventoryPersonBtn").on("click", function() {
-		$.ajax({
-		    url: "/loginForSecurity",
-		    type: "POST",
-		    data: {
-		        empNo: "54322746",
-		        empPassword: "1234"
-		    },
-		    beforeSend: (xhr) => {
-		        xhr.setRequestHeader(header, token);
-		    },
-		    success: () => {
-		        location.href = "/inventory/moveInventory"; // 로그인 성공 후 이동
-		    },
-		    error: (xhr) => {
-		        console.error("로그인 실패", xhr.responseText);
-		    }
-		});
-	})
+	// 로그인버튼별 값 지정
+	$("#logininboundBtn").on("click", () => login("2301180002", "/inbound/main"));
+	$("#logininboundPersonBtn").on("click", () => login("2301180020", "/inbound/management"));
+	
+	$("#loginOutboundBtn").on("click", () => login("2301180003", "/outbound/main"));
+	$("#loginOutboundPersonBtn").on("click", () => login("2301180021", "/outbound/outboundManagement/"));
+	
+	$("#logininventoryBtn").on("click", () => login("2301180009", "/inventory/main"));
+	$("#logininventoryPersonBtn").on("click", () => login("2301180023", "/inventory/moveInventory"));
+	
+	$("#loginTransportBtn").on("click", () => login("2301180006", "/transport/main"));
+	$("#logindriverBtn").on("click", () => login("2301180014", "/transport/mypage/54320747"));
+	
 	// 다크모드 관리
 	const DarkModeManager = {
 	    isDarkMode: localStorage.getItem('darkMode') === 'true' || 

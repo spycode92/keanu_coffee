@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // LOT 번호 입력 처리
     function handleLotNumber(lotNumber) {
+		console.log("실행됐어요");
         if(lotNumber) {
             searchProductByLotNum(lotNumber);
         }
@@ -29,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 로케이션 이름 입력 처리
     function handleLocationName(locationName) {
+	console.log("실행됐어요2321312321");
         if(locationName) {
             selectedLocationItems = [];
             searchInventoryByLocation(locationName);
@@ -103,7 +105,7 @@ function searchProductByLotNum(lotNumber){
 				selectLotNumber = lotNumber;
 				resetQuantity();
 				checkInventory();
-				console.log("여기까지");
+//				console.log("여기까지");
             } else {
                 Swal.fire({
                     icon: 'warning',
@@ -246,7 +248,53 @@ function addToCart(){
 			window.location.reload();
 		});
 	});
-			
+}
+
+//--------------- qrscanner 조작 ----------------
+function init() {
+	const btnScanQR = document.getElementById("qrScanner");
+	const qrModal = document.getElementById("qrScannerModal");
+	if (!btnScanQR || !qrModal) {
+		console.warn("QR 스캐너: 버튼 또는 모달 요소를 찾을 수 없습니다.");
+		return;
+	}
+
+	// 버튼 클릭 → 모달 열고 카메라 시작
+	btnScanQR.addEventListener("click", function() {
+		console.log("QR 버튼 클릭됨");
+		ModalManager.openModalById("qrScannerModal");
+		//큐알스캔후 콜백함수실행
+		startCamera((scannedText) => {
+			if (scannedText.startsWith("LOT")){
+				$('#mi_lotNumber').val(scannedText);
+//				selectLotNumber = $('#mi_lotNumber').val(scannedText);
+				searchProductByLotNum(scannedText);
+//				resetQuantity();
+//				checkInventory();
+			} else {
+				$('#mi_locationName').val(scannedText);
+				searchInventoryByLocation(scannedText);
+//				resetQuantity();
+//				checkInventory();
+			}
+		});
+	});
+
+	// 모달 닫힐 때 카메라 종료
+	const closeBtn = qrModal.querySelector(".modal-close-btn");
+	if (closeBtn) {
+		closeBtn.addEventListener("click", stopCamera);
+	}
+	qrModal.addEventListener("click", function(e) {
+		if (e.target === qrModal) stopCamera();
+	});
+}
+
+// ===== QRScanner초기화 =====
+if (document.readyState === "loading") {
+	document.addEventListener("DOMContentLoaded", init);
+} else {
+	init();
 }
 
 

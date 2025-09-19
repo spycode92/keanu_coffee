@@ -49,8 +49,10 @@ public interface InventoryMoveMapper {
 	//전체로케이션 정보 조회
 	List<WarehouseLocationDTO> selectAllLocationInfo();
 	
-	//상품 이름조회하기
+	//상품 이름조회하기(lotNumber)
 	String selectProductName(String lotNumber);
+	//상품 이름 조회하기 (receiptProductIdx)
+	String selectProductNameWithReceiptProductIdx(Integer receiptProductIdx);
 
 
 

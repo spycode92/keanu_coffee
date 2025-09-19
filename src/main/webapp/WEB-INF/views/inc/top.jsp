@@ -248,6 +248,11 @@ document.addEventListener("DOMContentLoaded", () => {
 </c:if>
 <nav class="top-nav">
 	<jsp:include page="/WEB-INF/views/inc/change_info.jsp"></jsp:include> 
+	<div id="loading_spinner">
+	    <div class="cv_spinner">
+	        <span class="spinner"></span>
+	    </div>
+	</div>
 	<button id="sidebar-toggle" class="sidebar-toggle">&#9776;</button>
 	<span class="site-title">물류관리 ERP </span>
 	<div class="top-nav-actions" style="margin-left:auto; display:flex; align-items:center; gap:16px;">
@@ -295,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		<ul>
 			<sec:authorize access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')">
 			<li class="menu-item">
-				<span>관리자페이지</span>
+				<a href="#"><span>관리자페이지</span></a>
 <!-- 				<a href=""><span>물류부서관리</span></a> -->
 				<ul class="submenu ${fn:contains(uri, '/admin') ? 'open' : ''}">
 					<li><a href="/admin/employeeManage">직원관리</a></li>

@@ -164,7 +164,7 @@ $.ajax({
 		      <td>${group.sido}</td>
 		      <td>${group.sigungu}</td>
 		      <td>${dongHtml}</td>
-		      <td><button class="btn btn-sm btn-destructive" data-idx="${group.idxList.join(",")}">그룹삭제</button></td>
+		      <td><button class="btn btn-sm btn-destructive delete-btn" data-idx="${group.idxList.join(",")}">그룹삭제</button></td>
 		    </tr>
 		  `);
 		});

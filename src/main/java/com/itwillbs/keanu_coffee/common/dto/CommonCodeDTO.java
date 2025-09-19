@@ -14,6 +14,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommonCodeDTO implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private Integer commonCodeIdx;
 	private String groupCode;
 	private String commonCode;

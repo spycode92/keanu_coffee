@@ -21,7 +21,9 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReceiptProductDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	//PK
+	private Integer receiptProductIdx;
+	
 	// FK
 	private Long ibwaitIdx;			// 입고대기 PK (RECEIPT_PRODUCT.ibwait_idx)
 	private Long productIdx;		// 상품 PK (RECEIPT_PRODUCT.product_idx)

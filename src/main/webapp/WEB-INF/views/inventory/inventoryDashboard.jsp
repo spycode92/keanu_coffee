@@ -18,6 +18,7 @@
 
 <!-- D3.js -->
 <script src="https://d3js.org/d3.v7.min.js"></script>
+
 <style>
 	.card-title {
 	    font-size: 1.3rem;
@@ -30,62 +31,134 @@
 	    border-bottom: 2px solid #666;
 	    margin-bottom: 15px;
 	}
-    .chart-card {
-        flex: 1 1 300px;
-        min-width: 280px;
-        width: 100%;
-        background-color: var(--card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 1rem;
-        color: var(--card-foreground);
-        box-sizing: border-box;
-    }
-    .chart-wrapper {
-        width: 100%;
-        max-width: 40%;
-        height: 400px;
-        position: relative;
-    }
-    .chart-wrapper canvas {
-        width: 100% !important;
-        height: 100% !important;
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-    @media (max-width: 768px) {
-        .dashboard-charts { flex-direction: column; }
-        .chart-card { max-width: 100%; min-width: auto; }
-        #heatmap-container { flex-direction: column; }
-    }
+
+	/* 📌 기본 (라이트 모드) */
+	.chart-card {
+	    flex: 1 1 300px;
+	    min-width: 280px;
+	    width: 100%;
+	    background-color: #ffffff;   /* 라이트 모드 → 흰색 */
+	    border: 1px solid var(--border);
+	    border-radius: var(--radius);
+	    padding: 1rem;
+	    color: var(--card-foreground);
+	    box-sizing: border-box;
+	}
+
+	/* 📌 다크 모드 */
+	.dark .chart-card {
+	    background-color: #000000;   /* 다크 모드 → 검정 */
+	}
+
+	.chart-wrapper {
+	    width: 100%;
+	    max-width: 40%;
+	    height: 400px;
+	    position: relative;
+	}
+	.chart-wrapper canvas {
+	    width: 100% !important;
+	    height: 100% !important;
+	    position: absolute;
+	    top: 0;
+	    left: 0;
+	}
+
+	@media (max-width: 768px) {
+	    .dashboard-charts { flex-direction: column; }
+	    .chart-card { max-width: 100%; min-width: auto; }
+	    #heatmap-container { flex-direction: column; }
+	}
+
+	/* 📌 히트맵 기본 */
 	#pallet_heatmap, #picking_heatmap {
 	    width: 100%;
-	    overflow-x: auto;       /* 가로 스크롤 가능 */
-	    overflow-y: hidden;     /* 세로 스크롤 막기 */
-	    white-space: nowrap;    /* 줄바꿈 방지 */
+	    overflow-x: auto;
+	    overflow-y: hidden;
+	    white-space: nowrap;
 	    padding: 10px;
-	    background: #fff;
+	    background: #ffffff;    /* 라이트 모드 → 흰색 */
 	    border-radius: 6px;
 	    box-sizing: border-box;
 	}
+
+	/* 📌 다크 모드 히트맵 */
+	.dark #pallet_heatmap,
+	.dark #picking_heatmap {
+	    background-color: #0F172A;   /* 다크 모드 → 진한 회색 */
+	}
+
 	.heatmap-scroll {
 	    width: 100%;
-	    overflow-x: auto;   /* 가로 스크롤 */
+	    overflow-x: auto;
 	    overflow-y: hidden;
-	    white-space: nowrap; /* 줄바꿈 방지 */
+	    white-space: nowrap;
 	    padding: 10px;
 	    background: #fff;
 	    border-radius: 6px;
 	    box-sizing: border-box;
 	}
-	/* Pallet Zone / Picking Zone 제목 스타일 */
+
+	/* 📌 Pallet Zone / Picking Zone 제목 스타일 */
 	.heatmap-title {
-	    font-size: 20px;       /* 글자 크기 키움 (기본 16px → 20px) */
-	    font-weight: bold;     /* 굵게 */
-	    margin: 8px 0;         /* 위아래 여백 */
-	    color: #333;           /* 글자색 진하게 */
+	    font-size: 20px;
+	    font-weight: bold;
+	    margin: 8px 0;
+	    color: #333;  /* 라이트 모드 글자색 */
 	}	
+
+	/* 📌 다크 모드 제목 */
+	.dark .card-title, 
+	.dark .heatmap-title {
+	    color: #ffffff !important; /* 다크모드 → 흰색 */
+	}
+
+	.card-title, .heatmap-title {
+	    color: #111 !important; /* 라이트모드 → 검정 */
+	    font-size: 1.5rem !important;
+	    font-weight: bold !important;
+	}
+
+	/* 📌 KPI 카드 */
+	.kpi-card {
+	    flex: 1;
+	    text-align: center;
+	    padding: 20px;
+	    background: #ffffff;   /* 라이트 모드 → 흰색 */
+	    border: 1px solid #ddd;
+	    border-radius: 8px;
+	}
+	/* 📌 다크 모드 KPI 카드 */
+	.dark .kpi-card {
+	    background: #0F172A;   /* 다크 모드 → 남색톤 */
+	    border: 1px solid #444;
+	}
+
+	/* 📌 KPI 값 */
+	.kpi-value {
+	    font-size: 2.5rem !important;
+	    font-weight: bold !important;
+	    color: #000000; /* 라이트 모드 → 검정 */
+	}
+
+	/* 📌 다크 모드 KPI 값 */
+	.dark .kpi-value {
+	    color: #ffffff !important; /* 다크모드 → 흰색 */
+	}
+
+	/* 📌 Pallet Zone, Picking Zone 구분 박스 */
+	.zone-box {
+	    border: 1px solid #000;   /* 라이트 모드 테두리 → 검정 */
+	    border-radius: 8px;
+	    padding: 12px;
+	    margin-bottom: 20px;
+	    background: #fff;         /* 라이트 모드 안쪽 배경 → 흰색 */
+	}
+
+	.dark .zone-box {
+	    border: 2px solid #444;   /* 다크 모드 테두리 */
+	    background: #0F172A;      /* 다크 모드 배경 */
+	}
 </style>
 </head>
 <body>
@@ -103,9 +176,8 @@
 	        	<h3 class="card-title" align="center">현재 재고</h3>
 				<hr>
 				<div class="dashboard-kpi" style="display: flex; justify-content: center; margin-bottom: 20px;">
-				    <div class="kpi-card" style="flex:1; text-align:center; padding:20px; background:#f8f9fa; border-radius:8px;">
-				        <div id="kpi-value" class="kpi-value" style="font-size:2rem; font-weight:bold;">--</div>
-<!-- 				        <div class="kpi-label" style="font-size:1rem; color:#666;">현재 재고</div> -->
+				    <div class="kpi-card">
+				        <div id="kpi-value" class="kpi-value">--</div>
 				        <div id="kpi-change" class="kpi-change" style="font-size:0.9rem; margin-top:8px;">--</div>
 				    </div>
 				</div>
@@ -135,14 +207,15 @@
                 <div class="chart-card">
                     <h3 class="card-title" id="location_title" align="center">로케이션 용적률</h3>
                     <hr>
-                    <!--?Pallet Zone -->
-				    <div style="margin-bottom: 10px;">
+                    
+                    <!-- Pallet Zone -->
+					<div class="zone-box">
 					    <h4 class="heatmap-title" align="center">Pallet Zone</h4>
 					    <div id="pallet_heatmap" class="heatmap-scroll"></div>
 					</div>
-				
-				    <!-- Picking Zone -->
-				    <div>
+					
+					<!-- Picking Zone -->
+					<div class="zone-box">
 					    <h4 class="heatmap-title" align="center">Picking Zone</h4>
 					    <div id="picking_heatmap" class="heatmap-scroll"></div>
 					</div>

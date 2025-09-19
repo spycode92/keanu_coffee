@@ -68,7 +68,7 @@
 	</update>
 	
 	<!-- 폐기등록 -->
-	<insert id="insertDisposal">
+	<insert id="insertDisposal" useGeneratedKeys="true" keyProperty="disposalIdx">
 		INSERT INTO DISPOSAL (
 			emp_idx
 			, section
@@ -84,4 +84,13 @@
 			, #{note}
 		)
 	</insert>
+	
+	<!-- 재고삭제 -->
+	<delete id="deleteInventory">
+		DELETE FROM INVENTORY
+		WHERE
+			location_idx = #{locationIdx}
+		AND
+			receipt_product_idx = #{receiptProductIdx}	
+	</delete>
 </mapper>
