@@ -11,6 +11,8 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script type="text/javascript" src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/common/qrScanUtil.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/inventory/move_inventory.js"></script>
 
 <!-- FontAwesome CDN for icons -->
@@ -30,7 +32,7 @@
         <!-- 폼 입력 영역: 가로 공간 약 65% -->
         <div style="flex: 1;">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1 class="card-title">재고 이동</h1>
+                <h1 class="card-title">재고 이동 <button id="qrScanner" type="button" ><i class="fa-solid fa-qrcode"></i></button></h1>
                 <a href="/inventory/moveInventory/cart">
 	                <i class="fa-solid fa-cart-shopping"></i>
                 </a>
@@ -57,6 +59,6 @@
         </div>
     </form>
 </section>
-
+<jsp:include page="/WEB-INF/views/commons/qrScannerVideo.jsp" />
 </body>
 </html>
