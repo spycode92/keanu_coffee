@@ -56,7 +56,7 @@
 
     <!-- 상단/사이드 레이아웃 -->
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
-
+	<div class="content">
     <div class="card" style="margin:20px;">
 		<div class="card-header">
 			<h3 class="card-title">재고 조회</h3>
@@ -286,7 +286,7 @@
 		    </div>
 		</div>
 	</div>
-
+</div>
 	<!-- ========================= LOT 상세 모달 ========================= -->
 	<div class="modal" id="lotModal">
 	    <div class="modal-card lg">
@@ -355,7 +355,7 @@
 	            <button class="modal-close-btn" onclick="ModalManager.closeModal(document.getElementById('quantityUpdateModal'))">✕</button>
 	        </div>
 	        <div class="modal-body">
-	        	<form action="/inventory/disposalInventory"
+	        	<form action="/inventory/updateInventory"
 	        		  method="post">
 	        		<sec:csrfInput/>
 	        		<input type="hidden" name="locationIdx" id="currentLocationIdx" />
@@ -391,8 +391,8 @@
 	        	<form action="/inventory/disposalInventory"
 	        		  method="post">
 	        		<sec:csrfInput/>
-	        		<input type="hidden" name="locationIdx" id="currentLocationIdxd" />
-	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdxd"/>
+	        		<input type="hidden" name="locationIdx" id="currentLocationIdxdDisposal" />
+	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdxdDisposal"/>
 					<div class="current-qty">
 						<label for="updateQty" >현재 수량</label>
 						<input type="number" name="quantity" id="currentQuantityD" readonly/>
@@ -532,8 +532,8 @@
 	        $('#currentLocationIdx').val(parseInt(locationIdx));
 	        $('#currentQuantity').text(currentQuantity);
 	        //폐기모달 input
-	        $('#currentReceiptProductIdxd').val(parseInt(receiptProductIdx));
-	        $('#currentLocationIdxd').val(parseInt(locationIdx));
+	        $('#currentReceiptProductIdxdDisposal').val(parseInt(receiptProductIdx));
+	        $('#currentLocationIdxdDisposal').val(parseInt(locationIdx));
 	        $('#currentQuantityD').val(currentQuantity);
 
 		
