@@ -117,6 +117,8 @@
 				    	&vendorKeyword=${param.vendorKeyword}&inStartDate=${param.inStartDate}
 				    	&inEndDate=${param.inEndDate}&simpleKeyword=${param.simpleKeyword}"
 				   		class="btn btn-secondary btn-sm">엑셀 다운로드</a>
+				   	<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
+				   	<button id="btnReload" class="btn btn-secondary btn-sm">새로고침</button>
 		        </div>
 		    </div>
 			<div class="table-responsive">
@@ -286,7 +288,7 @@
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/modify.js"></script>
 	<jsp:include page="/WEB-INF/views/inbound/modal/qrScannerModal.jsp" />
 	<script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
-	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/qrScanner.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/managementQRscanner.js"></script>
 	
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script> const contextPath = "${pageContext.request.contextPath}";</script>

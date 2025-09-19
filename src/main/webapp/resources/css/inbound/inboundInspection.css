@@ -189,3 +189,17 @@
 		justify-content:flex-start; 
 	}
 }
+
+.btn,
+.btn-sm {
+	font-size: 1.0em;   /* 기존보다 1.5배 */
+}
+
+.btn-confirmed {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #16a34a;
+    cursor: default;
+}
+
+

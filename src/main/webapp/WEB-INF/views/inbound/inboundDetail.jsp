@@ -72,10 +72,14 @@
 			</div>
 			<div class="page-actions">
 				<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
-				<button id="btnAssignManager" class="btn btn-primary btn-sm">담당자지정</button>
-				<button id="btnAssignLocation" class="btn btn-primary btn-sm">입고위치지정</button>
-				<button id="btnEdit" class="btn btn-primary btn-sm" data-ibwait-idx="${inboundDetailData.ibwaitIdx}"
-						data-order-number="${inboundDetailData.orderNumber}">검수</button>
+				<button id="btnEdit"
+				        class="btn btn-primary btn-sm"
+				        data-ibwait-idx="${inboundDetailData.ibwaitIdx}"
+				        data-order-number="${inboundDetailData.orderNumber}"
+				        data-status="${inboundDetailData.inboundStatus}"
+				        data-manager="${inboundDetailData.managerName}">
+				    검수
+				</button>
 				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
 			</div>
 		</div>
@@ -326,8 +330,7 @@
 			</div>
 		</div>
 	</section>
-	<jsp:include page="/WEB-INF/views/inbound/modal/modifyManager.jsp" />
-	<jsp:include page="/WEB-INF/views/inbound/modal/modifyLocation.jsp" />
+	
 	<!-- ============================================================================================================ js 모음 -->
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/modify.js"></script>

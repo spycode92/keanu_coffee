@@ -84,7 +84,12 @@ public class InboundService {
 		} else {
 			inboundMapper.insertReceiptProduct(dto);
 		}
-	    inboundMapper.updatePurchaseOrderItemAfterInspection(dto);
+//	    inboundMapper.updatePurchaseOrderItemAfterInspection(dto); // purchase order는 수정하지 않기로.
+	}
+
+
+	public void updateInboundStatus(Integer ibwaitIdx, String status) {
+	    inboundMapper.updateInboundStatus(ibwaitIdx, status);
 	}
 	
 

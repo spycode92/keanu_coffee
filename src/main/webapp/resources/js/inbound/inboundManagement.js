@@ -7,6 +7,12 @@ function clearInput(id) {
 	}
 }
 
+// 인쇄
+document.getElementById("btnPrint").addEventListener("click", function(e){
+    e.preventDefault();
+    window.print();
+});
+
 // ===== 선택 건수 표시 =====
 function updateSelectedCount() {
 	const count = document.querySelectorAll('input[name="selectedOrder"]:checked').length;
@@ -106,6 +112,19 @@ document.addEventListener("DOMContentLoaded", function () {
 				return;
 			}
 			location.href = `${contextPath}/inbound/management?simpleKeyword=${encodeURIComponent(keyword)}`;
+		});
+	}
+	
+	
+});
+
+
+// 새로고침
+document.addEventListener("DOMContentLoaded", function () {
+	const reloadBtn = document.getElementById("btnReload");
+	if (reloadBtn) {
+		reloadBtn.addEventListener("click", function () {
+			location.reload(); // ✅ 현재 페이지 새로고침
 		});
 	}
 });
