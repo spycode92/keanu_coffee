@@ -35,7 +35,7 @@
         <div id="palletZone" class="card">
             <div class="card-header">
                 <h3 class="card-title">파레트존 이동 목록</h3>
-                <p class="card-subtitle">※ location_idx = 9999</p>
+<!--                 <p class="card-subtitle">※ location_idx = 9999</p> -->
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -45,7 +45,7 @@
                                 <th>상품코드</th>
                                 <th>LOT번호</th>
                                 <th>수량</th>
-                                <th>현재 위치</th>
+<!--                                 <th>현재 위치</th> -->
                             </tr>
                         </thead>
                         <tbody id="palletBody">
@@ -60,7 +60,7 @@
 		<div id="pickingZone" class="card hidden">
 		    <div class="card-header">
 		        <h3 class="card-title">피킹존 보충 필요 목록</h3>
-		        <p class="card-subtitle">※ 적정재고(100%) 대비 80% 미달 시 보충 필요</p>
+<!-- 		        <p class="card-subtitle">※ 적정재고(100%) 대비 80% 미달 시 보충 필요</p> -->
 		    </div>
 		    <div class="card-body">
 		        <div class="table-responsive">
@@ -119,7 +119,7 @@
 	                      + "<td>"+item.productIdx+"</td>"
 	                      + "<td>"+(item.lotNumber || '-')+"</td>"
 	                      + "<td>"+item.quantity+"</td>"
-	                      + "<td>"+item.locationName+"</td>"   // ✅ 수정
+// 	                      + "<td>"+item.locationName+"</td>"   // ✅ 수정
 	                      + "</tr>";
 	            });
 	        }
