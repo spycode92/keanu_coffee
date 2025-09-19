@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		    checkQuantity(quantity);
 	});
 	
-	//카트에담기 버튼 클릭이벤트
+	//재고이동 버튼 클릭이벤트
 	document.getElementById('mi_moveToLocation').addEventListener('click', function(event) {
 		event.preventDefault();
 		// 현재 input 값들 가져오기
@@ -116,7 +116,7 @@ function searchProductByLotNum(lotNumber){
 				url = data.fileIdx ? '/file/thumbnail/' + data.fileIdx : '/resources/images/default_product.jpg';
 				$('#productPreview').attr('src',url).show();
 				selectLotNumber = lotNumber;
-				console.log("여기까지");
+//				console.log("여기까지");
             } else {
                 Swal.fire({
                     icon: 'warning',
@@ -201,7 +201,7 @@ function checkQuantity(quantity){
     }
 }
 
-//카트에담기 동작함수
+//재고이동 동작함수
 function cartToLocation(){
 	ajaxPost("/inventory/move/moveLocation",
 		{lotNumber : selectLotNumber
@@ -249,8 +249,76 @@ function isLocationExist(locationName){
 	})
 }
 
+//카트에 있는 상품있는지 체크
+function checkLotNumberInCart(lotNumber){
+	const rows = document.querySelectorAll('tr[data-lotNumber]');
+	const lotNumberArray = Array.from(rows).map(row => row.getAttribute('data-lotNumber'));
+	
+	return lotNumberArray.includes(lotNumber);
+}
 
+//--------------- qrscanner 조작 ----------------
+function init() {
+	const btnScanQR = document.getElementById("qrScanner");
+	const qrModal = document.getElementById("qrScannerModal");
+	if (!btnScanQR || !qrModal) {
+//		console.warn("QR 스캐너: 버튼 또는 모달 요소를 찾을 수 없습니다.");
+		return;
+	}
+	
 
+	// 버튼 클릭 → 모달 열고 카메라 시작
+	btnScanQR.addEventListener("click", function() {
+		console.log("QR 버튼 클릭됨");
+		ModalManager.openModalById("qrScannerModal");
+		//큐알스캔후 콜백함수실행
+		startCamera((scannedText) => {
+			//스캔한 QR코드가 LOT로시작한다면
+			if (scannedText.startsWith("LOT")){
+				// 카트에 해당 로트넘버가 있을때
+				if(checkLotNumberInCart(scannedText)){
+//					selectLotNumber = $('#mi_lotNumber').val(scannedText);
+					const targetRow = document.querySelector(`tr[data-lotNumber="${scannedText}"]`);
+					
+					maxQuantity = targetRow.getAttribute('data-maxQuantity');
+					selectLotNumber = scannedText;
+					
+					$('#mi_lotNumber').val(scannedText);
+					searchProductByLotNum(scannedText);
+					checkBeforeMove();
+				} else {
+					Swal.fire('경고', '카트에 없는 상품입니다.', 'warning');
+				}
+				
+//				resetQuantity();
+//				checkInventory();
+			} else { // QR코드에 LOT가없을때 location입력
+				$('#mi_locationName').val(scannedText);
+				isLocationExist(scannedText);
+				checkBeforeMove();
+				$('#mi_locationName').blur();
+//				resetQuantity();
+//				checkInventory();
+			}
+		});
+	});
+
+	// 모달 닫힐 때 카메라 종료
+	const closeBtn = qrModal.querySelector(".modal-close-btn");
+	if (closeBtn) {
+		closeBtn.addEventListener("click", stopCamera);
+	}
+	qrModal.addEventListener("click", function(e) {
+		if (e.target === qrModal) stopCamera();
+	});
+}
+
+// ===== QRScanner초기화 =====
+if (document.readyState === "loading") {
+	document.addEventListener("DOMContentLoaded", init);
+} else {
+	init();
+}
 
 
 
