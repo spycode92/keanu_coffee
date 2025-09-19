@@ -1103,11 +1103,13 @@ body {
   .filters{ grid-template-columns: 1fr; }
   .filters .actions .btn{ width:100%; }
 }
+
 @media (max-width: 640px){
   .pager > div a,
   .pager > div input[type="button"],
   .pager > div strong{
     min-width:32px; height:32px; padding:0 10px; font-size:.9rem;
+	}
 }
 
 
@@ -1248,3 +1250,5 @@ body.modal-open {
     transform: rotate(360deg);
   }
 }
+
+
