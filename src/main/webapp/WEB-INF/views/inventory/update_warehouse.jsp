@@ -103,7 +103,7 @@
 	    <tr>
 	      <td colspan="2" style="text-align: center;"><br>
 	        <button class="btn btn-primary" id="btnSubmit" >창고 생선</button>
-	        <button class="btn btn-primary"  type="submit" formaction="/inventoryAction/edit-warehouse">수정</button>
+<!-- 	        <button class="btn btn-primary"  type="submit" formaction="/inventoryAction/edit-warehouse">수정</button> -->
 	      </td>
 	    </tr>
 	  </table>
