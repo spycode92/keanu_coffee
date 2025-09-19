@@ -6,7 +6,7 @@
 	
 	<!-- 임박 재고 조회 -->
     <select id="selectImminentStock" resultType="com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO">
-        SELECT 
+        SELECT
             inventory_idx,
             receipt_product_idx,
             location_idx,
