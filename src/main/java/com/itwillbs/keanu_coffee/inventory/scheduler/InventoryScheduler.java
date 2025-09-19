@@ -35,13 +35,12 @@ public class InventoryScheduler {
     }
 	
 	// 일요일 새벽 1시 적정재고 계산
-	// updatePickingZoneTargetStock() 호출 → 피킹존 적정재고 계산 실행.
-//    @Scheduled(cron = "0 0 1 * * SUN")
+    @Scheduled(cron = "0 0 1 * * SUN")
 	// 테스트용 30초마다 실행
 //	@Scheduled(cron = "*/30 * * * * *")
     public void calculatePickingZoneStock() {
 		System.out.println("⏰ [Scheduler] 적정재고 체크");
-        inventoryTransferService.updatePickingZoneTargetStock();
+        inventoryTransferService.updatePickingZoneTargetStock();  // updatePickingZoneTargetStock() 호출 → 피킹존 적정재고 계산 실행.
     }
 	
 }
