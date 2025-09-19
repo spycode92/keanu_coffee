@@ -22,11 +22,6 @@
 
 	<!-- 반드시 content 안에서 시작 -->
 	<section class="content">
-                        <div id="loading_spinner">
-						    <div class="cv_spinner">
-						        <span class="spinner"></span>
-						    </div>
-						</div>
 		<!-- 페이지 타이틀 -->
 		<div class="d-flex justify-content-between align-items-center mb-2">
 		     <h1 class="card-title" style="margin:0;">입고관리</h1>
