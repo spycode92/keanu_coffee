@@ -43,20 +43,22 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadKpiData() {
     ajaxGet('/inventory/api/kpi')
         .then(data => {
-            // ✅ 현재 재고
+            // 현재 재고
             document.getElementById('kpi-value').textContent =
                 (data.currentStock || 0).toLocaleString() + " BOX";
 
-            // ✅ 증감 수량 (-xxx BOX)
+            // 증감 수량 (-xxx BOX)
             let changeEl = document.getElementById('kpi-change');
             const changeQty = data.changeQty || 0;
 
             if (changeQty < 0) {
-                changeEl.textContent = changeQty + " BOX"; // 음수 그대로 표시
-                changeEl.style.color = "red";
+                // 기존: changeEl.textContent = changeQty + " BOX";
+			    changeEl.textContent = changeQty.toLocaleString() + " BOX"; // 천단위 콤마
+			    changeEl.style.color = "red";
             } else if (changeQty > 0) {
-                changeEl.textContent = "+" + changeQty + " BOX";
-                changeEl.style.color = "green";
+                // 기존: changeEl.textContent = "+" + changeQty + " BOX";
+			    changeEl.textContent = "+" + changeQty.toLocaleString() + " BOX"; // 천단위 콤마
+			    changeEl.style.color = "green";
             } else {
                 changeEl.textContent = "전날 출고/폐기 : 0 BOX";
                 changeEl.style.color = "#666";
@@ -181,17 +183,32 @@ function drawProductChart({ labels, data, categoryName }) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+
+            // ✅ 가로 막대 차트로 변경
+            indexAxis: 'y',
+
             plugins: {
                 title: { display: true, text: `${categoryName} 카테고리 상세` },
                 datalabels: {
                     anchor: 'end',
-                    align: 'top',
-                    formatter: (value) => `${value}개`,
-                    font: { weight: 'bold' },
-                    color: '#333'
+                    align: 'right',
+                    formatter: (value) => `${value.toLocaleString()}개`, // 천단위 콤마
+                    font: { size: 12, weight: 'bold' },
+   					color: '#fff'   // 다크모드 기준, 라이트모드일 땐 '#000'
                 }
             },
-            scales: { y: { beginAtZero: true } }
+            scales: {
+                x: { beginAtZero: true },
+                y: {
+                    ticks: {
+                        // ✅ 상품명이 너무 길면 줄여서 표시
+                        callback: function(value) {
+                            let label = this.getLabelForValue(value);
+                            return label.length > 8 ? label.substr(0, 8) + '…' : label;
+                        }
+                    }
+                }
+            }
         },
         plugins: [ChartDataLabels]
     });
@@ -281,8 +298,8 @@ function totalUsage(palletZoneData, pickingZoneData) {
 ========================= */
 function drawHeatmap(data, selector, zoneLabel) {
     const boxSize = 50;
-    const gap = 20; 
-    const margin = { top: 60, right: 400, bottom: 40, left: 80 }; // ✅ 오른쪽 공간 확보
+    const gap = 40; 
+    const margin = { top: 60, right: 40, bottom: 40, left: 80 }; // ✅ 오른쪽 공간 확보
 
     if (!Array.isArray(data) || data.length === 0) return;
 
@@ -328,7 +345,9 @@ function drawHeatmap(data, selector, zoneLabel) {
     const svg = d3.select(selector)
 	    .append("svg")
 	    .attr("width", svgWidth)
-	    .attr("height", svgHeight);
+	    .attr("height", svgHeight)
+		.style("display", "block")   // 블록 요소로 변환
+    	.style("margin", "0 auto");  // 가운데 정렬;
 
     const g = svg.append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -355,7 +374,7 @@ function drawHeatmap(data, selector, zoneLabel) {
 
     // 📌 fan-out offset
     const overlapOffsetStep = Math.round(-boxSize * 0.05);
-    const fanoutOffsetStep  = Math.round(boxSize + 4); // ✅ 오른쪽으로 펼침
+    const fanoutOffsetStep  = Math.round(boxSize * 0.5); // ✅ 오른쪽으로 펼침
     const getOffset = (i, mode = "overlap") => {
         return { dx: i * (mode === "fanout" ? fanoutOffsetStep : overlapOffsetStep), dy: 0 };
     };
@@ -418,14 +437,31 @@ function drawHeatmap(data, selector, zoneLabel) {
                 .attr("fill", colorScale(volumeRate))
                 .attr("stroke", "#111").attr("stroke-width", 1)
                 .on("mousemove", function (event) {
-                    const itemList = (d.items || []).map(item => `${item.name} (${item.quantity}개)`).join('<br/>');
-                    tooltip.style("display", "block")
-                        .html(`<strong>${d.rack}-${d.bay}-${d.level}</strong><br/>
-                               용적률: ${volumeRate}%<br/>
-                               물품:<br/>${itemList}`)
-                        .style("left", (event.pageX + 10) + "px")
-                        .style("top", (event.pageY + 10) + "px");
-                });
+			    const itemList = (d.items || []).map(item => `${item.name} (${item.quantity}개)`).join('<br/>');
+			
+			    // 화면 너비와 툴팁 크기 계산
+			    const tooltipNode = tooltip.node();
+			    const tooltipWidth = tooltipNode.offsetWidth || 150;
+			    const pageWidth = window.innerWidth;
+			
+			    // 무조건 오른쪽 기준으로 위치
+			    let left = event.pageX + 15;  
+			
+			    // 화면을 넘어가면 강제로 안쪽으로 붙이기
+			    if (left + tooltipWidth > pageWidth) {
+			        left = pageWidth - tooltipWidth - 10; // 오른쪽 끝에서 10px 여백
+			    }
+			
+			    tooltip
+			        .style("display", "block")
+			        .html(`
+			            <strong>${d.rack}-${d.bay}-${d.level}</strong><br/>
+			            용적률: ${volumeRate}%<br/>
+			            물품:<br/>${itemList}
+			        `)
+			        .style("left", left + "px")
+			        .style("top", (event.pageY + 10) + "px");
+			});
 
             // 초기 위치 (겹쳐진 상태)
             const off = getOffset(i, "overlap");
