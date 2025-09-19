@@ -299,7 +299,12 @@
 	            <!-- 상품 정보 -->
 
 	             <div class="card">
-	                <div class="card-header"><h3 class="card-title">상품 정보</h3></div>
+	                <div class="card-header">
+	                	<div class="d-flex justify-content-between align-items-center mb-3">
+		                	<h3 class="card-title">상품 정보</h3>
+	                		<button class="btn btn-primary" onclick="resetDisposalModal(); ModalManager.openModal(document.getElementById('inventoryDisposalModal'))">폐기</button>
+	                	</div>
+	                </div>
 	                <div class="table-responsive">
 	                    <table class="table">
 	                        <tbody>
@@ -391,8 +396,8 @@
 	        	<form action="/inventory/disposalInventory"
 	        		  method="post">
 	        		<sec:csrfInput/>
-	        		<input type="hidden" name="locationIdx" id="currentLocationIdxdDisposal" />
-	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdxdDisposal"/>
+	        		<input type="hidden" name="locationIdx" id="currentLocationIdxdDisposald" />
+	        		<input type="hidden" name="receiptProductIdx" id="currentReceiptProductIdxdDisposald"/>
 					<div class="current-qty">
 						<label for="updateQty" >현재 수량</label>
 						<input type="number" name="quantity" id="currentQuantityD" readonly/>
