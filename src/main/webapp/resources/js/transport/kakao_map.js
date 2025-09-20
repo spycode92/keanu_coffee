@@ -22,7 +22,7 @@ function renderDispatchMap(containerId, stops) {
     });
 
     var startInfo = new kakao.maps.InfoWindow({
-        content: `<div style="width:150px;text-align:center;padding:6px 0; font-size:0.6rem;">본사</div>`
+        content: `<div style="width:150px;text-align:center;padding:6px 0; font-size:0.6rem; color:#000;">본사</div>`
     });
     startInfo.open(map, startMarker);
 
@@ -44,7 +44,7 @@ function renderDispatchMap(containerId, stops) {
 				});
 				
 				var infowindow = new kakao.maps.InfoWindow({
-					content: `<div style="width:150px;text-align:center;padding:6px 0; font-size:0.6rem;">${stop.franchiseName}</div>`
+					content: `<div style="width:150px;text-align:center;padding:6px 0; font-size:0.6rem; color:#000;">${stop.franchiseName}</div>`
 				})
 				infowindow.open(map, marker);
 				
