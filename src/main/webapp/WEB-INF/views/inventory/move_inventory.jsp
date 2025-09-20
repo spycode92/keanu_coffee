@@ -33,8 +33,8 @@
         <div style="flex: 1;">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h1 class="card-title">재고 이동 <button id="qrScanner" type="button" ><i class="fa-solid fa-qrcode"></i></button></h1>
-                <a href="/inventory/moveInventory/cart">
-	                <i class="fa-solid fa-cart-shopping"></i>
+                <a href="/inventory/moveInventory/cart" class="nav-item">
+	                <i class="fa-solid fa-cart-plus"></i>
                 </a>
             </div>
 
