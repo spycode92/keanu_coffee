@@ -76,7 +76,7 @@
 					<c:forEach var="file" items="${confirmationDTO.fileList}">
 						${file.originalFileName} 
 						<a href="/file/${file.fileIdx}"> 
-						<input type="button" value="다운로드" />
+						<input type="button" value="다운로드" id="btn"/>
 					</a>
 					<br>
 					</c:forEach>

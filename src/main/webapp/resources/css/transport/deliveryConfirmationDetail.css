@@ -1,10 +1,14 @@
+html {
+	color-scheme: light; /* 항상 라이트 모드로 렌더링 */
+}
+
 body {
 	font-family: "맑은 고딕", sans-serif;
 	background-color: #f9f9f9;
 	padding: 30px;
+	color: #000;
 }
 
-/* 문서 영역 */
 .confirmation-container {
 	background: #fff;
 	border: 1px solid #ddd;
@@ -13,9 +17,9 @@ body {
 	max-width: 900px;
 	margin: 0 auto;
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	color: #000;
 }
 
-/* 제목 */
 .confirmation-container h1 {
 	text-align: center;
 	font-size: 26px;
@@ -24,7 +28,6 @@ body {
 	padding-bottom: 10px;
 }
 
-/* 기본 정보 테이블 */
 .confirmation-container table {
 	width: 100%;
 	border-collapse: collapse;
@@ -36,6 +39,7 @@ body {
 	padding: 10px 12px;
 	text-align: left;
 	font-size: 14px;
+	color: #000;
 }
 
 .confirmation-container th {
@@ -43,18 +47,43 @@ body {
 	width: 20%;
 }
 
-/* 필드 (기사 정보 등) */
-.confirmation-container .field {
-	margin: 15px 0;
+.table {
+	width: 100%;
+	border-collapse: collapse;
 }
 
-.confirmation-container .field label {
-	font-weight: bold;
-	display: inline-block;
-	margin-bottom: 6px;
+.table th, .table td {
+	border: 1px solid #ccc;
+	padding: 8px 10px;
+	text-align: center;
+	font-size: 13px;
+	color: #000;
 }
 
-/* 카드 스타일 */
+.table th {
+	background-color: #fafafa;
+}
+
+#summary, #summary * {
+	background-color: #fff;
+	color: #000 !important;
+	border-color: #ccc !important;
+}
+
+#summary .card-header {
+	background-color: #333 !important;
+	color: #fff !important;
+}
+
+#summary .table th {
+	background-color: #fafafa !important;
+}
+
+#summary .download-area {
+	background-color: #f7f7f7 !important;
+	border-color: #aaa !important;
+}
+
 .card {
 	border: 1px solid #ddd;
 	border-radius: 4px;
@@ -68,23 +97,6 @@ body {
 	font-weight: bold;
 }
 
-.table {
-	width: 100%;
-	border-collapse: collapse;
-}
-
-.table th, .table td {
-	border: 1px solid #ccc;
-	padding: 8px 10px;
-	text-align: center;
-	font-size: 13px;
-}
-
-.table th {
-	background-color: #fafafa;
-}
-
-/* 파일 다운로드 */
 .download-area {
 	margin-top: 15px;
 	padding: 10px;
@@ -92,18 +104,20 @@ body {
 	border: 1px dashed #aaa;
 	border-radius: 4px;
 	font-size: 0.9rem;
+	color: #000;
 }
 
-.download-area input[type="button"] {
-	background: #007bff;
+.download-area #btn {
+	-webkit-appearance: none;
+	background: #007bff !important;
 	border: none;
-	color: #fff;
+	color: #fff !important;
 	padding: 6px 12px;
 	border-radius: 4px;
 	cursor: pointer;
 	margin-bottom: 0.8em;
 }
 
-.download-area input[type="button"]:hover {
-	background: #0056b3;
+.download-area #btn:hover {
+	background: #0056b3 !important;
 }
