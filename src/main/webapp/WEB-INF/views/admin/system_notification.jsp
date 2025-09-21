@@ -5,17 +5,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>시스템알림</title>
-<!-- 기본 양식 -->
-<sec:csrfMetaTags/>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
-<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="${pageContext.request.contextPath}/resources/js/admin/system_notification.js"></script>
-<link rel="icon" href="resources/images/keanu_favicon.ico">
+	<meta charset="UTF-8">
+	<title>시스템알림</title>
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
+	<!-- 기본 양식 -->
+	<sec:csrfMetaTags/>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	
+	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/admin/system_notification.js"></script>
 </head>
 
 <body>

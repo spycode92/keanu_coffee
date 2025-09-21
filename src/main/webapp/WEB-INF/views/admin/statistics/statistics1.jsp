@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>통계</title>
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
     <style>
         /* 각 차트 박스 공통 스타일 */
         .chart-card {
@@ -42,7 +43,6 @@
     <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
-	<link rel="icon" href="resources/images/keanu_favicon.ico">
 	
 </head>
 <body>

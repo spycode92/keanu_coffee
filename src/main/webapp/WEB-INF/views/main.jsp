@@ -7,8 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>메인페이지</title>
-<link rel="icon" href="resources/images/keanu_favicon.ico">
-
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 <sec:csrfMetaTags/>
 <!-- 기본 양식 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

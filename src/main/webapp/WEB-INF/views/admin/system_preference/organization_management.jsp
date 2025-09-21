@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>조직 관리</title>
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="/resources/css/common/common.css" rel="stylesheet" />
@@ -30,8 +31,6 @@
 		    }
 		}
     </style>
-    <link rel="icon" href="resources/images/keanu_favicon.ico">
-    
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/inc/top.jsp" />

@@ -5,8 +5,7 @@
 <html>
 <head>
 <title>로그인</title>
-<link rel="icon" href="resources/images/keanu_favicon.ico">
-<sec:csrfMetaTags/>
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico"><sec:csrfMetaTags/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 

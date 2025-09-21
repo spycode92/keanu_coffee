@@ -7,7 +7,8 @@
 <head>
     <meta charset="UTF-8" />
     <title>상품 관리</title>
-    <style type="text/css">
+   	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
+	<style type="text/css">
     /* 검색/필터 바 */
 	.pfilters {
 		width: 100%;
@@ -57,7 +58,6 @@
     <script src="/resources/js/common/common.js"></script>
     <script src="/resources/js/admin/system_preferences/product_manage.js"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-	<link rel="icon" href="resources/images/keanu_favicon.ico">
 
 </head>
 <body>

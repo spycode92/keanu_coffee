@@ -8,6 +8,8 @@
 <head>
 <meta charset="UTF-8">
 <title>재고 이동</title>
+<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
