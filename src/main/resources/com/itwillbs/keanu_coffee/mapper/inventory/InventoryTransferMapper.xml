@@ -29,7 +29,7 @@
         WHERE l.location_type = 2
     </select>
 
-    <!-- 최근 7일 출고량 -->
+    <!-- 최근 7일 출고량 (적정재고 기준 계산용) -->
     <select id="selectLast7DaysOutbound" resultType="map">
         SELECT oi.product_idx    AS productIdx,
                SUM(oi.quantity)  AS totalOutbound
@@ -40,29 +40,6 @@
         GROUP BY oi.product_idx
     </select>
 
-    <!-- 피킹존 보충 대상 (보충 필요인 상품만 조회) -->
-    <select id="selectPickingZoneNeedsReplenishment" resultType="map">
-        SELECT 
-               i.product_idx       AS productIdx,
-               SUM(i.quantity)     AS currentQty,
-               ROUND((SUM(oi.quantity) / 7) * 2) AS targetQty,
-               ROUND((SUM(oi.quantity) / 7) * 2) - SUM(i.quantity) AS shortage,
-               CASE
-                   WHEN SUM(i.quantity) &lt; ROUND((SUM(oi.quantity) / 7) * 2) * 0.8
-                   THEN '보충 필요'
-               END AS status
-        FROM INVENTORY i
-        JOIN WAREHOUSE_LOCATION l 
-          ON i.location_idx = l.location_idx
-        LEFT JOIN OUTBOUND_ORDER_ITEM oi 
-          ON i.product_idx = oi.product_idx
-        JOIN OUTBOUND_ORDER o 
-          ON oi.outbound_order_idx = o.outbound_order_idx
-        WHERE l.location_type = 2
-          AND o.created_at &gt;= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-        GROUP BY i.product_idx
-        HAVING status = '보충 필요'
-    </select>
 </mapper>
 
 
