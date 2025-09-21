@@ -91,6 +91,8 @@ public class PurchaseOrderController {
 //	public void triggerManually() throws IOException {
 	@Scheduled(cron = "0 0 0 * * *") // every day
 //	@Scheduled(cron = "0 * * * * *") // every minute
+//	@Scheduled(cron = "0 */5 * * * *") // every 5 minutes
+//	@Scheduled(fixedRate = 300000) // 5분 = 300,000 밀리초
 	public void triggerAutomatically() throws IOException {
 	    // your logic here
 	

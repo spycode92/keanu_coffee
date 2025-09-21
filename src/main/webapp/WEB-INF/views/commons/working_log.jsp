@@ -15,14 +15,14 @@
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="${pageContext.request.contextPath}/resources/js/admin/system_notification.js"></script>
+<link rel="icon" href="resources/images/keanu_favicon.ico">
 </head>
 
 <body>
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 <section class="content">
 	<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-		<h4>작업로그</h4>
-		<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary" data-target="#addEmployeeModal">
+		<h3 class="mb-0">작업로그</h3>
 	</div>
 	<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
 		<form class="filters" aria-label="검색 및 필터">

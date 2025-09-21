@@ -46,7 +46,7 @@
                                readonly
                                style="flex: 1; max-width: 150px;">
                         <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-primary"
                                 id="btnDetailSearchAddress"
                                 disabled>
                             우편번호 검색
@@ -82,7 +82,7 @@
                     삭제
                 </button>
                 <button type="button"
-                        class="btn btn-secondary btn-cancel-edit"
+                        class="btn btn-secondary btn-cancel"
                         style="display:none;"
                         onclick="setReadonlyMode();">
                     취소

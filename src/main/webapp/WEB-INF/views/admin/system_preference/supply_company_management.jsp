@@ -6,7 +6,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
-    <title>관리자페이지 - 공급 업체 관리</title>
+    <title>공급 업체 관리</title>
     <sec:csrfMetaTags/>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -23,7 +23,7 @@
     <section class="content">
         <div class="container">
 			<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-	            <h4 class="mb-3"><i class="fas fa-truck"></i> 공급업체 관리</h4>
+	            <h3 class="mb-0">공급업체 관리</h3>
 				<button id="btnAddSupplier" class="btn btn-primary">공급업체 추가</button>
 			</div>
 			<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">

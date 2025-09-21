@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자페이지 - 시스템알림</title>
+<title>시스템알림</title>
 <!-- 기본 양식 -->
 <sec:csrfMetaTags/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -21,7 +21,7 @@
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 <section class="content">
 	<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-		<h4>시스템 알림</h4>
+		<h3 class="mb-0">시스템 알림</h3>
 		<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary" data-target="#addEmployeeModal">
 	</div>
 	<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">

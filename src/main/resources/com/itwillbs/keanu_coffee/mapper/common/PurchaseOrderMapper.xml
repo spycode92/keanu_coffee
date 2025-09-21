@@ -172,6 +172,8 @@
 			PURCHASE_ORDER_ITEM p
 		ON 
 			p.order_idx = i.order_idx
+		WHERE
+        	DATE(i.expected_arrival_date) >= CURDATE()
 		GROUP BY 
 			product_idx;
 	</select>
@@ -190,11 +192,10 @@
 		SELECT
 			product_idx,
 			supplier_idx,
-			contract_price
-			
+			contract_price			
 		FROM
 			SUPPLIER_PRODUCT_CONTRACT
-	
+		WHERE status = '활성'
 	</select>
 	<insert id="insertProductOrder">
 		INSERT INTO PURCHASE_ORDER (
@@ -226,7 +227,7 @@
 			, order_idx
 			, quantity
 			, number_of_items
-			, expected_arrival_date			
+			, expected_arrival_date		
 		) VALUES
 		(#{inboundWaitingNumber}, #{orderIdx}, #{quantity}, #{numberOfItems}, #{expectedArrivalDate})
 	</insert>

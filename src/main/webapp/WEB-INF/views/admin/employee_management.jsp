@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자페이지 - 직원관리</title>
+<title>직원관리</title>
 <!-- 기본 양식 -->
 <sec:csrfMetaTags/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -24,7 +24,7 @@
 <section class="content">
 	<div class="container">
 		<div class="d-flex justify-content-between align-items-center mb-3">
-			<h4>직원 관리</h4>
+			<h3 class="mb-0">직원 관리</h3>
 			<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary" data-target="#addEmployeeModal">
 		</div>
 		<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">

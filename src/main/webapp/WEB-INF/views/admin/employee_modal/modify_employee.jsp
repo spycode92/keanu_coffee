@@ -108,7 +108,7 @@
                 <div>
                 <button type="submit" class="btn btn-primary">저장</button>
                 <button type="button"
-                        class="btn btn-secondary"
+                        class="btn btn-cancel"
                         onclick="ModalManager.closeModal(document.getElementById('modifyEmployeeModal'))">
                     취소
                 </button>

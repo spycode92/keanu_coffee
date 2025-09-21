@@ -6,7 +6,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
-    <title>관리자페이지 - 상품 관리</title>
+    <title>상품 관리</title>
     <style type="text/css">
     /* 검색/필터 바 */
 	.pfilters {
@@ -66,7 +66,7 @@
     <section class="content">
         <div class="container">
 			<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-			    <h4 class="mb-3"><i class="fas fa-truck"></i>상품 관리</h4>
+			    <h3 class="mb-0">상품 관리</h3>
 			    <button id="btnAddProduct" class="btn btn-primary">상품 추가</button>
 			</div>
 			<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">

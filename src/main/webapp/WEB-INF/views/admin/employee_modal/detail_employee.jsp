@@ -31,9 +31,9 @@
                 수정
             </button>
             <button type="button"
-                    class="btn btn-confirm"
+                    class="btn btn-primary"
                     onclick="ModalManager.closeModal(document.getElementById('employeeDetailModal'))">
-                확인
+                닫기
             </button>
         </div>
     </div>

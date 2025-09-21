@@ -6,7 +6,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
-    <title>관리자페이지 - 공급계약 관리</title>
+    <title>공급계약 관리</title>
     <style type="text/css">
     /* 검색/필터 바 */
 	.pfilters {
@@ -68,7 +68,7 @@
     <section class="content">
         <div class="container mt-4">
 			<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-                <h4 class="mb-0">공급계약 관리</h4>
+                <h3 class="mb-0">공급계약 관리</h3>
                 <button id="btnAddContract" class="btn btn-primary">공급계약 추가</button>
             </div>
 			<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">

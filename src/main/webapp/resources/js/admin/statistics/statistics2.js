@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	// ----------------------------------------------------------
 	// 히트맵
 	//inventoryRawData에 넣을 데이터 가져오기
-	let locationRawData = [    ];
+	let locationRawData = [];
 	let pickingZoneData = [];
 	let palletZoneData = [];
 	let palletHeatmapData = [];

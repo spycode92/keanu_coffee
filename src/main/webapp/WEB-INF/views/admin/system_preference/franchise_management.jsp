@@ -5,7 +5,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
-    <title>관리자페이지 - 지점 관리</title>
+    <title>지점 관리</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="/resources/css/common/common.css" rel="stylesheet" />
@@ -22,7 +22,7 @@
     <section class="content">
         <div class="container mt-4">
 			<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-                <h4 class="mb-0">지점 관리</h4>
+                <h3 class="mb-0">지점 관리</h3>
                 <button id="btnAddFranchise" class="btn btn-primary">지점 추가</button>
             </div>
 			<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">

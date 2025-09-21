@@ -5,7 +5,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
-    <title>관리자페이지 - 조직 관리</title>
+    <title>조직 관리</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="/resources/css/common/common.css" rel="stylesheet" />
@@ -35,7 +35,7 @@
     <jsp:include page="/WEB-INF/views/inc/top.jsp" />
     <section class="content">
         <div class="container">
-            <h4 class="mt-4 mb-3"><i class="fas fa-users"></i> 조직 관리</h4>
+            <h3 class="mt-4 mb-0">조직 관리</h3>
             <div class="grid-4">
                 <!-- 부서 리스트 -->
                 <div class="card h-100">
