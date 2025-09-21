@@ -12,6 +12,7 @@
 <title>재고 조회</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <style>
 	/* 📌 모든 input[type=text], input[type=date], select를 form-control 기준으로 통일 */
