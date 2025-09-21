@@ -115,7 +115,7 @@
                     삭제
                 </button>
                 <button type="button"
-                        class="btn btn-secondary btn-cancel-edit"
+                        class="btn btn-secondary btn-cancel"
                         style="display: none;">
                     취소
                 </button>

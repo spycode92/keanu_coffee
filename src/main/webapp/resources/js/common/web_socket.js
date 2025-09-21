@@ -27,7 +27,7 @@ let reConnectInterval = 1000; // 1000ms = 1초
 // -----------------------------------------------------------
 // 웹소켓 서버에 연결을 수행하는 함수
 function connectWebSocket() {
-	let socket = new SockJS("/wss-noti"); // 서버의 "/ws-chat" 엔드포인트와 연결 요청할 SockJS 객체 생성
+	let socket = new SockJS("/wss-noti"); // 서버의 "/wss-noti" 엔드포인트와 연결 요청할 SockJS 객체 생성
 	
 	// SockJS 에 의해 선택된 웹소켓 관련 프로토콜을 STOMP 프로토콜로 래핑
 	stompClient = Stomp.over(socket);
@@ -193,7 +193,7 @@ function notification() {
 	fetch("/alarm/getAlarm")
 		.then(res => res.json()).then(data => {
 			isAllRead = true;
-			console.log(data);
+			// // console.log(data);
 			notificationList(data);
 		})
 		.catch(err => console.log("알림 조회 실패"));
@@ -251,7 +251,7 @@ function handleNotiClick(li) {
 //                window.location.href = link;
             }
 			notification();
-			console.log("이동안함");
+			// console.log("이동안함");
 		})
 		.catch(err => console.log(err));
 //	ajaxPost("/alarm/status/" + alarmIdx + "/read")

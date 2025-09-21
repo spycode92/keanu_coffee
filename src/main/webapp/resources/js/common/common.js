@@ -1,23 +1,8 @@
 /**
  * 물류관리 ERP 시스템 공통 JavaScript
  */
-let ajaxActive = 0;
 
-$.ajaxSetup({
-	beforeSend: function () {
-		 ajaxActive++;
-        $('#loading_spinner').show();
-    },
-    complete: function () {
-         ajaxActive--;
-	    if (ajaxActive <= 0) {
-	      $('#loading_spinner').hide();
-	    }
-    }
-});
-
-
-console.log('common.js 로드됨');
+//console.log('common.js 로드됨');
 // 다크모드 관리
 const DarkModeManager = {
     isDarkMode: localStorage.getItem('darkMode') === 'true' || 
@@ -445,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const updateBtn     = modal.querySelector('.btn-update');
 	const editOnlyEls   = modal.querySelectorAll('.edit-only');
     const viewOnlyEls   = modal.querySelectorAll('.view-only');
-    const cancelBtn     = modal.querySelector('button[data-modal-close].btn-secondary');
+    const cancelBtn     = modal.querySelector('button[data-modal-close].btn-cancel');
 
     const form          = modal.querySelector('#changeInfoForm');
  	// 비밀번호 강도 메시지 div

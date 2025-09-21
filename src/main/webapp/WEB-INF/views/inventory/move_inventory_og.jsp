@@ -7,7 +7,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>재고 이동</title>
+<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
@@ -37,7 +39,7 @@
 		
 			<form class="card" action="/inventory/moveInventory" method="post" enctype="multipart/form-data" id="form">
 				<sec:csrfInput/>
-				<h1 class="card-header">재고를 옮기다</h1>
+				<h1 class="card-header">재고이동</h1>
 			  <table>
 			    <tr>
 			      <td class="form-label">직원 ID:</td>

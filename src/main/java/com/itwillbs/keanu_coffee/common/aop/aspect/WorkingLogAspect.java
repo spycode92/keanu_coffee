@@ -41,9 +41,6 @@ public class WorkingLogAspect {
 	private final LogMapper logmapper;
 	private final InventoryMoveMapper inventoryMoveMapper;
 	
-//	@Around("@annotation(com.itwillbs.keanu_coffee.common.aop.annotation.Insert)")
-//	@Around("execution(* com.itwillbs.keanu_coffee.admin.service.*.insertEmployeeInfo(..))")
-	
 	//직원관리 - 직원추가 로그기록
 	@Around("@annotation(workingLog)")
 	public Object insertEmployeeLog(ProceedingJoinPoint pjp, WorkingLog workingLog ) throws Throwable {
@@ -56,12 +53,27 @@ public class WorkingLogAspect {
 		//타겟테이블정보
 		WorkingLogTarget target = workingLog.target();
 		slog.setTarget(target.name());
-
-		//작업자
-		String empNo = authentication.getName();
-		EmployeeDetail empDetail = (EmployeeDetail)authentication.getPrincipal();
-		Integer empIdx = empDetail.getEmpIdx();
-		String empName = empDetail.getEmpName();
+		
+		String empNo;
+		Integer empIdx;
+		String empName;
+		
+		// 작업자
+		if (authentication != null && authentication.isAuthenticated() && 
+			    !authentication.getName().equals("anonymousUser")) {
+			    
+		    // 인증된 사용자인 경우
+		    empNo = authentication.getName();
+		    EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
+		    empIdx = empDetail.getEmpIdx();
+		    empName = empDetail.getEmpName();
+		    
+		} else {
+		    // 인증 정보가 없거나 스케줄된 작업인 경우 (시스템 기본값)
+		    empNo = "System";
+		    empIdx = 0; // 또는 -1, null 등 시스템을 나타내는 값
+		    empName = "자동시스템";
+		}
 		
 		slog.setEmpNo(empNo);
 		
@@ -86,11 +98,11 @@ public class WorkingLogAspect {
 
 	        Object[] args = pjp.getArgs();
 	        
-	        for(int i = 0; i< args.length; i++) {
-	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ ");
-	        	System.out.println("인덱스["+ i + "] :" + args[i]);
-	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ ");
-	        }
+//	        for(int i = 0; i< args.length; i++) {
+//	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ ");
+//	        	System.out.println("인덱스["+ i + "] :" + args[i]);
+//	        	System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ ");
+//	        }
 
 	        String methodName = pjp.getSignature().getName();
 	        //운송시작
@@ -276,6 +288,26 @@ public class WorkingLogAspect {
 	        		slog.setLogMessage(
 	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
 	        						empName + "(" + empNo + ")이 " + productName + "(" + receiptProductIdx + ")상품 폐기중 에러발생."
+	        				);
+	        	}
+	        }
+	        if (methodName.equals("addProductOrder")) {
+	        	
+	        	int orderIdx = (int) args[0];
+	        	String orderNumber = (String) args[1];
+	        	
+	        	slog.setSubSection("발주");
+	        	
+	        	slog.setTargetIdx(orderIdx);
+	        	if (errorMessage == null) {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	        						empName + "(" + empNo + ")이 " + orderIdx + "(" + orderNumber + ")발주 완료 "
+	        				);
+	        	} else {
+	        		slog.setLogMessage(
+	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+	        						empName + "(" + empNo + ")이 " + orderIdx + "(" + orderNumber + ")발주 중 에러발생 "
 	        				);
 	        	}
 	        }

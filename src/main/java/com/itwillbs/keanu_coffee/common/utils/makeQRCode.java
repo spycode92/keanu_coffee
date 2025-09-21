@@ -60,6 +60,6 @@ public class makeQRCode {
 	// in the specified folder
 	// as a jpg file
 	createQR(data, path, charset, hashMap, 200, 200);
-	System.out.println("QR Code Generated!!! ");
+//	System.out.println("QR Code Generated!!! ");
 	}
 }

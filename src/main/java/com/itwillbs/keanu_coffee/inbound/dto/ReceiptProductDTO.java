@@ -39,8 +39,8 @@ public class ReceiptProductDTO implements Serializable {
 	private BigDecimal totalPrice;	// 총액 = amount + tax
 
 	// 검수 담당/일자
-	private Long empIdx;			// 검수 담당자 idx
-	private Long supplierIdx;
+	private Integer empIdx;			// 검수 담당자 idx
+	private Integer supplierIdx;
 	private Date manufactureDate; 
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

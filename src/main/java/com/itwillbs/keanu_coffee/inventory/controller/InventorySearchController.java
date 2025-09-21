@@ -149,6 +149,9 @@ public class InventorySearchController {
     	EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
     	Integer empIdx = empDetail.getEmpIdx();
     	
+    	System.out.println(request);
+    	System.out.println(disposal);
+    	
     	try {
     		inventoryService.disposalInventoryQuantity(request, disposal, empIdx);
     		MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.SUCCESS, "성공", "폐기 완료");

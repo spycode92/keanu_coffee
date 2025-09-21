@@ -57,8 +57,8 @@ public class InventoryActionsService {
 	}
 
 	public void addLocationOfInventory(InventoryDTO inventoryDTO, int qtyMoving, int employeeId) {
-		System.out.println("inventoryDTO : " + inventoryDTO);
-		System.out.println("employeeId : " + employeeId);
+//		System.out.println("inventoryDTO : " + inventoryDTO);
+//		System.out.println("employeeId : " + employeeId);
 		inventoryActionsMapper.insertLocationOfInventory(inventoryDTO, qtyMoving, employeeId);
 		
 	}

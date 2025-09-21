@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	function getInventory(){
 		return ajaxGet(`/admin/dashboard/inventory`)
 			.then((data)=>{
-				console.log(data);
+//				console.log(data);
 				inventoryRawData = data;
 			}).catch((data)=>{
 				console.log("error " + data)	
@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	// ----------------------------------------------------------
 	// 히트맵
 	//inventoryRawData에 넣을 데이터 가져오기
-	let locationRawData = [    ];
+	let locationRawData = [];
 	let pickingZoneData = [];
 	let palletZoneData = [];
 	let palletHeatmapData = [];

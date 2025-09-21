@@ -16,8 +16,9 @@
   <div id="qrcode"></div>
   <script>
   const data = {
-			orderNumber: "PO-20250810-001" ,
-			ibwaitIdx: 3310
+			orderNumber: "PO-20250810-001",
+			ibwaitIdx: 3310,
+			lotNumber: "test lot_number"
 		};
 		QRCode.toCanvas(JSON.stringify(data), { width: 200 }, function (err, canvas) {
 		  if (err) console.error(err);

@@ -34,7 +34,7 @@
                             <input id="selAssignSummary" disabled />
                         </div>
                         <div class="field">
-                            <label>가용 가능한 기사</label>
+                            <label>배정 가능 기사</label>
                             <select id="primaryDriverSelect"></select>
                             <button class="btn btn-primary" id="btnAssignDriver" style="justify-content: center;">기사 배정</button>
                         </div>

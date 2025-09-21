@@ -72,7 +72,7 @@
             </div>
             <div class="modal-foot">
                 <button type="button"
-                        class="btn btn-secondary"
+                        class="btn btn-cancel"
                         onclick="ModalManager.closeModal(document.getElementById('productAddModal'))">
                     취소
                 </button>
@@ -103,7 +103,7 @@
             </div>
             <div class="modal-foot">
                 <button type="button"
-                        class="btn btn-secondary"
+                        class="btn btn-cancel"
                         onclick="ModalManager.closeModal(document.getElementById('addCategoryModal'))">
                     취소
                 </button>

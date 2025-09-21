@@ -89,7 +89,7 @@ public class EmployeeManagementController {
 		Integer empIdx = empDetail.getEmpIdx();
 
 		employee = employeeManagementService.getOneEmployeeInfoByEmpIdx(empIdx);
-		System.out.println(employee);
+//		System.out.println(employee);
 		return employee;
 	}
 

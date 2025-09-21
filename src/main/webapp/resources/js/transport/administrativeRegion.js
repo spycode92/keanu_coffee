@@ -164,7 +164,7 @@ $.ajax({
 		      <td>${group.sido}</td>
 		      <td>${group.sigungu}</td>
 		      <td>${dongHtml}</td>
-		      <td><button class="btn btn-sm btn-destructive" data-idx="${group.idxList.join(",")}">그룹삭제</button></td>
+		      <td><button class="btn btn-sm btn-destructive delete-btn" data-idx="${group.idxList.join(",")}">그룹삭제</button></td>
 		    </tr>
 		  `);
 		});
@@ -218,7 +218,7 @@ $(document).on("click", ".delete-btn", function() {
 	Swal.fire({
 		title: "이 그룹 전체를 삭제하시겠습니까?",
 		showDenyButton: true,
-		confirmButtonText: "배정",
+		confirmButtonText: "삭제",
 	  	denyButtonText: "취소",
 	}).then((result) => {
 		if (result.isConfirmed) {

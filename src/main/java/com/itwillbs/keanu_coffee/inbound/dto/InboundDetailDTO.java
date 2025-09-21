@@ -13,6 +13,7 @@ public class InboundDetailDTO {
     private String orderNumber;         	// 발주번호
     private String inboundClassification; 	// 입고구분 (발주 기준)
     private String supplierName;         	// 공급업체명
+    private Integer managerIdx; 
     private String managerName;          	// 담당자명
     private String inboundLocation;      	// 입고위치
     private String inboundStatus;		 	// 입고 현 상태

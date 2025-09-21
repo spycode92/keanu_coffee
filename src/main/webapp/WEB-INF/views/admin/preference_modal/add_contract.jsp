@@ -76,7 +76,7 @@
                     등록
                 </button>
                 <button type="button"
-                        class="btn btn-secondary"
+                        class="btn btn-cancel"
                         onclick="ModalManager.closeModal(document.getElementById('contractAddModal'))">
                     취소
                 </button>

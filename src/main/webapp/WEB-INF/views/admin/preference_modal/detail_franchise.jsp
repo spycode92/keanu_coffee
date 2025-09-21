@@ -40,7 +40,7 @@
                                readonly
                                style="flex: 1; max-width: 150px;">
                         <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-primary"
                                 id="btnDetailSearchAddress"
                                 disabled>
                             우편번호 검색
@@ -75,7 +75,7 @@
                 </div>
             </div>
             <div class="modal-foot">
-                <button type="button" class="btn btn-secondary btn-cancel-edit" style="display:none;">취소</button>
+                <button type="button" class="btn btn-secondary btn-cancel" style="display:none;">취소</button>
                 <button type="button" class="btn btn-primary btn-edit">수정</button>
                 <button type="submit" class="btn btn-primary btn-save" style="display:none;">저장</button>
             </div>

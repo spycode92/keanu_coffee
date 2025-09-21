@@ -91,6 +91,8 @@ public class PurchaseOrderController {
 //	public void triggerManually() throws IOException {
 	@Scheduled(cron = "0 0 0 * * *") // every day
 //	@Scheduled(cron = "0 * * * * *") // every minute
+//	@Scheduled(cron = "0 */5 * * * *") // every 5 minutes
+//	@Scheduled(fixedRate = 300000) // 5분 = 300,000 밀리초
 	public void triggerAutomatically() throws IOException {
 	    // your logic here
 	
@@ -144,9 +146,9 @@ public class PurchaseOrderController {
 
                 alphaValuesList.add(new OutboundOrderItemDTO(productIdx, quantity));
             }
-            for (OutboundOrderItemDTO product : alphaValuesList) {
-				System.out.println("product idx : " + product.getProductIdx() + "quantity : " + product.getQuantity());
-			}
+//            for (OutboundOrderItemDTO product : alphaValuesList) {
+//				System.out.println("product idx : " + product.getProductIdx() + "quantity : " + product.getQuantity());
+//			}
 
 
 
@@ -166,9 +168,9 @@ public class PurchaseOrderController {
 //            List<OutboundOrderItemDTO> betaValuesList = purchaseOrderService.getAvgDemandSameWeekOneYearAgo(lastYear, lastYearMonth, lastYearDay, beta);
             List<OutboundOrderItemDTO> betaValuesList = purchaseOrderService.getAvgDemandSameWeekOneYearAgo(startDate, endDate, beta);
          
-            for (OutboundOrderItemDTO product : betaValuesList) {
-				System.out.println("product idx : " + product.getProductIdx() + "quantity : " + product.getQuantity());
-			}
+//            for (OutboundOrderItemDTO product : betaValuesList) {
+//				System.out.println("product idx : " + product.getProductIdx() + "quantity : " + product.getQuantity());
+//			}
             
             
             
@@ -465,7 +467,7 @@ public class PurchaseOrderController {
 
         
 	} else {
-		System.out.println("no orders needed");
+//		System.out.println("no orders needed");
 	}
     }
 }

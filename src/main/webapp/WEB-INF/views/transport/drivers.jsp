@@ -12,6 +12,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/transport/driver.js"></script>
 <style type="text/css">
@@ -149,7 +150,7 @@
 												<span class="badge badge-waiting">대기</span>
 											</c:when>
 											<c:otherwise>
-												<span class="badge badge-urgent">예약</span>
+												<span class="badge badge-urgent">미배정</span>
 											</c:otherwise>
 										</c:choose>
 									</td>

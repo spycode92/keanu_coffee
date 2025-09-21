@@ -41,6 +41,8 @@
     		location_name
     	FROM
     		WAREHOUSE_LOCATION
+    	WHERE 
+    		width is not null
     	ORDER BY location_idx desc
     	LIMIT 1
     		

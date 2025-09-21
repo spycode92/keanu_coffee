@@ -1,8 +1,6 @@
-// /resources/js/inbound/modal/qrScanner.js
-// QR 코드 스캐너 모달 제어 (ZXing 사용) - JSON 데이터 → 확인창 → URL 이동
 
 (function() {
-	console.log("qrScanner.js 로드됨");
+	console.log("managementQRscanner.js 로드됨");
 
 	const codeReader = new ZXing.BrowserMultiFormatReader();
 

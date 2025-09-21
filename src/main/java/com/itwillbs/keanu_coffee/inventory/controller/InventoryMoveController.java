@@ -125,7 +125,7 @@ public class InventoryMoveController {
 	@GetMapping("/isLocationExist/{locationName}")
 	public ResponseEntity<Map<String,Object>> isLocationExist(@PathVariable String locationName){
 		Map<String,Object> result = new HashMap<String, Object>();
-		System.out.println(locationName);
+//		System.out.println(locationName);
 		//상품의 유무 판별
 		Boolean isExist = inventoryMoveService.getLocationCount(locationName);
 		

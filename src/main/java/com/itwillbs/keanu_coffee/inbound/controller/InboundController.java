@@ -1,6 +1,7 @@
 package com.itwillbs.keanu_coffee.inbound.controller;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
+import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.service.ExcelExportService;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO;
@@ -60,36 +63,51 @@ public class InboundController {
 	// 입고조회
 	@GetMapping("/management")
 	public String showInboundManagement(
-			@RequestParam(required = false) String simpleKeyword,
+	        @RequestParam(required = false) String simpleKeyword,
 	        @RequestParam(required = false) String status,
 	        @RequestParam(required = false) String orderInboundKeyword,
 	        @RequestParam(required = false) String vendorKeyword,
-	        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inStartDate,
-	        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inEndDate,
-			@RequestParam(defaultValue = "1") int pageNum, Model model) {
-		
-		// 검색
+	        @RequestParam(required = false) String inStartDate,
+	        @RequestParam(required = false) String inEndDate,
+	        @RequestParam(defaultValue = "1") int pageNum,
+	        Model model) {
+
+	    // --- 날짜 변환 (빈 문자열이면 null 처리) ---
+	    LocalDate start = null;
+	    LocalDate end = null;
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	    if (inStartDate != null && !inStartDate.isBlank()) {
+	        start = LocalDate.parse(inStartDate, formatter);
+	    }
+	    if (inEndDate != null && !inEndDate.isBlank()) {
+	        end = LocalDate.parse(inEndDate, formatter);
+	    }
+
+	    // --- 검색 파라미터 맵 ---
 	    Map<String, Object> searchParams = new HashMap<>();
-	    searchParams.put("simpleKeyword", simpleKeyword);
-	    searchParams.put("status", status);
-	    searchParams.put("orderInboundKeyword", orderInboundKeyword);
-	    searchParams.put("vendorKeyword", vendorKeyword);
-	    searchParams.put("inStartDate", inStartDate);
-	    searchParams.put("inEndDate", inEndDate);
-	    
-	    // 전체 개수
+	    searchParams.put("simpleKeyword", simpleKeyword != null && !simpleKeyword.isBlank() ? simpleKeyword.trim() : null);
+	    searchParams.put("status", status != null && !status.isBlank() ? status.trim() : null);
+	    searchParams.put("orderInboundKeyword", orderInboundKeyword != null && !orderInboundKeyword.isBlank() ? orderInboundKeyword.trim() : null);
+	    searchParams.put("vendorKeyword", vendorKeyword != null && !vendorKeyword.isBlank() ? vendorKeyword.trim() : null);
+	    searchParams.put("inStartDate", start);
+	    searchParams.put("inEndDate", end);
+
+	    // --- 전체 개수 조회 ---
 	    int totalCount = inboundService.getInboundCount(searchParams);
-		
-	    // 페이징
-		int listLimit = 15; // 한 페이지당 표시할 목록 수\
-		int startRow = (pageNum - 1) * listLimit;
+
+	    // --- 페이징 처리 ---
+	    int listLimit = 10; // 한 페이지당 표시할 목록 수
+	    int startRow = (pageNum - 1) * listLimit;
+
 	    PageInfoDTO pageInfo = new PageInfoDTO();
 	    pageInfo.setPageNum(pageNum);
-	    pageInfo.setMaxPage((int)Math.ceil(totalCount / (double)listLimit));
-		
-		// 리스트(검색조건 + 페이징)
+	    pageInfo.setMaxPage((int) Math.ceil(totalCount / (double) listLimit));
+
+	    // --- 리스트 조회 ---
 	    List<InboundManagementDTO> orderDetailList = inboundService.getInboundList(searchParams, startRow, listLimit);
-	    
+
+	    // --- Model에 데이터 저장 ---
 	    model.addAttribute("pageInfo", pageInfo);
 	    model.addAttribute("orderList", orderDetailList);
 	    model.addAttribute("totalCount", totalCount);
@@ -116,6 +134,7 @@ public class InboundController {
 		return "/inbound/inboundDetail";
 	}
 	
+	// 위치지정
 	@PostMapping(path="/updateLocation", consumes="application/json", produces="application/json")
 	@ResponseBody
 	public Map<String,Object> updateLocation(@RequestBody UpdateLocationReq req){
@@ -155,6 +174,10 @@ public class InboundController {
 										Model model) {
 		
 	    InboundDetailDTO inboundDetailData = inboundService.getInboundDetailData(ibwaitIdx);
+	    if (inboundDetailData != null && "대기".equals(inboundDetailData.getInboundStatus())) {
+	        inboundService.updateInboundStatus(ibwaitIdx, "검수중");
+	        inboundDetailData.setInboundStatus("검수중"); // 화면에도 반영
+	    }
 	    model.addAttribute("inboundDetailData", inboundDetailData);
 		
 	    List<InboundProductDetailDTO> ibProductDetail = inboundService.getInboundProductDetail(orderNumber);
@@ -163,12 +186,30 @@ public class InboundController {
 		return "/inbound/inboundInspection";
 	}
 	
+	// 검수완료
 	@PostMapping(path="/inspectionComplete", consumes="application/json", produces="application/json")
 	@ResponseBody
-	public Map<String,Object> inspectionComplete(@RequestBody ReceiptProductDTO dto) {
+	public Map<String,Object> inspectionComplete(@RequestBody ReceiptProductDTO dto, Authentication authentication) {
+		 // 현재 로그인 사용자 정보 가져오기
+		EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
+		Integer empIdx = empDetail.getEmpIdx();
+		dto.setEmpIdx(empIdx);
+		
+		// 데이터 존재 여부 확인 후 Insert or Update
 		boolean exists = inboundService.findDataExists(dto.getIbwaitIdx(), dto.getProductIdx(), dto.getLotNumber());
-		inboundService.inspectionCompleteUpdate(dto, exists);
-		return Map.of("ok", true);
+	    inboundService.inspectionCompleteUpdate(dto, exists);
+
+	    return Map.of("ok", true, "empIdx", empIdx);
+	}
+	
+	// 입고완료
+	@PostMapping(path="/commitInbound", consumes="application/json", produces="application/json")
+	@ResponseBody
+	public Map<String, Object> commitInbound(@RequestBody Map<String, Object> req) {
+	    Integer ibwaitIdx = Integer.valueOf(req.get("ibwaitIdx").toString());
+	    inboundService.updateInboundStatus(ibwaitIdx, "재고등록완료");
+
+	    return Map.of("ok", true, "ibwaitIdx", ibwaitIdx);
 	}
 	
 	// 엑셀 생성 컨트롤러
@@ -193,9 +234,6 @@ public class InboundController {
         searchParams.put("inStartDate", inStartDate);
         searchParams.put("inEndDate", inEndDate);
 
-        // --- DB 조회 ---
-        List<InboundManagementDTO> list = inboundMapper.selectInboundListForExcel(searchParams);
-
         // --- 엑셀 생성 ---
         Workbook workbook = excelExportService.createInboundManagementExcel(searchParams);
 
@@ -206,7 +244,6 @@ public class InboundController {
         workbook.write(response.getOutputStream());
         workbook.close();
     }
-
 
 	
 	// ====================================================================================================================================

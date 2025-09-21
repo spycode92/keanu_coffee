@@ -137,30 +137,33 @@
 
     <!-- 상세 데이터 -->
     <select id="selectInboundDetailData" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO">
-        SELECT 
-            iw.ibwait_idx            AS ibwaitIdx,
-            iw.ibwait_number         AS ibwaitNumber,
-            iw.arrival_date          AS arrivalDate,
-            po.order_number          AS orderNumber,
-            po.inbound_classification AS inboundClassification,
-            s.supplier_name          AS supplierName,
-            iw.manager               AS managerName,
-            iw.inbound_location      AS inboundLocation,
-            iw.number_of_items       AS numberOfItems,
-            iw.quantity              AS quantity,
-            iw.inbound_status        AS inboundStatus,
-            SUM(poi.quantity * poi.unit_price * 1.1) AS totalPrice,
-            iw.note                  AS note
-        FROM INBOUND_WAITING iw
-        JOIN PURCHASE_ORDER po ON iw.order_idx = po.order_idx
-        JOIN SUPPLIER s ON po.supplier_idx = s.supplier_idx
-        JOIN PURCHASE_ORDER_ITEM poi ON po.order_idx = poi.order_idx
-        WHERE iw.ibwait_idx = #{ibwaitIdx}
-        GROUP BY iw.ibwait_idx, iw.ibwait_number, iw.arrival_date,
-                 po.order_number, po.inbound_classification,
-                 s.supplier_name, iw.manager, iw.inbound_location,
-                 iw.number_of_items, iw.quantity, iw.inbound_status, iw.note
-    </select>
+	    SELECT 
+	        iw.ibwait_idx            AS ibwaitIdx,
+	        iw.ibwait_number         AS ibwaitNumber,
+	        iw.arrival_date          AS arrivalDate,
+	        po.order_number          AS orderNumber,
+	        po.inbound_classification AS inboundClassification,
+	        s.supplier_idx           AS supplierIdx,
+	        s.supplier_name          AS supplierName,
+	        iw.manager               AS managerName,
+	        iw.inbound_location      AS inboundLocation,
+	        iw.number_of_items       AS numberOfItems,
+	        iw.quantity              AS quantity,
+	        iw.inbound_status        AS inboundStatus,
+	        SUM(poi.quantity * poi.unit_price * 1.1) AS totalPrice,
+	        iw.note                  AS note
+	    FROM INBOUND_WAITING iw
+	    JOIN PURCHASE_ORDER po ON iw.order_idx = po.order_idx
+	    JOIN SUPPLIER s ON po.supplier_idx = s.supplier_idx
+	    JOIN PURCHASE_ORDER_ITEM poi ON po.order_idx = poi.order_idx
+	    WHERE iw.ibwait_idx = #{ibwaitIdx}
+	    GROUP BY iw.ibwait_idx, iw.ibwait_number, iw.arrival_date,
+	             po.order_number, po.inbound_classification,
+	             s.supplier_idx, s.supplier_name, iw.manager,         
+	             iw.inbound_location,
+	             iw.number_of_items, iw.quantity, iw.inbound_status, iw.note
+	</select>
+
 
     <!-- 상세 상품 데이터 -->
     <select id="selectInboundProductDetail" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundProductDetailDTO">
@@ -222,15 +225,29 @@
         )
     </select>
 
-    <!-- INSERT -->
+    <!-- INSERT receipt_product -->
     <insert id="insertReceiptProduct" parameterType="com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO">
-        INSERT INTO RECEIPT_PRODUCT
-        (ibwait_idx, supplier_idx, product_idx, lot_number, manufacture_date,
-         expiration_date, quantity, received_at, emp_idx, created_at, updated_at)
-        VALUES
-        (#{ibwaitIdx}, #{supplierIdx}, #{productIdx}, #{lotNumber}, #{manufactureDate},
-         #{expirationDate}, #{quantity}, NOW(), #{empIdx}, NOW(), NOW())
-    </insert>
+		INSERT INTO RECEIPT_PRODUCT
+		(ibwait_idx, supplier_idx, product_idx, lot_number
+		,manufacture_date, expiration_date, quantity
+		,received_at, emp_idx, created_at, updated_at)
+		SELECT
+			 #{ibwaitIdx}
+			,po.supplier_idx
+			,#{productIdx}
+			,#{lotNumber}
+			,#{manufactureDate}
+			,#{expirationDate}
+			,#{quantity}
+			,NOW()
+			,#{empIdx}
+			,NOW()
+			,NOW()
+		FROM INBOUND_WAITING iw
+		JOIN PURCHASE_ORDER po
+			ON iw.order_idx = po.order_idx
+		WHERE iw.ibwait_idx = #{ibwaitIdx}
+	</insert>
 
     <!-- UPDATE receipt_product -->
     <update id="updateReceiptProduct" parameterType="com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO">
@@ -255,4 +272,13 @@
         )
           AND product_idx = #{productIdx}
     </update>
+	
+	<!-- 입고 상태 변경 -->
+	<update id="updateInboundStatus">
+	    UPDATE INBOUND_WAITING
+	    SET inbound_status = #{status},
+	        updated_at = NOW()
+	    WHERE ibwait_idx = #{ibwaitIdx}
+	</update>
+	
 </mapper>

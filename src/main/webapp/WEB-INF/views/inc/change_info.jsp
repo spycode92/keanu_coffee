@@ -77,7 +77,7 @@
             </div>
             <div class="edit-only" style="display: none;">
                 <button type="submit" form="changeInfoForm" class="btn btn-primary">저장</button>
-                <button type="button" class="btn btn-secondary" data-modal-close>취소</button>
+                <button type="button" class="btn btn-cancel" data-modal-close style="display: none;">취소</button>
             </div>
         </div>
     </div>

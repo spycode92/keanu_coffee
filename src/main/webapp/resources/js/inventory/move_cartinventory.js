@@ -110,7 +110,7 @@ function searchProductByLotNum(lotNumber){
 	ajaxGet(`/inventory/move/getProductDetail/${lotNumber}`)
 		.then(data => {
 			if(data.success) {
-				console.log(data.fileIdx);
+//				console.log(data.fileIdx);
 				let url = "";
 				//상품이미지 보여주기
 				url = data.fileIdx ? '/file/thumbnail/' + data.fileIdx : '/resources/images/default_product.jpg';
@@ -142,7 +142,7 @@ function searchProductByLotNum(lotNumber){
 function getLocationList() {
 	ajaxGet("/inventory/move/getLocationList")
 	.then(data => {
-		console.log(data);
+//		console.log(data);
 	})
 }
 
@@ -328,7 +328,7 @@ if (document.readyState === "loading") {
 
 //웹소켓 구독 코드
 subscribeRoom("inventory", function(message) {
-    console.log("📦 새 재고 이벤트 발생!");
+//    console.log("📦 새 재고 이벤트 발생!");
 //    console.log("   roomId :", message.roomId);
 //    console.log("   sender :", message.sender);
 //    console.log("   text   :", message.message);

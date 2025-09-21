@@ -56,7 +56,7 @@
 
     <!-- 상단/사이드 레이아웃 -->
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
-
+	<div class="content">
     <div class="card" style="margin:20px;">
 		<div class="card-header">
 			<h3 class="card-title">재고 조회</h3>
@@ -286,7 +286,7 @@
 		    </div>
 		</div>
 	</div>
-
+</div>
 	<!-- ========================= LOT 상세 모달 ========================= -->
 	<div class="modal" id="lotModal">
 	    <div class="modal-card lg">
@@ -299,7 +299,12 @@
 	            <!-- 상품 정보 -->
 
 	             <div class="card">
-	                <div class="card-header"><h3 class="card-title">상품 정보</h3></div>
+	                <div class="card-header">
+	                	<div class="d-flex justify-content-between align-items-center mb-3">
+		                	<h3 class="card-title">상품 정보</h3>
+	                		<button class="btn btn-primary" onclick="resetDisposalModal(); ModalManager.openModal(document.getElementById('inventoryDisposalModal'))">폐기</button>
+	                	</div>
+	                </div>
 	                <div class="table-responsive">
 	                    <table class="table">
 	                        <tbody>
@@ -355,7 +360,7 @@
 	            <button class="modal-close-btn" onclick="ModalManager.closeModal(document.getElementById('quantityUpdateModal'))">✕</button>
 	        </div>
 	        <div class="modal-body">
-	        	<form action="/inventory/disposalInventory"
+	        	<form action="/inventory/updateInventory"
 	        		  method="post">
 	        		<sec:csrfInput/>
 	        		<input type="hidden" name="locationIdx" id="currentLocationIdx" />
@@ -535,8 +540,8 @@
 	        $('#currentReceiptProductIdxd').val(parseInt(receiptProductIdx));
 	        $('#currentLocationIdxd').val(parseInt(locationIdx));
 	        $('#currentQuantityD').val(currentQuantity);
-
-		
+	        
+	        
 		    // Ajax로 상세 데이터 요청
 		    $.getJSON('${pageContext.request.contextPath}/inventory/detail', { idx: idx }, function(data) {
 		        // 상품 정보 채우기

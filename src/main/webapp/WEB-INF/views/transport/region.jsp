@@ -13,6 +13,7 @@
 <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" ></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <link href="${pageContext.request.contextPath}/resources/css/transport/region.css" rel="stylesheet">
+<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/transport/region.js" defer></script>
@@ -23,11 +24,6 @@
 <body>
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	<section class="content">
-		<c:if test="${not empty msg}">
-			<script type="text/javascript">
-				alert("${msg}");
-			</script>
-		</c:if>
 		<header>
 			<h3>구역 관리</h3>
 		</header>

@@ -6,7 +6,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
-    <title>관리자페이지 - 공급 업체 관리</title>
+    <title>공급 업체 관리</title>
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">    
     <sec:csrfMetaTags/>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -14,7 +15,7 @@
     <script src="/resources/js/common/common.js"></script>
     <script src="/resources/js/admin/system_preferences/supplier_manage.js"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-</head>
+    </head>
 <body>
     <jsp:include page="/WEB-INF/views/inc/top.jsp" />
     <jsp:include page="/WEB-INF/views/admin/preference_modal/add_supplier.jsp" />
@@ -23,7 +24,7 @@
     <section class="content">
         <div class="container">
 			<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-	            <h4 class="mb-3"><i class="fas fa-truck"></i> 공급업체 관리</h4>
+	            <h3 class="mb-0">공급업체 관리</h3>
 				<button id="btnAddSupplier" class="btn btn-primary">공급업체 추가</button>
 			</div>
 			<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">

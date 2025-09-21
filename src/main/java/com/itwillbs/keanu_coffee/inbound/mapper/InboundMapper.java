@@ -49,6 +49,9 @@ public interface InboundMapper {
 	void updateReceiptProduct(ReceiptProductDTO dto);
 	void insertReceiptProduct(ReceiptProductDTO dto);
 	void updatePurchaseOrderItemAfterInspection(ReceiptProductDTO dto);
+	
+	// 검수버튼시 '검수중'상태변경
+	void updateInboundStatus(@Param("ibwaitIdx") Integer ibwaitIdx, @Param("status") String status);
 
 	
 }
