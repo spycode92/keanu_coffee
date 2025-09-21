@@ -57,6 +57,7 @@
     <script src="/resources/js/common/common.js"></script>
     <script src="/resources/js/admin/system_preferences/supply_contract.js"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <link rel="icon" href="resources/images/keanu_favicon.ico">
     
 
 </head>

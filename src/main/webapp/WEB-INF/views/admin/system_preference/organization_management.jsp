@@ -30,6 +30,8 @@
 		    }
 		}
     </style>
+    <link rel="icon" href="resources/images/keanu_favicon.ico">
+    
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/inc/top.jsp" />

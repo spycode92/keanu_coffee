@@ -42,6 +42,7 @@
     <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+	<link rel="icon" href="resources/images/keanu_favicon.ico">
 	
 </head>
 <body>

@@ -17,6 +17,7 @@
 
 <!-- FontAwesome CDN for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link rel="icon" href="resources/images/keanu_favicon.ico">
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 

@@ -60,6 +60,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 	<script src="https://d3js.org/d3.v7.min.js"></script>
+	<link rel="icon" href="resources/images/keanu_favicon.ico">
 	
 </head>
 <body>
