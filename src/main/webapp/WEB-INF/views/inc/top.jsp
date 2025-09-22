@@ -302,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					<li><a href="/admin/preference/dept">조직관리</a></li>
 					<li><a href="/admin/preference/supplyCompany">공급업체관리</a></li>
 					<li><a href="/admin/preference/product">상품관리</a></li>
-					<li><a href="/admin/preference/supplyContract">공급계약</a></li>
+					<li><a href="/admin/preference/supplyContract">공급계약관리</a></li>
 					<li><a href="/admin/preference/franchise">지점관리</a></li>
 					<li><a href="/admin/sysNoti">시스템알림</a></li>
 				</ul>
@@ -328,16 +328,16 @@ document.addEventListener("DOMContentLoaded", () => {
 <%-- 			</sec:authorize> --%>
 <%-- 			<sec:authorize access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')"> --%>
 			<li class="menu-item">
-				<a href="#"><span>재고 현황</span></a>
+				<a href="#"><span>재고 관리</span></a>
 			    <ul class="submenu ${fn:contains(uri, '/inventory') ? 'open' : ''}">
 			        <li><a href="/inventory/main">대시보드</a></li>
 			        <li><a href="/inventory/stockCheck">재고 조회</a></li>
 <!-- 			        <li><a href="/inventory/productHistory">제품 위치 기록</a></li> -->
 <!-- 	                <li><a href="/inventory/updateInventory">재고 업데이트</a></li> -->
 	                <li><a href="/inventory/updateWarehouse">로케이션 생성</a></li>
+	                <li><a href="/inventory/inventoryToMove">재고 이동 대상</a></li>
 	                <li><a href="/inventory/moveInventory">재고 이동</a></li>
 <!-- 	                <li><a href="/inventory/updatedInventory">업데이트된 재고 테이블</a></li> -->
-	                <li><a href="/inventory/inventoryToMove">로케이션 이동 대상</a></li>
 <!-- 	                <li><a href="/inventory/qrScanner">QR 스캐너</a></li> -->
 <!-- 	                <li><a href="/inventory/locationType">로케이션 지정</a></li> -->
 			  </ul>

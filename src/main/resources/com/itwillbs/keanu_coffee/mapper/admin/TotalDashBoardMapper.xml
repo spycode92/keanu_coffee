@@ -81,7 +81,7 @@
 		    , p.product_name as productName
 		    , c.common_code_name as categoryName
 		    , COALESCE(SUM(dci.ordered_qty), 0) as OBOQuantity
-		    , COALESCE(SUM(dci.delivered_qty), 0) as DIQuantity
+		    , COALESCE(SUM(dci.ordered_qty - dci.delivered_qty), 0) as DIQuantity
 		    , COALESCE(SUM(d.disposal_amount), 0) as disposalQuantity
 		from DELIVERY_CONFIRMATION dc
 		LEFT JOIN DISPATCH_STOPDELIVERY_CONFIRMATION_ITEM dci

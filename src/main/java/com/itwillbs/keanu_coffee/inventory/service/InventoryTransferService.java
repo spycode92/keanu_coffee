@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO;
 import com.itwillbs.keanu_coffee.inventory.mapper.InventoryTransferMapper;
-import com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderItemDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,28 +31,26 @@ public class InventoryTransferService {
         return inventoryTransferMapper.selectPickingZoneStock();
     }
 
- // 최근 7일 출고량으로 적정재고 계산
+    // 최근 7일 출고량으로 적정재고 계산 (주 1회 실행)
     public void updatePickingZoneTargetStock() {
-        // 최근 7일 출고량 가져오기 → resultType=map 이므로 Map으로 받음
         List<Map<String, Object>> avgList = inventoryTransferMapper.selectLast7DaysOutbound();
-
-        targetStockCache.clear(); // 기존 캐시 초기화
+        targetStockCache.clear();
 
         for (Map<String, Object> row : avgList) {
-            // Map에서 값 꺼내오기
             Integer productIdx = (Integer) row.get("productIdx");
-            Long totalOutbound = ((BigDecimal) row.get("totalOutbound")).longValue(); // ✅ BigDecimal → long 변환
+            Long totalOutbound = ((BigDecimal) row.get("totalOutbound")).longValue();
 
             if (productIdx != null) {
-                int avg = (int) (totalOutbound / 7); // 하루 평균 출고량
-                int target = avg * 2;               // 이틀치 → 적정재고(100%)
-
+                int avg = (int) (totalOutbound / 7); // 하루 평균
+                int target = avg * 2;               // 이틀치
                 targetStockCache.put(productIdx, target);
             }
         }
 
+
         // 확인용 로그
 //        System.out.println("✅ targetStockCache 업데이트 완료: " + targetStockCache);
+
     }
 
     // 적정재고 캐시 가져오기
@@ -61,9 +58,19 @@ public class InventoryTransferService {
         return targetStockCache;
     }
 
-    // 피킹존 보충 대상 조회
-    public List<Map<String, Object>> selectPickingZoneNeedsReplenishment() {
-        return inventoryTransferMapper.selectPickingZoneNeedsReplenishment();
+    // 매일 실행해서 보충 필요 여부 확인
+    public void checkPickingZoneNeedsReplenishment() {
+        Map<Integer, Integer> targetMap = getTargetStockCache(); // 기준 불러오기
+        List<InventoryDTO> pickingList = selectPickingZoneStock();
+
+        for (InventoryDTO stock : pickingList) {
+            Integer productIdx = stock.getProductIdx();
+            Integer target = targetMap.get(productIdx);
+
+            if (target != null && stock.getQuantity() < target) {
+                System.out.println("⚠️ 보충 필요 → 상품: "
+                    + productIdx + " / 현재: " + stock.getQuantity() + " / 기준: " + target);
+            }
+        }
     }
-	
 }

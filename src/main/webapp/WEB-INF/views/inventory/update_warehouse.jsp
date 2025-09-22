@@ -6,9 +6,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>로케이션생성</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <style type="text/css">
 		section {
@@ -45,36 +46,44 @@
 
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 	<section>
-	<h1>창고 위치 치수 변경</h1>
+	<h4>로케이션생성</h4>
 	
 	
 	<form class="card" method="post" enctype="multipart/form-data" id="writeForm">
 		<sec:csrfInput/>	
-		<h3 class="card-header">창고 생선이나 수정</h3>
 	  <table>
+	  	<tr>
+	  		<td colspan="2">
+				<h3 class="card-header">로케이션 생성</h3>
+	  		</td>
+	  	</tr>
 	    <tr>
 	      <td><label  class="form-label" for="racks">랙 수</label></td>
 	      <td><input class="form-control" type="number" id="racks" name="racks" min="0" value="${warehouseInfo.rackCount}" required></td>
 	    </tr>
 	    <tr>
-	      <td><label  class="form-label" for="bays">랙당 베이 수</label></td>
+	      <td><label  class="form-label" for="bays">베이 수</label></td>
 	      <td><input class="form-control" type="number" id="bays" name="bays" min="0" value="${warehouseInfo.bayCount}" required></td>
 	    </tr>
 	    <tr>
-	      <td><label class="form-label" for="levels">베이당 레벨 수</label></td>
+	      <td><label class="form-label" for="levels">레벨 수</label></td>
 	      <td><input class="form-control" type="number" id="levels" name="levels" value="${warehouseInfo.levelCount}" min="0" required></td>
 	    </tr>
 	    <tr>
-	      <td><label class="form-label" for="positions">이 레벨의 이 만의 위치 수</label></td>
+	      <td><label class="form-label" for="positions">레벨당 칸수</label></td>
 	      <td><input class="form-control" type="number" id="positions" name="positions" value="${warehouseInfo.positionCount}" min="0" required></td>
 	    </tr>
-		<h3 class="card-header">한 레벨의 크기</h3>
+	    <tr>
+	    	<td colspan="2">
+				<h3 class="card-header">레벨의 크기</h3>
+			<td>
+		</tr>
 	    <tr>  
-	      <td><label class="form-label" for="width">바닥 가로길이(cm)</label></td>
+	      <td><label class="form-label" for="width">가로길이(cm)</label></td>
 	      <td><input class="form-control" type="number" id="width" name="width"  min="0" required></td>
 	     </tr> 
 	     <tr>
-	      <td><label class="form-label" for="depth">바닥 세로길이(cm)</label></td>
+	      <td><label class="form-label" for="depth">세로길이(cm)</label></td>
 	      <td><input class="form-control" type="number" id="depth" name="depth" min="0" required></td>
 	   </tr> 
 	   <tr>  
@@ -102,7 +111,7 @@
 	    </tr>
 	    <tr>
 	      <td colspan="2" style="text-align: center;"><br>
-	        <button class="btn btn-primary" id="btnSubmit" >창고 생선</button>
+	        <button class="btn btn-primary" id="btnSubmit" >생성</button>
 <!-- 	        <button class="btn btn-primary"  type="submit" formaction="/inventoryAction/edit-warehouse">수정</button> -->
 	      </td>
 	    </tr>

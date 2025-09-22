@@ -102,7 +102,7 @@ public class MyExceptionHandler {
     	log.error("Unexpected Exception: {}", e.getMessage(), e);
     	log.info("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑");
     	log.info("ERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERROR");
-        MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.ERROR, "오류 발생", "예기치 못한 오류가 발생했습니다. 관리자에게 문의하세요.");
+//        MakeAlert.makeAlert(redirectAttributes, SweetAlertIcon.ERROR, "오류 발생", "예기치 못한 오류가 발생했습니다. 관리자에게 문의하세요.");
         return redirectBackOrRoot(request);
     }
 

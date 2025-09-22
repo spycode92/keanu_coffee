@@ -35,8 +35,6 @@ public class InventoryTransferController {
         Map<String, Object> result = new HashMap<>();
         result.put("pickingList", inventoryTransferService.selectPickingZoneStock()); 
         result.put("targetMap", inventoryTransferService.getTargetStockCache()); 
-        result.put("replenishmentList", inventoryTransferService.selectPickingZoneNeedsReplenishment()); // 추가
         return result;
     }
-	
 }
