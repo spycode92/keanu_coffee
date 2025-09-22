@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -19,7 +20,7 @@
 	<!-- ============================================ 가격 계산 ============================================ -->
 	<script>
 		function formatCurrency(value) {
-		    return "₩ " + Number(value).toLocaleString();
+		    return "₩ " + Number(value).toLocaleString();       
 		}
 		
 		function recalculate(index) {
@@ -70,16 +71,19 @@
 			<div>
 				<h1 class="card-title">입고 상세</h1>
 			</div>
+			
 			<div class="page-actions">
 				<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
-				<button id="btnEdit"
-				        class="btn btn-primary btn-sm"
-				        data-ibwait-idx="${inboundDetailData.ibwaitIdx}"
-				        data-order-number="${inboundDetailData.orderNumber}"
-				        data-status="${inboundDetailData.inboundStatus}"
-				        data-manager="${inboundDetailData.managerName}">
-				    검수
-				</button>
+				<sec:authorize access="hasAuthority('INBOUND_WRITE')">
+					<button id="btnEdit"
+					        class="btn btn-primary btn-sm"
+					        data-ibwait-idx="${inboundDetailData.ibwaitIdx}"
+					        data-order-number="${inboundDetailData.orderNumber}"
+					        data-status="${inboundDetailData.inboundStatus}"
+					        data-manager="${inboundDetailData.managerName}">
+					    검수
+					</button>
+				</sec:authorize>
 				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
 			</div>
 		</div>
@@ -159,30 +163,39 @@
 			</div>
 		</div>
 
-		<!-- 타임라인 -->
+		<!-- 상태 타임라인 -->
 		<div class="card mb-3">
-			<div class="card-header">
-				<div class="card-title">상태 이력 (타임라인)</div>
-			</div>
-			<div class="timeline p-2">
-				<div class="timeline-step active">
-					<div class="timeline-dot"></div>
-					<div class="muted" style="font-size:.85rem;">등록</div>
-					<div style="font-size:.85rem;">2025-08-11<br/><span class="muted">홍길동</span></div>
-				</div>
-				<div class="timeline-step">
-					<div class="timeline-dot"></div>
-					<div class="muted" style="font-size:.85rem;">검수대기</div>
-					<div style="font-size:.85rem;">(미완료)</div>
-				</div>
-				<div class="timeline-step">
-					<div class="timeline-dot"></div>
-					<div class="muted" style="font-size:.85rem;">확정</div>
-					<div style="font-size:.85rem;">-</div>
-				</div>
+			<div class="timeline-container">
+			    <c:set var="steps" value="${fn:split('운송중,대기,검수중,검수완료,재고등록완료', ',')}" />
+			
+			    <ul class="timeline">
+			        <c:forEach var="step" items="${steps}" varStatus="st">
+					    <c:set var="found" value="false" />
+					    <c:set var="time" value="" />
+					    <c:forEach var="h" items="${historyList}">
+					        <c:if test="${h.status == step}">
+					            <c:set var="found" value="true" />
+					            <c:set var="time" value="${h.changedAt}" />
+					        </c:if>
+					    </c:forEach>
+					    <li class="timeline-step ${found ? 'done' : 'pending'}">
+					        <div class="circle">${st.index + 1}</div>
+					        <div class="label">${step}</div>
+					        <div class="time">
+					            <c:choose>
+					                <c:when test="${not empty time}">
+					                    ${time}
+					                </c:when>
+					                <c:otherwise>
+					                    -
+					                </c:otherwise>
+					            </c:choose>
+					        </div>
+					    </li>
+					</c:forEach>
+			    </ul>
 			</div>
 		</div>
-		
 			
 		<!-- 품목 목록 -->
 		<div class="card mb-3">
@@ -303,38 +316,17 @@
 					<div class="kv-value" style="min-height:80px;">검수 후 입고확정 필요 — 외관 손상 일부. 공급사에 통보 예정.</div>
 				</div>
 			</div>
-
-			<div>
-				<div class="muted">변경 이력</div>
-				<table class="table" style="margin-top:.5rem;">
-					<thead>
-						<tr>
-							<th style="width:160px;">시간</th>
-							<th style="width:160px;">사용자</th>
-							<th>변경내용</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>2025-08-11 10:12</td>
-							<td>홍길동</td>
-							<td>입고 요청 등록</td>
-						</tr>
-						<tr>
-							<td>2025-08-11 13:40</td>
-							<td>김담당</td>
-							<td>부분입고 체크 — 수량 수정 (300 → 200)</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
 		</div>
 	</section>
 	
 	<!-- ============================================================================================================ js 모음 -->
+	<script> 
+		const contextPath = "${pageContext.request.contextPath}";
+	</script>
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/modify.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/inboundDetail.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/refresh.js"></script>
 </body>
 <link href="${pageContext.request.contextPath}/resources/css/inbound/modal/detailSmallModal.css" rel="stylesheet" />
 </html>

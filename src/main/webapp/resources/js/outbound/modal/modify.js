@@ -1,4 +1,4 @@
-// /resources/js/inbound/modal/modify.js
+// /resources/js/outbound/modal/modify.js
 // 위치/담당자 모달 공용: 열기/닫기 + 후보목록 로드 + AJAX 저장 + 포커스/접근성
 (function(w, d){
 	"use strict";
@@ -10,7 +10,7 @@
 	const lastOpener = Object.create(null);
 
 	function appRoot(){
-		return d.querySelector('[data-app-root], .content.inbound-detail') || d.querySelector('.content') || d.body;
+		return d.querySelector('[data-app-root], .content.outbound-detail') || d.querySelector('.content') || d.body;
 	}
 	function setBackgroundInert(on){
 		const root = appRoot();
@@ -84,7 +84,7 @@
 
 	/* ===================== 담당자 ===================== */
 	async function fetchManagerCandidates(){
-		const url = `${ctx()}/inbound/managerCandidates?departmentIdx=2&roleIdx=2`;
+		const url = `${ctx()}/outbound/managerCandidates?departmentIdx=2&roleIdx=2`;
 		const res = await fetch(url, { method: "GET", headers: { "Accept": "application/json" } });
 		if(!res.ok){
 			const txt = await res.text().catch(()=> "");
@@ -165,9 +165,8 @@
 				}
 
 				try{
-					await postJson(ctx() + "/inbound/updateManagers", {
-						ibwaitIdxList: checked,
-						managerIdx,
+					await postJson(ctx() + "/outbound/updateManagers", {
+						obwaitIdxList: checked,
 						managerName
 					}, form);
 

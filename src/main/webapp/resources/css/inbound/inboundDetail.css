@@ -69,4 +69,82 @@
 	font-size: 1.0em;   /* 기존보다 1.5배 */
 }
 
+/* 타임라인 전체 */
+.timeline-container {
+	padding: 30px;
+}
 
+.timeline {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	position: relative;
+}
+
+/* 단계 (li) */
+.timeline-step {
+	text-align: center;
+	flex: 1;
+	position: relative;
+}
+
+/* 원(circle) */
+.timeline-step .circle {
+	width: 64px;   /* 2배 확대 */
+	height: 64px;
+	border-radius: 50%;
+	background-color: #ddd;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 28px;   /* 글씨 확대 */
+	font-weight: bold;
+	color: #333;
+	margin: 0 auto 12px auto;
+}
+
+/* 완료된 단계 */
+.timeline-step.done .circle {
+	background-color: #0d6efd; /* 파란색 */
+	color: #fff;
+}
+
+/* 텍스트 라벨 */
+.timeline-step .label {
+	font-size: 24px;   /* 2배 확대 */
+	font-weight: 600;
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+/* 시간 표시 */
+.timeline-step .time {
+	font-size: 24px;   /* 2배 확대 */
+	color: #444;
+	margin-top: 4px;
+}
+
+/* 선 연결 */
+.timeline::before {
+	content: '';
+	position: absolute;
+	top: 32px; /* circle 중앙 맞추기 */
+	left: 0;
+	right: 0;
+	height: 4px; /* 두께도 살짝 굵게 */
+	background: #ddd;
+	z-index: 0;
+}
+
+.timeline-step .circle {
+	position: relative;
+	z-index: 1;
+}
+
+/* 완료된 구간 파란색 선 */
+.timeline-step.done ~ .timeline-step::before {
+	background: #0d6efd;
+}
