@@ -53,8 +53,8 @@
 	                        <tr>
 	                            <th>업체 번호</th>
 	                            <th>공급업체</th>
-	                            <th>공급업체 담당자</th>
-	                            <th>계약 상태</th>
+	                            <th>담당자</th>
+	                            <th>상태</th>
 	                        </tr>
 	                    </thead>
 	                    <tbody>

@@ -1,3 +1,8 @@
+/**
+ * inboundManagement.js - 입고관리 전용 스크립트
+ * 기존 기능 + 행 전체 클릭 이동 기능 통합본
+ */
+
 // ===== 유틸: 입력창 clear =====
 function clearInput(id) {
 	const el = document.getElementById(id);
@@ -24,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
 			window.print();
 		});
 	}
-
 
 	// --- 전체선택 체크박스 ---
 	const selectAll = document.querySelector(".select-all");
@@ -105,46 +109,24 @@ document.addEventListener("DOMContentLoaded", function () {
 			updateSelectedCount();
 		});
 	}
+	
+	document.addEventListener("keydown", function (e) {
+		if (e.key === "F5" || e.keyCode === 116) {
+			e.preventDefault();
+			Swal.fire({
+				icon: "question",
+				title: "페이지를 초기화하시겠습니까?",
+				html: "확인 시 현재 입력값 모두 초기화되고<br>목록이 처음부터 표시됩니다.",
+				showCancelButton: true,
+				confirmButtonText: "예",
+				cancelButtonText: "아니오"
+			}).then(result => {
+				if (result.isConfirmed) {
+					window.location.href = `${contextPath}/inbound/management`;
+				}
+			});
+		}
+	});
+	
 });
 
-// 새로고침 (검색조건 리셋 + 확인창)
-document.addEventListener("DOMContentLoaded", function () {
-    const reloadBtn = document.getElementById("btnReload");
-    if (reloadBtn) {
-        reloadBtn.addEventListener("click", function () {
-            Swal.fire({
-                icon: "question",
-                title: "검색조건을 초기화하시겠습니까?",
-                text: "확인 시 현재 검색 조건이 모두 초기화되고 목록이 처음부터 표시됩니다.",
-                showCancelButton: true,
-                confirmButtonText: "예",
-                cancelButtonText: "아니오"
-            }).then(result => {
-                if (result.isConfirmed) {
-                    // ✅ 검색조건 초기화 → 기본 목록으로 이동
-                    window.location.href = `${contextPath}/inbound/management`;
-                }
-            });
-        });
-    }
-});
-
-document.addEventListener("keydown", function (e) {
-    // F5 키 코드 = 116
-    if (e.key === "F5" || e.keyCode === 116) {
-        e.preventDefault(); // ✅ 기본 새로고침 막기
-        Swal.fire({
-            icon: "question",
-            title: "검색조건을 초기화하시겠습니까?",
-            text: "확인 시 현재 검색 조건이 모두 초기화되고 목록이 처음부터 표시됩니다.",
-            showCancelButton: true,
-            confirmButtonText: "예",
-            cancelButtonText: "아니오"
-        }).then(result => {
-            if (result.isConfirmed) {
-                // ✅ 검색조건 리셋 후 첫 페이지 이동
-                window.location.href = `${contextPath}/inbound/management`;
-            }
-        });
-    }
-});

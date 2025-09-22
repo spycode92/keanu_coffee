@@ -86,3 +86,11 @@
 .btn-sm {
 	font-size: 1.0em;   /* 기존보다 1.5배 */
 }
+
+.table tr.clickable-row { cursor: pointer; }
+.table tr.clickable-row:focus { outline: 2px solid var(--primary); outline-offset: -2px; }
+
+/* 공통 CSS (common.css 끝에 추가) */
+.clickable-row {
+    cursor: pointer; /* 마우스 오버 시 손가락 모양 */
+}

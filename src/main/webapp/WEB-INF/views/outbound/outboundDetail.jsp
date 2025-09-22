@@ -30,7 +30,14 @@
 			</div>
 			<div class="page-actions">
 				<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
-				<button id="btnAssignManager" class="btn btn-primary btn-sm">담당자지정</button>
+				<button id="btnInspection"
+					        class="btn btn-primary btn-sm"
+					        data-ibwait-idx="${obDetail.obwaitIdx}"
+					        data-order-number="${obDetail.obwaitNumber}"
+					        data-status="${obDetail.status}"
+					        data-manager="${obDetail.manager}">
+					    검수
+					</button>
 				<button id="btnAssignLocation" class="btn btn-primary btn-sm">출고위치지정</button>
 				<button id="btnOutboundComplete" class="btn btn-primary btn-sm">출고확정</button>
 				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
@@ -102,30 +109,6 @@
 				</div>
 			</div>
 		</div>
-
-		<!-- 타임라인 -->
-		<div class="card mb-3">
-			<div class="card-header">
-				<div class="card-title">상태 이력 (타임라인)</div>
-			</div>
-			<div class="timeline p-2">
-				<div class="timeline-step active">
-					<div class="timeline-dot"></div>
-					<div class="muted" style="font-size:.85rem;">등록</div>
-					<div style="font-size:.85rem;">2025-09-10<br/><span class="muted">관리자</span></div>
-				</div>
-				<div class="timeline-step">
-					<div class="timeline-dot"></div>
-					<div class="muted" style="font-size:.85rem;">피킹대기</div>
-					<div style="font-size:.85rem;">(미완료)</div>
-				</div>
-				<div class="timeline-step">
-					<div class="timeline-dot"></div>
-					<div class="muted" style="font-size:.85rem;">출고확정</div>
-					<div style="font-size:.85rem;">-</div>
-				</div>
-			</div>
-		</div>
 		
 		<!-- 품목 목록 -->
 		<div class="card mb-3">
@@ -144,8 +127,7 @@
 							<th>규격/단위</th>
 							<th>폐기</th>
 							<th>출고수량</th>
-							<th colspan="2">비고</th>							
-							<th>수정버튼</th>
+							<th colspan="1">비고</th>							
 						</tr>
 					</thead>
 					<tbody>
@@ -159,14 +141,13 @@
 										<td><fmt:formatNumber value="${item.productVolume}" pattern="#호" /></td>
 										<td><c:out value="-" /></td>
 										<td><fmt:formatNumber value="${item.quantity}" pattern="#,##0" /></td>
-										<td colspan="2"><c:out value="-" /></td>
-									    <td class="modify"><input type="button" value="수정"></td>
+										<td colspan="1"><c:out value="-" /></td>
 									</tr>
 								</c:forEach>
 							</c:when>
 							<c:otherwise>
 								<tr>
-									<td colspan="6" class="text-center">출고 품목 정보가 없습니다.</td>
+									<td colspan="5" class="text-center">출고 품목 정보가 없습니다.</td>
 								</tr>
 							</c:otherwise>
 						</c:choose>
@@ -197,30 +178,6 @@
 				</div>
 			</div>
 
-			<div>
-				<div class="muted">변경 이력</div>
-				<table class="table" style="margin-top:.5rem;">
-					<thead>
-						<tr>
-							<th style="width:160px;">시간</th>
-							<th style="width:160px;">사용자</th>
-							<th>변경내용</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>2025-09-10 09:30</td>
-							<td>관리자</td>
-							<td>출고 요청 등록</td>
-						</tr>
-						<tr>
-							<td>2025-09-11 15:20</td>
-							<td>홍길동</td>
-							<td>출고수량 수정 (100 → 80)</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
 		</div>
 	</section>
 
@@ -230,6 +187,7 @@
 	<!-- JS 모음 -->
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/modify.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/outbound/outboundDetail.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/outbound/detail.js"></script>
 </body>
 

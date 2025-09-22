@@ -302,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					<li><a href="/admin/preference/dept">조직관리</a></li>
 					<li><a href="/admin/preference/supplyCompany">공급업체관리</a></li>
 					<li><a href="/admin/preference/product">상품관리</a></li>
-					<li><a href="/admin/preference/supplyContract">공급계약</a></li>
+					<li><a href="/admin/preference/supplyContract">공급계약관리</a></li>
 					<li><a href="/admin/preference/franchise">지점관리</a></li>
 					<li><a href="/admin/sysNoti">시스템알림</a></li>
 				</ul>

@@ -206,7 +206,7 @@
 
                 <!-- 로케이션 용적률 -->
                 <div class="chart-card">
-                    <h3 class="card-title" id="location_title" align="center">로케이션 용적률</h3>
+                    <h3 class="card-title" id="location_title" align="center">로케이션 이용율</h3>
                     <hr>
                     
                     <!-- Pallet Zone -->

@@ -1,65 +1,104 @@
-/* 검색/필터 카드 – 상단 KPI와 간격 조금만 줄이기 */
-.d-flex.mb-2 { margin-bottom: .5rem; }  /* 기존 mb-2 보다 더 촘촘하게 하고 싶을 때 */
+/* =========================
+   간격/레이아웃 보정
+   ========================= */
 
-/* 하단 KPI와 '검색결과' 바 사이 간격 조절 */
-.inbound-kpi-row { margin-bottom: .75rem; }
+/* 상단 KPI와 검색/필터 카드 사이 간격 조금 줄이기 */
+.d-flex.mb-2 {
+	margin-bottom: .5rem; /* 기본 mb-2보다 더 촘촘하게 */
+}
 
-/* '검색결과' 바 좌우 여백을 카드와 완벽히 동일하게 (이미 rail을 쓰고 있다면 유지) */
-.content .rail { padding-left: 1.5rem; padding-right: 1.5rem; }
+/* 하단 KPI와 '검색결과' 바 사이 간격 */
+.outbound-kpi-row {
+	margin-bottom: .75rem;
+}
 
-/* 달력 아이콘/입력 테두리 충돌 보정(이미 적용되어 있으면 생략) */
-.inbound-filters input[type="date"]::-webkit-calendar-picker-indicator { margin-right: 2px; }
-
+/* '검색결과' 바 좌우 여백 (rail) */
 .content .rail {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 1.5rem !important;
-    padding-right: 1.5rem !important;
-    box-sizing: border-box;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+	padding-left: 1.5rem !important;
+	padding-right: 1.5rem !important;
+	box-sizing: border-box;
 }
 
 /* =========================
-   검색/필터 카드 내부 넘침 방지
+   검색/필터 카드
    ========================= */
-.inbound-filters .row {
+.outbound-filters {
+	overflow: hidden; /* 카드 내부 넘침 방지 */
+}
+.outbound-filters .row {
 	margin-left: 0;
 	margin-right: 0;
 }
-.inbound-filters {
-	overflow: hidden; /* 카드 안에서만 내용 표시 */
-}
-.inbound-filters .form-control,
-.inbound-filters .search-select {
+.outbound-filters .form-control,
+.outbound-filters .search-select {
 	box-sizing: border-box;
 	width: 100%;
+	font-size: 1rem;
+	padding: 0.6rem 0.75rem;
 }
-.inbound-filters input[type="date"]::-webkit-calendar-picker-indicator {
-	margin-right: 2px; /* 달력 아이콘 붙어 보이는 현상 보정 */
+
+/* 달력 아이콘 위치 보정 */
+.outbound-filters input[type="date"]::-webkit-calendar-picker-indicator {
+	margin-right: 2px;
 }
 
 /* =========================
-   카드와 동일 좌우 여백 rail (검색결과 바에 사용)
+   간단 검색바
    ========================= */
-.content .rail {
-	padding-left: 1.5rem;   /* .card 내부 패딩과 통일 */
-	padding-right: 1.5rem;
+.outbound-simple-search {
+	display: flex;
+	gap: 0.5rem;
 }
-.inbound-simple-search {
-    display: flex;
-    gap: 0.5rem;
-}
-.inbound-simple-search input {
-    flex: 1;
+.outbound-simple-search input {
+	flex: 1;
+	font-size: 1rem;
 }
 
-.table th, 
+/* 입력칸 오른쪽 X 버튼 */
+.btn-clear-input {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	border: none;
+	background: transparent;
+	font-size: 18px;
+	color: #999;
+	cursor: pointer;
+	padding: 0;
+	line-height: 1;
+	z-index: 2;
+}
+.btn-clear-input:hover {
+	color: #333;
+}
+
+/* =========================
+   테이블
+   ========================= */
+.table th,
 .table td {
-    text-align: center;
-    vertical-align: middle; /* 세로 중앙정렬 */
+	text-align: center;
+	vertical-align: middle; /* 세로 중앙정렬 */
 }
 
+.table tr.clickable-row { cursor: pointer; }
+.table tr.clickable-row:focus {
+	outline: 2px solid var(--primary);
+	outline-offset: -2px;
+}
+
+/* 주문번호 링크 */
 .link-order-number {
 	color: inherit;
 	text-decoration: none;
 	cursor: pointer;
+}
+
+/* 버튼 사이즈 (글자 크게) */
+.btn,
+.btn-sm {
+	font-size: 1em;
 }

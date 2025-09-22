@@ -7,9 +7,11 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
+import com.itwillbs.keanu_coffee.inbound.dto.CommitInventoryDTO.InventoryItemDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundProductDetailDTO;
+import com.itwillbs.keanu_coffee.inbound.dto.InboundStatusHistoryDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO;
 
 @Mapper
@@ -32,7 +34,7 @@ public interface InboundMapper {
 	
 	// detail 로케이션 수정
 	void updateLocation(@Param("ibwaitIdx") Long ibwaitIdx,
-	                    @Param("inboundLocation") String inboundLocation);
+	                    @Param("inboundLocationNum") int inboundLocationNum);
 
 	// 매니저 조회/수정
 	List<EmployeeInfoDTO> selectEmployeeList();
@@ -52,6 +54,13 @@ public interface InboundMapper {
 	
 	// 검수버튼시 '검수중'상태변경
 	void updateInboundStatus(@Param("ibwaitIdx") Integer ibwaitIdx, @Param("status") String status);
+	
+	// 인벤토리 insert
+	void insertInventory(InventoryItemDTO item);
+	
+	// detail.로그조회
+	List<InboundStatusHistoryDTO> selectInboundStatusHistory(@Param("ibwaitIdx") Integer ibwaitIdx);
+	
 
 	
 }
