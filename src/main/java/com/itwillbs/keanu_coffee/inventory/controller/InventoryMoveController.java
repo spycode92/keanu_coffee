@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class InventoryMoveController {
 	
 	private final InventoryMoveService inventoryMoveService;
+	private SimpMessagingTemplate messagingTemplate; // ✅ 여기 추가
 	
 	//lotNumber로 상품사진조회
 	@GetMapping("/getProductDetail/{lotNumber}")
@@ -144,6 +146,10 @@ public class InventoryMoveController {
 			//카트에서 로케이션으로 진열
 			inventoryMoveService.moveInventory(inventory, authentication);
 	        result.put("message", "상품진열을 완료하였습니다.");
+	        
+	        // ✅ 여기 추가: 로케이션 용적률 새로고침 신호
+	        messagingTemplate.convertAndSend("/topic/inventory", "update");
+	        
 		} catch (IllegalArgumentException  e) {
 			result.put("icon", "warning");
 	        result.put("message", e.getMessage());
