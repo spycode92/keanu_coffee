@@ -7,6 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>재고 이동</title>
+<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico"></head>
 <sec:csrfMetaTags/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
@@ -17,7 +18,6 @@
 
 <!-- FontAwesome CDN for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-</head>
 <body>
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 <section class="content">

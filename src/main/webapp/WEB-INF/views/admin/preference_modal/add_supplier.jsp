@@ -39,7 +39,7 @@
                                readonly
                                style="flex: 1; max-width: 150px;">
                         <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-primary"
                                 id="btnSearchAddress">
                             우편번호 검색
                         </button>
@@ -64,7 +64,7 @@
             </div>
             <div class="modal-foot">
                 <button type="button"
-                        class="btn btn-secondary"
+                        class="btn btn-cancel"
                         onclick="ModalManager.closeModal(document.getElementById('supplierModal'))">
                     취소
                 </button>

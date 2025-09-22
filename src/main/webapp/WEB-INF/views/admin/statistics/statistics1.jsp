@@ -5,7 +5,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Keanu Coffee - 통계</title>
+    <title>통계</title>
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
     <style>
         /* 각 차트 박스 공통 스타일 */
         .chart-card {
@@ -50,14 +51,16 @@
 
     <!-- 메인 내용 -->
     <section class="content">
+   			<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+		        <h3>통계</h3>
+            </div>
 <!--     	<input type="button" value="입출고폐기" class="btn-primary" id="statistics1"/> -->
 <!--     	<input type="button" value="재고" class="btn-secondary" id="statistics2"/> -->
 	    <div class="card">
 	        <div class="card-header d-flex justify-content-between align-items-center">
 			    <!-- 왼쪽: 제목 + 날짜 선택기 -->
 			    <div class="d-flex align-items-center gap-2">
-			        <h2 class="card-title" style="margin-bottom: 0; margin-right: 1rem;">통계</h2>
-			        <div class="date-selection">
+			        <div class="date-selection card-title">
 			            <div class="d-flex align-items-center gap-2">
 			                <div>
 			                    날짜선택 <input type="date" id="baseDate" class="form-control date-input-small" style="max-width:100px">

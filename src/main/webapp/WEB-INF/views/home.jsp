@@ -4,8 +4,8 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
-<title>Home</title>
-<sec:csrfMetaTags/>
+<title>로그인</title>
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico"><sec:csrfMetaTags/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 
@@ -113,7 +113,8 @@
 	        },
 	        beforeSend: (xhr) => {
 	            xhr.setRequestHeader(header, token);
-	        },
+	        }
+	        ,
 	        success: () => {
 	            location.href = redirectUrl;
 	        },
@@ -133,7 +134,7 @@
 	$("#logininventoryBtn").on("click", () => login("2301180009", "/inventory/main"));
 	$("#logininventoryPersonBtn").on("click", () => login("2301180023", "/inventory/moveInventory"));
 	
-	$("#loginTransportBtn").on("click", () => login("2301180006", "/transport/main"));
+	$("#loginTransportBtn").on("click", () => login("2509200001", "/transport/main"));
 	$("#logindriverBtn").on("click", () => login("2301180014", "/transport/mypage/54320747"));
 	
 	// 다크모드 관리

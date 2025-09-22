@@ -76,7 +76,7 @@
             </div>
             <div class="modal-foot">
                 <button type="button" id="btnDeleteContractDetail" class="btn btn-primary btn-delete">삭제</button>
-                <button type="button" id="btnCancelEditDetail" class="btn btn-secondary" style="display:none;">취소</button>
+                <button type="button" id="btnCancelEditDetail" class="btn btn-cancel" style="display:none;">취소</button>
                 <button type="button" id="btnEditContractDetail" class="btn btn-primary">수정</button>
                 <button type="button" id="btnSaveContractDetail" class="btn btn-success" style="display:none;">수정완료</button>
             </div>

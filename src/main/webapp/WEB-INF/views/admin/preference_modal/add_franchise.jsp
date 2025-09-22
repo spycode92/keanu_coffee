@@ -33,7 +33,7 @@
                     <div style="display: flex; gap: 0.5rem; align-items: center;">
                         <input type="text" class="form-control" id="addFranchiseZipcode" name="franchiseZipcode"
                         	placeholder="우편번호" readonly style="flex: 1; max-width: 150px;">
-                        <button type="button" class="btn btn-secondary" id="btnSearchAddress">우편번호 검색</button>
+                        <button type="button" class="btn btn-primary" id="btnSearchAddress">우편번호 검색</button>
                     </div>
                 </div>
                 <div class="field">

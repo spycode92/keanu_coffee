@@ -10,6 +10,7 @@
 <link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <link href="${pageContext.request.contextPath}/resources/css/transport/deliveryConfirmationDetail.css" rel="stylesheet">
+<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/transport/dispatch.js"></script>
@@ -76,7 +77,7 @@
 					<c:forEach var="file" items="${confirmationDTO.fileList}">
 						${file.originalFileName} 
 						<a href="/file/${file.fileIdx}"> 
-						<input type="button" value="다운로드" />
+						<input type="button" value="다운로드" id="btn"/>
 					</a>
 					<br>
 					</c:forEach>

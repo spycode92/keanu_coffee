@@ -328,7 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <%-- 			</sec:authorize> --%>
 <%-- 			<sec:authorize access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')"> --%>
 			<li class="menu-item">
-				<a href="#"><span>재고 현황</span></a>
+				<a href="#"><span>재고 관리</span></a>
 			    <ul class="submenu ${fn:contains(uri, '/inventory') ? 'open' : ''}">
 			        <li><a href="/inventory/main">대시보드</a></li>
 			        <li><a href="/inventory/stockCheck">재고 조회</a></li>

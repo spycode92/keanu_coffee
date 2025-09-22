@@ -78,7 +78,7 @@
                 <button type="submit" class="btn btn-primary">등록</button>
                 <button type="button"
                         id="cancelBtn"
-                        class="btn btn-secondary"
+                        class="btn btn-cancel"
                         onclick="ModalManager.closeModal(document.getElementById('addEmployeeModal'))">
                     취소
                 </button>

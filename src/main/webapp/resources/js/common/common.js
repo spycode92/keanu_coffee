@@ -430,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const updateBtn     = modal.querySelector('.btn-update');
 	const editOnlyEls   = modal.querySelectorAll('.edit-only');
     const viewOnlyEls   = modal.querySelectorAll('.view-only');
-    const cancelBtn     = modal.querySelector('button[data-modal-close].btn-secondary');
+    const cancelBtn     = modal.querySelector('button[data-modal-close].btn-cancel');
 
     const form          = modal.querySelector('#changeInfoForm');
  	// 비밀번호 강도 메시지 div

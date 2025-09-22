@@ -12,6 +12,7 @@
 	<link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
 	<link href="${pageContext.request.contextPath}/resources/css/transport/mypage.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+    <link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/common/web_socket.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

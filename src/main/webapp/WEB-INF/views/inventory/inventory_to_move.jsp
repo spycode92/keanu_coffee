@@ -7,9 +7,10 @@
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
-<title>이동할 재고</title>
+<title>로케이션 이동 대상</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <style>
     .hidden { display: none; }
@@ -23,7 +24,7 @@
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	
 	<div class="content">
-        <h2 class="page-title">이동할 재고</h2>
+        <h2 class="page-title">로케이션 이동 대상</h2>
 
         <!-- 탭 버튼 -->
         <div class="btn-group interval">
@@ -35,7 +36,6 @@
         <div id="palletZone" class="card">
             <div class="card-header">
                 <h3 class="card-title">파레트존 이동 목록</h3>
-<!--                 <p class="card-subtitle">※ location_idx = 9999</p> -->
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -45,7 +45,6 @@
                                 <th>상품코드</th>
                                 <th>LOT번호</th>
                                 <th>수량</th>
-<!--                                 <th>현재 위치</th> -->
                             </tr>
                         </thead>
                         <tbody id="palletBody">
@@ -60,7 +59,6 @@
 		<div id="pickingZone" class="card hidden">
 		    <div class="card-header">
 		        <h3 class="card-title">피킹존 보충 필요 목록</h3>
-<!-- 		        <p class="card-subtitle">※ 적정재고(100%) 대비 80% 미달 시 보충 필요</p> -->
 		    </div>
 		    <div class="card-body">
 		        <div class="table-responsive">
@@ -112,14 +110,13 @@
 	    $.getJSON("${pageContext.request.contextPath}/inventory/transfer/pallet", function(data){
 	        let html = "";
 	        if(data.length === 0){
-	            html = "<tr><td colspan='4'>파레트존 재고가 없습니다.</td></tr>";
+	            html = "<tr><td colspan='3'>파레트존 재고가 없습니다.</td></tr>";
 	        } else {
 	            $.each(data, function(i, item){
 	                html += "<tr>"
 	                      + "<td>"+item.productIdx+"</td>"
 	                      + "<td>"+(item.lotNumber || '-')+"</td>"
 	                      + "<td>"+item.quantity+"</td>"
-// 	                      + "<td>"+item.locationName+"</td>"   // ✅ 수정
 	                      + "</tr>";
 	            });
 	        }
@@ -127,25 +124,24 @@
 	    });
 	}
 
-	// 피킹존 조회
+	// ✅ 피킹존 조회
 	function loadPicking(){
 	    $.getJSON("${pageContext.request.contextPath}/inventory/transfer/picking", function(data){
-	        // data.pickingList 와 data.targetMap 받아오기
 	        let list = data.pickingList || [];
 	        let targetMap = data.targetMap || {};
 	        let html = "";
 	
 	        if(list.length === 0){
-	            html = "<tr><td colspan='5'>피킹존 재고가 없습니다.</td></tr>";
+	            html = "<tr><td colspan='5'>보충할 재고가 없습니다.</td></tr>";
 	        } else {
 	            $.each(list, function(i, item){
 	                let target = targetMap[item.productIdx] || "-";
-	                let shortage = (target !== "-" ? target - item.quantity : "-");
+	                let shortage = (target !== "-" ? Math.max(0, target - item.quantity) : "-");
 	                let status = (target !== "-" && item.quantity < target*0.8)
 	                           ? "<span class='status-need'>보충 필요</span>"
 	                           : "<span class='status-normal'>정상</span>";
 	
-	                // ✅ "정상"이 아닌 "보충 필요"만 보여주고 싶다면 여기 조건 추가
+	                // ⚠️ 보충 필요인 항목만 표시
 	                if(status.includes("보충 필요")){
 	                    html += "<tr>"
 	                          + "<td>"+item.productIdx+"</td>"
@@ -156,6 +152,10 @@
 	                          + "</tr>";
 	                }
 	            });
+	
+	            if(html === ""){
+	                html = "<tr><td colspan='5'>보충할 재고가 없습니다.</td></tr>";
+	            }
 	        }
 	        $("#pickingBody").html(html);
 	    });

@@ -5,23 +5,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>관리자페이지 - 시스템알림</title>
-<!-- 기본 양식 -->
-<sec:csrfMetaTags/>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
-<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="${pageContext.request.contextPath}/resources/js/admin/system_notification.js"></script>
+	<meta charset="UTF-8">
+	<title>시스템알림</title>
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
+	<!-- 기본 양식 -->
+	<sec:csrfMetaTags/>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	
+	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/admin/system_notification.js"></script>
 </head>
 
 <body>
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 <section class="content">
 	<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-		<h4>시스템 알림</h4>
+		<h3 class="mb-0">시스템 알림</h3>
 		<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary" data-target="#addEmployeeModal">
 	</div>
 	<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
