@@ -6,9 +6,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>로케이션생성</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 <style type="text/css">
 		section {
@@ -50,7 +51,7 @@
 	
 	<form class="card" method="post" enctype="multipart/form-data" id="writeForm">
 		<sec:csrfInput/>	
-		<h3 class="card-header">창고 생선이나 수정</h3>
+		<h3 class="card-header">창고 생성</h3>
 	  <table>
 	    <tr>
 	      <td><label  class="form-label" for="racks">랙 수</label></td>
@@ -102,7 +103,7 @@
 	    </tr>
 	    <tr>
 	      <td colspan="2" style="text-align: center;"><br>
-	        <button class="btn btn-primary" id="btnSubmit" >창고 생선</button>
+	        <button class="btn btn-primary" id="btnSubmit" >창고 생성</button>
 <!-- 	        <button class="btn btn-primary"  type="submit" formaction="/inventoryAction/edit-warehouse">수정</button> -->
 	      </td>
 	    </tr>
