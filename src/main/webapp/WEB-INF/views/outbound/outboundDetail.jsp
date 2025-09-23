@@ -9,7 +9,7 @@
 	<meta charset="UTF-8" />
 	<meta name="_csrf" content="${_csrf.token}" />
     <meta name="_csrf_header" content="${_csrf.headerName}" />
-    
+    <script>const contextPath = "${pageContext.request.contextPath}";</script>
 	<title>출고 상세</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -29,17 +29,18 @@
 				<h1 class="card-title">출고 상세</h1>
 			</div>
 			<div class="page-actions">
-				<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
-				<button id="btnInspection"
+				<button id="btnInspection" type="button"
 					        class="btn btn-primary btn-sm"
 					        data-ibwait-idx="${obDetail.obwaitIdx}"
 					        data-order-number="${obDetail.obwaitNumber}"
 					        data-status="${obDetail.status}"
-					        data-manager="${obDetail.manager}">
+					        data-manager="${obDetail.manager}"
+					        data-current-username="${currentUserName}"
+					        data-outbound-order-idx="${obDetail.outboundOrderIdx}"
+					        >
 					    검수
 					</button>
-				<button id="btnAssignLocation" class="btn btn-primary btn-sm">출고위치지정</button>
-				<button id="btnOutboundComplete" class="btn btn-primary btn-sm">출고확정</button>
+				
 				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
 			</div>
 		</div>
@@ -188,7 +189,6 @@
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/modify.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/outbound/outboundDetail.js"></script>
-	<script src="${pageContext.request.contextPath}/resources/js/outbound/detail.js"></script>
 </body>
 
 </html>

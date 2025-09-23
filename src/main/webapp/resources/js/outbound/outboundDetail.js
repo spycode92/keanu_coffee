@@ -21,9 +21,10 @@ document.addEventListener("DOMContentLoaded", function() {
 			const orderNumber = btnInspection.dataset.orderNumber;
 			const status      = btnInspection.dataset.status;
 			const manager     = btnInspection.dataset.manager;
+			const outboundOrderIdx = btnInspection.dataset.outboundOrderIdx;
 
 			// 로그인 사용자 (principal.getName()을 JSP에서 주입)
-			const currentUser = "${pageContext.request.userPrincipal.name}";
+			const currentUser = btnInspection.dataset.currentUsername;
 
 			// 1) 담당자 불일치
 			if (manager && manager.trim() !== currentUser.trim()) {
@@ -50,8 +51,8 @@ document.addEventListener("DOMContentLoaded", function() {
 			// 3) Ajax 요청 → 출고검수 페이지 이동
 			try {
 				const res = await fetch(
-					`${contextPath}/outbound/outboundInspection?obwaitIdx=${obwaitIdx}&orderNumber=${encodeURIComponent(orderNumber)}`,
-					{ method: "GET", headers: { "Accept": "text/html" } }
+				    `${contextPath}/outbound/outboundInspection?obwaitIdx=${obwaitIdx}&orderNumber=${encodeURIComponent(orderNumber)}&outboundOrderIdx=${outboundOrderIdx}`,
+				    { method: "GET", headers: { "Accept": "text/html" } }
 				);
 
 				if (!res.ok) throw new Error("HTTP " + res.status);
@@ -71,3 +72,22 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 })(window, document);
 
+document.addEventListener("DOMContentLoaded", function () {
+	// 새로고침 감지용 플래그
+	if (sessionStorage.getItem("reloaded") === "true") {
+		// Swal 알림 표시
+		Swal.fire({
+			icon: "info",
+			title: "새로고침 감지",
+			text: "이 페이지를 새로고침했습니다.",
+			confirmButtonText: "확인"
+		});
+		// 한 번만 뜨게 초기화
+		sessionStorage.removeItem("reloaded");
+	}
+
+	// 페이지 떠나기 전에 reloaded 플래그 설정
+	window.addEventListener("beforeunload", function () {
+		sessionStorage.setItem("reloaded", "true");
+	});
+});
