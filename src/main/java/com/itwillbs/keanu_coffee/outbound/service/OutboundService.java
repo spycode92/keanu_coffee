@@ -86,6 +86,7 @@ public class OutboundService {
 	}
     
     // 출고 상태 변경(출고준비 -> 배차대기)
+
     @Transactional
 //    @WorkingLog(target = WorkingLogTarget.OUTBOUND_ORDER)
 	public int updateStatusDispatchWait(String obwaitNumber, Long outboundOrderIdx) {
