@@ -23,7 +23,6 @@
 <section class="content">
 	<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
 		<h3 class="mb-0">시스템 알림</h3>
-		<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary" data-target="#addEmployeeModal">
 	</div>
 	<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
 		<form class="filters" aria-label="검색 및 필터">
