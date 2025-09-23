@@ -93,7 +93,7 @@
 		</if>
 	</select>
 	
-	<!-- management 리스트 조회 -->
+	<!-- 엑셀생성 -->
 	<select id="selectInboundListForExcel" parameterType="map" resultMap="InboundManagementResultMap">
 		SELECT
 			iw.ibwait_idx       AS ibwaitIdx
@@ -136,22 +136,23 @@
 
 
     <!-- 상세 데이터 -->
-    <select id="selectInboundDetailData" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO">
+    <select id="selectInboundDetailData"
+        resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO">
 	    SELECT 
-	        iw.ibwait_idx            AS ibwaitIdx,
-	        iw.ibwait_number         AS ibwaitNumber,
-	        iw.arrival_date          AS arrivalDate,
-	        po.order_number          AS orderNumber,
-	        po.inbound_classification AS inboundClassification,
-	        s.supplier_idx           AS supplierIdx,
-	        s.supplier_name          AS supplierName,
-	        iw.manager               AS managerName,
-	        iw.inbound_location      AS inboundLocation,
-	        iw.number_of_items       AS numberOfItems,
-	        iw.quantity              AS quantity,
-	        iw.inbound_status        AS inboundStatus,
+	        iw.ibwait_idx              AS ibwaitIdx,
+	        iw.ibwait_number           AS ibwaitNumber,
+	        iw.arrival_date            AS arrivalDate,
+	        po.order_number            AS orderNumber,
+	        po.inbound_classification  AS inboundClassification,
+	        s.supplier_idx             AS supplierIdx,
+	        s.supplier_name            AS supplierName,
+	        iw.manager                 AS managerName,
+	        iw.inbound_location        AS inboundLocation,
+	        iw.number_of_items         AS numberOfItems,
+	        iw.quantity                AS quantity,
+	        iw.inbound_status          AS inboundStatus,
 	        SUM(poi.quantity * poi.unit_price * 1.1) AS totalPrice,
-	        iw.note                  AS note
+	        iw.note                    AS note
 	    FROM INBOUND_WAITING iw
 	    JOIN PURCHASE_ORDER po ON iw.order_idx = po.order_idx
 	    JOIN SUPPLIER s ON po.supplier_idx = s.supplier_idx
@@ -165,29 +166,44 @@
 	</select>
 
 
+
     <!-- 상세 상품 데이터 -->
-    <select id="selectInboundProductDetail" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundProductDetailDTO">
-        SELECT 
-             p.product_idx,
-             poi.lot_number,
-             p.product_name,
-             p.product_volume,
-             poi.quantity,
-             poi.unit_price,
-             (poi.quantity * poi.unit_price) AS amount,
-             (poi.quantity * poi.unit_price * 0.1) AS tax,
-             (poi.quantity * poi.unit_price * 1.1) AS totalPrice
-        FROM PURCHASE_ORDER_ITEM poi
-        JOIN PRODUCT p ON poi.product_idx = p.product_idx
-        JOIN PURCHASE_ORDER po ON poi.order_idx = po.order_idx
-        WHERE po.order_number = #{orderNumber}
-        ORDER BY p.product_name ASC
-    </select>
+    <select id="selectInboundProductDetail" 
+        resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundProductDetailDTO">
+	    SELECT 
+	         p.product_idx            AS productIdx,
+	         poi.lot_number           AS lotNumber,
+	         p.product_name           AS productName,
+	         p.product_volume         AS productVolume,
+	         poi.quantity             AS quantity,
+	         poi.unit_price           AS unitPrice,
+	         (poi.quantity * poi.unit_price)        AS amount,
+	         (poi.quantity * poi.unit_price * 0.1)  AS tax,
+	         (poi.quantity * poi.unit_price * 1.1)  AS totalPrice,
+	         rp.manufacture_date      AS manufactureDate,
+	         rp.expiration_date       AS expirationDate
+	    FROM PURCHASE_ORDER_ITEM poi
+	    JOIN PRODUCT p 
+	         ON poi.product_idx = p.product_idx
+	    JOIN PURCHASE_ORDER po 
+	         ON poi.order_idx = po.order_idx
+	    LEFT JOIN RECEIPT_PRODUCT rp
+	         ON rp.product_idx = poi.product_idx
+	        AND rp.lot_number = poi.lot_number
+	        AND rp.ibwait_idx = (
+	            SELECT iw.ibwait_idx
+	            FROM INBOUND_WAITING iw
+	            WHERE iw.order_idx = po.order_idx
+	            LIMIT 1
+	        )
+	    WHERE po.order_number = #{orderNumber}
+	    ORDER BY p.product_name ASC
+	</select>
 
     <!-- 로케이션 업데이트 -->
     <update id="updateLocation">
         UPDATE INBOUND_WAITING
-        SET inbound_location = #{inboundLocation},
+        SET inbound_location = #{inboundLocationNum},
             updated_at = NOW()
         WHERE ibwait_idx = #{ibwaitIdx}
     </update>
@@ -280,5 +296,64 @@
 	        updated_at = NOW()
 	    WHERE ibwait_idx = #{ibwaitIdx}
 	</update>
+	
+	<!-- 인벤토리 등록 -->
+	<insert id="insertInventory" parameterType="com.itwillbs.keanu_coffee.inbound.dto.CommitInventoryDTO$InventoryItemDTO">
+	    INSERT INTO INVENTORY (
+	        receipt_product_idx,
+	        location_idx,
+	        location_name,
+	        product_idx,
+	        quantity,
+	        lot_number,
+	        manufacture_date,
+	        expiration_date,
+	        created_at,
+	        updated_at
+	    )
+	    SELECT
+	        rp.receipt_product_idx,
+	        #{locationIdx},
+	        #{locationName},
+	        #{productIdx},
+	        #{quantity},
+	        #{lotNumber},
+	        #{manufactureDate},
+	        #{expirationDate},
+	        NOW(),
+	        NOW()
+	    FROM RECEIPT_PRODUCT rp
+	    WHERE rp.ibwait_idx = #{ibwaitIdx}
+	      AND rp.product_idx = #{productIdx}
+	      AND rp.lot_number = #{lotNumber}
+	    LIMIT 1
+	</insert>
+
+
+	
+	<!-- 상태 이력 조회 (로그 + 날짜) -->
+	<select id="selectInboundStatusHistory" parameterType="int" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundStatusHistoryDTO">
+		SELECT '운송중' AS status, DATE_FORMAT(po.order_date, '%Y-%m-%d %H:%i:%s') AS changedAt
+		FROM PURCHASE_ORDER po
+		JOIN INBOUND_WAITING iw ON po.order_idx = iw.order_idx
+		WHERE iw.ibwait_idx = #{ibwaitIdx}
+		
+		UNION ALL
+		
+		SELECT '대기' AS status, DATE_FORMAT(iw.arrival_date, '%Y-%m-%d %H:%i:%s') AS changedAt
+		FROM INBOUND_WAITING iw
+		WHERE iw.ibwait_idx = #{ibwaitIdx}
+		
+		UNION ALL
+		
+		SELECT target AS status, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS changedAt
+		FROM SYSTEM_LOG
+		WHERE target_idx = #{ibwaitIdx}
+		  AND section = '입고관리'
+		  AND target IN ('검수중','검수완료','재고등록완료')
+		
+		ORDER BY changedAt ASC
+	</select>
+
 	
 </mapper>

@@ -3,6 +3,7 @@ package com.itwillbs.keanu_coffee.inbound.dto;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 @Data
@@ -21,5 +22,6 @@ public class InboundDetailDTO {
     private int quantity;                	// 총수량
     private BigDecimal totalPrice;       	// 청구액 (합계)
     private String note;                	// 비고
-    
+    private Integer locationIdx; 
+    private String locationName;
 }

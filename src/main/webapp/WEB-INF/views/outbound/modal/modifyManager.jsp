@@ -13,11 +13,11 @@
 			<form id="formAssignManager" class="form">
 				<input type="hidden" name="_csrf_header" value="${_csrf.headerName}">
 				<input type="hidden" name="_csrf" value="${_csrf.token}">
-				<input type="hidden" name="ibwaitIdx" value="${inboundDetailData.ibwaitIdx}">
+				<input type="hidden" name="obwaitIdx" value="">
 
 				<div class="field">
 					<label>담당자</label>
-					<select class="form-control" name="managerIdx" id="managerSelect" data-current-name="${inboundDetailData.managerName}">
+					<select class="form-control" name="managerIdx" id="managerSelect">
 						<option value="" disabled selected>담당자를 선택하세요</option>
 					</select>
 				</div>

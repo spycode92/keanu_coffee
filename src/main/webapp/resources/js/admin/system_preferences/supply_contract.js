@@ -297,7 +297,7 @@ $(function(){
     });
 
     // 상세보기 열기
-    $('#contractTable').on('click', 'tr', function() {
+    $('#contractTable tbody').on('click', 'tr', function() {
         const contractIdx = $(this).closest('tr').data('contract-idx');
         openContractDetailModal(contractIdx);
     });

@@ -1,11 +1,9 @@
-(function() {
-	console.log("managementQRscanner.js 로드됨");
+(function () {
+	console.log("managementQRscanner.js 로드됨 (Outbound 전용)");
 
 	const codeReader = new ZXing.BrowserMultiFormatReader();
 
-	function byId(id) {
-		return document.getElementById(id);
-	}
+	function byId(id) { return document.getElementById(id); }
 
 	// ===== 카메라 시작 =====
 	async function startCamera() {
@@ -14,9 +12,7 @@
 
 		try {
 			await codeReader.decodeFromConstraints(
-				{
-					video: { facingMode: { ideal: "environment" } } // 후면 카메라 우선
-				},
+				{ video: { facingMode: { ideal: "environment" } } }, // ✅ 후면 카메라 우선
 				videoElement,
 				(result, err) => {
 					if (result) {
@@ -24,47 +20,42 @@
 						resultText.textContent = result.getText();
 
 						try {
-							// QR 안에 있는 JSON 파싱
+							// ✅ QR 코드 내용은 JSON이어야 함
 							const data = JSON.parse(result.getText());
 							console.log("파싱된 데이터:", data);
 
-							if (data.orderNumber && data.ibwaitIdx) {
-								// 이동할 URL 구성
+							// ✅ 아웃바운드 데이터 구조에 맞춤
+							if (data.obwaitNumber && data.outboundOrderIdx) {
 								const targetUrl =
 									contextPath +
-									"/inbound/inboundDetail?orderNumber=" +
-									encodeURIComponent(data.orderNumber) +
-									"&ibwaitIdx=" +
-									encodeURIComponent(data.ibwaitIdx);
+									"/outbound/outboundDetail?obwaitNumber=" +
+									encodeURIComponent(data.obwaitNumber) +
+									"&outboundOrderIdx=" +
+									encodeURIComponent(data.outboundOrderIdx);
 
-								console.log("이동할 주소:", targetUrl);
-
-								// SweetAlert2 확인창 띄우기
 								Swal.fire({
 									title: "QR 스캔 성공",
 									html:
-										"<b>발주번호:</b> " +
-										data.orderNumber +
-										"<br><b>입고대기 IDX:</b> " +
-										data.ibwaitIdx,
+										"<b>출고번호:</b> " + data.obwaitNumber +
+										"<br><b>출고주문 IDX:</b> " + data.outboundOrderIdx,
 									icon: "success",
 									showCancelButton: true,
-									confirmButtonText: "이동하기",
+									confirmButtonText: "상세로 이동",
 									cancelButtonText: "취소"
 								}).then((result) => {
 									if (result.isConfirmed) {
 										window.location.href = targetUrl;
-									} else {
-										console.log("사용자가 이동을 취소했습니다.");
 									}
 								});
+							} else {
+								Swal.fire("오류", "QR 데이터에 출고번호/IDX가 없습니다.", "error");
 							}
 						} catch (e) {
 							console.error("QR 데이터 파싱 실패:", e);
 							Swal.fire("오류", "QR 데이터 파싱 실패", "error");
 						}
 
-						// 스캔 완료 후 카메라 종료
+						// ✅ 스캔 1회 후 카메라 종료
 						codeReader.reset();
 					}
 
@@ -73,7 +64,6 @@
 					}
 				}
 			);
-
 			console.log("카메라 시작됨 (후면 우선)");
 		} catch (err) {
 			console.error("카메라 시작 오류:", err);
@@ -97,28 +87,26 @@
 		const qrModal = byId("qrScannerModal");
 
 		if (!btnScanQR || !qrModal) {
-			console.warn("QR 스캐너: 버튼 또는 모달 요소를 찾을 수 없습니다.");
+			console.warn("QR 스캐너: 버튼 또는 모달 요소 없음");
 			return;
 		}
 
-		// 버튼 클릭 → 모달 열고 카메라 시작
-		btnScanQR.addEventListener("click", async function() {
-			console.log("QR 버튼 클릭됨");
+		// ✅ 버튼 클릭 → 모달 열고 카메라 시작
+		btnScanQR.addEventListener("click", async function () {
+			console.log("QR 버튼 클릭됨 (Outbound)");
 			ModalManager.openModalById("qrScannerModal");
 			await startCamera();
 		});
 
-		// 모달 닫힐 때 카메라 종료
-		const closeBtn = qrModal.querySelector(".modal-close-btn");
-		if (closeBtn) {
-			closeBtn.addEventListener("click", stopCamera);
-		}
-		qrModal.addEventListener("click", function(e) {
+		// ✅ 모달 닫기 → 카메라 종료
+		qrModal.querySelectorAll("[data-close], .modal-close-btn").forEach((btn) =>
+			btn.addEventListener("click", stopCamera)
+		);
+		qrModal.addEventListener("click", (e) => {
 			if (e.target === qrModal) stopCamera();
 		});
 	}
 
-	// ===== DOM 준비되면 초기화 =====
 	if (document.readyState === "loading") {
 		document.addEventListener("DOMContentLoaded", init);
 	} else {

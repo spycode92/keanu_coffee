@@ -250,7 +250,7 @@ $(function () {
 	}
 	
 	//상품상세모달창열기
-	$('#productTable').on('click', 'tr', function() {
+	$('#productTable tbody').on('click', 'tr', function() {
 	    const productIdx = $(this).data('productidx');
 	    if (!productIdx) {
 	        Swal.fire('오류', '상품 정보를 불러올 수 없습니다.', 'error');

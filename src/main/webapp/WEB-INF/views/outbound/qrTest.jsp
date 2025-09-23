@@ -16,11 +16,8 @@
   <div id="qrcode"></div>
   <script>
   const data = {
-		  orderNumber: "OBW-TEST-998",
-			ibwaitIdx: 4750,
-			lotNumber: "testLN",
-			manufactureDate: "2025-09-01",  
-		    expirationDate: "2029-09-01" 
+		  obwaitNumber: "OBW-TEST-800",
+	    	outboundOrderIdx: 997695
 		};
   QRCode.toCanvas(JSON.stringify(data), { width: 300, errorCorrectionLevel: 'H' }, function (err, canvas) {
 	  if (err) console.error(err);

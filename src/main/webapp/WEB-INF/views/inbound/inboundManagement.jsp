@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -114,10 +115,12 @@
 		        </div>
 		        <div class="d-flex gap-2">
 					<a href="${pageContext.request.contextPath}/inbound/qrTest" class="btn btn-secondary btn-sm">QR 테스트</a>
-		        	<div class="page-actions">
-					    <button id="btnScanQR" class="btn btn-primary btn-sm">QR 스캔</button>
-						<button id="btnAssignManager" class="btn btn-primary btn-sm">담당자지정</button>
-					</div>
+		        	<sec:authorize access="hasAuthority('INBOUND_WRITE')">
+			        	<div class="page-actions">
+						   	<button id="btnScanQR" class="btn btn-primary btn-sm">QR 스캔</button>
+							<button id="btnAssignManager" class="btn btn-primary btn-sm">담당자지정</button>
+						</div>
+					</sec:authorize>
 		            <a href="${pageContext.request.contextPath}/inbound/management/excel?
 				    	status=${param.status}&orderInboundKeyword=${param.orderInboundKeyword}
 				    	&vendorKeyword=${param.vendorKeyword}&inStartDate=${param.inStartDate}
@@ -146,57 +149,38 @@
 					</thead>
 	<!-- ==============================================================================================================리스트 존========= -->				
 					<tbody>
-					    <!-- 출력 카운터 초기화 -->
 					    <c:set var="displayCount" value="0" />
-					
+					    
+						<sec:authorize access="hasAuthority('INBOUND_READ')">
 					    <c:forEach var="order" items="${orderList}">
 					        <c:if test="${not empty order.orderNumber}">
-					            <tr>
-					                <!-- 체크박스 -->
-					                <td><input type="checkbox" name="selectedOrder" value="${order.ibwaitIdx}" /></td>
+					            <c:url var="detailUrl" value="/inbound/inboundDetail">
+					                <c:param name="orderNumber" value="${order.orderNumber}" />
+					                <c:param name="ibwaitIdx" value="${order.ibwaitIdx}" />
+					            </c:url>
 					
-					                <!-- 발주번호 (링크) -->
+					            <tr class="clickable-row" data-url="${detailUrl}" tabindex="0">
 					                <td>
-					                    <c:url var="detailUrl" value="/inbound/inboundDetail">
-					                        <c:param name="orderNumber" value="${order.orderNumber}" />
-					                        <c:param name="ibwaitIdx" value="${order.ibwaitIdx}" />
-					                    </c:url>
-					                    <a href="${detailUrl}" class="link-order-number">
-					                        <c:out value="${order.orderNumber}" default="-" />
-					                    </a>
+					                    <input type="checkbox" name="selectedOrder" value="${order.ibwaitIdx}" 
+					                           onclick="event.stopPropagation();" />
 					                </td>
 					
-					                <!-- 입고번호 -->
+					                <td><c:out value="${order.orderNumber}" default="-" /></td>
 					                <td><c:out value="${order.ibwaitNumber}" /></td>
-					
-					                <!-- 입고일자 -->
 					                <td><c:out value="${order.arrivalDateStr}" default="-" /></td>
-					
-					                <!-- 공급업체 -->
 					                <td><c:out value="${order.supplierName}" /></td>
-					                
-					                <!-- 상태 -->
 					                <td><c:out value="${order.inboundStatus}" /></td>
-					
-					                <!-- 품목수 -->
 					                <td><c:out value="${order.numberOfItems}" /></td>
-					
-					                <!-- 입고예정수량 -->
 					                <td><c:out value="${order.quantity}" /></td>
-					
-					                <!-- 담당자 -->
 					                <td><c:out value="${order.manager}" /></td>
-					
-					                <!-- 비고 -->
 					                <td><c:out value="${order.note}" /></td>
 					            </tr>
 					
-					            <!-- 출력 카운트 증가 -->
 					            <c:set var="displayCount" value="${displayCount + 1}" />
 					        </c:if>
 					    </c:forEach>
-					
-					    <!-- 출력된 행이 하나도 없을 경우 안내문 -->
+						</sec:authorize>
+						
 					    <c:if test="${displayCount == 0}">
 					        <tr>
 					            <td colspan="11" class="text-center">입고 데이터가 존재하지 않습니다.</td>
@@ -276,10 +260,6 @@
 					</c:if>
 				</div>
 			</div>
-
-
-
-			
 		</div>
 
 		<!-- 공통 설정 모달 -->
@@ -340,9 +320,28 @@
 		    document.getElementById('simpleSearchForm').style.display = 'block';
 		    document.getElementById('toggleDetailSearchBtn').textContent = '상세검색';
 		});
+		
+		document.addEventListener("click", function(e) {
+		    const row = e.target.closest("tr.clickable-row");
+		    if (!row) return;
+
+		    const url = row.getAttribute("data-url");
+		    if (!url) return;
+
+		    // SweetAlert 확인창
+		    Swal.fire({
+		        title: "상세 페이지로 이동하시겠습니까?",
+		        text: "현재 페이지에서 벗어나게 됩니다.",
+		        icon: "question",
+		        showCancelButton: true,
+		        confirmButtonText: "예",
+		        cancelButtonText: "아니오"
+		    }).then((result) => {
+		        if (result.isConfirmed) {
+		            window.location.href = url;
+		        }
+		    });
+		});
 	</script>
-	
-	
-	
 </body>
 </html>

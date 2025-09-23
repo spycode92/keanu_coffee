@@ -291,6 +291,8 @@ public class WorkingLogAspect {
 	        				);
 	        	}
 	        }
+	        
+	        
 	        if (methodName.equals("addProductOrder")) {
 	        	
 	        	int orderIdx = (int) args[0];
@@ -311,7 +313,45 @@ public class WorkingLogAspect {
 	        				);
 	        	}
 	        }
-	        	        
+	        
+	        // 검수중
+	        if (methodName.equals("updateInboundStatusInspection")) {
+	            Integer ibwaitIdx = (Integer) args[0];
+	            slog.setSubSection("검수중");
+	            slog.setTargetIdx(ibwaitIdx);
+
+	            if (errorMessage == null) {
+	                slog.setLogMessage(
+	                    slog.getSection() + ">" + slog.getSubSection() + " : " +
+	                    empName + "(" + empNo + ") 사원이 " + ibwaitIdx + "번 입고를 검수중 상태로 변경했습니다."
+	                );
+	            } else {
+	                slog.setLogMessage(
+	                    slog.getSection() + ">" + slog.getSubSection() + " : " +
+	                    empName + "(" + empNo + ") 사원이 " + ibwaitIdx + "번 입고 검수중 상태 변경 중 에러 발생"
+	                );
+	            }
+	        }
+	        
+	        // 재고등록완료
+	        if (methodName.equals("updateInboundStatusInboundComplete")) {
+	            Integer ibwaitIdx = (Integer) args[0];
+	            slog.setSubSection("재고등록완료");
+	            slog.setTargetIdx(ibwaitIdx);
+
+	            if (errorMessage == null) {
+	                slog.setLogMessage(
+	                    slog.getSection() + ">" + slog.getSubSection() + " : " +
+	                    empName + "(" + empNo + ") 사원이 " + ibwaitIdx + "번 입고를 재고등록완료 상태로 변경했습니다."
+	                );
+	            } else {
+	                slog.setLogMessage(
+	                    slog.getSection() + ">" + slog.getSubSection() + " : " +
+	                    empName + "(" + empNo + ") 사원이 " + ibwaitIdx + "번 입고 재고등록완료 상태 변경 중 에러 발생"
+	                );
+	            }
+	        }
+	        
 	        logmapper.insertSystemLog(slog);
 //	        System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
 //	        System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
