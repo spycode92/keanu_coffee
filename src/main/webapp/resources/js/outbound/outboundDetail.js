@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
+	// 뒤로가기 버튼
 	document.getElementById("btnBack")?.addEventListener("click", function(e) {
 		e.preventDefault();
 		history.back();
@@ -17,21 +18,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
 		btnInspection.addEventListener("click", async function () {
 			// 버튼 데이터 속성 가져오기
-			const obwaitIdx   = btnInspection.dataset.ibwaitIdx;
-			const orderNumber = btnInspection.dataset.orderNumber;
-			const status      = btnInspection.dataset.status;
-			const manager     = btnInspection.dataset.manager;
+			const obwaitIdx        = btnInspection.dataset.ibwaitIdx;
+			const orderNumber      = btnInspection.dataset.orderNumber;
+			const status           = btnInspection.dataset.status;
+			const manager          = btnInspection.dataset.manager;
 			const outboundOrderIdx = btnInspection.dataset.outboundOrderIdx;
 
 			// 로그인 사용자 (principal.getName()을 JSP에서 주입)
-<<<<<<< HEAD
 			const currentUser = btnInspection.dataset.currentUsername;
 
-=======
-			const currentUser = btnInspection.dataset.current;
->>>>>>> branch 'develop' of https://github.com/spycode92/keanu_coffee.git
 			// 1) 담당자 불일치
-			
 			if (manager && manager.trim() !== currentUser.trim()) {
 				Swal.fire({
 					icon: "warning",
@@ -56,13 +52,8 @@ document.addEventListener("DOMContentLoaded", function() {
 			// 3) Ajax 요청 → 출고검수 페이지 이동
 			try {
 				const res = await fetch(
-<<<<<<< HEAD
-				    `${contextPath}/outbound/outboundInspection?obwaitIdx=${obwaitIdx}&orderNumber=${encodeURIComponent(orderNumber)}&outboundOrderIdx=${outboundOrderIdx}`,
-				    { method: "GET", headers: { "Accept": "text/html" } }
-=======
-					`/outbound/outboundInspection?obwaitIdx=${obwaitIdx}&orderNumber=${encodeURIComponent(orderNumber)}`,
+					`${contextPath}/outbound/outboundInspection?obwaitIdx=${obwaitIdx}&orderNumber=${encodeURIComponent(orderNumber)}&outboundOrderIdx=${outboundOrderIdx}`,
 					{ method: "GET", headers: { "Accept": "text/html" } }
->>>>>>> branch 'develop' of https://github.com/spycode92/keanu_coffee.git
 				);
 
 				if (!res.ok) throw new Error("HTTP " + res.status);

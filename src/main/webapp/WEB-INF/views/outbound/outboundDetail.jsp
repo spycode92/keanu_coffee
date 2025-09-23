@@ -30,28 +30,18 @@
 				<h1 class="card-title">출고 상세</h1>
 			</div>
 			<div class="page-actions">
-<<<<<<< HEAD
 				<button id="btnInspection" type="button"
-=======
-				<sec:authentication property="principal.empName" var="loginEmpName"/>
+					class="btn btn-primary btn-sm"
+					data-ibwait-idx="${obDetail.obwaitIdx}"
+					data-order-number="${obDetail.obwaitNumber}"
+					data-status="${obDetail.status}"
+					data-manager="${obDetail.manager}"
+					data-current-username="${currentUserName}"
+					data-outbound-order-idx="${obDetail.outboundOrderIdx}">
+					검수
+				</button>
+			
 				<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
-				<button id="btnInspection"
->>>>>>> branch 'develop' of https://github.com/spycode92/keanu_coffee.git
-					        class="btn btn-primary btn-sm"
-					        data-ibwait-idx="${obDetail.obwaitIdx}"
-					        data-order-number="${obDetail.obwaitNumber}"
-					        data-status="${obDetail.status}"
-					        data-manager="${obDetail.manager}"
-<<<<<<< HEAD
-					        data-current-username="${currentUserName}"
-					        data-outbound-order-idx="${obDetail.outboundOrderIdx}"
-					        >
-=======
-					        data-current="${loginEmpName}">
->>>>>>> branch 'develop' of https://github.com/spycode92/keanu_coffee.git
-					    검수
-					</button>
-				
 				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
 			</div>
 		</div>
