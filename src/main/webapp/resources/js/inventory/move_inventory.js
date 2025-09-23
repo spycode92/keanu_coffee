@@ -207,16 +207,26 @@ function checkQuantity(quantity){
 	const maxQuantity = parseInt($('#mi_quantity').prop('max'));//숫자변환
 	const qty = parseInt(quantity);//숫자변환
 	
-	if (quantity > maxQuantity) {
+	if ( quantity > maxQuantity ) {
         $('#mi_quantity').val('');
 		
 		Swal.fire({
             icon: 'error',
             title: '최대수량 초과',
-            text: '현재 위치에 상품의 갯수를 초과하였습니다.',
+            text: '현재 위치에 존재하는 상품의 갯수를 초과하였습니다.',
             confirmButtonText: '확인'
         });
-    } else {
+    } else if( quantity < 1 ){
+        $('#mi_quantity').val('');
+		
+		Swal.fire({
+            icon: 'error',
+            title: '최소입력 수량제한',
+            text: '최소 입력값은 1입니다.',
+            confirmButtonText: '확인'
+		});
+		 
+	} else {
         $('#mi_quantity').val(quantity); // input 값 설정
 		selectQuantity = quantity;
 		return true;

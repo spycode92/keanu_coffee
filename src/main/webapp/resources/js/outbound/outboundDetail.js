@@ -23,9 +23,9 @@ document.addEventListener("DOMContentLoaded", function() {
 			const manager     = btnInspection.dataset.manager;
 
 			// 로그인 사용자 (principal.getName()을 JSP에서 주입)
-			const currentUser = "${pageContext.request.userPrincipal.name}";
-
+			const currentUser = btnInspection.dataset.current;
 			// 1) 담당자 불일치
+			
 			if (manager && manager.trim() !== currentUser.trim()) {
 				Swal.fire({
 					icon: "warning",
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			// 3) Ajax 요청 → 출고검수 페이지 이동
 			try {
 				const res = await fetch(
-					`${contextPath}/outbound/outboundInspection?obwaitIdx=${obwaitIdx}&orderNumber=${encodeURIComponent(orderNumber)}`,
+					`/outbound/outboundInspection?obwaitIdx=${obwaitIdx}&orderNumber=${encodeURIComponent(orderNumber)}`,
 					{ method: "GET", headers: { "Accept": "text/html" } }
 				);
 
