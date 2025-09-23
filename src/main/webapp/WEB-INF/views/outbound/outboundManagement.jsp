@@ -11,11 +11,13 @@
 	<meta name="_csrf_header" content="${_csrf.headerName}" />
 
 	<title>출고 관리</title>
+	
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 	<link href="${pageContext.request.contextPath}/resources/css/outbound/management.css" rel="stylesheet" />
 	<link href="${pageContext.request.contextPath}/resources/css/inbound/modal/detailSmallModal.css" rel="stylesheet" />
 </head>
+
 <body data-context="${pageContext.request.contextPath}">
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 
@@ -46,7 +48,7 @@
 					</select>
 				</div>
 				<div class="col-md-3 date-field date-request">
-					<label class="form-label">요청일</label>
+					<label class="form-label">출고일자</label>
 					<input type="date" class="form-control search-input" id="outRequestDate" />
 				</div>
 				<div class="col-md-3 date-field date-expect" style="display:none;">
@@ -86,13 +88,13 @@
 					<input type="text" class="form-control search-input" id="itemKeyword" placeholder="예) OBW-0001" />
 				</div>
 				<div class="col-md-3 d-flex align-items-end gap-2">
-					<button class="btn btn-primary btn-search">검색</button>
+					<button type="button" id="detailSearchBtn" class="btn btn-primary">검색</button>
 					<button class="btn btn-secondary btn-reset">초기화</button>
 					<button type="button" class="btn btn-light" id="backToSimpleBtn">간단검색</button>
 				</div>
 			</div>
 		</div>
-		
+		<a href="${pageContext.request.contextPath}/outbound/qrTest" class="btn btn-secondary btn-sm">QR 테스트</a>
 		<!-- 액션 바 -->
 		<div class="card">
 			<div class="card-header d-flex justify-content-between align-items-center">
@@ -103,7 +105,6 @@
 					</span>
 				</div>
 				<div class="d-flex gap-2">
-					<a href="${pageContext.request.contextPath}/outbound/qrTest" class="btn btn-secondary btn-sm">QR 테스트</a>
 					<sec:authorize access="hasAuthority('OUTBOUND_WRITE')">
 						<a href="/order/insert" class="btn btn-primary btn-sm">새 출고 등록</a>
 					</sec:authorize>

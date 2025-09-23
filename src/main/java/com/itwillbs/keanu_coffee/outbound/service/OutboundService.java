@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
 import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
+import com.itwillbs.keanu_coffee.outbound.dto.OutboundInspectionDTO;
+import com.itwillbs.keanu_coffee.outbound.dto.OutboundInspectionItemDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundManagementDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderItemDTO;
@@ -84,7 +86,8 @@ public class OutboundService {
 	}
     
     // 출고 상태 변경(출고준비 -> 배차대기)
-//    @Transactional
+
+    @Transactional
 //    @WorkingLog(target = WorkingLogTarget.OUTBOUND_ORDER)
 	public int updateStatusDispatchWait(String obwaitNumber, Long outboundOrderIdx) {
 //		if(obwaitNumber == null || obwaitNumber.isBlank() || outboundOrderIdx == null) {
@@ -93,7 +96,16 @@ public class OutboundService {
 		return outboundMapper.updateStatusDispatchWait(obwaitNumber.trim(), outboundOrderIdx);
 	}
     
+    //--------------------------
+    // inspection 기본정보조회
+	public OutboundInspectionDTO getOutboundDetailByIdx(Integer obwaitIdx, String orderNumber) {
+		return outboundMapper.selectOutboundDetailByIdx(obwaitIdx, orderNumber);
+	}
     
+	// inspection 리스트조회
+	public List<OutboundInspectionItemDTO> getOutboundInspectionItems(Integer outboundOrderIdx) {
+	    return outboundMapper.selectOutboundInspectionItems(outboundOrderIdx);
+	}
     
     
 }

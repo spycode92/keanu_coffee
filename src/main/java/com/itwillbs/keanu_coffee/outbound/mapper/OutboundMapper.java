@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
+import com.itwillbs.keanu_coffee.outbound.dto.OutboundInspectionDTO;
+import com.itwillbs.keanu_coffee.outbound.dto.OutboundInspectionItemDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundManagementDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderItemDTO;
@@ -37,8 +39,12 @@ public interface OutboundMapper {
     List<EmployeeInfoDTO> selectEmployeeList();
     void updateManagers(@Param("obwaitIdxList") List<Integer> obwaitIdxList,
     					@Param("managerName") String managerName);
-
     
+    // inspection 기본정보조회
+    OutboundInspectionDTO selectOutboundDetailByIdx(@Param("obwaitIdx") Integer obwaitIdx, @Param("orderNumber") String orderNumber);
+    
+    // inspection 리스트 조회
+    List<OutboundInspectionItemDTO> selectOutboundInspectionItems(@Param("outboundOrderIdx") Integer outboundOrderIdx);	
     
 	
 }
