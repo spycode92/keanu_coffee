@@ -18,7 +18,7 @@
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 </head>
  
-<body>
+<body data-context="${pageContext.request.contextPath}">
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 
 	<section class="content inbound-detail">
@@ -87,8 +87,8 @@
 				<div class="kv-item">
 					<div class="kv-label">입고위치</div>
 					<div class="kv-value">
-						<span id="fieldInboundLocation">
-							<c:out value="${inboundDetailData.inboundLocation}" default="-"/>
+						<span id="fieldInboundLocation" data-idx="${inboundDetailData.locationIdx}"> 
+						    <c:out value="${inboundDetailData.locationName}" default="-" />
 						</span>
 					</div>
 				</div>
@@ -129,84 +129,95 @@
 							<th>No</th>
 							<th colspan="2">품목명 / 규격</th>
 							<th>LOT번호</th>
-							<th>수량</th>
-							<th>단위</th>
 							<th>단가</th>
-							<th>공급가액</th>
-							<th>부가세</th>
-							<th>총액</th>
+							<th>수량</th>
+							<th>제조일</th>
+							<th>유통기한</th>
+							<th>QR스캔</th>
 							<th>검수</th>
 						</tr>
 					</thead>
 	<!-- ==============================================================================================================리스트 존========= -->
 					<tbody>
-					    <c:choose>
-					        <c:when test="${not empty ibProductDetail}">
-					            <c:forEach var="item" items="${ibProductDetail}" varStatus="vs">
-					                <tr data-product-idx="${item.productIdx}" data-lot-verified="false">
-									    <!-- No. -->
-									    <td><c:out value="${vs.index + 1}" /></td>
-									
-									    <!-- 상품명 -->
-									    <td colspan="2"><c:out value="${item.productName}" /></td>
-									    
+						<c:choose>
+							<c:when test="${not empty ibProductDetail}">
+								<c:forEach var="item" items="${ibProductDetail}" varStatus="vs">
+									<tr data-product-idx="${item.productIdx}" data-lot-verified="false">
+										<!-- No. -->
+										<td><c:out value="${vs.index + 1}" /></td>
+					
+										<!-- 상품명 / 규격 -->
+										<td colspan="2"><c:out value="${item.productName}" /></td>
+					
 										<!-- LOT넘버 -->
 										<td>
-										    <!-- 숨겨진 lotNumber (DB값 보관용) -->
-										    <input type="hidden" name="expectedLotNumber" value="${item.lotNumber}" />
-											<!-- 스캔 LOT: 스캔 성공 후 채움 (비노출, 서버 전송/게이트용) -->
-										    <input type="hidden" name="scannedLotNumber" value="" />
-										    <!-- 사용자 표시용 -->
-										    <span class="lotNumberDisplay">-</span>
-										    <input type="button" class="btn btn-sm btn-lotScan" value="스캔하기"
-										           onclick="openQrModalForRow(this)" />
+											<input type="hidden" name="expectedLotNumber" value="${item.lotNumber}" />
+											<input type="hidden" name="scannedLotNumber" value="" />
+											<span class="lotNumberDisplay">-</span>
 										</td>
-									
-									    <!-- 수량 -->
-									    <td>
-									        <input type="number" class="quantity" value="${item.quantity}" data-index="${vs.index}" style="width:40%;"/>개
-									    </td>
-									
-									    <!-- 단위 -->
-									    <td><fmt:formatNumber value="${item.productVolume}" pattern="#호" /></td>
-									
-									    <!-- 단가 -->
-									    <td>
-									       ₩<input type="number" class="unitPrice" value="${item.unitPrice}" data-index="${vs.index}" style="width:60%"/>
-									    </td>
-									
-									    <!-- 공급가액 -->
-									    <td class="amount" data-index="${vs.index}">
-									        <fmt:formatNumber value="${item.amount}" pattern="₩ #,##0" />
-									    </td>
-									
-									    <!-- 부가세 -->
-									    <td class="tax" data-index="${vs.index}">
-									        <fmt:formatNumber value="${item.tax}" pattern="₩ #,##0" />
-									    </td>
-									
-									    <!-- 총액 -->
-									    <td class="totalPrice" data-index="${vs.index}">
-									        <fmt:formatNumber value="${item.totalPrice}" pattern="₩ #,##0" />
-									    </td>
-									    
-									    <!-- 검수버튼 -->
-									    <td class="inspection">
-									        <input type="button" class="btn btn-secondary btn-sm" value="검수완료">
-									    </td>
-									
-									    
+										
+										<td>
+											₩<input type="number" class="unitPrice"
+											        value="${item.unitPrice}"
+											        data-index="${vs.index}"
+											        style="width:60%" />
+										</td>
+					
+										<!-- 수량 -->
+										<td>
+											<input type="number" class="quantity"
+											       value="${item.quantity}"
+											       data-index="${vs.index}"
+											       style="width:40%;" />개
+										</td>
+					
+										<!-- 제조일 -->
+										<td>
+											<input type="date" name="manufactureDate"
+											       class="form-control"
+											       value="${item.manufactureDate}" />
+										</td>
+					
+										<!-- 유통기한 -->
+										<td>
+											<input type="date" name="expirationDate"
+											       class="form-control"
+											       value="${item.expirationDate}" />
+										</td>
+					
+										<!-- QR 스캔 버튼 -->
+										<td>
+											<input type="button"
+											       class="btn btn-primary btn-sm btn-lotScan"
+											       value="QR 스캔"
+											       onclick="openQrModalForRow(this)" />
+										</td>
+					
+										<!-- 검수 버튼 -->
+										<td class="inspection">
+											<input type="button" class="btn btn-secondary btn-sm" value="검수완료">
+										</td>
+					
+										<!-- 가격 관련 hidden input (계산용) -->
+										<td style="display:none;">
+											<input type="hidden" class="unitPrice" value="${item.unitPrice}" data-index="${vs.index}" />
+											<input type="hidden" class="amount" value="${item.amount}" data-index="${vs.index}" />
+											<input type="hidden" class="tax" value="${item.tax}" data-index="${vs.index}" />
+											<input type="hidden" class="totalPrice" value="${item.totalPrice}" data-index="${vs.index}" />
+										</td>
+										
 									</tr>
-
-					            </c:forEach>
-					        </c:when>
-					        <c:otherwise>
-					            <tr>
-					                <td colspan="10" class="text-center">입고 품목 정보가 없습니다.</td>
-					            </tr>
-					        </c:otherwise>
-					    </c:choose>
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								<tr>
+									<td colspan="10" class="text-center">입고 품목 정보가 없습니다.</td>
+								</tr>
+							</c:otherwise>
+						</c:choose>
 					</tbody>
+
+
 					
 					<c:set var="grandTotal" value="0" />
 					<c:forEach var="item" items="${ibProductDetail}">
@@ -215,11 +226,7 @@
 					
 					<tfoot>
 						<tr>
-							<td colspan="8"></td>
-							<td>합계</td>
-							<td id="grandTotalCell">
-								<fmt:formatNumber value="${grandTotal}" pattern="₩ #,##0" />
-							</td>
+							<td colspan="9"></td>
 							<td>
 								<button id="btnCommit" class="btn btn-secondary btn-sm" title="입고확정" disabled>입고확정</button>
 							</td>
@@ -230,10 +237,10 @@
 			</div>
 		</div>
 
-		<!-- 첨부 / 메모 / 로그 -->
+		<!-- 첨부 / 메모  -->
 		<div class="card mb-4">
 			<div class="card-header">
-				<div class="card-title">첨부 / 메모 / 변경이력</div>
+				<div class="card-title">첨부 / 메모 </div>
 			</div>
 
 			<div class="row mb-3">
@@ -259,8 +266,11 @@
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/modify.js"></script>
 	<jsp:include page="/WEB-INF/views/inbound/modal/modifyLotNumber.jsp" />
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/inspectionQRscanner.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/changeLocationIdx.js"></script>
 	
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/inboundInspection.js"></script>
+	
+	<script> const contextPath = "${pageContext.request.contextPath}";</script>
 </body>
 <link href="${pageContext.request.contextPath}/resources/css/inbound/modal/detailSmallModal.css" rel="stylesheet" />
 </html>

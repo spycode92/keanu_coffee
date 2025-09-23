@@ -1,7 +1,11 @@
 package com.itwillbs.keanu_coffee.inbound.service;
 
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,9 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
+import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
+import com.itwillbs.keanu_coffee.inbound.dto.CommitInventoryDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundProductDetailDTO;
+import com.itwillbs.keanu_coffee.inbound.dto.InboundStatusHistoryDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO;
 import com.itwillbs.keanu_coffee.inbound.mapper.InboundMapper;
 
@@ -56,11 +64,19 @@ public class InboundService {
 		return inboundMapper.selectInboundProductDetail(orderNumber);
 	}
 	
-	// Detail 로케이션 수정
+	// Inspection 로케이션 수정
+	private static final Map<String, Integer> LOCATION_MAP = Map.of(
+	    "Location_F", 9999,
+	    "Location_G", 9998,
+	    "Location_H", 9997
+	);
 	public void updateLocation(Long ibwaitIdx, String inboundLocation) {
-		inboundMapper.updateLocation(ibwaitIdx, inboundLocation);
+	    Integer inboundLocationNum = LOCATION_MAP.get(inboundLocation);
+	    if(inboundLocationNum == null) return;
+	    inboundMapper.updateLocation(ibwaitIdx, inboundLocationNum);
 	}
-
+	
+	// 매니저 검색
 	public List<EmployeeInfoDTO> findManagers() {
 		return inboundMapper.selectEmployeeList();
 	}
@@ -87,10 +103,33 @@ public class InboundService {
 //	    inboundMapper.updatePurchaseOrderItemAfterInspection(dto); // purchase order는 수정하지 않기로.
 	}
 
-
-	public void updateInboundStatus(Integer ibwaitIdx, String status) {
+	
+	// 상태 업데이트(검수중)
+	@WorkingLog(target = WorkingLogTarget.INBOUND_INSPECTION)
+	public void updateInboundStatusInspection(Integer ibwaitIdx, String status) {
 	    inboundMapper.updateInboundStatus(ibwaitIdx, status);
 	}
+	
+	// 상태 업데이트(재고등록완료)
+	@WorkingLog(target = WorkingLogTarget.INBOUND_COMPLETE)
+	public void updateInboundStatusInboundComplete(Integer ibwaitIdx, String status) {
+		inboundMapper.updateInboundStatus(ibwaitIdx, status);
+	}
+	
+	// 재고 완전등록
+	public void insertInventory(CommitInventoryDTO req) {
+	    for (CommitInventoryDTO.InventoryItemDTO item : req.getItems()) {
+	        inboundMapper.insertInventory(item);
+	    }
+	}
+	
+	
+	// detail.로그조회
+	public List<InboundStatusHistoryDTO> getInboundStatusHistory(Integer ibwaitIdx) {
+		return inboundMapper.selectInboundStatusHistory(ibwaitIdx);
+	}
+
+	
 	
 
 

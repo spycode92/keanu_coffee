@@ -299,15 +299,14 @@ function totalUsage(palletZoneData, pickingZoneData) {
 function drawHeatmap(data, selector, zoneLabel) {
     const boxSize = 50;
     const gap = 40; 
-    const margin = { top: 60, right: 40, bottom: 40, left: 80 }; // ✅ 오른쪽 공간 확보
+
+    // ✅ fan-out offset 계산 (오른쪽으로 튀어나가는 여백 고려)
+    const fanoutOffsetStep  = Math.round(boxSize * 0.5);
+
+    // ✅ 오른쪽 margin 넉넉히 (기존 40 → 120)
+    const margin = { top: 60, right: 120, bottom: 40, left: 80 };
 
     if (!Array.isArray(data) || data.length === 0) return;
-
-    // 📌 level(층) 숫자 뽑기
-    const getLevelNumber = (level) => {
-        const m = String(level ?? "").match(/\d+/);
-        return m ? Number(m[0]) : 0;
-    };
 
     // 📌 문자열 natural sort
     const toKeyParts = (v) => {
@@ -339,15 +338,16 @@ function drawHeatmap(data, selector, zoneLabel) {
     const contentWidth  = cols * (boxSize + gap) - gap;
     const contentHeight = rows * (boxSize + gap) - gap;
 
-    const svgWidth  = margin.left + contentWidth  + margin.right;
+    // ✅ svgWidth 계산 시 fanoutOffsetStep * 2 보정 추가
+    const svgWidth  = margin.left + contentWidth + margin.right + fanoutOffsetStep * 2;
     const svgHeight = margin.top  + contentHeight + margin.bottom;
 
     const svg = d3.select(selector)
-	    .append("svg")
-	    .attr("width", svgWidth)
-	    .attr("height", svgHeight)
-		.style("display", "block")   // 블록 요소로 변환
-    	.style("margin", "0 auto");  // 가운데 정렬;
+        .append("svg")
+        .attr("width", svgWidth)
+        .attr("height", svgHeight)
+        .style("display", "block")
+        .style("margin", "0 auto");
 
     const g = svg.append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -364,6 +364,10 @@ function drawHeatmap(data, selector, zoneLabel) {
     const getYIndex = (rack) => rackOrder.indexOf(rack);
 
     // 📌 그룹핑
+    const getLevelNumber = (level) => {
+        const m = String(level ?? "").match(/\d+/);
+        return m ? Number(m[0]) : 0;
+    };
     const positionKey = (d) => `${d.rack}|${d.bay}|${getLevelNumber(d.level)}`;
     const groupsMap = new Map();
     data.forEach(d => {
@@ -374,7 +378,6 @@ function drawHeatmap(data, selector, zoneLabel) {
 
     // 📌 fan-out offset
     const overlapOffsetStep = Math.round(-boxSize * 0.05);
-    const fanoutOffsetStep  = Math.round(boxSize * 0.5); // ✅ 오른쪽으로 펼침
     const getOffset = (i, mode = "overlap") => {
         return { dx: i * (mode === "fanout" ? fanoutOffsetStep : overlapOffsetStep), dy: 0 };
     };
@@ -398,7 +401,7 @@ function drawHeatmap(data, selector, zoneLabel) {
             return ap.localeCompare(bp);
         });
 
-        // ✅ 그룹(g) 단위로 hover 이벤트만 받음
+        // ✅ 그룹(g) 단위 hover
         const group = g.append("g")
             .attr("transform", `translate(${baseX},${baseY})`)
             .on("mouseenter", function () {
@@ -409,7 +412,6 @@ function drawHeatmap(data, selector, zoneLabel) {
                         const off = getOffset(i, "fanout");
                         return `translate(${off.dx}, ${off.dy})`;
                     });
-                // 라벨 강조
                 bayLabels.get(bay).attr("fill", "#000").attr("font-weight", "bold");
                 rackLabels.get(rack).attr("fill", "#000").attr("font-weight", "bold");
             })
@@ -421,7 +423,6 @@ function drawHeatmap(data, selector, zoneLabel) {
                         return `translate(${off.dx}, ${off.dy})`;
                     });
                 tooltip.style("display", "none");
-                // 라벨 복귀
                 bayLabels.get(bay).attr("fill", "#555").attr("font-weight", "normal");
                 rackLabels.get(rack).attr("fill", "#555").attr("font-weight", "normal");
             });
@@ -437,37 +438,30 @@ function drawHeatmap(data, selector, zoneLabel) {
                 .attr("fill", colorScale(volumeRate))
                 .attr("stroke", "#111").attr("stroke-width", 1)
                 .on("mousemove", function (event) {
-			    const itemList = (d.items || []).map(item => `${item.name} (${item.quantity}개)`).join('<br/>');
-			
-			    // 화면 너비와 툴팁 크기 계산
-			    const tooltipNode = tooltip.node();
-			    const tooltipWidth = tooltipNode.offsetWidth || 150;
-			    const pageWidth = window.innerWidth;
-			
-			    // 무조건 오른쪽 기준으로 위치
-			    let left = event.pageX + 15;  
-			
-			    // 화면을 넘어가면 강제로 안쪽으로 붙이기
-			    if (left + tooltipWidth > pageWidth) {
-			        left = pageWidth - tooltipWidth - 10; // 오른쪽 끝에서 10px 여백
-			    }
-			
-			    tooltip
-			        .style("display", "block")
-			        .html(`
-			            <strong>${d.rack}-${d.bay}-${d.level}</strong><br/>
-			            용적률: ${volumeRate}%<br/>
-			            물품:<br/>${itemList}
-			        `)
-			        .style("left", left + "px")
-			        .style("top", (event.pageY + 10) + "px");
-			});
+                    const itemList = (d.items || []).map(item => `${item.name} (${item.quantity}개)`).join('<br/>');
+                    const tooltipNode = tooltip.node();
+                    const tooltipWidth = tooltipNode.offsetWidth || 150;
+                    const pageWidth = window.innerWidth;
 
-            // 초기 위치 (겹쳐진 상태)
+                    let left = event.pageX + 15;  
+                    if (left + tooltipWidth > pageWidth) {
+                        left = pageWidth - tooltipWidth - 10;
+                    }
+
+                    tooltip
+                        .style("display", "block")
+                        .html(`
+                            <strong>${d.rack}-${d.bay}-${d.level}</strong><br/>
+                            용적률: ${volumeRate}%<br/>
+                            물품:<br/>${itemList}
+                        `)
+                        .style("left", left + "px")
+                        .style("top", (event.pageY + 10) + "px");
+                });
+
             const off = getOffset(i, "overlap");
             cell.attr("transform", `translate(${off.dx}, ${off.dy})`);
 
-            // 텍스트 라벨
             const label = `${d.rack}-${d.bay}-${d.level}`;
             const centerX = boxSize / 2, centerY = boxSize / 2 - 5;
             const text = cell.append("text")
@@ -480,7 +474,7 @@ function drawHeatmap(data, selector, zoneLabel) {
         });
     }
 
-    // 📌 상단 bay 라벨 (가로)
+    // 📌 상단 bay 라벨
     bayOrder.forEach((bay, bIdx) => {
         const x = margin.left + bIdx * (boxSize + gap);
         const y = margin.top - 20;
@@ -492,7 +486,7 @@ function drawHeatmap(data, selector, zoneLabel) {
         bayLabels.set(bay, lbl);
     });
 
-    // 📌 좌측 rack 라벨 (세로)
+    // 📌 좌측 rack 라벨
     rackOrder.forEach((rack, rIdx) => {
         const x = margin.left - 25;
         const y = margin.top + rIdx * (boxSize + gap) + boxSize / 2;

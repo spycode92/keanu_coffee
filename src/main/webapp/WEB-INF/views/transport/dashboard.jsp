@@ -145,7 +145,7 @@ button:disabled {
 		<div>
 			<section class="card-grid">
 				<div class="card">
-					<div class="card-header">배차대기(일)</div>
+					<div class="card-header">배차대기</div>
 					<div class="kpi-value">${pendingDispatchCount}건</div>
 				</div>
 				<div class="card">

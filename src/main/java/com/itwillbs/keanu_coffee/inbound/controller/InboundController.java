@@ -3,6 +3,7 @@ package com.itwillbs.keanu_coffee.inbound.controller;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -32,9 +33,11 @@ import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
 import com.itwillbs.keanu_coffee.common.service.ExcelExportService;
 import com.itwillbs.keanu_coffee.common.utils.PageUtil;
+import com.itwillbs.keanu_coffee.inbound.dto.CommitInventoryDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.InboundProductDetailDTO;
+import com.itwillbs.keanu_coffee.inbound.dto.InboundStatusHistoryDTO;
 import com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO;
 import com.itwillbs.keanu_coffee.inbound.mapper.InboundMapper;
 import com.itwillbs.keanu_coffee.inbound.service.InboundService;
@@ -131,6 +134,10 @@ public class InboundController {
 	    List<InboundProductDetailDTO> ibProductDetail = inboundService.getInboundProductDetail(orderNumber);
 	    model.addAttribute("ibProductDetail", ibProductDetail);
 	    
+	    // 3) 로그 관련
+	    List<InboundStatusHistoryDTO> historyList = inboundMapper.selectInboundStatusHistory(ibwaitIdx);
+	    model.addAttribute("historyList", historyList);
+	    
 		return "/inbound/inboundDetail";
 	}
 	
@@ -175,7 +182,7 @@ public class InboundController {
 		
 	    InboundDetailDTO inboundDetailData = inboundService.getInboundDetailData(ibwaitIdx);
 	    if (inboundDetailData != null && "대기".equals(inboundDetailData.getInboundStatus())) {
-	        inboundService.updateInboundStatus(ibwaitIdx, "검수중");
+	        inboundService.updateInboundStatusInspection(ibwaitIdx, "검수중");
 	        inboundDetailData.setInboundStatus("검수중"); // 화면에도 반영
 	    }
 	    model.addAttribute("inboundDetailData", inboundDetailData);
@@ -190,7 +197,7 @@ public class InboundController {
 	@PostMapping(path="/inspectionComplete", consumes="application/json", produces="application/json")
 	@ResponseBody
 	public Map<String,Object> inspectionComplete(@RequestBody ReceiptProductDTO dto, Authentication authentication) {
-		 // 현재 로그인 사용자 정보 가져오기
+		// 현재 로그인 사용자 정보 가져오기
 		EmployeeDetail empDetail = (EmployeeDetail) authentication.getPrincipal();
 		Integer empIdx = empDetail.getEmpIdx();
 		dto.setEmpIdx(empIdx);
@@ -202,14 +209,23 @@ public class InboundController {
 	    return Map.of("ok", true, "empIdx", empIdx);
 	}
 	
-	// 입고완료
+	
+	// 입고완료 → INVENTORY 등록 + 상태 변경
 	@PostMapping(path="/commitInbound", consumes="application/json", produces="application/json")
 	@ResponseBody
-	public Map<String, Object> commitInbound(@RequestBody Map<String, Object> req) {
-	    Integer ibwaitIdx = Integer.valueOf(req.get("ibwaitIdx").toString());
-	    inboundService.updateInboundStatus(ibwaitIdx, "재고등록완료");
+	public Map<String, Object> commitInbound(@RequestBody CommitInventoryDTO req) {
+	    try {
+	        // 재고 등록 (items를 INVENTORY 테이블에 insert)
+	        inboundService.insertInventory(req);
 
-	    return Map.of("ok", true, "ibwaitIdx", ibwaitIdx);
+	        // 상태 업데이트 (입고완료 → 재고등록완료)
+	        inboundService.updateInboundStatusInboundComplete(req.getIbwaitIdx(), "재고등록완료");
+
+	        return Map.of("ok", true, "ibwaitIdx", req.getIbwaitIdx());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return Map.of("ok", false, "error", e.getMessage());
+	    }
 	}
 	
 	// 엑셀 생성 컨트롤러

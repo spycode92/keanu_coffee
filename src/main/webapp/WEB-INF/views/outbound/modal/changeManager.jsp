@@ -2,23 +2,29 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<div id="changeManager" class="modal" aria-hidden="true">
-	<div class="modal-card md" role="dialog" aria-modal="true" aria-labelledby="changeManagerTitle">
+<div class="modal" id="modal-assign-manager" aria-hidden="true">
+	<div class="modal-card modal-form sm">
 		<div class="modal-head">
-			<h3 id="changeManagerTitle" class="card-title">담당자 변경</h3>
-			<button type="button" class="modal-close-btn" aria-label="닫기" onclick="ModalManager.closeModalById('changeManager')">&times;</button>
+			<h3>담당자 지정</h3>
+			<button type="button" class="modal-close-btn" aria-label="닫기">✕</button>
 		</div>
 		<div class="modal-body">
-			<form id="changeManagerForm" class="form">
+			<form id="formAssignManager" class="form">
+				<input type="hidden" name="_csrf_header" value="${_csrf.headerName}">
+				<input type="hidden" name="_csrf" value="${_csrf.token}">
+				<!-- ✅ obwaitIdx -->
+				<input type="hidden" name="obwaitIdx" value="">
 				<div class="field">
-					<label for="manager" class="form-label">새 담당자</label>
-					<input type="text" id="manager" name="manager" class="form-control" />
+					<label>담당자</label>
+					<select class="form-control" name="managerIdx" id="managerSelect">
+						<option value="" disabled selected>담당자를 선택하세요</option>
+					</select>
 				</div>
 			</form>
 		</div>
 		<div class="modal-foot">
-			<button type="button" class="btn btn-cancel" onclick="ModalManager.closeModalById('changeManager')">취소</button>
-			<button type="submit" form="changeManagerForm" class="btn btn-primary">변경</button>
+			<button type="button" class="btn btn-secondary" data-close>취소</button>
+			<button type="submit" class="btn btn-primary" form="formAssignManager">저장</button>
 		</div>
 	</div>
 </div>

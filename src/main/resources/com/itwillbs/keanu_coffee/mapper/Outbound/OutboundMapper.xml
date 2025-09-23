@@ -3,67 +3,155 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.outbound.mapper.OutboundMapper">
-
-	<!-- management 상품 조회 -->
-	<select id="selectObManagementList" resultType="com.itwillbs.keanu_coffee.outbound.dto.OutboundManagementDTO">
-	    SELECT 
-	         oo.outbound_order_idx          AS outboundOrderIdx
-	        ,ow.obwait_number               AS obwaitNumber
-	        ,ow.departure_date              AS departureDate
-	        ,ow.outbound_location           AS outboundLocation
-	        ,f.franchise_name               AS franchiseName
-	        ,oo.status                      AS status
-	        ,COUNT(oi.outbound_order_item_idx) AS itemCount
-	        ,SUM(oi.quantity)               AS totalQuantity
-	        ,ow.manager                     AS manager
-	        ,ow.note                        AS note
-	    FROM OUTBOUND_WAITING ow
-	    JOIN OUTBOUND_ORDER oo 
-	      ON ow.outbound_order_idx = oo.outbound_order_idx
-	    JOIN FRANCHISE f 
-	      ON oo.franchise_idx = f.franchise_idx
-	    LEFT JOIN OUTBOUND_ORDER_ITEM oi 
-	      ON oo.outbound_order_idx = oi.outbound_order_idx
-	    GROUP BY 
-	         oo.outbound_order_idx
-	        ,ow.obwait_number
-	        ,ow.departure_date
-	        ,ow.outbound_location
-	        ,f.franchise_name
-	        ,oo.status
-	        ,ow.manager
-	        ,ow.note
-	    ORDER BY ow.departure_date DESC
+	<!-- 출고 관리 리스트 -->
+	<resultMap id="OutboundManagementMap" type="com.itwillbs.keanu_coffee.outbound.dto.OutboundManagementDTO">
+	    <result property="obwaitNumber"     column="obwait_number"/>
+	    <result property="outboundOrderIdx" column="outbound_order_idx"/>
+	    <result property="departureDate"    column="departure_date"/>
+	    <result property="outboundLocation" column="outbound_location"/>
+	    <result property="franchiseName"    column="franchise_name"/>
+	    <result property="status"           column="status"/>
+	    <result property="itemCount"        column="itemcount"/>
+	    <result property="totalQuantity"    column="totalquantity"/>
+	    <result property="manager"          column="manager"/>
+	    <result property="note"             column="note"/>
+	</resultMap>
+	
+	<select id="selectOutboundList" parameterType="map" resultType="com.itwillbs.keanu_coffee.outbound.dto.OutboundManagementDTO">
+	SELECT 
+	     o.obwait_number       AS obwaitNumber
+	    ,oo.outbound_order_idx AS outboundOrderIdx
+	    ,o.departure_date      AS departureDate
+	    ,o.outbound_location   AS outboundLocation
+	    ,f.franchise_name      AS franchiseName
+	    ,oo.status             AS status
+	    ,COUNT(oi.outbound_order_item_idx) AS itemCount
+	    ,SUM(oi.quantity)      AS totalQuantity
+	    ,o.manager             AS manager
+	    ,o.note                AS note
+	    ,MAX(o.created_at)     AS createdAt
+	FROM OUTBOUND_WAITING o
+	JOIN OUTBOUND_ORDER oo ON o.outbound_order_idx = oo.outbound_order_idx
+	LEFT JOIN FRANCHISE f ON oo.franchise_idx = f.franchise_idx
+	LEFT JOIN OUTBOUND_ORDER_ITEM oi ON oo.outbound_order_idx = oi.outbound_order_idx
+	WHERE 1=1
+		<if test="simpleKeyword != null and simpleKeyword != ''">
+		  AND o.obwait_number LIKE CONCAT('%', #{simpleKeyword}, '%')
+		</if>
+		<if test="outboundNumber != null and outboundNumber != ''">
+		  AND o.obwait_number LIKE CONCAT('%', #{outboundNumber}, '%')
+		</if>
+		<if test="franchiseKeyword != null and franchiseKeyword != ''">
+			AND f.franchise_name LIKE CONCAT('%', #{franchiseKeyword}, '%')
+		</if>
+		<if test="status != null and status != ''">
+			AND oo.status = #{status}
+		</if>
+		<if test="outRequestDate != null and outRequestDate != ''">
+			AND DATE(oo.requested_date) = #{outRequestDate}
+		</if>
+		<if test="outExpectDate != null and outExpectDate != ''">
+			AND DATE(oo.expect_outbound_date) = #{outExpectDate}
+		</if>
+		<if test="outRangeStart != null and outRangeStart != ''">
+			AND o.departure_date &gt;= #{outRangeStart}
+		</if>
+		<if test="outRangeEnd != null and outRangeEnd != ''">
+			AND o.departure_date &lt;= #{outRangeEnd}
+		</if>
+	GROUP BY 
+	     o.obwait_number, oo.outbound_order_idx , oo.outbound_order_idx, o.departure_date, o.outbound_location,
+	     f.franchise_name, oo.status, o.manager, o.note
+	ORDER BY createdAt DESC
+	LIMIT #{startRow}, #{pageSize}
 	</select>
+	
+	<!-- 출고 리스트 총 개수 -->
+	<select id="selectOutboundTotalCount" parameterType="map" resultType="int">
+	SELECT
+	    COUNT(DISTINCT CONCAT(o.obwait_number, '-', oo.outbound_order_idx))
+	FROM OUTBOUND_WAITING o
+	JOIN OUTBOUND_ORDER oo
+	    ON o.outbound_order_idx = oo.outbound_order_idx
+	LEFT JOIN FRANCHISE f
+	    ON oo.franchise_idx = f.franchise_idx
+	WHERE 1=1
+	    <if test="simpleKeyword != null and simpleKeyword != ''">
+	        AND (o.obwait_number LIKE CONCAT('%', #{simpleKeyword}, '%') 
+	          OR f.franchise_name LIKE CONCAT('%', #{simpleKeyword}, '%'))
+	    </if>
+	    <if test="outboundNumber != null and outboundNumber != ''">
+	        AND o.obwait_number = #{outboundNumber}
+	    </if>
+	    <if test="franchiseKeyword != null and franchiseKeyword != ''">
+	        AND f.franchise_name LIKE CONCAT('%', #{franchiseKeyword}, '%')
+	    </if>
+	    <if test="status != null and status != ''">
+	        AND oo.status = #{status}
+	    </if>
+	    <if test="outRequestDate != null and outRequestDate != ''">
+	        AND DATE(oo.requested_date) = #{outRequestDate}
+	    </if>
+	    <if test="outExpectDate != null and outExpectDate != ''">
+	        AND DATE(oo.expect_outbound_date) = #{outExpectDate}
+	    </if>
+	    <if test="outRangeStart != null and outRangeStart != ''">
+	        AND o.departure_date &gt;= #{outRangeStart}
+	    </if>
+	    <if test="outRangeEnd != null and outRangeEnd != ''">
+	        AND o.departure_date &lt;= #{outRangeEnd}
+	    </if>
+	</select>
+	
+	<!-- 매니저 조회 -->
+    <select id="selectEmployeeList" resultType="com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO">
+        SELECT emp_idx AS empIdx,
+               emp_name AS empName
+        FROM EMPLOYEE_INFO
+        WHERE department_idx = 3
+          AND role_idx = 4
+          AND emp_status = '재직'
+    </select>
+	
+	
+	<!-- management 매니저 지정 -->
+	<update id="updateManagers">
+	    UPDATE OUTBOUND_WAITING
+	    SET manager = #{managerName}, updated_at = NOW()
+	    WHERE outbound_order_idx IN
+	    <foreach collection="obwaitIdxList" item="idx" open="(" separator="," close=")">
+	        #{idx}
+	    </foreach>
+	</update>
 	
 	<!-- 출고 기본정보 상세 조회 -->
     <select id="selectOutboundDetail" resultType="com.itwillbs.keanu_coffee.outbound.dto.OutboundManagementDTO">
-	    SELECT 
-	        ow.obwait_idx        AS obwaitIdx,
-	        ow.obwait_number     AS obwaitNumber,
-	        ow.departure_date 	 AS departureDate,
-	        fo.franchise_name    AS franchiseName,
-	        ow.manager           AS manager,
-	        ow.outbound_location AS outboundLocation,
-	        COUNT(foi.outbound_order_item_idx) AS itemCount,
-	        SUM(foi.quantity)    AS totalQuantity,
-	        oo.status            AS status,
-	        ow.note              AS note
-	    FROM OUTBOUND_WAITING ow
-	    JOIN OUTBOUND_ORDER oo 
-	      ON ow.outbound_order_idx = oo.outbound_order_idx
-	    JOIN FRANCHISE fo 
-	      ON oo.franchise_idx = fo.franchise_idx
-	    JOIN OUTBOUND_ORDER_ITEM foi 
-	      ON oo.outbound_order_idx = foi.outbound_order_idx
-	    WHERE ow.obwait_number = #{obwaitNumber}
-	      AND ow.outbound_order_idx = #{outboundOrderIdx}
-	    GROUP BY ow.obwait_idx, ow.obwait_number, ow.departure_date, 
-	             fo.franchise_name, ow.manager, ow.outbound_location,
-	             oo.status, ow.note
+	    SELECT
+		    ow.obwait_idx          AS obwaitIdx
+		  , ow.obwait_number       AS obwaitNumber
+		  , ow.departure_date      AS departureDate
+		  , ow.outbound_location   AS outboundLocation
+		  , fo.franchise_name      AS franchiseName
+		  , oo.outbound_order_idx  AS outboundOrderIdx   <!-- ✅ 추가 -->
+		  , oo.status              AS status
+		  , COUNT(foi.outbound_order_item_idx) AS itemCount
+		  , SUM(foi.quantity)      AS totalQuantity
+		  , ow.manager             AS manager
+		  , ow.note                AS note
+		  , ow.created_at          AS createdAt
+		FROM OUTBOUND_WAITING ow
+		JOIN OUTBOUND_ORDER oo 
+		    ON ow.outbound_order_idx = oo.outbound_order_idx
+		JOIN FRANCHISE fo 
+		    ON oo.franchise_idx = fo.franchise_idx
+		LEFT JOIN OUTBOUND_ORDER_ITEM foi 
+		    ON oo.outbound_order_idx = foi.outbound_order_idx
+		WHERE ow.obwait_number = #{obwaitNumber}
+		  AND ow.outbound_order_idx = #{outboundOrderIdx}
+		GROUP BY ow.obwait_idx, oo.outbound_order_idx
 	</select>
 
-
+	
 
     <!-- 출고 품목 리스트 조회 -->
     <select id="selectOutboundProductDetail" resultType="com.itwillbs.keanu_coffee.outbound.dto.OutboundProductDetailDTO">
@@ -79,6 +167,57 @@
 	    WHERE foi.outbound_order_idx = #{outboundOrderIdx}
 	    ORDER BY p.product_name ASC
 	</select>
+	
+	<!-- inspection 출고 기본정보 조회 -->
+	<select id="selectOutboundDetailByIdx" 
+        parameterType="map"
+        resultType="com.itwillbs.keanu_coffee.outbound.dto.OutboundInspectionDTO">
+		SELECT 
+			ow.obwait_idx            AS obwaitIdx
+		,	ow.obwait_number         AS obwaitNumber
+		,	ow.departure_date        AS departureDate
+		,	oo.outbound_order_idx    AS outboundOrderIdx
+		,	f.franchise_name         AS franchiseName
+		,	ow.manager               AS manager
+		,	ow.outbound_location     AS outboundLocation
+		,	ow.note                  AS note
+		,	COUNT(oi.outbound_order_item_idx) AS itemCount
+		,	IFNULL(SUM(oi.quantity),0)       AS totalQuantity
+		,	ow.outbound_classification       AS outboundClassification
+		,	oo.status                AS status
+		,	ow.created_at            AS createdAt
+		,	ow.updated_at            AS updatedAt
+		FROM OUTBOUND_WAITING ow
+		JOIN OUTBOUND_ORDER oo 
+			ON ow.outbound_order_idx = oo.outbound_order_idx
+		LEFT JOIN OUTBOUND_ORDER_ITEM oi 
+			ON oo.outbound_order_idx = oi.outbound_order_idx
+		LEFT JOIN FRANCHISE f 
+			ON oo.franchise_idx = f.franchise_idx
+		WHERE ow.obwait_idx = #{obwaitIdx}
+		  AND ow.obwait_number = #{orderNumber}
+		GROUP BY ow.obwait_idx
+	</select>
+	
+	
+	<!-- inspection 출고 품목 리스트 조회 -->
+	<select id="selectOutboundInspectionItems"
+	        resultType="com.itwillbs.keanu_coffee.outbound.dto.OutboundInspectionItemDTO">
+	    SELECT 
+	        oi.outbound_order_item_idx  AS outboundOrderItemIdx
+	    ,   rp.lot_number               AS lotNumber
+	    ,   p.product_name              AS productName
+	    ,   p.product_volume            AS productVolume
+	    ,   oi.quantity                 AS quantity
+	    FROM OUTBOUND_ORDER_ITEM oi
+	    LEFT JOIN PRODUCT p 
+	        ON oi.product_idx = p.product_idx
+	    LEFT JOIN RECEIPT_PRODUCT rp
+	        ON oi.receipt_product_idx = rp.receipt_product_idx
+	    WHERE oi.outbound_order_idx = #{outboundOrderIdx}
+	    ORDER BY p.product_name ASC
+	</select>
+		
 	
 	<!-- 선택된 출고건을 '출고준비' 상태로 업데이트 -->
 	<update id="updateStatusReady">
