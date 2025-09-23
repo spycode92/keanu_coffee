@@ -245,28 +245,28 @@ public class WorkingLogAspect {
 	        	}
 	        }
 	        // 발주처리 입고대기목록추가
-	        if (methodName.equals("updateStatusDispatchWait")) {
-	        	int orderIdx = (int) args[0];
-	        	String orderNumber = (String) args[1];
-	        	
-	        	LocalDate expectedArrivalDate = (LocalDate) args[4];
-	        	slog.setSubSection("출고준비완료");
-	        	
-	        	
-	        	
-	        	slog.setTargetIdx(orderIdx);
-	        	if (errorMessage == null) {
-	        		slog.setLogMessage(
-	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
-	        					orderIdx + "(" + orderNumber + ")" + "번 발주주문 완료."
-	        				);
-	        	} else {
-	        		slog.setLogMessage(
-	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
-	        						orderIdx + "(" + orderNumber + ")" + "번 발주주문 중 ."
-	        				);
-	        	}
-	        }
+//	        if (methodName.equals("updateStatusDispatchWait")) {
+//	        	int orderIdx = (int) args[0];
+//	        	String orderNumber = (String) args[1];
+//	        	
+//	        	LocalDate expectedArrivalDate = (LocalDate) args[4];
+//	        	slog.setSubSection("출고준비완료");
+//	        	
+//	        	
+//	        	
+//	        	slog.setTargetIdx(orderIdx);
+//	        	if (errorMessage == null) {
+//	        		slog.setLogMessage(
+//	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+//	        					orderIdx + "(" + orderNumber + ")" + "번 발주주문 완료."
+//	        				);
+//	        	} else {
+//	        		slog.setLogMessage(
+//	        				slog.getSection() + ">" + slog.getSubSection() + " : "  + 
+//	        						orderIdx + "(" + orderNumber + ")" + "번 발주주문 중 ."
+//	        				);
+//	        	}
+//	        }
 	        // 재고폐기처리
 	        if (methodName.equals("disposalInventoryQuantity")) {
 	        	

@@ -87,8 +87,8 @@ function updatePickedSummary() {
 	$(".franchise-check:checked").each(function() {
 		const orderIdx = $(this).data("order-idx");
 		const franchiseIdx = $(this).data("franchise-idx");
-		const franchise = franchises.find(f => 
-		      f.franchiseIdx === franchiseIdx && f.outboundOrderIdx === orderIdx);
+		const franchise = franchises.find(f =>
+			f.franchiseIdx === franchiseIdx && f.outboundOrderIdx === orderIdx);
 
 		if (franchise && franchise.items) {
 			franchise.items.forEach(item => {
@@ -128,35 +128,40 @@ $(document).on("click", "#btnClearPick", function() {
 function loadCompleted() {
 	const selectedStops = [];
 	const grouped = {};
+	const seen = new Set();
 	$(".franchise-check:checked").each(function() {
 		const orderIdx = $(this).data("order-idx");
 		const franchiseIdx = $(this).data("franchise-idx");
-		const franchise = franchises.find(f => 
-		      f.franchiseIdx === franchiseIdx && f.outboundOrderIdx === orderIdx);
+		const franchise = franchises.find(f =>
+			f.franchiseIdx === franchiseIdx && f.outboundOrderIdx === orderIdx);
 
-		// outboundOrderIdx 값 가져오기
+		franchise.items.forEach(item => {
+			const key = orderIdx; // 주문번호만 기준
+			if (seen.has(key)) return; // 이미 처리된 주문번호면 skip
+			seen.add(key);
+
+			selectedStops.push({
+				franchiseIdx: franchise.franchiseIdx,
+				outboundOrderIdx: orderIdx,
+				items: franchise.items.map(it => ({
+					outboundOrderItemIdx: it.outboundOrderItemIdx,
+					productIdx: it.productIdx,
+					itemName: it.productName,
+					orderedQty: it.quantity,
+					deliveredQty: it.quantity
+				}))
+			});
+		});
+
 		franchise.items.forEach(item => {
 			if (!grouped[item.outboundOrderIdx]) {
 				grouped[item.outboundOrderIdx] = [];
 			}
 			grouped[item.outboundOrderIdx].push(item);
 		});
-
-		Object.entries(grouped).forEach(([outboundOrderIdx, items]) => {
-			const stopData = {
-				franchiseIdx: franchise.franchiseIdx,
-				outboundOrderIdx: parseInt(outboundOrderIdx),
-				items: items.map(item => ({
-					outboundOrderItemIdx: item.outboundOrderItemIdx,
-					productIdx: item.productIdx,
-					itemName: item.productName,
-					orderedQty: item.quantity,
-					deliveredQty: item.quantity
-				}))
-			};
-			selectedStops.push(stopData);
-		});
 	});
+
+
 
 	const capacity = $("#capacity").val() === 1000 ? 3000 : 4500;
 
@@ -173,7 +178,7 @@ function loadCompleted() {
 		requiresAdditional: $("#assignTable tbody tr").data("requires-additional"),
 		stops: selectedStops
 	};
-	
+
 	Swal.fire({
 		title: "적재를 완료하시겠습니까?",
 		showCancelButton: true,
@@ -245,7 +250,7 @@ $(document).on("click", ".detail-btn", function() {
 	// 화면 구현
 	$.getJSON(`${MYPAGE_DISPATCH_DETAIL_URL}/${dispatchIdx}/${vehicleIdx}`)
 		.done(function(dispatch) {
-			currentDispatch= dispatch;
+			currentDispatch = dispatch;
 			$("#progMeta").text("배차일 " + formatDate(dispatch.dispatchDate));
 			requiresAdditional = dispatch.requiresAdditional;
 			let detailHtml = "";
@@ -260,6 +265,7 @@ $(document).on("click", ".detail-btn", function() {
 				const items = stop.deliveryConfirmations?.[0]?.items || [];
 				if (stop.deliveryConfirmations) {
 					stop.deliveryConfirmations.forEach((dc) => {
+						console.log(stop);
 						dc.items?.forEach((item, index) => {
 							const orderItems = dc.items;
 							detailHtml += `
@@ -323,7 +329,7 @@ $(document).on("click", ".detail-btn", function() {
 							Swal.fire("운송시작", "운행을 시작합니다.", "success").then(() => {
 								location.reload();
 							});
-		
+
 						},
 						error: function(xhr) {
 							Swal.fire("에러", xhr.responseText, "error");
@@ -337,7 +343,7 @@ $(document).on("click", ".detail-btn", function() {
 				if (!allDone) {
 					btn.prop("disabled", !allDone);
 				}
-		
+
 				btn.off("click").on("click", function() {
 					Swal.fire({
 						title: "복귀하시겠습니까?",
@@ -405,88 +411,88 @@ $(document).on("input", ".delivered-qty", function() {
 	// 같은 지점의 반품 수량 및 상태 확인
 	let allFilled = true;
 	// 반품 여부 확인
-	let hasRefund = false; 
-	
-  	tbody.find(`tr[data-outbound-order-idx="${orderIdx}"]`).each(function() {
-    	const row = $(this);
-        const returned = parseInt(row.find(".delivered-qty").val() || -1, 10);
-    	const code = row.find(".delivered-qty").data("status-code");
+	let hasRefund = false;
 
-	    if (isNaN(returned) || returned < 0 || !code) {
-	      allFilled = false;
-	      return false;
-	    }
+	tbody.find(`tr[data-outbound-order-idx="${orderIdx}"]`).each(function() {
+		const row = $(this);
+		const returned = parseInt(row.find(".delivered-qty").val() || -1, 10);
+		const code = row.find(".delivered-qty").data("status-code");
+
+		if (isNaN(returned) || returned < 0 || !code) {
+			allFilled = false;
+			return false;
+		}
 
 		if (code === "REFUND" || code === "PARTIAL_REFUND") {
-			 hasRefund = true;
-		} 
-    });
+			hasRefund = true;
+		}
+	});
 
 	// 루프가 끝난 후 files 부분 한 번만 처리
 	if (hasRefund) {
-	    $("#files").show();
+		$("#files").show();
 	} else {
-	    $("#files").hide();
+		$("#files").hide();
 	}
 
 	// 주문 단위로 반품 수량 입력 여부로 버튼 활성/비활성
 	const btn = tbody.find(`.complateBtn[data-order-idx="${orderIdx}"]`);
-	
+
 	// 모든 수량 입력되었을 경우 활성화
 	let enableBtn = allFilled;
-	
+
 	if (hasRefund) {
 		enableBtn = allFilled && hasRefund;
 	}
-	
-    btn.prop("disabled", !enableBtn);
+
+	btn.prop("disabled", !enableBtn);
 });
 
 
 // 납품 완료 버튼 클릭 시 
 $(document).on("click", ".complateBtn", function() {
-  	const stopIdx = parseInt($(this).data("dispatch-stop-idx"));
-  	const orderIdx = parseInt($(this).data("order-idx"));
+	const stopIdx = parseInt($(this).data("dispatch-stop-idx"));
+	const orderIdx = parseInt($(this).data("order-idx"));
 	const stop = currentDispatch.franchises.find(s => s.dispatchStopIdx === stopIdx);
- 	const confirmation = stop?.deliveryConfirmations.find(dc => dc.outboundOrderIdx === orderIdx);
-	
+	const confirmation = stop?.deliveryConfirmations.find(dc => dc.outboundOrderIdx === orderIdx);
+
 	const complateRequestData = {
-	    deliveryConfirmationIdx: confirmation.deliveryConfirmationIdx,
-	    dispatchIdx: currentDispatch.dispatchIdx,
-	    vehicleIdx: currentDispatch.vehicleIdx,
-	    requiresAdditional: currentDispatch.requiresAdditional,
-	    outboundOrderIdx: confirmation.outboundOrderIdx,
-	    dispatchStopIdx: stop.dispatchStopIdx,
-	    receiverName: currentDispatch.franchiseManagerName,
-	    items: []
+		deliveryConfirmationIdx: confirmation.deliveryConfirmationIdx,
+		dispatchIdx: currentDispatch.dispatchIdx,
+		vehicleIdx: currentDispatch.vehicleIdx,
+		requiresAdditional: currentDispatch.requiresAdditional,
+		outboundOrderIdx: confirmation.outboundOrderIdx,
+		dispatchStopIdx: stop.dispatchStopIdx,
+		receiverName: currentDispatch.franchiseManagerName,
+		items: []
 	};
 
-  	const tbody = $(this).closest("table").find("tbody");
+	const tbody = $(this).closest("table").find("tbody");
 	tbody.find("tr").each(function() {
-	    const row = $(this);
-	    const confirmationItemIdx = row.data("confirmation-item-idx");
-	    const delivered = parseInt(row.find(".delivered-qty").val() || 0, 10);
-	    const statusCode = row.find(".delivered-qty").data("status-code");
-	
-	    complateRequestData.items.push({
-	      confirmationItemIdx,
-	      deliveredQty: delivered,
-	      status: statusCode
-	    });
+		const row = $(this);
+		const confirmationItemIdx = row.data("confirmation-item-idx");
+		const delivered = parseInt(row.find(".delivered-qty").val() || 0, 10);
+		const statusCode = row.find(".delivered-qty").data("status-code");
+
+		complateRequestData.items.push({
+			confirmationItemIdx,
+			deliveredQty: delivered,
+			status: statusCode
+		});
 	});
-	
+
 	const formData = new FormData();
-	
+
 	// formData 데이터 입력
 	formData.append("request", new Blob([JSON.stringify(complateRequestData)], { type: "application/json" }));
-	
+
 	// 파일 추가
 	const files = $('input[name="files"]')[0].files;
-	
+
 	for (let i = 0; i < files.length; i++) {
-	  formData.append("files", files[i]); // List<MultipartFile>로 매핑됨
+		formData.append("files", files[i]); // List<MultipartFile>로 매핑됨
 	}
-	
+
 	Swal.fire({
 		title: "납품을 완료하시겠습니까?",
 		showDenyButton: true,
@@ -502,8 +508,8 @@ $(document).on("click", ".complateBtn", function() {
 				processData: false,
 				contentType: false,
 				headers: {
- 					"X-CSRF-TOKEN": token
- 				},
+					"X-CSRF-TOKEN": token
+				},
 				beforeSend(xhr) {
 					if (token && header) xhr.setRequestHeader(header, token);
 				},
@@ -524,29 +530,29 @@ $(document).on("click", ".complateBtn", function() {
 
 
 //이미지미리보기
-$(document).on("change", "#files", function (e) {
-    const files = e.target.files;
+$(document).on("change", "#files", function(e) {
+	const files = e.target.files;
 	// 이미지 여러개 담을 div
-	const previewContainer = $('#productImagePreviewContainer'); 
+	const previewContainer = $('#productImagePreviewContainer');
 	// 이미지 여러개 담는 div 초기화
 	previewContainer.empty();
-	
+
 	if (files && files.length > 0) {
 		for (const file of files) {
 			if (file.type.startsWith("image/")) {
 				const reader = new FileReader();
-				reader.onload = function (evt) {
-		    		const img = $('<img>')
-                        .attr('src', evt.target.result)
-                        .css({
-                            'max-width': '120px',
-                            'max-height': '120px',
-                            'margin': '5px',
-                            'border': '1px solid #ccc',
-                            'border-radius': '6px'
-                        });
-					 previewContainer.append(img);
-		        };
+				reader.onload = function(evt) {
+					const img = $('<img>')
+						.attr('src', evt.target.result)
+						.css({
+							'max-width': '120px',
+							'max-height': '120px',
+							'margin': '5px',
+							'border': '1px solid #ccc',
+							'border-radius': '6px'
+						});
+					previewContainer.append(img);
+				};
 				reader.readAsDataURL(file);
 			}
 		}
@@ -556,13 +562,13 @@ $(document).on("change", "#files", function (e) {
 // 파일 다운로드 화면 구현
 function renderFileName(currentDispatch) {
 	let html = "";
-	
+
 	currentDispatch.franchises.forEach((stop) => {
 		if (stop.deliveryConfirmations) {
-			 stop.deliveryConfirmations.forEach((dc) => {
+			stop.deliveryConfirmations.forEach((dc) => {
 				if (dc.fileList.length > 0) {
-						dc.fileList.forEach((file) => {
-							html += `
+					dc.fileList.forEach((file) => {
+						html += `
 							<div class="download-area">
 								${file.originalFileName} <a
 									href="/file/${file.fileIdx}"> <input

@@ -24,9 +24,14 @@ document.addEventListener("DOMContentLoaded", function() {
 			const outboundOrderIdx = btnInspection.dataset.outboundOrderIdx;
 
 			// 로그인 사용자 (principal.getName()을 JSP에서 주입)
+<<<<<<< HEAD
 			const currentUser = btnInspection.dataset.currentUsername;
 
+=======
+			const currentUser = btnInspection.dataset.current;
+>>>>>>> branch 'develop' of https://github.com/spycode92/keanu_coffee.git
 			// 1) 담당자 불일치
+			
 			if (manager && manager.trim() !== currentUser.trim()) {
 				Swal.fire({
 					icon: "warning",
@@ -51,8 +56,13 @@ document.addEventListener("DOMContentLoaded", function() {
 			// 3) Ajax 요청 → 출고검수 페이지 이동
 			try {
 				const res = await fetch(
+<<<<<<< HEAD
 				    `${contextPath}/outbound/outboundInspection?obwaitIdx=${obwaitIdx}&orderNumber=${encodeURIComponent(orderNumber)}&outboundOrderIdx=${outboundOrderIdx}`,
 				    { method: "GET", headers: { "Accept": "text/html" } }
+=======
+					`/outbound/outboundInspection?obwaitIdx=${obwaitIdx}&orderNumber=${encodeURIComponent(orderNumber)}`,
+					{ method: "GET", headers: { "Accept": "text/html" } }
+>>>>>>> branch 'develop' of https://github.com/spycode92/keanu_coffee.git
 				);
 
 				if (!res.ok) throw new Error("HTTP " + res.status);
