@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -29,13 +30,15 @@
 				<h1 class="card-title">출고 상세</h1>
 			</div>
 			<div class="page-actions">
+				<sec:authentication property="principal.empName" var="loginEmpName"/>
 				<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
 				<button id="btnInspection"
 					        class="btn btn-primary btn-sm"
 					        data-ibwait-idx="${obDetail.obwaitIdx}"
 					        data-order-number="${obDetail.obwaitNumber}"
 					        data-status="${obDetail.status}"
-					        data-manager="${obDetail.manager}">
+					        data-manager="${obDetail.manager}"
+					        data-current="${loginEmpName}">
 					    검수
 					</button>
 				<button id="btnAssignLocation" class="btn btn-primary btn-sm">출고위치지정</button>
