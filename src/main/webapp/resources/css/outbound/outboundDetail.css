@@ -173,3 +173,36 @@
   nav.top-nav, .sidebar, .page-actions { display: none !important; }
   .content { margin: 0; padding: 0; }
 }
+
+/* 버튼 */
+.outbound-detail .page-actions .btn {
+	font-size: 1rem;     /* 기존 .95rem → 1rem */
+	padding: .65rem 1rem; /* 버튼도 조금 더 크게 */
+}
+
+/* 카드 제목 */
+.outbound-detail .card-title { 
+	font-size: 1.35rem;  /* 기존 1.2rem → 1.35rem */
+}
+
+/* kv-label */
+.outbound-detail .kv-label {
+	font-size: 1.05rem;  /* 기존 1rem → 1.05rem */
+}
+
+/* kv-value */
+.outbound-detail .kv-value {
+	font-size: 1.05rem;  /* 기존 1rem → 1.05rem */
+}
+
+/* 테이블 */
+.outbound-detail .table th,
+.outbound-detail .table td { 
+	font-size: 1rem;     /* 기존 .95rem → 1rem */
+}
+
+/* 뱃지 */
+.outbound-detail .badge {
+	font-size: 1rem;     /* 기존 .9rem → 1rem */
+}
+

@@ -1,4 +1,3 @@
-// /resources/js/outbound/management.js
 (function($, w, d){
 	'use strict';
 
@@ -136,7 +135,6 @@
 		});
 	});
 
-
 	/* ========== 리스트 행 클릭 시 상세 페이지 이동 ========== */
 	$(d).on('click', 'table tbody tr', function(e){
 		if ($(e.target).closest('input[type=checkbox], button, a').length) return;
@@ -182,18 +180,27 @@
 		ModalManager.closeModalById("modal-assign-manager");
 	});
 
-	/* ========== 초기 디버그 로그 ========== */
-	if(!$('#btnReadyOutbound').length){
-		console.warn('[management.js] #btnReadyOutbound not found at load time');
-	}
-
 })(jQuery, window, document);
 
-/* ========== 검색 버튼 동작 ========== */
-$(document).on('click', '.btn-search', function(){
+/* ========== 간단검색 버튼 동작 ========== */
+$(document).on('click', '#simpleSearchBtn', function(){
+	const keyword = $('#simpleItemKeyword').val().trim();
+	if(!keyword){
+		Swal.fire({
+			icon: "warning",
+			title: "검색어 입력 필요",
+			text: "출고번호를 입력하세요."
+		});
+		return;
+	}
+	const query = $.param({ simpleKeyword: keyword });
+	window.location.href = contextPath + '/outbound/outboundManagement?' + query;
+});
+
+/* ========== 상세검색 버튼 동작 ========== */
+$(document).on('click', '#detailSearchBtn', function(){
 	const params = {
-		simpleKeyword: $('#simpleItemKeyword').val().trim(),
-		outboundNumber: $('#outboundNumberKeyword').val().trim(),
+		outboundNumber: $('#itemKeyword').val().trim(),
 		franchiseKeyword: $('#franchiseKeyword').val().trim(),
 		status: $('#status').val(),
 		outRequestDate: $('#outRequestDate').val(),
@@ -201,34 +208,87 @@ $(document).on('click', '.btn-search', function(){
 		outRangeStart: $('#outRangeStart').val(),
 		outRangeEnd: $('#outRangeEnd').val()
 	};
+
+	// 유효성 검사
+	if(!params.outboundNumber && !params.franchiseKeyword && !params.status 
+		&& !params.outRequestDate && !params.outExpectDate && !params.outRangeStart && !params.outRangeEnd){
+		Swal.fire({
+			icon: "warning",
+			title: "검색 조건 필요",
+			text: "최소 한 가지 검색 조건을 입력하세요."
+		});
+		return;
+	}
+
+	if(params.outRangeStart && params.outRangeEnd && params.outRangeStart > params.outRangeEnd){
+		Swal.fire({
+			icon: "warning",
+			title: "잘못된 기간",
+			text: "기간 시작일이 종료일보다 늦을 수 없습니다."
+		});
+		return;
+	}
+
 	const query = $.param(params);
-	window.location.href = '/outbound/outboundManagement?' + query;
+	window.location.href = contextPath + '/outbound/outboundManagement?' + query;
 });
 
-/* ========== 초기화 버튼 ========== */
-$(document).on('click', '.btn-reset', function(){
-	const outboundNumberInput = document.getElementById("outboundNumberKeyword");
-	if (outboundNumberInput) outboundNumberInput.value = "";
+/* ========== Enter 키로 검색 실행 ========== */
+// 간단검색 input
+$('#simpleItemKeyword').on('keypress', function(e){
+	if(e.which === 13){
+		e.preventDefault();
+		$('#simpleSearchBtn').trigger('click');
+	}
+});
 
-	const franchiseInput = document.getElementById("franchiseKeyword");
-	if (franchiseInput) franchiseInput.value = "";
+// 상세검색 input
+$('#detailSearchCard input, #detailSearchCard select').on('keypress', function(e){
+	if(e.which === 13){
+		e.preventDefault();
+		$('#detailSearchBtn').trigger('click');
+	}
+});
 
-	const statusSelect = document.getElementById("status");
-	if (statusSelect) statusSelect.value = "";
+/* ========== 상세검색 열기/닫기 토글 ========== */
+(function($){
+	"use strict";
 
-	["outRequestDate", "outExpectDate", "outRangeStart", "outRangeEnd"].forEach(id => {
-		const el = document.getElementById(id);
-		if (el) el.value = "";
+	function openDetail(){
+		const $simple = $('.outbound-simple-search');
+		const $detail = $('#detailSearchCard');
+
+		$simple.hide();
+		$detail.stop(true, true).slideDown(150).attr('aria-expanded', 'true');
+
+		$('#dateBasis').trigger('change');
+		setTimeout(()=>$('#franchiseKeyword').trigger('focus'), 0);
+	}
+
+	function closeDetail(){
+		const $simple = $('.outbound-simple-search');
+		const $detail = $('#detailSearchCard');
+
+		$detail.stop(true, true).slideUp(150).attr('aria-expanded', 'false');
+		$simple.show();
+
+		$('#simpleItemKeyword').trigger('focus');
+	}
+
+	// 상단 "상세검색" 버튼
+	$(document).on('click', '#toggleDetailSearchBtn', function(e){
+		e.preventDefault();
+		if($('#detailSearchCard').is(':visible')) closeDetail();
+		else openDetail();
 	});
 
-	// 체크박스 초기화
-	const selectAll = document.querySelector(".select-all");
-	if (selectAll) selectAll.checked = false;
-	document.querySelectorAll('tbody input[name="selectedOrder"]').forEach(cb => cb.checked = false);
+	// 상세검색 카드 내부의 "간단검색" 버튼
+	$(document).on('click', '#backToSimpleBtn', function(e){
+		e.preventDefault();
+		closeDetail();
+	});
 
-	updateSelectedCount();
-});
-
+})(jQuery);
 
 /* ========== 새로고침(F5/버튼) 확인창 ========== */
 document.addEventListener("keydown", function (e) {
@@ -273,27 +333,3 @@ $(document).on('click', '#btnPrint', function(e){
 	e.preventDefault();
 	window.print();
 });
-
-/* ========== 리스트 행 클릭 시 상세 페이지 이동 ========== */
-$(document).on('click', 'table tbody tr', function(e){
-	// 체크박스, 버튼, a 태그 직접 클릭 시는 무시
-	if ($(e.target).closest('input[type=checkbox], button, a').length) return;
-
-	var href = $(this).data('href');
-	if (!href) return;
-
-	Swal.fire({
-		title: '출고 상세로 이동',
-		text: '선택한 출고건 상세 페이지로 이동하시겠습니까?',
-		icon: 'question',
-		showCancelButton: true,
-		confirmButtonText: '이동',
-		cancelButtonText: '취소'
-	}).then((result) => {
-		if (result.isConfirmed) {
-			window.location.href = href;
-		}
-	});
-});
-
-

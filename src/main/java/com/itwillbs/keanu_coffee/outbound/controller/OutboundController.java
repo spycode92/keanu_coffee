@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
+import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
+import com.itwillbs.keanu_coffee.outbound.dto.OutboundInspectionDTO;
+import com.itwillbs.keanu_coffee.outbound.dto.OutboundInspectionItemDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundManagementDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundProductDetailDTO;
 import com.itwillbs.keanu_coffee.outbound.service.OutboundService;
@@ -89,10 +94,16 @@ public class OutboundController {
 	public String showOutboundDetail(@RequestParam("obwaitNumber") String obwaitNumber,
 	        						@RequestParam("outboundOrderIdx") Long outboundOrderIdx,
 	        						Model model) {
-
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		EmployeeDetail emp = (EmployeeDetail) auth.getPrincipal();
+		model.addAttribute("currentUserName", emp.getEmpName());
+		
 	    // 출고 기본정보 조회
 	    OutboundManagementDTO obDetail = outboundService.getOutboundDetail(obwaitNumber, outboundOrderIdx);
 	    model.addAttribute("obDetail", obDetail);
+	    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + obDetail);	    
+	    
 	    
 	    // 출고 품목 리스트 조회
 	    List<OutboundProductDetailDTO> obProductList = outboundService.getOutboundProductDetail(outboundOrderIdx);
@@ -135,8 +146,23 @@ public class OutboundController {
 	
 	// 출고검수
 	@GetMapping("/outboundInspection")
-	public String showOutboundInspection() {
-		return "/outbound/outboundInspection";
+	public String showOutboundInspection(
+	        @RequestParam("obwaitIdx") Integer obwaitIdx,
+	        @RequestParam("orderNumber") String orderNumber,
+	        @RequestParam("outboundOrderIdx") Integer outboundOrderIdx,
+	        Model model) {
+
+	    // 1) 출고 기본정보 조회
+	    OutboundInspectionDTO obDetail = outboundService.getOutboundDetailByIdx(obwaitIdx, orderNumber);
+	    model.addAttribute("obDetail", obDetail);
+	    
+
+	    
+	    // 품목 리스트
+	    List<OutboundInspectionItemDTO> obProductList = outboundService.getOutboundInspectionItems(outboundOrderIdx);
+	    model.addAttribute("obProductList", obProductList);
+
+	    return "/outbound/outboundInspection";
 	}
 	
 	// 출고피킹
