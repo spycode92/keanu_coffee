@@ -81,7 +81,8 @@
 		FROM
 			V_OUTBOUND_REGION_GROUP
 		ORDER BY
-			dispatch_date DESC
+			urgent DESC
+			, dispatch_date DESC;
 	</select>
 	
 	<!-- 배차 등록 -->
