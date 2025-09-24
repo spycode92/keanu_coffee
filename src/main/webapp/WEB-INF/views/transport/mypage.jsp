@@ -16,6 +16,7 @@
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/common/web_socket.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="https://kit.fontawesome.com/a96e186b03.js" crossorigin="anonymous"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/transport/mypage.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
@@ -53,6 +54,7 @@
 						</div>
 						<ul id="notification-list"></ul>
 		       		</div>			
+					<i class="fa-solid fa-right-from-bracket" data-action="logout"></i>
 				</div>
         	</div>
             <div class="kv">

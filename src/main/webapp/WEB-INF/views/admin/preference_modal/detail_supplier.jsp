@@ -30,6 +30,10 @@
                     <label class="form-label">연락처</label>
                     <input type="text" class="form-control" id="detailSupplierManagerPhone" name="supplierManagerPhone" readonly>
                 </div>
+                <div class="field">
+                    <label class="form-label">사업자번호</label>
+                    <input type="text" class="form-control" id="businessNumber" name="businessNumber" disabled style="background-color: #dcdcdc; border:1px solid #ccc;">
+                </div>
 <!--                 <div class="field"> -->
 <!--                     <label class="form-label">이메일</label> -->
 <!--                     <input type="text" class="form-control" id="detailSupplierManageremail1" name="supplierManagerPhone" readonly> -->

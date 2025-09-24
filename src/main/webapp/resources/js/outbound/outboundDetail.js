@@ -84,3 +84,9 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 });
+
+/* ========== 인쇄 버튼 ========== */
+$(document).on('click', '#btnPrint', function(e){
+	e.preventDefault();
+	window.print();
+});

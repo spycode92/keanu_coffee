@@ -333,3 +333,16 @@ $(document).on('click', '#btnPrint', function(e){
 	e.preventDefault();
 	window.print();
 });
+
+/* ========== 전체 선택/해제 체크박스 ========== */
+$(document).on('change', '#checkAll', function () {
+	const isChecked = $(this).is(':checked');
+	$("input[name='selectedOrder']").prop('checked', isChecked);
+});
+
+// 하위 체크박스 중 하나라도 해제되면 상단 체크박스도 해제
+$(document).on('change', "input[name='selectedOrder']", function () {
+	const total = $("input[name='selectedOrder']").length;
+	const checked = $("input[name='selectedOrder']:checked").length;
+	$("#checkAll").prop('checked', total > 0 && total === checked);
+});
