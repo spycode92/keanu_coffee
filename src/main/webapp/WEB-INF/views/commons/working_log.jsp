@@ -93,7 +93,7 @@
 					<div>
 						<c:if test="${not empty pageInfo.maxPage or pageInfo.maxPage > 0}">
 							<input type="button" value="이전" 
-								onclick="location.href='/admin/systemnotification?pageNum=${pageInfo.pageNum - 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod${param.orderMethod}'" 
+								onclick="location.href='/workingLog?pageNum=${pageInfo.pageNum - 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod${param.orderMethod}'" 
 								<c:if test="${pageInfo.pageNum eq 1}">disabled</c:if>>
 							
 							<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
@@ -102,13 +102,13 @@
 										<strong>${i}</strong>
 									</c:when>
 									<c:otherwise>
-										<a href="/admin/systemnotification?pageNum=${i}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod${param.orderMethod}">${i}</a>
+										<a href="/workingLog?pageNum=${i}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod${param.orderMethod}">${i}</a>
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
 							
 							<input type="button" value="다음" 
-								onclick="location.href='/admin/systemnotification?pageNum=${pageInfo.pageNum + 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod${param.orderMethod}'" 
+								onclick="location.href='/workingLog?pageNum=${pageInfo.pageNum + 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod${param.orderMethod}'" 
 							<c:if test="${pageInfo.pageNum eq pageInfo.maxPage}">disabled</c:if>>
 						</c:if>
 					</div>

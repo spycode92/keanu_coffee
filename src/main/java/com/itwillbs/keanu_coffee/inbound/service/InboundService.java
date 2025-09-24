@@ -88,19 +88,24 @@ public class InboundService {
 	}
 	
 	// 검수완료 데이터 확인
-	public boolean findDataExists(Long ibwaitIdx, Long productIdx, String lotNumber) {
+	public boolean findDataExists(Integer ibwaitIdx, Integer productIdx, String lotNumber) {
 		return inboundMapper.selectDataExists(ibwaitIdx, productIdx, lotNumber) > 0;
 	}
 	
 	// 검수 완료시 데이터 저장/수정
 	@Transactional
 	public void inspectionCompleteUpdate(ReceiptProductDTO dto, boolean exists) {
-		if (exists) {
-			inboundMapper.updateReceiptProduct(dto);
-		} else {
-			inboundMapper.insertReceiptProduct(dto);
-		}
-//	    inboundMapper.updatePurchaseOrderItemAfterInspection(dto); // purchase order는 수정하지 않기로.
+		 if (exists) {
+	        if (dto.getReceiptProductIdx() == null) {
+	            Integer pk = inboundMapper.selectReceiptProductIdx(dto.getIbwaitIdx(),
+	                                                               dto.getProductIdx(),
+	                                                               dto.getLotNumber());
+	            dto.setReceiptProductIdx(pk);
+	        }
+	        inboundMapper.updateReceiptProduct(dto);
+	    } else {
+	        inboundMapper.insertReceiptProduct(dto);
+	    }
 	}
 
 	
@@ -118,6 +123,7 @@ public class InboundService {
 	
 	// 재고 완전등록
 	public void insertInventory(CommitInventoryDTO req) {
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>req:" + req);
 	    for (CommitInventoryDTO.InventoryItemDTO item : req.getItems()) {
 	        inboundMapper.insertInventory(item);
 	    }
