@@ -108,6 +108,18 @@
 		if(btn){
 			btn.addEventListener("click", async function(e){
 				e.preventDefault();
+				
+				const currentUser = window.currentUserName || "";
+				if(currentUser !== "김출고"){   // ✅ 출고 담당 관리자 이름으로 변경
+					Swal.fire({
+						icon: 'error',
+						title: '접근 불가',
+						text: '담당자 지정은 관리자만 접근 가능합니다 ❌',
+						confirmButtonText: '확인'
+					});
+					return;
+				}
+				
 				updateSelectedCount();
 				try{
 					const selectEl = byId("managerSelect");

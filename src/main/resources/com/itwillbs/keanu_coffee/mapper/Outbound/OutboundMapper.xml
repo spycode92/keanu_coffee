@@ -155,18 +155,23 @@
 
     <!-- 출고 품목 리스트 조회 -->
     <select id="selectOutboundProductDetail" resultType="com.itwillbs.keanu_coffee.outbound.dto.OutboundProductDetailDTO">
-	    SELECT p.product_idx
-	         , p.product_name
-	         , p.product_volume
-	         , foi.quantity
+	    SELECT p.product_idx          AS productIdx
+	         , p.product_name         AS productName
+	         , p.product_volume       AS productVolume
+	         , rp.lot_number          AS lotNumber   
+	         , foi.quantity           AS quantity
 	    FROM OUTBOUND_ORDER_ITEM foi
 	    JOIN PRODUCT p
 	      ON foi.product_idx = p.product_idx
 	    JOIN OUTBOUND_ORDER oo
 	      ON foi.outbound_order_idx = oo.outbound_order_idx
+	    JOIN RECEIPT_PRODUCT rp
+	      ON foi.receipt_product_idx = rp.receipt_product_idx  
 	    WHERE foi.outbound_order_idx = #{outboundOrderIdx}
 	    ORDER BY p.product_name ASC
 	</select>
+
+
 	
 	<!-- inspection 출고 기본정보 조회 -->
 	<select id="selectOutboundDetailByIdx" 
@@ -241,4 +246,12 @@
 		  AND oo.status = '출고준비'
 	</update>
 	
+	<!-- 출고 위치 업데이트 -->
+	<update id="updateOutboundLocation">
+	    UPDATE OUTBOUND_WAITING
+	    SET outbound_location = #{outboundLocationIdx},
+	        updated_at = NOW()
+	    WHERE obwait_idx = #{obwaitIdx}
+	</update>
+		
 </mapper>

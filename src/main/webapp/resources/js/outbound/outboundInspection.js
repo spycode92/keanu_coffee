@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // 출고확정 버튼
+// 출고확정 버튼
 document.addEventListener("DOMContentLoaded", function () {
   const btn = document.getElementById("btnOutboundComplete");
   if (!btn) return;
@@ -50,6 +51,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const link = document.getElementById("outboundLink");
     const obwaitNumber = link?.dataset.orderNumber;
     const outboundOrderIdx = link?.dataset.outboundOrderIdx;
+
+    // 🔎 1) 출고위치 지정 여부 확인
+    const locationField = document.getElementById("fieldOutboundLocation");
+    const locationName = locationField?.textContent.trim();
+    if (!locationName || locationName === "-") {
+      Swal.fire("경고", "출고위치가 지정되지 않았습니다 ❌", "warning");
+      return;
+    }
+
+    // 🔎 2) 모든 품목 검수완료 여부 확인
+    const allInspected = Array.from(document.querySelectorAll("#itemsTable tbody .btn-inspect"))
+      .every(btn => btn.disabled); // 버튼이 비활성화되어 있으면 검수완료됨
+    if (!allInspected) {
+      Swal.fire("경고", "모든 품목이 검수완료되지 않았습니다 ❌", "warning");
+      return;
+    }
 
     if (!obwaitNumber || !outboundOrderIdx) {
       Swal.fire("오류", "출고번호 또는 오더 PK가 누락되었습니다.", "error");
@@ -65,15 +82,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const headers = {
       "Content-Type": "application/json; charset=UTF-8",
       "Accept": "application/json",
-      "X-Requested-With": "XMLHttpRequest" // 401로 떨어지도록 힌트
+      "X-Requested-With": "XMLHttpRequest"
     };
     if (csrfHeaderName && csrfHeaderValue) {
       headers[csrfHeaderName] = csrfHeaderValue;
     }
 
+    // ✅ 검증 통과 시 fetch 실행
     fetch(`${contextPath}/outbound/updateStatusDispatchWait`, {
       method: "POST",
-      credentials: "same-origin", // ★ 쿠키(JSESSIONID) 포함
+      credentials: "same-origin",
       headers,
       body: JSON.stringify({ obwaitNumber, outboundOrderIdx })
     })
@@ -81,10 +99,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const ct = (res.headers.get("content-type") || "").toLowerCase();
       const text = await res.text();
 
-      // (1) 비정상 상태코드
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-      // (2) JSON 정상 응답
       if (ct.includes("application/json")) {
         let data;
         try { data = JSON.parse(text); } catch (e) { throw new Error("JSON 파싱 실패"); }
@@ -101,12 +117,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
-      // (3) JSON이 아니면(거의 로그인 페이지 HTML)
       if (text.startsWith("<!DOCTYPE") || text.includes("로그인")) {
-        throw new Error("AUTH"); // 세션만료/인증실패
+        throw new Error("AUTH");
       }
-
-      // (4) 그 외
       throw new Error("예상치 못한 응답");
     })
     .catch((err) => {
@@ -118,4 +131,30 @@ document.addEventListener("DOMContentLoaded", function () {
       Swal.fire("오류", err.message || "요청 실패", "error");
     });
   });
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    // ------------------------
+    // 뒤로가기 버튼
+    // ------------------------
+    const btnBack = document.getElementById("btnBack");
+    btnBack?.addEventListener("click", function (e) {
+        e.preventDefault();
+        history.back();
+    });
+
+    
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+	const navEntries = performance.getEntriesByType("navigation");
+	if (navEntries.length > 0 && navEntries[0].type === "reload") {
+		Swal.fire({
+			icon: "info",
+			title: "새로고침 감지",
+			text: "이 페이지를 새로고침했습니다.",
+			confirmButtonText: "확인"
+		});
+	}
 });
