@@ -198,7 +198,7 @@ button:disabled {
 	            <br>
 	            <%-- 폐기량 꺽은선차트 --%>
 	            <div class="chart-card">
-	                <h3 class="card-title">폐기 현황1</h3>
+	                <h3 class="card-title">폐기 현황</h3>
 	                <canvas id="disposalChart" style="width:80%; height:100%;"></canvas>
 	            </div>
 	        </div>

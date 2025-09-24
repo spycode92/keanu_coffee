@@ -80,6 +80,7 @@
 	        </form>
 	    </div>
 	    
+	    <button id="loginadminBtn">최고관리자</button>
 	    <button id="logininboundBtn">입고관리자</button>
 	    <button id="logininboundPersonBtn">입고사원</button>
 	    <button id="loginOutboundBtn">출고관리자</button>
@@ -125,6 +126,7 @@
 	}
 	
 	// 로그인버튼별 값 지정
+	$("#loginadminBtn").on("click", () => login("admin", "statistics/1"));
 	$("#logininboundBtn").on("click", () => login("2301180002", "/inbound/main"));
 	$("#logininboundPersonBtn").on("click", () => login("2301180020", "/inbound/management"));
 	
@@ -135,7 +137,7 @@
 	$("#logininventoryPersonBtn").on("click", () => login("2301180023", "/inventory/moveInventory"));
 	
 	$("#loginTransportBtn").on("click", () => login("2509200001", "/transport/main"));
-	$("#logindriverBtn").on("click", () => login("2301180014", "/transport/mypage/54320747"));
+	$("#logindriverBtn").on("click", () => login("2301180026", "/transport/mypage/54320747"));
 	
 	// 다크모드 관리
 	const DarkModeManager = {
