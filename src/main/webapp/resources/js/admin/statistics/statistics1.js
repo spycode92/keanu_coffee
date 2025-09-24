@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	let savedOutboundDetailRows = null;
 	let outboundCurrentSelectedDate = null;
 	
-	// 폐기 차트에 필요한 변수
+	// disposed 차트에 필요한 변수
 	let disposalRawData = [  ];
 	let disposalChart = null;
 	
@@ -168,20 +168,20 @@ document.addEventListener('DOMContentLoaded', () => {
 	        
 	        const ibwquantity = item.ibwquantity || 0;      // 입고대기량
 	        const riquantity = item.riquantity || 0;        // 입고완료량  
-	        const disposalQuantity = item.disposalQuantity || 0; // 폐기량
+	        const disposalQuantity = item.disposalQuantity || 0; // disposed량
 	        
 	        // 계산
 	        const 미입고 = Math.max(0, ibwquantity - riquantity);           // 음수 방지
 	        const 입고완료 = Math.max(0, riquantity - disposalQuantity);      // 음수 방지
-	        const 폐기 = disposalQuantity;
+	        const disposed = disposalQuantity;
 	        
 	        if (!grouped[key]) {
-	            grouped[key] = { 미입고: 0, 입고완료: 0, 폐기: 0 };
+	            grouped[key] = { 미입고: 0, 입고완료: 0, disposed: 0 };
 	        }
 	        
 	        grouped[key].미입고 += 미입고;
 	        grouped[key].입고완료 += 입고완료; 
-	        grouped[key].폐기 += 폐기;
+	        grouped[key].disposed += disposed;
 	    });
 	    
 	    // 날짜 정렬
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	            },
 	            {
 	                label: '폐기',
-	                data: dates.map(date => grouped[date].폐기),
+	                data: dates.map(date => grouped[date].disposed),
 	                backgroundColor: '#FF6384'  // 빨간색
 	            },
 	            {
@@ -244,6 +244,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	                x: { stacked: true },
 	                y: { stacked: true, beginAtZero: true }
 	            },
+		        plugins: {
+		            legend: {
+		                position: 'bottom' 
+		            }
+		        },
 				onClick: (event, elements) => {
 					if (!elements.length) return;
 					
@@ -284,20 +289,20 @@ document.addEventListener('DOMContentLoaded', () => {
 	        
 	        const ibwquantity = item.ibwquantity || 0;      // 입고대기량
 	        const riquantity = item.riquantity || 0;        // 입고완료량  
-	        const disposalQuantity = item.disposalQuantity || 0; // 폐기량
+	        const disposalQuantity = item.disposalQuantity || 0; // disposed량
 	        
 	        // 계산 (원래 processChartData와 동일한 로직)
 	        const 미입고 = Math.max(0, ibwquantity - riquantity);           
 	        const 입고완료 = Math.max(0, riquantity - disposalQuantity);      
-	        const 폐기 = disposalQuantity;
+	        const disposed = disposalQuantity;
 	        
 	        if (!grouped[key]) {
-	            grouped[key] = { 미입고: 0, 입고완료: 0, 폐기: 0 };
+	            grouped[key] = { 미입고: 0, 입고완료: 0, disposed: 0 };
 	        }
 	        
 	        grouped[key].미입고 += 미입고;
 	        grouped[key].입고완료 += 입고완료; 
-	        grouped[key].폐기 += 폐기;
+	        grouped[key].disposed += disposed;
 	    });
 	    
 	    // 카테고리명 정렬
@@ -315,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	            },
 	            {
 	                label: '폐기',
-	                data: categories.map(category => grouped[category].폐기),
+	                data: categories.map(category => grouped[category].disposed),
 	                backgroundColor: '#FF6384'  // 빨간색
 	            },
 	            {
@@ -379,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	    categoryProducts.forEach(item => {
 	        const productName = item.productName;  // 제품명
 	        const quantity = item.riquantity || 0; // 입고완료량 (또는 다른 기준)
-        	const disposalQuantity = item.disposalQuantity || 0; // 폐기량
+        	const disposalQuantity = item.disposalQuantity || 0; // disposed량
 			const netInbound = Math.max(0, quantity - disposalQuantity);
 			
 	        if (!productGrouped[productName]) {
@@ -394,12 +399,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	    const products = Object.keys(productGrouped);
 	    const quantities = products.map(product => productGrouped[product]);
 	    
-		const labels = [...products, '폐기'];
+		const labels = [...products, 'disposed'];
     	const data = [...quantities, totalDisposal];
 
 	    // 색상 배열 생성 (제품 수만큼)
 	    const productColors = generateColors(products.length);
-   		const colors = [...productColors, '#FFF']; // 폐기는 빨간색
+   		const colors = [...productColors, '#FFF']; // disposed는 빨간색
 
 	    // Chart.js 도넛차트 형식으로 변환
 	    return {
@@ -507,17 +512,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	        const diQuantity = item.diquantity || 0;
 	        const disposalQuantity = item.disposalQuantity || 0;
 	
-	        const 미출고 = Math.max(0, obQuantity - diQuantity - disposalQuantity);
-	        const 수주완료 = diQuantity;
-	        const 폐기 = disposalQuantity;
+	        const undelivered = Math.max(0, obQuantity - diQuantity - disposalQuantity);
+	        const complete = diQuantity;
+	        const disposed = disposalQuantity;
 	
 	        if (!grouped[key]) {
-	            grouped[key] = { 미출고: 0, 수주완료: 0, 폐기: 0 };
+	            grouped[key] = { undelivered: 0, complete: 0, disposed: 0 };
 	        }
 	
-	        grouped[key].미출고 += 미출고;
-	        grouped[key].수주완료 += 수주완료;
-	        grouped[key].폐기 += 폐기;
+	        grouped[key].undelivered += undelivered;
+	        grouped[key].complete += complete;
+	        grouped[key].disposed += disposed;
 	    });
 	
 	    const dates = Object.keys(grouped).sort();
@@ -525,18 +530,18 @@ document.addEventListener('DOMContentLoaded', () => {
 	        labels: dates,
 	        datasets: [
 	            {
-	                label: '수주완료',
-	                data: dates.map(date => grouped[date].수주완료),
+	                label: '납기완료',
+	                data: dates.map(date => grouped[date].complete),
 	                backgroundColor: '#4BC0C0'
 	            },
 	            {
 	                label: '폐기',
-	                data: dates.map(date => grouped[date].폐기),
+	                data: dates.map(date => grouped[date].disposed),
 	                backgroundColor: '#FF6384'
 	            },
 	            {
 	                label: '미출고',
-	                data: dates.map(date => grouped[date].미출고),
+	                data: dates.map(date => grouped[date].undelivered),
 	                backgroundColor: '#FFCE56'
 	            }
 	        ]
@@ -569,11 +574,16 @@ document.addEventListener('DOMContentLoaded', () => {
 	        data: inputData,
 	        options: {
 	            responsive: true,
-	            aspectRatio: 4,
+	            aspectRatio: 3,
 	            scales: {
 	                x: { stacked: true },
 	                y: { stacked: true, beginAtZero: true }
 	            },
+		        plugins: {
+		            legend: {
+		                position: 'bottom' 
+		            }
+		        },
 	            onClick: (event, elements) => {
 	                if (!elements.length) return;
 	
@@ -612,17 +622,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	        const diQuantity = item.diquantity || 0;
 	        const disposalQuantity = item.disposalQuantity || 0;
 	
-	        const 미출고 = Math.max(0, obQuantity - diQuantity - disposalQuantity);
-	        const 수주완료 = diQuantity;
-	        const 폐기 = disposalQuantity;
+	        const undelivered = Math.max(0, obQuantity - diQuantity - disposalQuantity);
+	        const complete = diQuantity;
+	        const disposed = disposalQuantity;
 	
 	        if (!grouped[key]) {
-	            grouped[key] = { 미출고: 0, 수주완료: 0, 폐기: 0 };
+	            grouped[key] = { undelivered: 0, complete: 0, disposed: 0 };
 	        }
 	
-	        grouped[key].미출고 += 미출고;
-	        grouped[key].수주완료 += 수주완료;
-	        grouped[key].폐기 += 폐기;
+	        grouped[key].undelivered += undelivered;
+	        grouped[key].complete += complete;
+	        grouped[key].disposed += disposed;
 	    });
 	
 	    const categories = Object.keys(grouped).sort();
@@ -630,18 +640,18 @@ document.addEventListener('DOMContentLoaded', () => {
 	        labels: categories,
 	        datasets: [
 	            {
-	                label: '수주완료',
-	                data: categories.map(c => grouped[c].수주완료),
+	                label: '납기완료',
+	                data: categories.map(c => grouped[c].complete),
 	                backgroundColor: '#4BC0C0'
 	            },
 	            {
 	                label: '폐기',
-	                data: categories.map(c => grouped[c].폐기),
+	                data: categories.map(c => grouped[c].disposed),
 	                backgroundColor: '#FF6384'
 	            },
 	            {
 	                label: '미출고',
-	                data: categories.map(c => grouped[c].미출고),
+	                data: categories.map(c => grouped[c].undelivered),
 	                backgroundColor: '#FFCE56'
 	            }
 	        ]
@@ -693,7 +703,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		$("#outbound_title").html(`${outboundCurrentSelectedDate} 카테고리별 출고/운송 현황`);
 	}
 	
-	//수주완료품목 도넛차트데이터가공[출고]
+	//complete품목 도넛차트데이터가공[출고]
 	function outboundProductDonutData(categoryProducts) {
 	    const productGrouped = {};
 	    let totalDisposal = 0;
@@ -703,7 +713,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        const diQuantity = item.diquantity || 0;
 	        const disposalQuantity = item.disposalQuantity || 0;
 	
-	        // 폐기 포함한 수주완료 수량으로 집계
+	        // disposed 포함한 complete 수량으로 집계
 	        if (!productGrouped[productName]) {
 	            productGrouped[productName] = 0;
 	        }
@@ -715,11 +725,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	    const products = Object.keys(productGrouped);
 	    const quantities = products.map(product => productGrouped[product]);
 	
-	    const labels = [...products, '폐기'];
+	    const labels = [...products, 'disposed'];
 	    const data = [...quantities, totalDisposal];
 	
 	    const productColors = generateColors(products.length);
-	    const colors = [...productColors, '#FFF']; // 폐기는 흰색으로 구분
+	    const colors = [...productColors, '#FFF']; // disposed는 흰색으로 구분
 	
 	    return {
 	        labels: labels,
@@ -786,7 +796,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	}
 	
-	// 폐기량 데이터 불러오기
+	// disposed량 데이터 불러오기
 	function getDisposalData(){
 		return ajaxGet(`/admin/dashboard/disposal/${needData}?startDate=${startDate}&endDate=${endDate}`
 			)
@@ -856,7 +866,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	    return colors[section] || colors.DEFAULT;
 	}
 	
-	//폐기꺽은선차트 그리기함수
+	//disposed꺽은선차트 그리기함수
 	function renderDisposalChart(chartData) {
 		if (disposalChart) {
 	        disposalChart.destroy();
@@ -872,7 +882,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        data: chartData,
 	        options: {
 	            responsive: true,
-	            aspectRatio: 4,
+	            aspectRatio: 3,
 	            plugins: {
 	                title: {
 	                    display: true,
@@ -904,7 +914,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	                        display: true,
 	                        text: '폐기량'
 	                    },
-	                    beginAtZero: true
+	                    beginAtZero: true,
+ 						suggestedMax: 150
 	                }
 	            }
 	        }
