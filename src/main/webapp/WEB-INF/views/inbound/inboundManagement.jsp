@@ -115,6 +115,7 @@
 		        </div>
 		        <div class="d-flex gap-2">
 					<a href="${pageContext.request.contextPath}/inbound/qrTest" class="btn btn-secondary btn-sm">QR 테스트</a>
+					<button id="btnMyListFilter" class="btn btn-outline-primary btn-sm" data-active="false">담당</button>
 		        	<sec:authorize access="hasAuthority('INBOUND_WRITE')">
 			        	<div class="page-actions">
 						   	<button id="btnScanQR" class="btn btn-primary btn-sm">QR 스캔</button>
@@ -191,74 +192,12 @@
 				</table>
 			</div>
 			
-			<!-- 페이징 -->
-			<div class="d-flex justify-content-between align-items-center p-3">
-				<div class="text-muted">페이지 ${pageInfo.pageNum} / ${pageInfo.maxPage}</div>
-				<div class="d-flex gap-2">
-					<c:if test="${pageInfo.pageNum > 1}">
-						<a href="?pageNum=1&keyword=${param.keyword}&status=${param.status}" class="btn btn-secondary btn-sm">« 처음</a>
-						<a href="?pageNum=${pageInfo.pageNum - 1}&keyword=${param.keyword}&status=${param.status}" class="btn btn-secondary btn-sm">‹ 이전</a>
-					</c:if>
-			
-					<%-- 버튼 최대 갯수 --%>
-					<c:set var="maxButtons" value="5" />
-					<c:set var="half" value="${(maxButtons - 1) / 2}" />
-			
-					<%-- 기본 start/end 계산 (현재페이지를 가운데 정렬) --%>
-					<c:set var="start" value="${pageInfo.pageNum - half}" />
-					<c:set var="end" value="${start + maxButtons - 1}" />
-			
-					<%-- start 보정 (1보다 작을 때) --%>
-					<c:if test="${start < 1}">
-					    <c:set var="start" value="1" />
-					    <c:set var="end" value="${maxButtons}" />
-					</c:if>
-			
-					<%-- end 보정 (maxPage 넘어갈 때) --%>
-					<c:if test="${end > pageInfo.maxPage}">
-					    <c:set var="end" value="${pageInfo.maxPage}" />
-					    <c:set var="start" value="${pageInfo.maxPage - (maxButtons - 1)}" />
-					</c:if>
-			
-					<%-- start가 음수가 되지 않도록 안전장치 --%>
-					<c:if test="${start < 1}">
-					    <c:set var="start" value="1" />
-					</c:if>
-			
-					<%-- 페이지 버튼 출력 --%>
-					<c:forEach var="i" begin="${start}" end="${end}">
-						<c:if test="${i >= 1 && i <= pageInfo.maxPage}">
-							<c:choose>
-								<%-- 현재 페이지: 모달 열기 버튼 --%>
-								<c:when test="${i == pageInfo.pageNum}">
-									<button type="button"
-									        class="btn btn-primary btn-sm"
-									        onclick="ModalManager.openModalById('pageJumpModal')">
-									    ${i}
-									</button>
-								</c:when>
-								<%-- 다른 페이지: 이동 링크 --%>
-								<c:otherwise>
-									<c:url var="pageUrl" value="/inbound/management">
-									    <c:param name="simpleKeyword" value="${param.simpleKeyword}" />
-									    <c:param name="status" value="${param.status}" />
-									    <c:param name="orderInboundKeyword" value="${param.orderInboundKeyword}" />
-									    <c:param name="vendorKeyword" value="${param.vendorKeyword}" />
-									    <c:param name="inStartDate" value="${param.inStartDate}" />
-									    <c:param name="inEndDate" value="${param.inEndDate}" />
-									    <c:param name="pageNum" value="${i}" />
-									</c:url>
-									<a href="${pageUrl}" class="btn btn-secondary btn-sm">${i}</a>
-								</c:otherwise>
-							</c:choose>
-						</c:if>
-					</c:forEach>
-			
-					<c:if test="${pageInfo.pageNum < pageInfo.maxPage}">
-						<a href="?pageNum=${pageInfo.pageNum + 1}&keyword=${param.keyword}&status=${param.status}" class="btn btn-secondary btn-sm">다음 ›</a>
-						<a href="?pageNum=${pageInfo.maxPage}&keyword=${param.keyword}&status=${param.status}" class="btn btn-secondary btn-sm">끝 »</a>
-					</c:if>
-				</div>
+			<!-- 페이징 (Ajax 전용) -->
+			<div id="pagingArea" class="d-flex justify-content-between align-items-center p-3">
+			    <div class="text-muted">페이지 <span id="pageNum">1</span> / <span id="maxPage">1</span></div>
+			    <div class="d-flex gap-2" id="pagingButtons">
+			        <!-- JS에서 버튼 렌더링 -->
+			    </div>
 			</div>
 		</div>
 

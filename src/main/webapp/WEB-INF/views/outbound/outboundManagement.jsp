@@ -106,9 +106,8 @@
 				</div>
 				<div class="d-flex gap-2">
 					<sec:authorize access="hasAuthority('OUTBOUND_WRITE')">
+						<button id="btnMyListFilter" class="btn btn-outline-primary btn-sm" data-active="false">담당</button>
 						<a href="/order/insert" class="btn btn-primary btn-sm">새 출고 등록</a>
-					</sec:authorize>
-					<sec:authorize access="hasAuthority('OUTBOUND_WRITE')">
 						<div class="page-actions">
 							<a href="#" id="btnReadyOutbound" class="btn btn-primary btn-sm">출고준비 처리</a>
 							<button id="btnScanQR" class="btn btn-primary btn-sm">QR 스캔</button>

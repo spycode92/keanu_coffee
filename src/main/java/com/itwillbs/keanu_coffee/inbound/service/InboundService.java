@@ -136,7 +136,13 @@ public class InboundService {
 	}
 
 	
-	
+	public List<InboundManagementDTO> selectInboundListFilter(Map<String,Object> searchParams) {
+	    return inboundMapper.selectInboundListFilter(searchParams);
+	}
+
+	public int selectInboundCountFilter(Map<String,Object> searchParams) {
+	    return inboundMapper.selectInboundCountFilter(searchParams);
+	}
 
 
 }

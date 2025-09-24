@@ -1,6 +1,6 @@
 /**
  * inboundManagement.js - 입고관리 전용 스크립트
- * 기존 기능 + 행 전체 클릭 이동 기능 통합본
+ * 기존 기능 + 행 전체 클릭 이동 기능 + Ajax 페이징
  */
 
 // ===== 유틸: 입력창 clear =====
@@ -52,13 +52,13 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	});
 
-	// --- 간단 검색 (form submit 이벤트) ---
+	// --- 간단 검색 ---
 	const simpleForm = document.getElementById("simpleSearchForm");
 	if (simpleForm) {
 		simpleForm.addEventListener("submit", function (e) {
 			const keyword = document.getElementById("simpleItemKeyword").value.trim();
 			if (!keyword) {
-				e.preventDefault(); // submit 막기
+				e.preventDefault();
 				Swal.fire({
 					icon: "warning",
 					title: "입력 필요",
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 
-	// --- 상세 검색 (form submit 이벤트) ---
+	// --- 상세 검색 ---
 	const detailForm = document.getElementById("detailSearchForm");
 	if (detailForm) {
 		detailForm.addEventListener("submit", function (e) {
@@ -79,9 +79,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			const inStartDate = document.getElementById("inStartDate").value;
 			const inEndDate = document.getElementById("inEndDate").value;
 
-			// 조건 없는 경우
 			if (!status && !orderInboundKeyword && !vendorKeyword && !inStartDate && !inEndDate) {
-				e.preventDefault(); // submit 막기
+				e.preventDefault();
 				Swal.fire({
 					icon: "warning",
 					title: "검색 조건 없음",
@@ -102,14 +101,14 @@ document.addEventListener("DOMContentLoaded", function () {
 			document.getElementById("inStartDate").value = "";
 			document.getElementById("inEndDate").value = "";
 
-			// 체크박스 초기화
 			if (selectAll) selectAll.checked = false;
 			document.querySelectorAll('tbody input[name="selectedOrder"]').forEach(cb => cb.checked = false);
 
 			updateSelectedCount();
 		});
 	}
-	
+
+	// --- F5 새로고침 막기 ---
 	document.addEventListener("keydown", function (e) {
 		if (e.key === "F5" || e.keyCode === 116) {
 			e.preventDefault();
@@ -127,6 +126,137 @@ document.addEventListener("DOMContentLoaded", function () {
 			});
 		}
 	});
-	
+
+	// --- 내 담당건만 보기 필터 ---
+	const btnMyListFilter = document.getElementById("btnMyListFilter");
+	if (btnMyListFilter) {
+	    btnMyListFilter.addEventListener("click", function () {
+	        const active = this.dataset.active === "true";
+	        const newActive = !active;
+	        this.dataset.active = newActive;
+	        this.classList.toggle("active", newActive);
+
+	        const params = new URLSearchParams(window.location.search);
+	        if (newActive) {
+	            params.set("myOnly", "Y");
+	        } else {
+	            params.delete("myOnly");
+	        }
+
+	        // 무조건 첫 페이지부터 시작
+	        params.set("pageNum", "1");
+
+	        fetchData(params);
+	    });
+	}
+
+	const initialParams = new URLSearchParams(window.location.search);
+	if (!initialParams.has("pageNum")) {
+	    initialParams.set("pageNum", "1");
+	}
+	fetchData(initialParams);
+
 });
 
+// ================================
+// Ajax 데이터 요청 함수
+// ================================
+function fetchData(params) {
+    fetch(`${contextPath}/inbound/management/data?${params.toString()}`)
+        .then(res => res.json())
+        .then(data => {
+            renderTable(data.list);
+            renderPaging(data.pageInfo, params);
+            document.querySelector(".card-title span strong").textContent = data.totalCount;
+        });
+}
+
+// ================================
+// 테이블 렌더링
+// ================================
+function renderTable(list) {
+    const tbody = document.querySelector("tbody");
+    tbody.innerHTML = "";
+
+    if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="11" class="text-center">입고 데이터가 존재하지 않습니다.</td></tr>`;
+        return;
+    }
+
+    list.forEach(order => {
+        const row = document.createElement("tr");
+        row.classList.add("clickable-row");
+        row.innerHTML = `
+            <td><input type="checkbox" name="selectedOrder" value="${order.ibwaitIdx}"></td>
+            <td>${order.orderNumber ?? "-"}</td>
+            <td>${order.ibwaitNumber ?? "-"}</td>
+            <td>${order.arrivalDateStr ?? "-"}</td>
+            <td>${order.supplierName ?? "-"}</td>
+            <td>${order.inboundStatus ?? "-"}</td>
+            <td>${order.numberOfItems ?? "-"}</td>
+            <td>${order.quantity ?? "-"}</td>
+            <td>${order.manager ?? "-"}</td>
+            <td>${order.note ?? "-"}</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// ================================
+// 페이징 렌더링
+// ================================
+function renderPaging(pageInfo, params) {
+    const pageNum = pageInfo.pageNum;
+    const maxPage = pageInfo.maxPage;
+    const pagingButtons = document.getElementById("pagingButtons");
+
+    document.getElementById("pageNum").textContent = pageNum;
+    document.getElementById("maxPage").textContent = maxPage;
+
+    pagingButtons.innerHTML = "";
+
+    // « 처음
+    if (pageNum > 1) {
+        const first = createPageButton("« 처음", 1, params);
+        pagingButtons.appendChild(first);
+        const prev = createPageButton("‹ 이전", pageNum - 1, params);
+        pagingButtons.appendChild(prev);
+    }
+
+    const maxButtons = 5;
+    let start = pageNum - Math.floor((maxButtons - 1) / 2);
+    let end = start + maxButtons - 1;
+
+    if (start < 1) {
+        start = 1;
+        end = Math.min(maxButtons, maxPage);
+    }
+    if (end > maxPage) {
+        end = maxPage;
+        start = Math.max(1, end - (maxButtons - 1));
+    }
+
+    for (let i = start; i <= end; i++) {
+        const btn = createPageButton(i, i, params, i === pageNum);
+        pagingButtons.appendChild(btn);
+    }
+
+    // 다음 › , 끝 »
+    if (pageNum < maxPage) {
+        const next = createPageButton("다음 ›", pageNum + 1, params);
+        pagingButtons.appendChild(next);
+        const last = createPageButton("끝 »", maxPage, params);
+        pagingButtons.appendChild(last);
+    }
+}
+
+function createPageButton(label, page, params, active = false) {
+    const btn = document.createElement("button");
+    btn.textContent = label;
+    btn.className = `btn btn-sm ${active ? "btn-primary" : "btn-secondary"}`;
+    btn.addEventListener("click", function () {
+        params.set("pageNum", page);
+        fetchData(params);
+    });
+    return btn;
+}
