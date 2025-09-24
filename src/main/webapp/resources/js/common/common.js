@@ -356,14 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('[data-action="logout"]').forEach(function(btn) {
         btn.addEventListener('click', function() {
             if (confirm('정말 로그아웃하시겠습니까?')) {
-				ajaxPost('/logoutForSecurity').then(()=>{
-					window.location.href = '/?t=' + Date.now();
-				})
-				.catch((error) => {
-	                console.error('로그아웃 실패:', error);
-	                // 실패해도 페이지 이동 (세션 만료 등의 경우)
-	                window.location.href = '/';
-	            });
+				document.querySelector('#logoutForm').submit();
             }
         });
     });

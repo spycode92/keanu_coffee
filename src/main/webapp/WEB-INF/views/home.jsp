@@ -127,10 +127,10 @@
 	
 	// 로그인버튼별 값 지정
 	$("#loginadminBtn").on("click", () => login("admin", "statistics/1"));
-	$("#logininboundBtn").on("click", () => login("2301180002", "/inbound/main"));
+	$("#logininboundBtn").on("click", () => login("2301180002", "/inbound/management"));
 	$("#logininboundPersonBtn").on("click", () => login("2301180020", "/inbound/management"));
 	
-	$("#loginOutboundBtn").on("click", () => login("2301180003", "/outbound/main"));
+	$("#loginOutboundBtn").on("click", () => login("2301180003", "/outbound/outboundManagement/"));
 	$("#loginOutboundPersonBtn").on("click", () => login("2301180021", "/outbound/outboundManagement/"));
 	
 	$("#logininventoryBtn").on("click", () => login("2301180009", "/inventory/main"));

@@ -10,7 +10,7 @@
 	<meta name="_csrf" content="${_csrf.token}" />
 	<meta name="_csrf_header" content="${_csrf.headerName}" />
 
-	<title>출고 관리</title>
+	<title>출고조회</title>
 	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
@@ -23,7 +23,7 @@
 
 	<section class="content">
 		<div class="d-flex justify-content-between align-items-center mb-2">
-			<h1 class="card-title" style="margin:0;">출고관리</h1>
+			<h1 class="card-title" style="margin:0;">출고조회</h1>
 		</div>
 		
 		<!--  간단 검색바 -->
