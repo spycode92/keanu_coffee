@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	<aside id="sidebar" class="sidebar">
 		<ul>
 			<sec:authorize access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')">
-			<li class="menu-item">
+			<li class="menu-item" onclick="location.href='/admin/employeeManage'">
 				<a href="#"><span>관리자페이지</span></a>
 <!-- 				<a href=""><span>물류부서관리</span></a> -->
 				<ul class="submenu ${fn:contains(uri, '/admin') ? 'open' : ''}">
@@ -310,7 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			</li>
 			</sec:authorize>
 <%-- 			<sec:authorize access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')"> --%>
-			<li class="menu-item">
+			<li class="menu-item" onclick="location.href='/inbound/management'">
 				<a href="#"><span>입고 관리</span></a>
 				<ul class="submenu ${fn:contains(uri, '/inbound') ? 'open' : ''}">
 			        <li><a href="/inbound/management">입고조회</a></li>
@@ -318,7 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			</li>
 <%-- 			</sec:authorize> --%>
 <%-- 			<sec:authorize access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')"> --%>
-			<li class="menu-item">
+			<li class="menu-item" onclick="location.href='/outbound/outboundManagement'">
 				<a href="#"><span>출고 관리</span></a>
 				<ul class="submenu ${fn:contains(uri, '/outbound') ? 'open' : ''}">
 			        <li><a href="/outbound/outboundManagement">출고조회</a></li>
@@ -326,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			</li>
 <%-- 			</sec:authorize> --%>
 <%-- 			<sec:authorize access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')"> --%>
-			<li class="menu-item">
+			<li class="menu-item" onclick="location.href='/inventory/main'">
 				<a href="#"><span>재고 관리</span></a>
 			    <ul class="submenu ${fn:contains(uri, '/inventory') ? 'open' : ''}">
 			        <li><a href="/inventory/main">대시보드</a></li>
@@ -343,8 +343,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			</li>
 <%-- 			</sec:authorize> --%>
 <%-- 			<sec:authorize access="hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')"> --%>
-			<li class="menu-item">
-				<a href="#"><span>운송관리</span></a>
+			<li class="menu-item" onclick="location.href='/transport/main'">
+				<a href="#"><span>운송 관리</span></a>
 				<ul class="submenu ${fn:contains(uri, '/transport') ? 'open' : ''}">
 					<li><a href="/transport/main">대시보드</a></li>
 					<li><a href="/transport/drivers">기사관리</a></li>
@@ -354,8 +354,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			</li >
 <%-- 			</sec:authorize> --%>
 <%-- 			<sec:authorize access="isAuthenticated()"> --%>
-				<li>
-					<a href="#"><span>기타정보</span></a>
+				<li onclick="location.href='/admin/dash'">
+					<a href="#"><span>기타 정보</span></a>
 					<ul class="submenuetc">
 						<li><a href="/admin/dash">통계</a></li>
 						<li><a href="/admin/workingLog">작업로그</a></li>
