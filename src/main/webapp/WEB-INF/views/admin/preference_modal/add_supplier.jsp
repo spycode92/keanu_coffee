@@ -29,6 +29,10 @@
                     <input type="text" class="form-control" id="supplierManagerPhone" name="supplierManagerPhone" required>
                 </div>
                 <div class="field">
+                    <label class="form-label">사업자번호</label>
+                    <input type="text" class="form-control" id="businessNumber" name="businessNumber" disabled style="background-color: #dcdcdc; border:1px solid #ccc;">
+                </div>
+                <div class="field">
                     <label class="form-label">우편번호</label>
                     <div style="display: flex; gap: 0.5rem; align-items: center;">
                         <input type="text"
