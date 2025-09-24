@@ -30,6 +30,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 		
 		HttpSession session = request.getSession();
         session.setAttribute("accessDeniedMessage", "해당 기능에 접근할 권한이 없습니다.");
+        
         //요청주소로 돌려보내기
         String referer = request.getHeader("Referer");
         if (referer != null && !referer.isEmpty()) {

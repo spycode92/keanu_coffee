@@ -262,9 +262,12 @@ document.addEventListener("DOMContentLoaded", () => {
 			</script>
 			<div id="employeeInfo" class="profile-popover" role="menu"  >
 				<span class="changeInfo"><button type="button" class="btn btn-link" data-modal-target="change-info-modal"> 정보 변경</button></span>
-				<span class="logout" >
-					<button type="button" class="btn btn-secondary" data-action="logout">로그아웃</button>
-				</span>
+<!-- 				<span class="logout" > -->
+					<form action="/logoutForSecurity" method="post" id="logoutForm">
+						<button type="button" class="btn btn-secondary" data-action="logout">로그아웃</button>
+						<sec:csrfInput/>
+					</form>
+<!-- 				</span> -->
 				<div class="darkmode-wrapper" style="color: #e0e5e6;">
 					<span class="darkmode-label">다크모드 :</span>
 					<button id="dark-mode-toggle" class="toggle-switch" aria-label="다크모드" style="text-align: right;"></button><br>	
