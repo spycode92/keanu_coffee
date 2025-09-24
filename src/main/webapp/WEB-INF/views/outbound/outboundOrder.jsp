@@ -7,6 +7,7 @@
 	<title>출고 관리</title>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="<c:url value='/resources/css/common/common.css'/>" rel="stylesheet" />
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 	<script src="<c:url value='/resources/js/common/common.js'/>"></script>
 	<style>
 		.form-container { margin: 32px 24px 80px 24px; max-width: 960px; }

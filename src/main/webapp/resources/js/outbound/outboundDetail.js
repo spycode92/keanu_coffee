@@ -74,21 +74,13 @@ document.addEventListener("DOMContentLoaded", function() {
 })(window, document);
 
 document.addEventListener("DOMContentLoaded", function () {
-	// 새로고침 감지용 플래그
-	if (sessionStorage.getItem("reloaded") === "true") {
-		// Swal 알림 표시
+	const navEntries = performance.getEntriesByType("navigation");
+	if (navEntries.length > 0 && navEntries[0].type === "reload") {
 		Swal.fire({
 			icon: "info",
 			title: "새로고침 감지",
 			text: "이 페이지를 새로고침했습니다.",
 			confirmButtonText: "확인"
 		});
-		// 한 번만 뜨게 초기화
-		sessionStorage.removeItem("reloaded");
 	}
-
-	// 페이지 떠나기 전에 reloaded 플래그 설정
-	window.addEventListener("beforeunload", function () {
-		sessionStorage.setItem("reloaded", "true");
-	});
 });
