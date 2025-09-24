@@ -18,9 +18,9 @@ public class RedirectDecider {
 		switch(roleName) {
 			case "최고관리자" : redirectURL = "/admin/dash"; break;
 			case "시스템관리자" : redirectURL = "/admin/systemPreference/dept"; break;
-			case "입고관리자" : redirectURL = "/inbound/main"; break;
+			case "입고관리자" : redirectURL = "/inbound/management"; break;
 			case "입고평사원" : redirectURL = "/inbound/management"; break;
-			case "출고관리자" : redirectURL = "/outbound/main"; break;
+			case "출고관리자" : redirectURL = "/outbound/outboundManagement"; break;
 			case "출고평사원" : redirectURL = "/outbound/outboundManagement"; break;
 			case "재고관리자" : redirectURL = "/inventory/main"; break;
 			case "재고평사원" : redirectURL = "/inventory/moveInventory"; break;
