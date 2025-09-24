@@ -199,6 +199,7 @@
 	  overflow: hidden;
 	  text-overflow: ellipsis;
 	  color: #333;
+	  font-size: 0.9rem;
 	}
 </style>
 

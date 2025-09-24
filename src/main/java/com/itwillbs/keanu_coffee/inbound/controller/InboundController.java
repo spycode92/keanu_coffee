@@ -206,7 +206,7 @@ public class InboundController {
 		boolean exists = inboundService.findDataExists(dto.getIbwaitIdx(), dto.getProductIdx(), dto.getLotNumber());
 	    inboundService.inspectionCompleteUpdate(dto, exists);
 
-	    return Map.of("ok", true, "empIdx", empIdx);
+	    return Map.of("ok", true, "empIdx", empIdx, "receiptProductIdx", dto.getReceiptProductIdx());
 	}
 	
 	
@@ -217,7 +217,7 @@ public class InboundController {
 	    try {
 	        // 재고 등록 (items를 INVENTORY 테이블에 insert)
 	        inboundService.insertInventory(req);
-
+	        
 	        // 상태 업데이트 (입고완료 → 재고등록완료)
 	        inboundService.updateInboundStatusInboundComplete(req.getIbwaitIdx(), "재고등록완료");
 
