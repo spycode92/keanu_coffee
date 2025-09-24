@@ -10,7 +10,7 @@ import lombok.Data;
 public class OutboundManagementDTO {
 	private int obwaitIdx;
     private String obwaitNumber;       // 출고번호 (o.obwait_number)
-    private Long outboundOrderIdx;     // 출고오더 IDX
+    private Integer outboundOrderIdx;
     private LocalDate departureDate;   // 출고일자
     private String outboundLocation;   // 출고위치
     private String franchiseName;      // 프랜차이즈 업체명

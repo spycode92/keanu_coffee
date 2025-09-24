@@ -1,168 +1,145 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 	<meta charset="UTF-8" />
-	<title>출고검수</title>
+	<title>출고 검수</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="_csrf" content="${_csrf.token}" />
+    <meta name="_csrf_header" content="${_csrf.headerName}" />
 
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet" />
+	<link href="${pageContext.request.contextPath}/resources/css/outbound/outboundInspection.css" rel="stylesheet" />
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
-
-	<style>
-		.outbound-inspect { font-variant-numeric: tabular-nums; }
-		.outbound-inspect .card { padding: 1rem; }
-		.outbound-inspect .card-header { margin-bottom:.75rem; padding-bottom:.5rem; }
-		.outbound-inspect .form-control { height:36px; line-height:34px; box-sizing:border-box; padding:0 10px; }
-		.outbound-inspect .btn.btn-sm { height:36px; line-height:34px; padding:0 12px; }
-		.outbound-inspect .table th, .outbound-inspect .table td { padding:.55rem .6rem; vertical-align:middle; }
-		.outbound-inspect .right { text-align:right; }
-		.outbound-inspect .status-select { min-width:110px; }
-		.outbound-inspect .attachment { margin-top:.4rem; font-size:.9rem; color:var(--muted-foreground); }
-		.outbound-inspect .kv { display:flex; gap:1rem; align-items:center; }
-		@media (max-width:980px) {
-			.outbound-inspect .kv { flex-direction:column; align-items:stretch; gap:.5rem; }
-		}
-	</style>
 </head>
-<body>
+ 
+<body data-context="${pageContext.request.contextPath}">
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 
-	<section class="content outbound-inspect">
+	<section class="content outbound-inspection">
+		<!-- 헤더 / 액션 -->
 		<div class="d-flex justify-content-between align-items-center mb-3">
 			<div>
-				<h1 class="card-title">출고검수</h1>
-				<div class="text-muted">출고번호: <strong>OUT-20250812-007</strong></div>
+				<h1 class="card-title">출고 검수</h1>
 			</div>
-			<div class="d-flex gap-2">
-				<button id="btnBack" class="btn btn-secondary btn-sm">← 뒤로</button>
-				<button id="btnSave" class="btn btn-secondary btn-sm">임시저장</button>
-				<button id="btnComplete" class="btn btn-primary btn-sm">검수완료(확정)</button>
-			</div>
-		</div>
-
-		<!-- 기본 정보 -->
-		<div class="card mb-3">
-			<div class="card-header">
-				<div class="card-title">기본 정보</div>
-			</div>
-			<div class="p-3 kv">
-				<div>
-					<div class="muted">출고번호</div>
-					<div class="kv-value">OUT-20250812-007</div>
-				</div>
-				<div>
-					<div class="muted">창고</div>
-					<div class="kv-value">중앙창고</div>
-				</div>
-				<div>
-					<div class="muted">담당자</div>
-					<div class="kv-value">이담당</div>
-				</div>
-				<div>
-					<div class="muted">검수일시</div>
-					<div class="kv-value">2025-08-12 14:10</div>
-				</div>
+			<div class="page-actions">
+				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
+				<button id="btnAssignLocation" class="btn btn-primary btn-sm">출고위치지정</button>
+				<button id="btnOutboundComplete" class="btn btn-primary btn-sm">출고확정</button>
 			</div>
 		</div>
-
-		<!-- 품목 검수 테이블 -->
+		
+		<!-- 상단 기본정보 카드 -->
 		<div class="card mb-3">
 			<div class="card-header d-flex justify-content-between align-items-center">
-				<div class="card-title">검수 항목</div>
-				<div class="muted">총 3건</div>
+				<div class="card-title">기본 정보</div>
+				<div class="text-muted">상태:  
+					<span class="badge badge-pending">
+						<c:out value="${obDetail.status}" default="-" />
+					</span>
+				</div>
+			</div>
+			<div class="kv-grid">
+				<div class="kv-item">
+					<div class="kv-label">출고번호</div>
+					<div class="kv-value">
+					    <c:out value="${obDetail.obwaitNumber}" default="-" />
+					    <input type="hidden" id="outboundLink"
+			               data-obwait-idx="${obDetail.obwaitIdx}"
+			               data-order-number="${obDetail.obwaitNumber}"
+			               data-outbound-order-idx="${obDetail.outboundOrderIdx}" />
+					</div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">출고일자</div>
+					<div class="kv-value"><c:out value="${obDetail.departureDate}" default="-" /></div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">프랜차이즈</div>
+					<div class="kv-value"><c:out value="${obDetail.franchiseName}" default="-" /></div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">담당자</div>
+					<div class="kv-value">
+						<span id="fieldManagerName">
+							<c:out value="${obDetail.manager}" default="-" />
+						</span>
+					</div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">출고위치</div>
+					<div class="kv-value">
+						<span id="fieldOutboundLocation">
+						    <c:out value="${obDetail.outboundLocation}" default="-" />
+						</span>
+					</div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">총 품목 수</div>
+					<div class="kv-value"><c:out value="${obDetail.itemCount}" default="0" /> 개</div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">총 수량</div>
+					<div class="kv-value"><c:out value="${obDetail.totalQuantity}" default="0" /> 개</div>
+				</div>
+				<div class="kv-item">
+					<div class="kv-label">비고</div>
+					<div class="kv-value"><c:out value="${obDetail.note}" default="-" /></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 품목 목록 -->
+		<div class="card mb-3">
+			<div class="card-header d-flex justify-content-between align-items-center">
+				<div class="card-title">품목 내역</div>
 			</div>
 
 			<div class="table-responsive">
-				<table class="table" aria-label="검수 항목">
+				<table id="itemsTable" class="table">
 					<thead>
 						<tr>
-							<th style="width:40px;">No</th>
-							<th>품목명 / 규격</th>
-							<th style="width:100px;">계획수량</th>
-							<th style="width:110px;">검수수량</th>
-							<th style="width:110px;">불량수량</th>
-							<th style="width:140px;">검수상태</th>
-							<th style="width:160px;">비고 / 사진</th>
+							<th>No</th>
+							<th>LOT번호</th>
+							<th>상품명</th>
+							<th>출고수량</th>
+							<th>폐기수량</th>
+							<th>검수</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>1</td>
-							<td>아라비카 원두 1kg / 로스팅 A</td>
-							<td class="right">120</td>
-							<td><input class="form-control" type="number" value="120" /></td>
-							<td><input class="form-control" type="number" value="0" /></td>
-							<td>
-								<select class="form-control status-select">
-									<option value="PASS" selected>합격</option>
-									<option value="FAIL">불합격</option>
-									<option value="HOLD">보류</option>
-								</select>
-							</td>
-							<td>
-								<input class="form-control" type="text" placeholder="검수 메모" />
-								<div class="attachment">사진: inspection_1.jpg</div>
-							</td>
-						</tr>
-						<tr>
-							<td>2</td>
-							<td>시럽 1L / 바닐라</td>
-							<td class="right">200</td>
-							<td><input class="form-control" type="number" value="190" /></td>
-							<td><input class="form-control" type="number" value="10" /></td>
-							<td>
-								<select class="form-control status-select">
-									<option value="PASS">합격</option>
-									<option value="FAIL" selected>불합격</option>
-									<option value="HOLD">보류</option>
-								</select>
-							</td>
-							<td>
-								<input class="form-control" type="text" placeholder="불량 사유" />
-								<div class="attachment">사진: syrup_damage.jpg</div>
-							</td>
-						</tr>
-						<tr>
-							<td>3</td>
-							<td>종이컵 250ml / 1000pcs</td>
-							<td class="right">100</td>
-							<td><input class="form-control" type="number" value="100" /></td>
-							<td><input class="form-control" type="number" value="0" /></td>
-							<td>
-								<select class="form-control status-select">
-									<option value="PASS" selected>합격</option>
-									<option value="FAIL">불합격</option>
-									<option value="HOLD">보류</option>
-								</select>
-							</td>
-							<td>
-								<input class="form-control" type="text" placeholder="메모" />
-								<div class="attachment">사진: -</div>
-							</td>
-						</tr>
+					    <c:choose>
+					        <c:when test="${not empty obProductList}">
+					            <c:forEach var="item" items="${obProductList}" varStatus="vs">
+					                <tr data-item-idx="${item.outboundOrderItemIdx}">
+					                    <td><c:out value="${vs.index + 1}" /></td>
+					                    <td><c:out value="${item.lotNumber}" /></td>
+					                    <td><c:out value="${item.productName}" /></td>
+					                    <td><fmt:formatNumber value="${item.quantity}" pattern="#,##0" /></td>
+					                    <td><input type="number" class="form-control discard-qty" min="0" max="${item.quantity}" value="0" /></td>
+					                    <td><button type="button" class="btn btn-sm btn-primary btn-inspect">검수완료</button></td>
+					                </tr>
+					            </c:forEach>
+					        </c:when>
+					        <c:otherwise>
+					            <tr>
+					                <td colspan="7" class="text-center">출고 품목 정보가 없습니다.</td>
+					            </tr>
+					        </c:otherwise>
+					    </c:choose>
 					</tbody>
 				</table>
 			</div>
-
-			<div class="d-flex justify-content-between align-items-center p-3">
-				<div class="muted">검수 완료 시 '검수완료'를 눌러 상태를 변경하세요.</div>
-				<div class="d-flex gap-2">
-					<button id="btnRejectNotify" class="btn btn-secondary btn-sm">불량통보(모의)</button>
-					<button id="btnFinalize" class="btn btn-primary btn-sm">검수완료(모의)</button>
-				</div>
-			</div>
 		</div>
+
 	</section>
 
-	<script>
-		document.getElementById("btnBack").addEventListener("click", function(e){ e.preventDefault(); history.back(); });
-		document.getElementById("btnSave").addEventListener("click", function(e){ e.preventDefault(); alert("임시저장(모의)"); });
-		document.getElementById("btnComplete").addEventListener("click", function(e){ e.preventDefault(); alert("검수완료(모의) — 상태 변경 예정"); });
-		document.getElementById("btnFinalize").addEventListener("click", function(e){ e.preventDefault(); alert("검수완료(모의)"); });
-		document.getElementById("btnRejectNotify").addEventListener("click", function(e){ e.preventDefault(); alert("공급사 불량 통보(모의)"); });
-	</script>
+	<script src="${pageContext.request.contextPath}/resources/js/outbound/outboundInspection.js"></script>
+	<script>const contextPath = "${pageContext.request.contextPath}";</script>
 </body>
+<link href="${pageContext.request.contextPath}/resources/css/inbound/modal/detailSmallModal.css" rel="stylesheet" />
 </html>
