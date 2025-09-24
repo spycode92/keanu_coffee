@@ -1,4 +1,4 @@
-package com.itwillbs.keanu_coffee.common.controller;
+package com.itwillbs.keanu_coffee.common.utils;
 
 import javax.servlet.http.HttpServletRequest;
 

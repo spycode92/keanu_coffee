@@ -16,12 +16,13 @@
   <div id="qrcode"></div>
   <script>
   const data = {
-		  orderNumber: "PO20250903-76",
-			ibwaitIdx: 3850,
-			lotNumber: "testLN",
-			manufactureDate: "2025-09-01",  
-		    expirationDate: "2029-09-01" 
-		};
+
+    orderNumber: "IB20250903-85",
+    ibwaitIdx: 3850,
+    lotNumber: "LOT-A-21",
+    manufactureDate: "2025-09-26",  
+    expirationDate: "2029-09-01" 
+  };
   QRCode.toCanvas(JSON.stringify(data), { width: 300, errorCorrectionLevel: 'H' }, function (err, canvas) {
 	  if (err) console.error(err);
 	  document.getElementById("qrcode").appendChild(canvas);
