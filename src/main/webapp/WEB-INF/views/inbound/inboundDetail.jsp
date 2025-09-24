@@ -10,7 +10,7 @@
 	<meta charset="UTF-8" />
 	<title>입고 상세</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet" />
 	<link href="${pageContext.request.contextPath}/resources/css/inbound/inboundDetailAndInspection.css" rel="stylesheet" />
