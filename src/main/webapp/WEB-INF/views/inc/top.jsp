@@ -313,7 +313,6 @@ document.addEventListener("DOMContentLoaded", () => {
 			<li class="menu-item">
 				<a href="#"><span>입고 관리</span></a>
 				<ul class="submenu ${fn:contains(uri, '/inbound') ? 'open' : ''}">
-			        <li><a href="/inbound/main">대시보드</a></li>
 			        <li><a href="/inbound/management">입고조회</a></li>
 			    </ul>
 			</li>
@@ -322,7 +321,6 @@ document.addEventListener("DOMContentLoaded", () => {
 			<li class="menu-item">
 				<a href="#"><span>출고 관리</span></a>
 				<ul class="submenu ${fn:contains(uri, '/outbound') ? 'open' : ''}">
-			        <li><a href="/outbound/main">대시보드</a></li>
 			        <li><a href="/outbound/outboundManagement">출고조회</a></li>
 			    </ul>
 			</li>
