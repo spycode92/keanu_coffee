@@ -43,8 +43,8 @@ public interface InboundMapper {
 			            @Param("managerName") String managerName);
 	
 	// 검수 데이터 여부 확인
-	int selectDataExists(@Param("ibwaitIdx") Long ibwaitIdx,
-	                     @Param("productIdx") Long productIdx,
+	int selectDataExists(@Param("ibwaitIdx") Integer ibwaitIdx,
+	                     @Param("productIdx") Integer productIdx,
 	                     @Param("lotNumber") String lotNumber);
 	
 	// 검수완료 데이터 저장/수정
@@ -60,6 +60,9 @@ public interface InboundMapper {
 	
 	// detail.로그조회
 	List<InboundStatusHistoryDTO> selectInboundStatusHistory(@Param("ibwaitIdx") Integer ibwaitIdx);
+	Integer selectReceiptProductIdx(@Param("ibwaitIdx") Integer ibwaitIdx,
+						            @Param("productIdx") Integer productIdx,
+						            @Param("lotNumber") String lotNumber);
 	
 
 	
