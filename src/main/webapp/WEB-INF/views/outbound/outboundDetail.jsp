@@ -88,7 +88,12 @@
 					<div class="kv-label">출고위치</div>
 					<div class="kv-value">
 						<span id="fieldOutboundLocation">
-							<c:out value="${obDetail.outboundLocation}" default="-" />
+							<c:choose>
+					            <c:when test="${obDetail.outboundLocation == '9994'}">Location_A</c:when>
+					            <c:when test="${obDetail.outboundLocation == '9995'}">Location_B</c:when>
+					            <c:when test="${obDetail.outboundLocation == '9996'}">Location_C</c:when>
+					            <c:otherwise>-</c:otherwise>
+					        </c:choose>
 						</span>
 					</div>
 				</div>

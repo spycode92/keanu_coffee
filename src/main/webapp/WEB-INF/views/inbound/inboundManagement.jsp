@@ -343,5 +343,10 @@
 		    });
 		});
 	</script>
+	<sec:authorize access="isAuthenticated()">
+		<script>
+			window.currentUserName = "<sec:authentication property='principal.empName' htmlEscape='false'/>";
+		</script>
+</sec:authorize>
 </body>
 </html>

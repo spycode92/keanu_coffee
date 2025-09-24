@@ -16,8 +16,8 @@
   <div id="qrcode"></div>
   <script>
   const data = {
-		  orderNumber: "OBW-TEST-998",
-			ibwaitIdx: 4750,
+		  orderNumber: "PO20250903-76",
+			ibwaitIdx: 3850,
 			lotNumber: "testLN",
 			manufactureDate: "2025-09-01",  
 		    expirationDate: "2029-09-01" 
