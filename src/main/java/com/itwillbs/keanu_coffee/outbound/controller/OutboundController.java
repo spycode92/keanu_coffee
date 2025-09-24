@@ -217,4 +217,21 @@ public class OutboundController {
     public String qrTestPage() {
         return "/outbound/qrTest";
     }
+	
+	// 출고위치 업데이트
+	@PostMapping(path = "/updateLocation", consumes = "application/json", produces = "application/json")
+	@ResponseBody
+	public Map<String, Object> updateOutboundLocation(@RequestBody Map<String, Object> req) {
+	    try {
+	        Long obwaitIdx = Long.valueOf(req.get("obwaitIdx").toString());
+	        Integer outboundLocation = Integer.valueOf(req.get("outboundLocation").toString()); 
+
+	        outboundService.updateOutboundLocation(obwaitIdx, outboundLocation);
+
+	        return Map.of("ok", true);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return Map.of("ok", false, "message", e.getMessage());
+	    }
+	}
 }

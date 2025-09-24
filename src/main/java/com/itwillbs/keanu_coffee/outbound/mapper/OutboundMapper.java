@@ -44,7 +44,9 @@ public interface OutboundMapper {
     OutboundInspectionDTO selectOutboundDetailByIdx(@Param("obwaitIdx") Integer obwaitIdx, @Param("orderNumber") String orderNumber);
     
     // inspection 리스트 조회
-    List<OutboundInspectionItemDTO> selectOutboundInspectionItems(@Param("outboundOrderIdx") Integer outboundOrderIdx);	
+    List<OutboundInspectionItemDTO> selectOutboundInspectionItems(@Param("outboundOrderIdx") Integer outboundOrderIdx);
+
+    void updateOutboundLocation(@Param("obwaitIdx") Long obwaitIdx, @Param("outboundLocationIdx") Integer outboundLocationIdx);
     
 	
 }

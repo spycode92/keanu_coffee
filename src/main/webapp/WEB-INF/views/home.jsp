@@ -137,7 +137,7 @@
 	$("#logininventoryPersonBtn").on("click", () => login("2301180023", "/inventory/moveInventory"));
 	
 	$("#loginTransportBtn").on("click", () => login("2509200001", "/transport/main"));
-	$("#logindriverBtn").on("click", () => login("2301180014", "/transport/mypage/54320747"));
+	$("#logindriverBtn").on("click", () => login("2301180026", "/transport/mypage/54320747"));
 	
 	// 다크모드 관리
 	const DarkModeManager = {
