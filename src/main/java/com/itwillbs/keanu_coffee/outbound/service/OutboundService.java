@@ -106,6 +106,10 @@ public class OutboundService {
 	public List<OutboundInspectionItemDTO> getOutboundInspectionItems(Integer outboundOrderIdx) {
 	    return outboundMapper.selectOutboundInspectionItems(outboundOrderIdx);
 	}
-    
+
+	@Transactional
+    public void updateOutboundLocation(Long obwaitIdx, Integer outboundLocationIdx) {
+        outboundMapper.updateOutboundLocation(obwaitIdx, outboundLocationIdx);
+    }    
     
 }

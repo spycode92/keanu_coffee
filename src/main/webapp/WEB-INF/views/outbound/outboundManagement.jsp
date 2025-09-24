@@ -124,7 +124,7 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th><input type="checkbox" class="select-all" /></th>
+							<th><input type="checkbox" id="checkAll" /></th>
 							<th>출고번호</th>
 							<th>출고일자</th>
 							<th>출고위치</th>
@@ -144,10 +144,19 @@
 							</c:url>
 					
 							<tr data-href="${detailUrl}">
-								<td><input type="checkbox" name="selectedOrder" value="${order.outboundOrderIdx}" /></td>
+								<td>
+									<input type="checkbox" name="selectedOrder" value="${order.outboundOrderIdx}" />
+								</td>
 								<td><c:out value="${order.obwaitNumber}" /></td>
 								<td><c:out value="${order.departureDate}" /></td>
-								<td><c:out value="${order.outboundLocation}" /></td>
+								<td>
+									<c:choose>
+							            <c:when test="${order.outboundLocation == '9994'}">Location_A</c:when>
+							            <c:when test="${order.outboundLocation == '9995'}">Location_B</c:when>
+							            <c:when test="${order.outboundLocation == '9996'}">Location_C</c:when>
+							            <c:otherwise>-</c:otherwise>
+							        </c:choose>
+						        </td>
 								<td><c:out value="${order.franchiseName}" /></td>
 								<td><c:out value="${order.status}" /></td>
 								<td><c:out value="${order.itemCount}" /></td>
@@ -271,6 +280,11 @@
 		</div>
 	</section>
 	
+	<sec:authorize access="isAuthenticated()">
+		<script>
+			window.currentUserName = "<sec:authentication property='principal.empName' htmlEscape='false'/>";
+		</script>
+	</sec:authorize>
 	
 	
 	<!-- ✅ 담당자 모달 포함 -->
