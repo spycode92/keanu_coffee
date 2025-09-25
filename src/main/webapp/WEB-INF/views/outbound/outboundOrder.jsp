@@ -39,8 +39,8 @@
 				<label for="franchiseIdx">가맹점 선택</label>
 				<select name="franchiseIdx" id="franchiseIdx" required>
 					<option value="">선택</option>
-					<c:forEach var="i" begin="1" end="8">
-						<option value="${i}">${i}번</option>
+					<c:forEach var="franchise" items="${franchiseList}">
+						<option value="${franchise.franchiseIdx}">${franchise.franchiseName}</option>
 					</c:forEach>
 				</select>
 
@@ -58,8 +58,8 @@
 				<label for="productIdx">제품</label>
 				<select id="productIdx">
 					<option value="">선택</option>
-					<c:forEach var="p" begin="101" end="146">
-						<option value="${p}">${p}번 제품</option>
+					<c:forEach var="product" items="${productList}">
+						<option value="${product.productIdx}">${product.productName}</option>
 					</c:forEach>
 				</select>
 

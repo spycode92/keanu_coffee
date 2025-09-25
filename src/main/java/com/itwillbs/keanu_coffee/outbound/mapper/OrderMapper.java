@@ -1,7 +1,11 @@
 package com.itwillbs.keanu_coffee.outbound.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
+import com.itwillbs.keanu_coffee.admin.dto.FranchiseDTO;
+import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderItemDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundWaitingDTO;
@@ -25,4 +29,10 @@ public interface OrderMapper {
 	Integer getLock(@Param("lockName") String lockName, @Param("timeout") int timeout);
 	Integer selectMaxSuffixForDate(@Param("dateStr") String dateStr);
 	Integer releaseLock(@Param("lockName") String lockName);
+
+	// 프랜차이즈 리스트
+	List<FranchiseDTO> getAllFranchise();
+
+	// 제품 리스트 가져오기
+	List<ProductDTO> getAllProducts();
 }

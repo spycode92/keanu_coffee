@@ -148,5 +148,16 @@
 		FROM OUTBOUND_WAITING
 		WHERE obwait_number LIKE CONCAT('OB', #{dateStr}, '-%')
 	</select>
-
+	<!-- 프랜차이즈 리스트 -->
+	<select id="getAllFranchise" resultType="FranchiseDTO">
+		SELECT * 
+		FROM FRANCHISE
+	</select>
+	
+	<!-- 제품 리스트 가져오기 -->
+	<select id="getAllProducts" resultType="ProductDTO">
+		SELECT *
+		FROM
+			PRODUCT
+	</select>
 </mapper>
