@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itwillbs.keanu_coffee.admin.dto.FranchiseDTO;
+import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderItemDTO;
 import com.itwillbs.keanu_coffee.outbound.service.OrderService;
@@ -27,7 +30,14 @@ public class OrderController {
 	private final OrderService orderService;
 
 	@GetMapping("/insert")
-	public String outboundOrder() {
+	public String outboundOrder(Model model) {
+		// 지점 리스트 가져오기
+		List<FranchiseDTO> franchiseList = orderService.getAllFranchise();
+		// 제품 리스트 가져오기
+		List<ProductDTO> productList = orderService.getAllProducts();
+		
+		model.addAttribute("franchiseList", franchiseList);
+		model.addAttribute("productList", productList);
 		return "/outbound/outboundOrder";
 	}
 

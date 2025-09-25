@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -39,9 +41,11 @@
 	            <button type="button" id="btnPallet" class="btn btn-primary">파레트존 이동 대상</button>
 	            <button type="button" id="btnPicking" class="btn btn-secondary">피킹존 보충 대상</button>
         	</div>
-        	<div>
-	            <button type="button" class="btn btn-primary" onclick="location.href='/inventory/moveInventory'">재고이동</button>
-        	</div>
+        	<sec:authorize access="hasAnyAuthority('INVENTORY_WRITE')">
+	        	<div>
+		            <button type="button" class="btn btn-primary" onclick="location.href='/inventory/moveInventory'">재고이동</button>
+	        	</div>
+        	</sec:authorize>
         </div>
 
         <!-- 파레트존 -->

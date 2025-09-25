@@ -35,7 +35,7 @@
 					<sec:csrfInput/>
 					<label>구역 이름</label> 
 					<input type="text" id="regionName" name="regionName" placeholder="예: 1구역">
-					<button type="submit" class="btn">구역 추가</button>
+					<button type="submit" class="btn btn-primary">구역 추가</button>
 				</form>
 				<h3>구역 목록</h3>
 				<div id="regionList">
@@ -48,11 +48,11 @@
 								<div class="region-item" >
 									<input class="region-name" value="${region.commonCodeName}"/>
 								  	<div class="region-actions">
-								    	<button type="button" class="btn edit" onclick="editRegion('${region.commonCodeIdx}', '${region.commonCodeName}')">
-								    		<i class="fa-solid fa-pen"></i>
+								    	<button type="button" class="btn edit" style="background-color: #fff099" onclick="editRegion('${region.commonCodeIdx}', '${region.commonCodeName}')">
+								    		<i class="fa-solid fa-pen" ></i>
 								    	</button>
-								    	<button type="button" class="btn delete" onclick="deleteRegion('${region.commonCodeIdx}')">
-								    		<i class="fa-solid fa-trash"></i>
+								    	<button type="button" class="btn delete" style="background-color: #ffcbd9" onclick="deleteRegion('${region.commonCodeIdx}')">
+								    		<i class="fa-solid fa-trash" style="color: white"></i>
 								    	</button>
 								  	</div>
 								</div>

@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -33,6 +35,10 @@
         	<div style="display: flex; justify-content: space-between; align-items: center;">
 	            <h2 style="display: inline-block;">프로필</h2>
 	            <div id="alarm-wrapper">
+	            	<form action="/logoutForSecurity" method="post" id="logoutForm" style="display: inline;">
+		           	 	<i class="fa-solid fa-right-from-bracket" data-action="logout" onclick="submin();"></i>
+		            	<sec:csrfInput/>
+	            	</form>
 					<a id="noti" href="javascript:void(0)" onclick="notification()"><img src="/resources/images/alarm.png" id="alarm-image" /></a>
 					<span id="alarm-badge"></span>
 		       		<div id="notification-box">
@@ -54,7 +60,6 @@
 						</div>
 						<ul id="notification-list"></ul>
 		       		</div>			
-					<i class="fa-solid fa-right-from-bracket" data-action="logout"></i>
 				</div>
         	</div>
             <div class="kv">

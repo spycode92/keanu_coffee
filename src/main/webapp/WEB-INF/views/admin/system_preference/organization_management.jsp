@@ -53,10 +53,12 @@
                                 <span class="department-name">${department.departmentName}</span>
                                 <sec:authorize access="hasAnyAuthority('ADMIN_SYSTEM')">
 	                                <div>
-	                                    <button type="button"
-	                                            class="btn btn-sm btn-secondary btn-edit-department">✎</button>
-	                                    <button type="button"
-	                                            class="btn btn-sm btn-destructive btn-delete-department">−</button>
+	                                    <button type="button" class="btn edit" style="background-color: #fff099">
+                                        	<i class="fa-solid fa-pen"></i>
+                                        </button>
+	                                    <button type="button" class="btn delete" style="background-color: #ffcbd9">
+	                                        <i class="fa-solid fa-trash" style="color: white"></i>
+	                                    </button>
 	                                </div>
 	                            </sec:authorize>
                             </li>
@@ -100,10 +102,14 @@
    	                            <span >${autho.commonCodeName}</span>
    	                            
 								<div>
-									<button type="button"  class="btn btn-sm btn-secondary btn-edit-autho"
-										data-authoidx="${autho.commonCodeIdx}" data-authoname="${autho.commonCodeName }">✎</button> 
-	                            	<button type="button"  class="btn btn-sm btn-danger btn-delete-autho" 
-	                            		data-authoidx="${autho.commonCodeIdx}" data-authoname="${autho.commonCodeName }">−</button>
+									<button type="button"  class="btn edit btn-edit-autho" style="background-color: #fff099"
+										data-authoidx="${autho.commonCodeIdx}" data-authoname="${autho.commonCodeName }">
+											<i class="fa-solid fa-pen"></i>
+									</button> 
+	                            	<button type="button"  class="btn delete btn-delete-autho" style="background-color: #ffcbd9"
+	                            		data-authoidx="${autho.commonCodeIdx}" data-authoname="${autho.commonCodeName }">
+	                            		<i class="fa-solid fa-trash" style="color: white"></i>	
+                            		</button>
 								</div>
 	                        </li>
                         </c:forEach>
