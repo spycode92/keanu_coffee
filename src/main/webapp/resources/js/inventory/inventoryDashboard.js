@@ -267,11 +267,13 @@ function calculateUsage(zoneData) {
         d.locationVolume > 0
     );
     if (valid.length === 0) return 0;
-
+//	console.log(valid);
     const totalRate = valid.reduce((sum, d) => {
+//		console.log("sum",sum);
         const used = d.inventoryQTY * d.productVolume;
         return sum + (used / d.locationVolume) * 100;
     }, 0);
+//	console.log("dasfasdf",totalRate);
     return Math.round(totalRate / valid.length);
 }
 
@@ -282,12 +284,12 @@ function totalUsage(palletZoneData, pickingZoneData) {
 
     const titleEl = document.getElementById("location_title");
     const usageInfo = document.createElement("span");
-    usageInfo.innerHTML = `
-        <span style="margin-left: 12px; font-size: 14px; color: #555;">
-            🟦 파레트존: <strong>${palletUsage}%</strong> |
-            🟩 피킹존: <strong>${pickingUsage}%</strong>
-        </span>
-    `;
+//    usageInfo.innerHTML = `
+//        <span style="margin-left: 12px; font-size: 14px; color: #555;">
+//            🟦 파레트존: <strong>${palletUsage}%</strong> |
+//            🟩 피킹존: <strong>${pickingUsage}%</strong>
+//        </span>
+//    `;
     titleEl.appendChild(usageInfo);
 }
 
