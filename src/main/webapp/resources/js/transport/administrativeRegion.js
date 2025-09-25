@@ -153,7 +153,7 @@ $.ajax({
 		  const dongHtml = group.dongs.map((dong, i) => `
 		    <span class="dong-tag" data-idx="${group.idxList[i]}">
 		    	${dong} 
-					<i class="fa-solid fa-circle-minus dong-del" style="color: #ffcbd9"></i>
+					<i class="fa-solid fa-circle-minus dong-del" style="color: #DC143C"></i>
 				</br>
 		    </span>
 		  `).join(" ");

@@ -48,10 +48,10 @@
 								<div class="region-item" >
 									<input class="region-name" value="${region.commonCodeName}"/>
 								  	<div class="region-actions">
-								    	<button type="button" class="btn edit" style="background-color: #fff099" onclick="editRegion('${region.commonCodeIdx}', '${region.commonCodeName}')">
+								    	<button type="button" class="btn edit" style="background-color: #FCB53B" onclick="editRegion('${region.commonCodeIdx}', '${region.commonCodeName}')">
 								    		<i class="fa-solid fa-pen" ></i>
 								    	</button>
-								    	<button type="button" class="btn delete" style="background-color: #ffcbd9" onclick="deleteRegion('${region.commonCodeIdx}')">
+								    	<button type="button" class="btn delete" style="background-color: #DC143C" onclick="deleteRegion('${region.commonCodeIdx}')">
 								    		<i class="fa-solid fa-trash" style="color: white"></i>
 								    	</button>
 								  	</div>
