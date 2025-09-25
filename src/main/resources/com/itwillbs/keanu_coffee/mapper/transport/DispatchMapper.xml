@@ -73,6 +73,7 @@
 			V_DISPATCH_DETAIL
 		WHERE
 			DATE(dispatch_date) = CURRENT_DATE
+		LIMIT 3
 	</select>
 
 	<!-- 배차 요청 리스트 -->

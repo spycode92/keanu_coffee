@@ -33,6 +33,7 @@
         	<div style="display: flex; justify-content: space-between; align-items: center;">
 	            <h2 style="display: inline-block;">프로필</h2>
 	            <div id="alarm-wrapper">
+	           	 	<i class="fa-solid fa-right-from-bracket" data-action="logout"></i>
 					<a id="noti" href="javascript:void(0)" onclick="notification()"><img src="/resources/images/alarm.png" id="alarm-image" /></a>
 					<span id="alarm-badge"></span>
 		       		<div id="notification-box">
@@ -54,7 +55,6 @@
 						</div>
 						<ul id="notification-list"></ul>
 		       		</div>			
-					<i class="fa-solid fa-right-from-bracket" data-action="logout"></i>
 				</div>
         	</div>
             <div class="kv">
