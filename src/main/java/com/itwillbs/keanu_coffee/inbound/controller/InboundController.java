@@ -260,7 +260,57 @@ public class InboundController {
         workbook.write(response.getOutputStream());
         workbook.close();
     }
+	
+	// 필터된 정보 조회
+    @GetMapping("/management/data")
+    @ResponseBody
+    public Map<String, Object> getInboundData(
+            @RequestParam Map<String, String> params,
+            Authentication auth
+    ) {
+        EmployeeDetail emp = (EmployeeDetail) auth.getPrincipal();
 
+        // --- 검색 조건 정리 ---
+        Map<String, Object> searchParams = new HashMap<>(params);
+
+        // 내 담당건만 보기
+        if ("Y".equals(params.get("myOnly"))) {
+            searchParams.put("manager", emp.getEmpName());
+        }
+
+        // --- 페이징 처리 ---
+        int pageSize = 10; // 한 페이지에 보여줄 건수
+        int pageNum = Integer.parseInt(params.getOrDefault("pageNum", "1"));
+        int startRow = (pageNum - 1) * pageSize;
+        searchParams.put("pageSize", pageSize);
+        searchParams.put("startRow", startRow);
+
+        // --- 조회 ---
+        List<InboundManagementDTO> list = inboundService.selectInboundListFilter(searchParams);
+        int totalCount = inboundService.selectInboundCountFilter(searchParams);
+
+        // --- 결과 반환 ---
+        return Map.of(
+                "list", list,
+                "totalCount", totalCount,
+                "pageInfo", makePageInfo(totalCount, pageNum, pageSize)
+        );
+    }
+
+   
+	//페이지 정보 생성 유틸
+    private Map<String, Object> makePageInfo(int totalCount, int pageNum, int pageSize) {
+        int maxPage = (int) Math.ceil((double) totalCount / pageSize);
+
+        return Map.of(
+                "pageNum", pageNum,
+                "pageSize", pageSize,
+                "maxPage", maxPage,
+                "totalCount", totalCount,
+                "startRow", (pageNum - 1) * pageSize
+        );
+    }
+	
 	
 	// ====================================================================================================================================
 	// 입고등록
