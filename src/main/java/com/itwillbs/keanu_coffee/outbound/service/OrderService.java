@@ -8,6 +8,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itwillbs.keanu_coffee.admin.dto.FranchiseDTO;
+import com.itwillbs.keanu_coffee.admin.dto.ProductDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundOrderItemDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundWaitingDTO;
@@ -101,5 +103,15 @@ public class OrderService {
 		} finally {
 			orderMapper.releaseLock(lockName);
 		}
+	}
+
+	// 프랜차이즈 정보 가져오기
+	public List<FranchiseDTO> getAllFranchise() {
+		return orderMapper.getAllFranchise();
+	}
+
+	// 제품 리스트 가져오기
+	public List<ProductDTO> getAllProducts() {
+		return orderMapper.getAllProducts();
 	}
 }

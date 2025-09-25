@@ -7,7 +7,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>입고 관리</title>
+	<title>입고조회</title>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
@@ -25,7 +25,7 @@
 	<section class="content">
 		<!-- 페이지 타이틀 -->
 		<div class="d-flex justify-content-between align-items-center mb-2">
-		     <h1 class="card-title" style="margin:0;">입고관리</h1>
+		     <h1 class="card-title" style="margin:0;">입고조회</h1>
 		</div>
 
 		<!-- 간단 검색바 -->
