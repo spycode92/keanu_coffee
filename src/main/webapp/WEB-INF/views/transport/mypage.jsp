@@ -36,7 +36,7 @@
 	            <h2 style="display: inline-block;">프로필</h2>
 	            <div id="alarm-wrapper">
 	            	<form action="/logoutForSecurity" method="post" id="logoutForm" style="display: inline;">
-			           	 	<i class="fa-solid fa-right-from-bracket" data-action="logout" onclick="submin();"></i>
+		           	 	<i class="fa-solid fa-right-from-bracket" data-action="logout" onclick="submin();"></i>
 		            	<sec:csrfInput/>
 	            	</form>
 					<a id="noti" href="javascript:void(0)" onclick="notification()"><img src="/resources/images/alarm.png" id="alarm-image" /></a>
