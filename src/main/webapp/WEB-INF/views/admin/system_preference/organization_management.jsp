@@ -53,10 +53,12 @@
                                 <span class="department-name">${department.departmentName}</span>
                                 <sec:authorize access="hasAnyAuthority('ADMIN_SYSTEM')">
 	                                <div>
-	                                    <button type="button"
-	                                            class="btn btn-sm btn-secondary btn-edit-department">✎</button>
-	                                    <button type="button"
-	                                            class="btn btn-sm btn-destructive btn-delete-department">−</button>
+	                                    <button type="button" class="btn btn-sm btn-secondary btn-edit-department">
+                                        	<i class="fa-solid fa-pen"></i>
+                                        </button>
+	                                    <button type="button" class="btn btn-sm btn-destructive btn-delete-department">
+	                                        <i class="fa-solid fa-trash"></i>
+	                                    </button>
 	                                </div>
 	                            </sec:authorize>
                             </li>
@@ -101,9 +103,13 @@
    	                            
 								<div>
 									<button type="button"  class="btn btn-sm btn-secondary btn-edit-autho"
-										data-authoidx="${autho.commonCodeIdx}" data-authoname="${autho.commonCodeName }">✎</button> 
+										data-authoidx="${autho.commonCodeIdx}" data-authoname="${autho.commonCodeName }">
+											<i class="fa-solid fa-pen"></i>
+									</button> 
 	                            	<button type="button"  class="btn btn-sm btn-danger btn-delete-autho" 
-	                            		data-authoidx="${autho.commonCodeIdx}" data-authoname="${autho.commonCodeName }">−</button>
+	                            		data-authoidx="${autho.commonCodeIdx}" data-authoname="${autho.commonCodeName }">
+	                            		<i class="fa-solid fa-trash"></i>	
+                            		</button>
 								</div>
 	                        </li>
                         </c:forEach>

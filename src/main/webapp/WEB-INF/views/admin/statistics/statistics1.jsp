@@ -90,7 +90,7 @@
 	            <br>
 	            <!-- 운송/출고 차트 -->
 	            <div class="chart-card">
-	                <h3 class="card-title" id="outbound_title">출고/운송 현황</h3>
+	                <h3 class="card-title" id="outbound_title">납기 현황</h3>
 	                <canvas id="OBoverallChart" style="width:80%; height:200px;"></canvas>
 	            </div>
 	            <br>

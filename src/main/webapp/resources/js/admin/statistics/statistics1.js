@@ -561,7 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        outboundProductChart.destroy();
 	    }
 	
-	    $("#outbound_title").html(`출고/운송 현황`);
+	    $("#outbound_title").html(`납기 현황`);
 	
 	    const ctx = document.getElementById('OBoverallChart').getContext('2d');
 	    if (!inputData || !inputData.labels || inputData.labels.length === 0) {
@@ -700,7 +700,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	            }
 	        }
 	    });		
-		$("#outbound_title").html(`${outboundCurrentSelectedDate} 카테고리별 출고/운송 현황`);
+		$("#outbound_title").html(`${outboundCurrentSelectedDate} 카테고리별 납기 현황`);
 	}
 	
 	//complete품목 도넛차트데이터가공[출고]
@@ -792,7 +792,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	            }
 	        }
 	    });
-		$("#outbound_title").html(`${selectedDate} > ${categoryName} 카테고리별 출고/운송 상품분포`);
+		$("#outbound_title").html(`${selectedDate} > ${categoryName} 카테고리별 납품 상품분포`);
 
 	}
 	

@@ -53,8 +53,12 @@ $(function () {
                         `<li class="list-group-item d-flex justify-content-between align-items-center department-item"  data-departmentidx="${dept.departmentIdx}">
                             <span class="department-name">${dept.departmentName}</span>
 							<div>
-								<button type="button" class="btn btn-sm btn-secondary btn-edit-department">✎</button>
-	                            <button type="button" class="btn btn-sm btn-danger btn-delete-department">−</button>
+								<button type="button" class="btn btn-sm btn-secondary btn-edit-department">
+									<i class="fa-solid fa-pen"></i>
+								</button>
+	                            <button type="button" class="btn btn-sm btn-danger btn-delete-department">
+									<i class="fa-solid fa-trash"></i>
+								</button>
                         	</div>
 						</li>`
                     );
@@ -121,8 +125,12 @@ $(function () {
                         `<li class="list-group-item d-flex justify-content-between align-items-center team-item"  data-teamidx="${team.teamIdx}">
                             <span>${team.teamName}</span>
 							<div>
-								<button type="button" class="btn btn-sm btn-secondary btn-edit-team">✎</button>
-	                            <button type="button" class="btn btn-sm btn-danger btn-delete-team">−</button>
+								<button type="button" class="btn btn-sm btn-secondary btn-edit-team">
+									<i class="fa-solid fa-pen"></i>
+								</button>
+	                            <button type="button" class="btn btn-sm btn-danger btn-delete-team">
+									<i class="fa-solid fa-trash"></i>
+								</button>
                         	</div>
                         </li>`
                     );
@@ -188,8 +196,12 @@ $(function () {
                         `<li class="list-group-item d-flex justify-content-between align-items-center role-item"  data-roleidx="${role.roleIdx}">
                             <span>${role.roleName}</span>
 							<div>
-								<button type="button" class="btn btn-sm btn-secondary btn-edit-role">✎</button>
-	                            <button type="button" class="btn btn-sm btn-danger btn-delete-role">−</button>
+								<button type="button" class="btn btn-sm btn-secondary btn-edit-role">
+									<i class="fa-solid fa-pen"></i>
+								</button>
+	                            <button type="button" class="btn btn-sm btn-danger btn-delete-role">
+									<i class="fa-solid fa-trash"></i>
+								</button>
                         	</div>
                         </li>`
                     );
