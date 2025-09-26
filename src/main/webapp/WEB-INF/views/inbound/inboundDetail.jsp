@@ -52,7 +52,7 @@
 		
 		// 이벤트 연결
 		document.querySelectorAll("input.quantity, input.unitPrice").forEach(input => {
-		    input.addEventListener("input", () => {
+		    input.addEventListener("input", () => {<fmt:formatDate value="${dto.arrivalDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 		        const index = input.getAttribute("data-index");
 		        recalculate(index);
 		    });
@@ -101,11 +101,15 @@
 					<div class="kv-label">입고번호</div>
 					<div class="kv-value">
 					    <c:out value="${inboundDetailData.ibwaitNumber}" default="-" />
+					    
 					</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고일자</div>
-					<div class="kv-value"><c:out value="${inboundDetailData.arrivalDate}" default="-"/></div>
+					<div class="kv-value">
+<%-- 						<c:out value="${fn:substringBefore(inboundDetailData.arrivalDate, 'T')}" default="-" /> --%>
+						<c:out value="${inboundDetailData.arrivalDateFormatted}" default="-" />
+					</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">발주번호</div>

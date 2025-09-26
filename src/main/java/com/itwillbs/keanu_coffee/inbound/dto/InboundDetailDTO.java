@@ -6,6 +6,9 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+
 @Data
 public class InboundDetailDTO {
     private int ibwaitIdx;              	// 입고번호
@@ -24,4 +27,6 @@ public class InboundDetailDTO {
     private String note;                	// 비고
     private Integer locationIdx; 
     private String locationName;
+    
+    private String arrivalDateFormatted;
 }

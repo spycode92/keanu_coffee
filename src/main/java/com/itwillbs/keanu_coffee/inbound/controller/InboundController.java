@@ -44,7 +44,9 @@ import com.itwillbs.keanu_coffee.inbound.service.InboundService;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/inbound")
@@ -53,7 +55,7 @@ public class InboundController {
 	private final InboundService inboundService;
 	private final ExcelExportService excelExportService;
 	private final InboundMapper inboundMapper;
-	private static final Logger log = LoggerFactory.getLogger(InboundController.class);
+//	private static final Logger log = LoggerFactory.getLogger(InboundController.class);
 	
 	// ====================================================================================================================================
 	// 대시보드
@@ -129,7 +131,8 @@ public class InboundController {
 		// 1) 기본정보 보드 조회
 	    InboundDetailDTO inboundDetailData = inboundService.getInboundDetailData(ibwaitIdx);
 	    model.addAttribute("inboundDetailData", inboundDetailData);
-		
+//	    log.info("inboundDetailData : " + inboundDetailData);
+	    
 	    // 2) 상품 상세 정보 조회
 	    List<InboundProductDetailDTO> ibProductDetail = inboundService.getInboundProductDetail(orderNumber);
 	    model.addAttribute("ibProductDetail", ibProductDetail);
@@ -137,6 +140,8 @@ public class InboundController {
 	    // 3) 로그 관련
 	    List<InboundStatusHistoryDTO> historyList = inboundMapper.selectInboundStatusHistory(ibwaitIdx);
 	    model.addAttribute("historyList", historyList);
+	    
+	    
 	    
 		return "/inbound/inboundDetail";
 	}
