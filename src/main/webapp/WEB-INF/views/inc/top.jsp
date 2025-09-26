@@ -262,9 +262,12 @@ document.addEventListener("DOMContentLoaded", () => {
 			</script>
 			<div id="employeeInfo" class="profile-popover" role="menu"  >
 				<span class="changeInfo"><button type="button" class="btn btn-link" data-modal-target="change-info-modal"> 정보 변경</button></span>
-				<span class="logout" >
-					<button type="button" class="btn btn-secondary" data-action="logout">로그아웃</button>
-				</span>
+<!-- 				<span class="logout" > -->
+					<form action="/logoutForSecurity" method="post" id="logoutForm">
+						<button type="button" class="btn btn-secondary" data-action="logout">로그아웃</button>
+						<sec:csrfInput/>
+					</form>
+<!-- 				</span> -->
 				<div class="darkmode-wrapper" style="color: #e0e5e6;">
 					<span class="darkmode-label">다크모드 :</span>
 					<button id="dark-mode-toggle" class="toggle-switch" aria-label="다크모드" style="text-align: right;"></button><br>	
@@ -295,7 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	<aside id="sidebar" class="sidebar">
 		<ul>
 			<sec:authorize access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')">
-			<li class="menu-item">
+			<li class="menu-item" onclick="location.href='/admin/employeeManage'">
 				<a href="#"><span>관리자페이지</span></a>
 <!-- 				<a href=""><span>물류부서관리</span></a> -->
 				<ul class="submenu ${fn:contains(uri, '/admin') ? 'open' : ''}">
@@ -310,25 +313,23 @@ document.addEventListener("DOMContentLoaded", () => {
 			</li>
 			</sec:authorize>
 <%-- 			<sec:authorize access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')"> --%>
-			<li class="menu-item">
+			<li class="menu-item" onclick="location.href='/inbound/management'">
 				<a href="#"><span>입고 관리</span></a>
 				<ul class="submenu ${fn:contains(uri, '/inbound') ? 'open' : ''}">
-			        <li><a href="/inbound/main">대시보드</a></li>
 			        <li><a href="/inbound/management">입고조회</a></li>
 			    </ul>
 			</li>
 <%-- 			</sec:authorize> --%>
 <%-- 			<sec:authorize access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')"> --%>
-			<li class="menu-item">
+			<li class="menu-item" onclick="location.href='/outbound/outboundManagement'">
 				<a href="#"><span>출고 관리</span></a>
 				<ul class="submenu ${fn:contains(uri, '/outbound') ? 'open' : ''}">
-			        <li><a href="/outbound/main">대시보드</a></li>
 			        <li><a href="/outbound/outboundManagement">출고조회</a></li>
 			    </ul>
 			</li>
 <%-- 			</sec:authorize> --%>
 <%-- 			<sec:authorize access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')"> --%>
-			<li class="menu-item">
+			<li class="menu-item" onclick="location.href='/inventory/main'">
 				<a href="#"><span>재고 관리</span></a>
 			    <ul class="submenu ${fn:contains(uri, '/inventory') ? 'open' : ''}">
 			        <li><a href="/inventory/main">대시보드</a></li>
@@ -336,8 +337,8 @@ document.addEventListener("DOMContentLoaded", () => {
 <!-- 			        <li><a href="/inventory/productHistory">제품 위치 기록</a></li> -->
 <!-- 	                <li><a href="/inventory/updateInventory">재고 업데이트</a></li> -->
 	                <li><a href="/inventory/updateWarehouse">로케이션 생성</a></li>
-	                <li><a href="/inventory/inventoryToMove">재고 이동 대상</a></li>
-	                <li><a href="/inventory/moveInventory">재고 이동</a></li>
+	                <li><a href="/inventory/inventoryToMove">재고 이동 현황</a></li>
+<!-- 	                <li><a href="/inventory/moveInventory">재고 이동</a></li> -->
 <!-- 	                <li><a href="/inventory/updatedInventory">업데이트된 재고 테이블</a></li> -->
 <!-- 	                <li><a href="/inventory/qrScanner">QR 스캐너</a></li> -->
 <!-- 	                <li><a href="/inventory/locationType">로케이션 지정</a></li> -->
@@ -345,8 +346,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			</li>
 <%-- 			</sec:authorize> --%>
 <%-- 			<sec:authorize access="hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')"> --%>
-			<li class="menu-item">
-				<a href="#"><span>운송관리</span></a>
+			<li class="menu-item" onclick="location.href='/transport/main'">
+				<a href="#"><span>운송 관리</span></a>
 				<ul class="submenu ${fn:contains(uri, '/transport') ? 'open' : ''}">
 					<li><a href="/transport/main">대시보드</a></li>
 					<li><a href="/transport/drivers">기사관리</a></li>
@@ -356,8 +357,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			</li >
 <%-- 			</sec:authorize> --%>
 <%-- 			<sec:authorize access="isAuthenticated()"> --%>
-				<li>
-					<a href="#"><span>기타정보</span></a>
+				<li onclick="location.href='/admin/dash'">
+					<a href="#"><span>기타 정보</span></a>
 					<ul class="submenuetc">
 						<li><a href="/admin/dash">통계</a></li>
 						<li><a href="/admin/workingLog">작업로그</a></li>

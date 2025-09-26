@@ -10,7 +10,7 @@
 	<meta charset="UTF-8" />
 	<title>입고 상세</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet" />
 	<link href="${pageContext.request.contextPath}/resources/css/inbound/inboundDetailAndInspection.css" rel="stylesheet" />
@@ -324,6 +324,23 @@
 	</section>
 	
 	<!-- ============================================================================================================ js 모음 -->
+	<sec:authorize access="isAuthenticated()">
+		<script>
+			// 로그인 사용자
+			window.currentUserNo = "<sec:authentication property='principal.username' htmlEscape='false'/>";
+			window.currentUserName = "<sec:authentication property='principal.empName' htmlEscape='false'/>";
+			
+			// 버튼에 들어간 담당자(manager) 값 읽기
+			document.addEventListener("DOMContentLoaded", () => {
+				const btnEdit = document.getElementById("btnEdit");
+				if (btnEdit) {
+					console.log("✅ 로그인 사용자 사번:", window.currentUserNo);
+					console.log("✅ 로그인 사용자 이름:", window.currentUserName);
+					console.log("✅ 페이지에 표시된 담당자(manager):", btnEdit.dataset.manager);
+				}
+			});
+		</script>
+	</sec:authorize>
 	<script> 
 		const contextPath = "${pageContext.request.contextPath}";
 	</script>

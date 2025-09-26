@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
+import com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundInspectionDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundInspectionItemDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundManagementDTO;
@@ -216,5 +217,72 @@ public class OutboundController {
 	@GetMapping("/qrTest")
     public String qrTestPage() {
         return "/outbound/qrTest";
+    }
+	
+	// 출고위치 업데이트
+	@PostMapping(path = "/updateLocation", consumes = "application/json", produces = "application/json")
+	@ResponseBody
+	public Map<String, Object> updateOutboundLocation(@RequestBody Map<String, Object> req) {
+	    try {
+	        Long obwaitIdx = Long.valueOf(req.get("obwaitIdx").toString());
+	        Integer outboundLocation = Integer.valueOf(req.get("outboundLocation").toString()); 
+
+	        outboundService.updateOutboundLocation(obwaitIdx, outboundLocation);
+
+	        return Map.of("ok", true);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return Map.of("ok", false, "message", e.getMessage());
+	    }
+	}
+	
+	// 필터된 정보 조회
+    @GetMapping("/management/data")
+    @ResponseBody
+    public Map<String, Object> getInboundData(
+            @RequestParam Map<String, String> params,
+            Authentication auth
+    ) {
+        EmployeeDetail emp = (EmployeeDetail) auth.getPrincipal();
+
+        // --- 검색 조건 정리 ---
+        Map<String, Object> searchParams = new HashMap<>(params);
+
+        // 내 담당건만 보기
+        if ("Y".equals(params.get("myOnly"))) {
+            searchParams.put("manager", emp.getEmpName());
+        }
+
+        // --- 페이징 처리 ---
+        int pageSize = 10; // 한 페이지에 보여줄 건수
+        int pageNum = Integer.parseInt(params.getOrDefault("pageNum", "1"));
+        int startRow = (pageNum - 1) * pageSize;
+        searchParams.put("pageSize", pageSize);
+        searchParams.put("startRow", startRow);
+
+        // --- 조회 ---
+        List<InboundManagementDTO> list = outboundService.selectInboundListFilter(searchParams);
+        int totalCount = outboundService.selectInboundCountFilter(searchParams);
+
+        // --- 결과 반환 ---
+        return Map.of(
+                "list", list,
+                "totalCount", totalCount,
+                "pageInfo", makePageInfo(totalCount, pageNum, pageSize)
+        );
+    }
+
+   
+	//페이지 정보 생성 유틸
+    private Map<String, Object> makePageInfo(int totalCount, int pageNum, int pageSize) {
+        int maxPage = (int) Math.ceil((double) totalCount / pageSize);
+
+        return Map.of(
+                "pageNum", pageNum,
+                "pageSize", pageSize,
+                "maxPage", maxPage,
+                "totalCount", totalCount,
+                "startRow", (pageNum - 1) * pageSize
+        );
     }
 }

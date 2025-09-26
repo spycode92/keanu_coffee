@@ -73,6 +73,7 @@
 			V_DISPATCH_DETAIL
 		WHERE
 			DATE(dispatch_date) = CURRENT_DATE
+		LIMIT 3
 	</select>
 
 	<!-- 배차 요청 리스트 -->
@@ -81,7 +82,8 @@
 		FROM
 			V_OUTBOUND_REGION_GROUP
 		ORDER BY
-			dispatch_date DESC
+			urgent DESC
+			, dispatch_date DESC;
 	</select>
 	
 	<!-- 배차 등록 -->

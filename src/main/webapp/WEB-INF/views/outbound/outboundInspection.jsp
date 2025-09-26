@@ -10,7 +10,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta name="_csrf" content="${_csrf.token}" />
     <meta name="_csrf_header" content="${_csrf.headerName}" />
-
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet" />
 	<link href="${pageContext.request.contextPath}/resources/css/outbound/outboundInspection.css" rel="stylesheet" />
@@ -73,9 +73,14 @@
 				<div class="kv-item">
 					<div class="kv-label">출고위치</div>
 					<div class="kv-value">
-						<span id="fieldOutboundLocation">
-						    <c:out value="${obDetail.outboundLocation}" default="-" />
-						</span>
+					    <span id="fieldOutboundLocation">
+					        <c:choose>
+					            <c:when test="${obDetail.outboundLocation == '9994'}">Location_A</c:when>
+					            <c:when test="${obDetail.outboundLocation == '9995'}">Location_B</c:when>
+					            <c:when test="${obDetail.outboundLocation == '9996'}">Location_C</c:when>
+					            <c:otherwise>-</c:otherwise>
+					        </c:choose>
+					    </span>
 					</div>
 				</div>
 				<div class="kv-item">
@@ -137,9 +142,10 @@
 		</div>
 
 	</section>
-
+	<jsp:include page="/WEB-INF/views/outbound/modal/modifyLocation.jsp" />
 	<script src="${pageContext.request.contextPath}/resources/js/outbound/outboundInspection.js"></script>
 	<script>const contextPath = "${pageContext.request.contextPath}";</script>
+	<script src="${pageContext.request.contextPath}/resources/js/outbound/modal/changeLocationIdx.js"></script>
 </body>
 <link href="${pageContext.request.contextPath}/resources/css/inbound/modal/detailSmallModal.css" rel="stylesheet" />
 </html>

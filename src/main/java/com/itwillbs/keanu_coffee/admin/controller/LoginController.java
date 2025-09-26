@@ -15,7 +15,7 @@ import com.itwillbs.keanu_coffee.common.service.FileService;
 
 import lombok.AllArgsConstructor;
 
-@Controller
+//@Controller
 @AllArgsConstructor
 public class LoginController {
 	private final LoginService loginService;

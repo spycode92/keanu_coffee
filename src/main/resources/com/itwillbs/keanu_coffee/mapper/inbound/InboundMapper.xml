@@ -242,39 +242,42 @@
     </select>
 
     <!-- INSERT receipt_product -->
-    <insert id="insertReceiptProduct" parameterType="com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO">
-		INSERT INTO RECEIPT_PRODUCT
-		(ibwait_idx, supplier_idx, product_idx, lot_number
-		,manufacture_date, expiration_date, quantity
-		,received_at, emp_idx, created_at, updated_at)
-		SELECT
-			 #{ibwaitIdx}
-			,po.supplier_idx
-			,#{productIdx}
-			,#{lotNumber}
-			,#{manufactureDate}
-			,#{expirationDate}
-			,#{quantity}
-			,NOW()
-			,#{empIdx}
-			,NOW()
-			,NOW()
-		FROM INBOUND_WAITING iw
-		JOIN PURCHASE_ORDER po
-			ON iw.order_idx = po.order_idx
-		WHERE iw.ibwait_idx = #{ibwaitIdx}
+	<insert id="insertReceiptProduct"
+	        parameterType="com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO"
+	        useGeneratedKeys="true"
+	        keyProperty="receiptProductIdx"
+	        keyColumn="receipt_product_idx">
+	    INSERT INTO RECEIPT_PRODUCT (
+	        ibwait_idx, supplier_idx, product_idx, lot_number,
+	        manufacture_date, expiration_date, quantity,
+	        received_at, emp_idx, created_at, updated_at
+	    )
+	    VALUES (
+	        #{ibwaitIdx},
+	        #{supplierIdx},
+	        #{productIdx},
+	        #{lotNumber},
+	        #{manufactureDate},
+	        #{expirationDate},
+	        #{quantity},
+	        NOW(),
+	        #{empIdx},
+	        NOW(),
+	        NOW()
+	    )
 	</insert>
+
 
     <!-- UPDATE receipt_product -->
     <update id="updateReceiptProduct" parameterType="com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO">
-        UPDATE RECEIPT_PRODUCT
-        SET lot_number = #{lotNumber},
-            quantity   = #{quantity},
-            emp_idx    = #{empIdx},
-            updated_at = NOW()
-        WHERE ibwait_idx = #{ibwaitIdx}
-          AND product_idx = #{productIdx}
-    </update>
+	    UPDATE RECEIPT_PRODUCT
+	    SET lot_number = #{lotNumber},
+	        quantity   = #{quantity},
+	        emp_idx    = #{empIdx},
+	        updated_at = NOW()
+	    WHERE receipt_product_idx = #{receiptProductIdx}
+	</update>
+    
 
     <!-- UPDATE purchase_order_item -->
     <update id="updatePurchaseOrderItemAfterInspection" parameterType="com.itwillbs.keanu_coffee.inbound.dto.ReceiptProductDTO">
@@ -311,8 +314,8 @@
 	        created_at,
 	        updated_at
 	    )
-	    SELECT
-	        rp.receipt_product_idx,
+	    VALUES (
+	        #{receiptProductIdx},
 	        #{locationIdx},
 	        #{locationName},
 	        #{productIdx},
@@ -322,12 +325,11 @@
 	        #{expirationDate},
 	        NOW(),
 	        NOW()
-	    FROM RECEIPT_PRODUCT rp
-	    WHERE rp.ibwait_idx = #{ibwaitIdx}
-	      AND rp.product_idx = #{productIdx}
-	      AND rp.lot_number = #{lotNumber}
-	    LIMIT 1
+	    )
 	</insert>
+
+
+
 
 
 	
@@ -354,6 +356,113 @@
 		
 		ORDER BY changedAt ASC
 	</select>
+	
+	<select id="selectReceiptProductIdx" resultType="int">
+	    SELECT receipt_product_idx
+	    FROM RECEIPT_PRODUCT
+	    WHERE ibwait_idx = #{ibwaitIdx}
+	      AND product_idx = #{productIdx}
+	      AND lot_number = #{lotNumber}
+	    ORDER BY created_at DESC
+	    LIMIT 1
+	</select>
+	
+	<!--  필터링된 입고 리스트 조회 -->
+    <select id="selectInboundListFilter" parameterType="map" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO">
+        SELECT 
+             po.order_number              AS orderNumber
+            ,iw.ibwait_number             AS ibwaitNumber
+            ,DATE_FORMAT(iw.arrival_date, '%Y-%m-%d') AS arrivalDateStr
+            ,s.supplier_name              AS supplierName
+            ,iw.inbound_status            AS inboundStatus
+            ,iw.number_of_items           AS numberOfItems
+            ,iw.quantity                  AS quantity
+            ,iw.manager                   AS manager
+            ,iw.note                      AS note
+            ,iw.ibwait_idx                AS ibwaitIdx
+        FROM INBOUND_WAITING iw
+        JOIN PURCHASE_ORDER po   ON iw.order_idx = po.order_idx
+        JOIN SUPPLIER s          ON po.supplier_idx = s.supplier_idx
+        WHERE 1=1
 
+        <!-- 간단 검색 -->
+        <if test="simpleKeyword != null and simpleKeyword != ''">
+            AND (po.order_number LIKE CONCAT('%', #{simpleKeyword}, '%')
+             OR iw.ibwait_number LIKE CONCAT('%', #{simpleKeyword}, '%'))
+        </if>
+
+        <!-- 상태 -->
+        <if test="status != null and status != ''">
+            AND iw.inbound_status = #{status}
+        </if>
+
+        <!-- 발주번호/입고번호 -->
+        <if test="orderInboundKeyword != null and orderInboundKeyword != ''">
+            AND (po.order_number LIKE CONCAT('%', #{orderInboundKeyword}, '%')
+             OR iw.ibwait_number LIKE CONCAT('%', #{orderInboundKeyword}, '%'))
+        </if>
+
+        <!-- 공급업체 -->
+        <if test="vendorKeyword != null and vendorKeyword != ''">
+            AND (s.supplier_name LIKE CONCAT('%', #{vendorKeyword}, '%')
+             OR s.supplier_idx LIKE CONCAT('%', #{vendorKeyword}, '%'))
+        </if>
+
+        <!-- 입고일자 범위 -->
+        <if test="inStartDate != null and inStartDate != ''">
+            AND DATE(iw.arrival_date) &gt;= #{inStartDate}
+        </if>
+        <if test="inEndDate != null and inEndDate != ''">
+            AND DATE(iw.arrival_date) &lt;= #{inEndDate}
+        </if>
+
+        <!-- 내 담당자 필터 -->
+        <if test="manager != null and manager != ''">
+            AND iw.manager = #{manager}
+        </if>
+
+        ORDER BY iw.created_at DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+
+    <!-- ✅ 필터링된 총 건수 조회 -->
+    <select id="selectInboundCountFilter" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM INBOUND_WAITING iw
+        JOIN PURCHASE_ORDER po   ON iw.order_idx = po.order_idx
+        JOIN SUPPLIER s          ON po.supplier_idx = s.supplier_idx
+        WHERE 1=1
+
+        <if test="simpleKeyword != null and simpleKeyword != ''">
+            AND (po.order_number LIKE CONCAT('%', #{simpleKeyword}, '%')
+             OR iw.ibwait_number LIKE CONCAT('%', #{simpleKeyword}, '%'))
+        </if>
+
+        <if test="status != null and status != ''">
+            AND iw.inbound_status = #{status}
+        </if>
+
+        <if test="orderInboundKeyword != null and orderInboundKeyword != ''">
+            AND (po.order_number LIKE CONCAT('%', #{orderInboundKeyword}, '%')
+             OR iw.ibwait_number LIKE CONCAT('%', #{orderInboundKeyword}, '%'))
+        </if>
+
+        <if test="vendorKeyword != null and vendorKeyword != ''">
+            AND (s.supplier_name LIKE CONCAT('%', #{vendorKeyword}, '%')
+             OR s.supplier_idx LIKE CONCAT('%', #{vendorKeyword}, '%'))
+        </if>
+
+        <if test="inStartDate != null and inStartDate != ''">
+            AND DATE(iw.arrival_date) &gt;= #{inStartDate}
+        </if>
+        <if test="inEndDate != null and inEndDate != ''">
+            AND DATE(iw.arrival_date) &lt;= #{inEndDate}
+        </if>
+
+        <if test="manager != null and manager != ''">
+            AND iw.manager = #{manager}
+        </if>
+    </select>
 	
 </mapper>

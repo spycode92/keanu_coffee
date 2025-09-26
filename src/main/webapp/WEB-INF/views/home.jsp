@@ -127,17 +127,17 @@
 	
 	// 로그인버튼별 값 지정
 	$("#loginadminBtn").on("click", () => login("admin", "statistics/1"));
-	$("#logininboundBtn").on("click", () => login("2301180002", "/inbound/main"));
+	$("#logininboundBtn").on("click", () => login("2301180002", "/inbound/management"));
 	$("#logininboundPersonBtn").on("click", () => login("2301180020", "/inbound/management"));
 	
-	$("#loginOutboundBtn").on("click", () => login("2301180003", "/outbound/main"));
+	$("#loginOutboundBtn").on("click", () => login("2301180003", "/outbound/outboundManagement/"));
 	$("#loginOutboundPersonBtn").on("click", () => login("2301180021", "/outbound/outboundManagement/"));
 	
 	$("#logininventoryBtn").on("click", () => login("2301180009", "/inventory/main"));
 	$("#logininventoryPersonBtn").on("click", () => login("2301180023", "/inventory/moveInventory"));
 	
 	$("#loginTransportBtn").on("click", () => login("2509200001", "/transport/main"));
-	$("#logindriverBtn").on("click", () => login("2301180014", "/transport/mypage/54320747"));
+	$("#logindriverBtn").on("click", () => login("2301180026", "/transport/mypage/54320747"));
 	
 	// 다크모드 관리
 	const DarkModeManager = {

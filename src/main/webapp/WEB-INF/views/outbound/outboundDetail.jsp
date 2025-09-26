@@ -13,7 +13,7 @@
     <script>const contextPath = "${pageContext.request.contextPath}";</script>
 	<title>출고 상세</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet" />
 	<link href="${pageContext.request.contextPath}/resources/css/outbound/outboundDetail.css" rel="stylesheet" />
@@ -30,17 +30,18 @@
 				<h1 class="card-title">출고 상세</h1>
 			</div>
 			<div class="page-actions">
-				<button id="btnInspection" type="button"
-					class="btn btn-primary btn-sm"
-					data-ibwait-idx="${obDetail.obwaitIdx}"
-					data-order-number="${obDetail.obwaitNumber}"
-					data-status="${obDetail.status}"
-					data-manager="${obDetail.manager}"
-					data-current-username="${currentUserName}"
-					data-outbound-order-idx="${obDetail.outboundOrderIdx}">
-					검수
-				</button>
-			
+				<sec:authorize access="hasAuthority('OUTBOUND_WRITE')">
+					<button id="btnInspection" type="button"
+						class="btn btn-primary btn-sm"
+						data-ibwait-idx="${obDetail.obwaitIdx}"
+						data-order-number="${obDetail.obwaitNumber}"
+						data-status="${obDetail.status}"
+						data-manager="${obDetail.manager}"
+						data-current-username="${currentUserName}"
+						data-outbound-order-idx="${obDetail.outboundOrderIdx}">
+						검수
+					</button>
+				</sec:authorize>
 				<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
 				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
 			</div>
@@ -87,7 +88,12 @@
 					<div class="kv-label">출고위치</div>
 					<div class="kv-value">
 						<span id="fieldOutboundLocation">
-							<c:out value="${obDetail.outboundLocation}" default="-" />
+							<c:choose>
+					            <c:when test="${obDetail.outboundLocation == '9994'}">Location_A</c:when>
+					            <c:when test="${obDetail.outboundLocation == '9995'}">Location_B</c:when>
+					            <c:when test="${obDetail.outboundLocation == '9996'}">Location_C</c:when>
+					            <c:otherwise>-</c:otherwise>
+					        </c:choose>
 						</span>
 					</div>
 				</div>

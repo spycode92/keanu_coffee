@@ -153,7 +153,7 @@ $.ajax({
 		  const dongHtml = group.dongs.map((dong, i) => `
 		    <span class="dong-tag" data-idx="${group.idxList[i]}">
 		    	${dong} 
-					<i class="fa-solid fa-circle-minus dong-del"></i>
+					<i class="fa-solid fa-circle-minus dong-del" style="color: #DC143C"></i>
 				</br>
 		    </span>
 		  `).join(" ");
@@ -163,7 +163,7 @@ $.ajax({
 		      <td>${group.commonCode}</td>
 		      <td>${group.sido}</td>
 		      <td>${group.sigungu}</td>
-		      <td>${dongHtml}</td>
+		      <td >${dongHtml}</td>
 		      <td><button class="btn btn-sm btn-destructive delete-btn" data-idx="${group.idxList.join(",")}">그룹삭제</button></td>
 		    </tr>
 		  `);

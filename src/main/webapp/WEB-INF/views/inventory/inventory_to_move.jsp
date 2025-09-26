@@ -1,13 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
-<title>로케이션 이동 대상</title>
+<title>재고 이동 현황</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
@@ -16,6 +18,13 @@
     .hidden { display: none; }
     .status-normal { color: green; }
     .status-need { color: red; font-weight: bold; }
+    
+    .tab {
+    	display: flex;
+    	align-items: center;
+    	justify-content: space-between;
+    	margin-bottom: 0.3em;
+    }
 </style>
 </head>
 <body>
@@ -24,12 +33,19 @@
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	
 	<div class="content">
-        <h2 class="page-title">로케이션 이동 대상</h2>
+        <h2 class="page-title">재고 이동 현황</h2>
 
         <!-- 탭 버튼 -->
-        <div class="btn-group interval">
-            <button type="button" id="btnPallet" class="btn btn-primary">파레트존 이동 대상</button>
-            <button type="button" id="btnPicking" class="btn btn-secondary">피킹존 보충 대상</button>
+        <div class="btn-group interval tab">
+        	<div>
+	            <button type="button" id="btnPallet" class="btn btn-primary">파레트존 이동 대상</button>
+	            <button type="button" id="btnPicking" class="btn btn-secondary">피킹존 보충 대상</button>
+        	</div>
+        	<sec:authorize access="hasAnyAuthority('INVENTORY_WRITE')">
+	        	<div>
+		            <button type="button" class="btn btn-primary" onclick="location.href='/inventory/moveInventory'">재고이동</button>
+	        	</div>
+        	</sec:authorize>
         </div>
 
         <!-- 파레트존 -->

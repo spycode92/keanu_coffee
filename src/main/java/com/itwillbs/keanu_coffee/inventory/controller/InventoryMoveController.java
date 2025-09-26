@@ -82,6 +82,7 @@ public class InventoryMoveController {
 	@PostMapping("/addCart")
 	@ResponseBody
 	public ResponseEntity<Map<String,Object>> addCart(@RequestBody InventoryDTO inventory, Authentication authentication){
+		
 		Map<String,Object> result = new HashMap<String, Object>();
 		try {
 			//카트에 추가 

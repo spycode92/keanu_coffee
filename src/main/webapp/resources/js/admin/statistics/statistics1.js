@@ -171,16 +171,16 @@ document.addEventListener('DOMContentLoaded', () => {
 	        const disposalQuantity = item.disposalQuantity || 0; // disposed량
 	        
 	        // 계산
-	        const 미입고 = Math.max(0, ibwquantity - riquantity);           // 음수 방지
-	        const 입고완료 = Math.max(0, riquantity - disposalQuantity);      // 음수 방지
+	        const outstanding = Math.max(0, ibwquantity - riquantity);           // 음수 방지
+	        const complete = Math.max(0, riquantity - disposalQuantity);      // 음수 방지
 	        const disposed = disposalQuantity;
 	        
 	        if (!grouped[key]) {
-	            grouped[key] = { 미입고: 0, 입고완료: 0, disposed: 0 };
+	            grouped[key] = { outstanding: 0, complete: 0, disposed: 0 };
 	        }
 	        
-	        grouped[key].미입고 += 미입고;
-	        grouped[key].입고완료 += 입고완료; 
+	        grouped[key].outstanding += outstanding;
+	        grouped[key].complete += complete; 
 	        grouped[key].disposed += disposed;
 	    });
 	    
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        datasets: [
 	            {
 	                label: '입고완료', 
-	                data: dates.map(date => grouped[date].입고완료),
+	                data: dates.map(date => grouped[date].complete),
 	                backgroundColor: '#4BC0C0'  // 청록색
 	            },
 	            {
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	            },
 	            {
 	                label: '미입고',
-	                data: dates.map(date => grouped[date].미입고),
+	                data: dates.map(date => grouped[date].outstanding),
 	                backgroundColor: '#FFCE56'  // 노란색
 	            }
 	        ]
@@ -292,16 +292,16 @@ document.addEventListener('DOMContentLoaded', () => {
 	        const disposalQuantity = item.disposalQuantity || 0; // disposed량
 	        
 	        // 계산 (원래 processChartData와 동일한 로직)
-	        const 미입고 = Math.max(0, ibwquantity - riquantity);           
-	        const 입고완료 = Math.max(0, riquantity - disposalQuantity);      
+	        const outstanding = Math.max(0, ibwquantity - riquantity);           
+	        const complete = Math.max(0, riquantity - disposalQuantity);      
 	        const disposed = disposalQuantity;
 	        
 	        if (!grouped[key]) {
-	            grouped[key] = { 미입고: 0, 입고완료: 0, disposed: 0 };
+	            grouped[key] = { outstanding: 0, complete: 0, disposed: 0 };
 	        }
 	        
-	        grouped[key].미입고 += 미입고;
-	        grouped[key].입고완료 += 입고완료; 
+	        grouped[key].outstanding += outstanding;
+	        grouped[key].complete += complete; 
 	        grouped[key].disposed += disposed;
 	    });
 	    
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        datasets: [
 	            {
 	                label: '입고완료', 
-	                data: categories.map(category => grouped[category].입고완료),
+	                data: categories.map(category => grouped[category].complete),
 	                backgroundColor: '#4BC0C0'  // 청록색
 	            },
 	            {
@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	            },
 	            {
 	                label: '미입고',
-	                data: categories.map(category => grouped[category].미입고),
+	                data: categories.map(category => grouped[category].outstanding),
 	                backgroundColor: '#FFCE56'  // 노란색
 	            }
 	        ]
@@ -561,7 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        outboundProductChart.destroy();
 	    }
 	
-	    $("#outbound_title").html(`출고/운송 현황`);
+	    $("#outbound_title").html(`납기 현황`);
 	
 	    const ctx = document.getElementById('OBoverallChart').getContext('2d');
 	    if (!inputData || !inputData.labels || inputData.labels.length === 0) {
@@ -700,7 +700,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	            }
 	        }
 	    });		
-		$("#outbound_title").html(`${outboundCurrentSelectedDate} 카테고리별 출고/운송 현황`);
+		$("#outbound_title").html(`${outboundCurrentSelectedDate} 카테고리별 납기 현황`);
 	}
 	
 	//complete품목 도넛차트데이터가공[출고]
@@ -792,7 +792,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	            }
 	        }
 	    });
-		$("#outbound_title").html(`${selectedDate} > ${categoryName} 카테고리별 출고/운송 상품분포`);
+		$("#outbound_title").html(`${selectedDate} > ${categoryName} 카테고리별 납품 상품분포`);
 
 	}
 	

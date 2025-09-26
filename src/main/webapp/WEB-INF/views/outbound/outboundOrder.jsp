@@ -7,6 +7,7 @@
 	<title>출고 관리</title>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="<c:url value='/resources/css/common/common.css'/>" rel="stylesheet" />
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 	<script src="<c:url value='/resources/js/common/common.js'/>"></script>
 	<style>
 		.form-container { margin: 32px 24px 80px 24px; max-width: 960px; }
@@ -38,8 +39,8 @@
 				<label for="franchiseIdx">가맹점 선택</label>
 				<select name="franchiseIdx" id="franchiseIdx" required>
 					<option value="">선택</option>
-					<c:forEach var="i" begin="1" end="8">
-						<option value="${i}">${i}번</option>
+					<c:forEach var="franchise" items="${franchiseList}">
+						<option value="${franchise.franchiseIdx}">${franchise.franchiseName}</option>
 					</c:forEach>
 				</select>
 
@@ -57,8 +58,8 @@
 				<label for="productIdx">제품</label>
 				<select id="productIdx">
 					<option value="">선택</option>
-					<c:forEach var="p" begin="101" end="146">
-						<option value="${p}">${p}번 제품</option>
+					<c:forEach var="product" items="${productList}">
+						<option value="${product.productIdx}">${product.productName}</option>
 					</c:forEach>
 				</select>
 

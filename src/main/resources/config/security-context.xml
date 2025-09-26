@@ -62,7 +62,7 @@
 		/>
 		
 		<logout logout-url="/logoutForSecurity"
-			logout-success-url="/?logout"
+			logout-success-url="/"
 			invalidate-session="true" 
         	delete-cookies="JSESSIONID"/>
 		

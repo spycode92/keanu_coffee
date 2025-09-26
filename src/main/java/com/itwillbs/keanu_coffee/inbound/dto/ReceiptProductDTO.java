@@ -20,39 +20,43 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReceiptProductDTO implements Serializable {
-	private static final long serialVersionUID = 1L;
-	//PK
-	private Integer receiptProductIdx;
-	
-	// FK
-	private Long ibwaitIdx;			// 입고대기 PK (RECEIPT_PRODUCT.ibwait_idx)
-	private Long productIdx;		// 상품 PK (RECEIPT_PRODUCT.product_idx)
+    private static final long serialVersionUID = 1L;
 
-	// 고유 식별 요소
-	private String lotNumber;		// LOT 번호
+    // PK
+    private Integer receiptProductIdx;
 
-	// 수량/금액
-	private Integer quantity;		// 수량
-	private BigDecimal unitPrice;	// 단가
-	private BigDecimal amount;		// 공급가액 = quantity * unitPrice
-	private BigDecimal tax;			// 부가세(10%) = amount * 0.1
-	private BigDecimal totalPrice;	// 총액 = amount + tax
+    // FK
+    private Integer ibwaitIdx;     // 입고대기 PK
+    private Integer productIdx;    // 상품 PK
+    private Integer supplierIdx;   // 공급업체 PK
 
-	// 검수 담당/일자
-	private Integer empIdx;			// 검수 담당자 idx
-	private Integer supplierIdx;
-	private Date manufactureDate; 
+    // 고유 식별 요소
+    private String lotNumber;      // LOT 번호
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private LocalDate expirationDate;	// 유통기한(있으면 사용, 없으면 null)
+    // 수량/금액
+    private Integer quantity;      
+    private BigDecimal unitPrice;
+    private BigDecimal amount;
+    private BigDecimal tax;
+    private BigDecimal totalPrice;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-	private LocalDateTime inspectedAt;	// 검수완료 시각
+    // 검수 담당자
+    private Integer empIdx;
 
-	// 감사필드
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-	private LocalDateTime createdAt;
+    // 제조/유통기한
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate manufactureDate;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-	private LocalDateTime updatedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate expirationDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime inspectedAt;
+
+    // 감사 필드
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime updatedAt;
 }

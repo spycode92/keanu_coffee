@@ -109,12 +109,14 @@
 		    	</div>
 	     	 </td>
 	    </tr>
-	    <tr>
-	      <td colspan="2" style="text-align: center;"><br>
-	        <button class="btn btn-primary" id="btnSubmit" >생성</button>
-<!-- 	        <button class="btn btn-primary"  type="submit" formaction="/inventoryAction/edit-warehouse">수정</button> -->
-	      </td>
-	    </tr>
+	    <sec:authorize access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')">
+		    <tr>
+		      <td colspan="2" style="text-align: center;"><br>
+		        <button class="btn btn-primary" id="btnSubmit" >생성</button>
+	<!-- 	        <button class="btn btn-primary"  type="submit" formaction="/inventoryAction/edit-warehouse">수정</button> -->
+		      </td>
+		    </tr>
+	    </sec:authorize>
 	  </table>
 	</form>
 	<script type="text/javascript">

@@ -53,8 +53,12 @@ $(function () {
                         `<li class="list-group-item d-flex justify-content-between align-items-center department-item"  data-departmentidx="${dept.departmentIdx}">
                             <span class="department-name">${dept.departmentName}</span>
 							<div>
-								<button type="button" class="btn btn-sm btn-secondary btn-edit-department">✎</button>
-	                            <button type="button" class="btn btn-sm btn-danger btn-delete-department">−</button>
+								<button type="button" class="btn edit btn-edit-department" style="background-color: #FCB53B">
+									<i class="fa-solid fa-pen"></i>
+								</button>
+	                            <button type="button" class="btn delete btn-delete-department" style="background-color: #DC143C">
+									<i class="fa-solid fa-trash" style="color: white"></i>
+								</button>
                         	</div>
 						</li>`
                     );
@@ -121,8 +125,12 @@ $(function () {
                         `<li class="list-group-item d-flex justify-content-between align-items-center team-item"  data-teamidx="${team.teamIdx}">
                             <span>${team.teamName}</span>
 							<div>
-								<button type="button" class="btn btn-sm btn-secondary btn-edit-team">✎</button>
-	                            <button type="button" class="btn btn-sm btn-danger btn-delete-team">−</button>
+								<button type="button" class="btn edit btn-edit-team" style="background-color: #FCB53B">
+									<i class="fa-solid fa-pen"></i>
+								</button>
+	                            <button type="button" class="btn delete btn-delete-team" style="background-color: #DC143C">
+									<i class="fa-solid fa-trash" style="color: white"></i>
+								</button>
                         	</div>
                         </li>`
                     );
@@ -188,8 +196,12 @@ $(function () {
                         `<li class="list-group-item d-flex justify-content-between align-items-center role-item"  data-roleidx="${role.roleIdx}">
                             <span>${role.roleName}</span>
 							<div>
-								<button type="button" class="btn btn-sm btn-secondary btn-edit-role">✎</button>
-	                            <button type="button" class="btn btn-sm btn-danger btn-delete-role">−</button>
+								<button type="button" class="btn edit btn-edit-role" style="background-color: #FCB53B">
+									<i class="fa-solid fa-pen"></i>
+								</button>
+	                            <button type="button" class="btn delete btn-delete-role" style="background-color: #DC143C">
+									<i class="fa-solid fa-trash" style="color: white"></i>
+								</button>
                         	</div>
                         </li>`
                     );
@@ -524,8 +536,12 @@ $(function () {
                         `<li class="list-group-item d-flex justify-content-between align-items-center team-item" data-teamidx="${team.teamIdx}">
                             <span>${team.teamName}</span>
 							<div>
-                                <button type="button" class="btn btn-sm btn-secondary btn-edit-team">✎</button> 
-                            	<button type="button" class="btn btn-sm btn-danger btn-delete-team">−</button>
+								<button type="button" class="btn edit btn-edit-team" style="background-color: #FCB53B">
+									<i class="fa-solid fa-pen"></i>
+								</button>
+	                            <button type="button" class="btn delete btn-delete-team" style="background-color: #DC143C">
+									<i class="fa-solid fa-trash" style="color: white"></i>
+								</button>
 							</div>
                         </li>`
                     );
@@ -540,8 +556,12 @@ $(function () {
                         `<li class="list-group-item d-flex justify-content-between align-items-center role-item" data-roleidx="${role.roleIdx}">
                             <span>${role.roleName}</span>
 							<div>
-								<button type="button" class="btn btn-sm btn-secondary btn-edit-role">✎</button> 
-                            	<button type="button" class="btn btn-sm btn-danger btn-delete-role">−</button>
+								<button type="button" class="btn edit btn-edit-role" style="background-color: #FCB53B">
+									<i class="fa-solid fa-pen"></i>
+								</button> 
+                            	<button type="button" class="btn delete btn-delete-role" style="background-color: #DC143C">
+									<i class="fa-solid fa-trash" style="color: white"></i>
+								</button>
 							</div>
                         </li>`
                     );

@@ -10,8 +10,8 @@
 	<meta name="_csrf" content="${_csrf.token}" />
 	<meta name="_csrf_header" content="${_csrf.headerName}" />
 
-	<title>출고 관리</title>
-	
+	<title>출고조회</title>
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 	<link href="${pageContext.request.contextPath}/resources/css/outbound/management.css" rel="stylesheet" />
@@ -23,7 +23,7 @@
 
 	<section class="content">
 		<div class="d-flex justify-content-between align-items-center mb-2">
-			<h1 class="card-title" style="margin:0;">출고관리</h1>
+			<h1 class="card-title" style="margin:0;">출고조회</h1>
 		</div>
 		
 		<!--  간단 검색바 -->
@@ -106,9 +106,8 @@
 				</div>
 				<div class="d-flex gap-2">
 					<sec:authorize access="hasAuthority('OUTBOUND_WRITE')">
+						<button id="btnMyListFilter" class="btn btn-outline-primary btn-sm" data-active="false">담당</button>
 						<a href="/order/insert" class="btn btn-primary btn-sm">새 출고 등록</a>
-					</sec:authorize>
-					<sec:authorize access="hasAuthority('OUTBOUND_WRITE')">
 						<div class="page-actions">
 							<a href="#" id="btnReadyOutbound" class="btn btn-primary btn-sm">출고준비 처리</a>
 							<button id="btnScanQR" class="btn btn-primary btn-sm">QR 스캔</button>
@@ -124,7 +123,7 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th><input type="checkbox" class="select-all" /></th>
+							<th><input type="checkbox" id="checkAll" /></th>
 							<th>출고번호</th>
 							<th>출고일자</th>
 							<th>출고위치</th>
@@ -144,10 +143,19 @@
 							</c:url>
 					
 							<tr data-href="${detailUrl}">
-								<td><input type="checkbox" name="selectedOrder" value="${order.outboundOrderIdx}" /></td>
+								<td>
+									<input type="checkbox" name="selectedOrder" value="${order.outboundOrderIdx}" />
+								</td>
 								<td><c:out value="${order.obwaitNumber}" /></td>
 								<td><c:out value="${order.departureDate}" /></td>
-								<td><c:out value="${order.outboundLocation}" /></td>
+								<td>
+									<c:choose>
+							            <c:when test="${order.outboundLocation == '9994'}">Location_A</c:when>
+							            <c:when test="${order.outboundLocation == '9995'}">Location_B</c:when>
+							            <c:when test="${order.outboundLocation == '9996'}">Location_C</c:when>
+							            <c:otherwise>-</c:otherwise>
+							        </c:choose>
+						        </td>
 								<td><c:out value="${order.franchiseName}" /></td>
 								<td><c:out value="${order.status}" /></td>
 								<td><c:out value="${order.itemCount}" /></td>
@@ -271,6 +279,11 @@
 		</div>
 	</section>
 	
+	<sec:authorize access="isAuthenticated()">
+		<script>
+			window.currentUserName = "<sec:authentication property='principal.empName' htmlEscape='false'/>";
+		</script>
+	</sec:authorize>
 	
 	
 	<!-- ✅ 담당자 모달 포함 -->

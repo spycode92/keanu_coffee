@@ -32,10 +32,11 @@ document.addEventListener("DOMContentLoaded", () => {
 	if (btnEdit) {
 		btnEdit.addEventListener("click", (e) => {
 			e.preventDefault();
-
-			const status  = btnEdit.dataset.status  || "";
+	
+			const status       = btnEdit.dataset.status  || "";
 			const manager = btnEdit.dataset.manager || "";
-
+			const currentUserName = window.currentUserName || "";
+	
 			// 상태 검증
 			if (status === "재고등록완료") {
 				Swal.fire("알림", "이미 검수가 끝난 물류입니다 ❌", "warning");
@@ -45,22 +46,29 @@ document.addEventListener("DOMContentLoaded", () => {
 				Swal.fire("알림", "검수는 '대기' 또는 '검수중' 상태에서만 가능합니다 ❌", "warning");
 				return;
 			}
-
+	
 			// 담당자 검증
 			if (!manager.trim()) {
 				Swal.fire("알림", "담당자가 지정되어야 검수 가능합니다 ❌", "warning");
 				return;
 			}
 
+			// 담당자 일치 검증
+			if (manager.trim() !== currentUserName.trim()) {
+				Swal.fire("알림", "로그인한 사용자와 지정된 담당자가 일치하지 않습니다 ❌", "error");
+				return;
+			}
+	
 			// 모든 조건 통과 → 검수 페이지 이동
 			const ibwaitIdx   = btnEdit.dataset.ibwaitIdx;
 			const orderNumber = btnEdit.dataset.orderNumber;
 			const ctx         = document.body.dataset.context || "";
-
+	
 			window.location.href =
 				`${ctx}/inbound/inboundInspection?ibwaitIdx=${encodeURIComponent(ibwaitIdx)}&orderNumber=${encodeURIComponent(orderNumber)}`;
 		});
 	}
+
 
 	// ================= F5 새로고침 차단 =================
 	document.addEventListener("keydown", (e) => {

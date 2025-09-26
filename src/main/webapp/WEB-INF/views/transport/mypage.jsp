@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -16,6 +18,7 @@
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/common/web_socket.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="https://kit.fontawesome.com/a96e186b03.js" crossorigin="anonymous"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/transport/mypage.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
@@ -32,6 +35,10 @@
         	<div style="display: flex; justify-content: space-between; align-items: center;">
 	            <h2 style="display: inline-block;">프로필</h2>
 	            <div id="alarm-wrapper">
+	            	<form action="/logoutForSecurity" method="post" id="logoutForm" style="display: inline;">
+		           	 	<i class="fa-solid fa-right-from-bracket" data-action="logout" onclick="submin();"></i>
+		            	<sec:csrfInput/>
+	            	</form>
 					<a id="noti" href="javascript:void(0)" onclick="notification()"><img src="/resources/images/alarm.png" id="alarm-image" /></a>
 					<span id="alarm-badge"></span>
 		       		<div id="notification-box">

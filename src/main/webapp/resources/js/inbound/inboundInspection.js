@@ -52,55 +52,66 @@ document.addEventListener("DOMContentLoaded", () => {
 				totalPrice:      row.querySelector(".totalPrice").value,
 				supplierIdx:     document.getElementById("inboundLink").dataset.supplierIdx,
 				manufactureDate: row.querySelector("input[name=manufactureDate]").value,
-				expirationDate:  row.querySelector("input[name=expirationDate]").value
+				expirationDate:  row.querySelector("input[name=expirationDate]").value,
+				receiptProductIdx: row.querySelector('input[name="receiptProductIdx"]')?.value
 			};
 
 			const { token, header } = getCsrf();
 
-			$.ajax({
-				url: "/inbound/inspectionComplete",
-				type: "POST",
-				data: JSON.stringify(payload),
-				contentType: "application/json",
-				beforeSend: xhr => {
-					if (header && token) xhr.setRequestHeader(header, token);
-				},
-				success: (res) => {
-					if (res.ok) {
-						Swal.fire("성공", "검수완료 처리됨 ✅", "success");
-
-						// 입력/버튼 잠금
-						row.querySelector(".quantity").disabled  = true;
-						row.querySelector(".unitPrice").disabled = true;
-
-						// 검수완료 버튼 상태 변경
-						btn.value = "검수완료됨";
-						btn.classList.remove("btn-secondary");
-						btn.classList.add("btn-confirmed");
-						btn.disabled = true;
-
-						// LOT 스캔 버튼 비활성화
-						const lotBtn = row.querySelector(".btn-lotScan");
-						if (lotBtn) {
-							lotBtn.disabled = true;
-							lotBtn.classList.remove("btn-sm");
-							lotBtn.classList.add("btn-confirmed");
-						}
-
-						// 모든 품목 완료 시 입고확정 버튼 활성화
-						const allDone = Array.from(itemsTable.querySelectorAll("tbody .inspection input[type=button]"))
-							.every(b => b.disabled);
-						if (allDone && btnCommit) btnCommit.disabled = false;
-					} else {
-						Swal.fire("실패", "처리 실패 ❌", "error");
-					}
-				},
-				error: xhr => {
-					Swal.fire("에러", "서버 오류 발생: " + xhr.status, "error");
-				}
+			        $.ajax({
+			            url: "/inbound/inspectionComplete",
+			            type: "POST",
+			            data: JSON.stringify(payload),
+			            contentType: "application/json",
+			            beforeSend: xhr => {
+			                if (header && token) xhr.setRequestHeader(header, token);
+			            },
+			            success: (res) => {
+			                if (res.ok) {
+			                    let hidden = row.querySelector("input[name=receiptProductIdx]");
+			                    if (!hidden) {                                                             
+			                        hidden = document.createElement("input");
+			                        hidden.type = "hidden";
+			                        hidden.name = "receiptProductIdx";
+			                        row.appendChild(hidden);
+			                    }
+			                    hidden.value = res.receiptProductIdx;
+			
+			                    Swal.fire("성공", "검수완료 처리됨 ✅", "success");
+			
+			                    // 입력/버튼 잠금
+			                    row.querySelector(".quantity").disabled  = true;
+			                    row.querySelector(".unitPrice").disabled = true;
+			
+			                    // 검수완료 버튼 상태 변경
+			                    btn.value = "검수완료됨";
+			                    btn.classList.remove("btn-secondary");
+			                    btn.classList.add("btn-confirmed");
+			                    btn.disabled = true;
+			
+			                    // LOT 스캔 버튼 비활성화
+			                    const lotBtn = row.querySelector(".btn-lotScan");
+			                    if (lotBtn) {
+			                        lotBtn.disabled = true;
+			                        lotBtn.classList.remove("btn-sm");
+			                        lotBtn.classList.add("btn-confirmed");
+			                    }
+			
+			                    // 모든 품목 완료 시 입고확정 버튼 활성화
+			                    const allDone = Array.from(itemsTable.querySelectorAll("tbody .inspection input[type=button]"))
+			                        .every(b => b.disabled);
+			                    if (allDone && btnCommit) btnCommit.disabled = false;
+			                } else {
+			                    Swal.fire("실패", "처리 실패 ❌", "error");
+			                }
+			            },
+			            error: xhr => {
+			                Swal.fire("에러", "서버 오류 발생: " + xhr.status, "error");
+			            }
+			        });
+			    });
 			});
-		});
-	});
+
 
 	// ------------------------
 	// 입고확정 버튼 AJAX
@@ -122,20 +133,20 @@ document.addEventListener("DOMContentLoaded", () => {
 	
 	    const ibwaitIdx = document.getElementById("inboundLink").dataset.ibwaitIdx;
 	
-	    // 🔎 품목 리스트 수집
+	    // 품목 리스트 수집
 	    const items = [];
 	    document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
 	        if (row.dataset.productIdx) {
 	            items.push({
-	                productIdx: row.dataset.productIdx,
-	                receiptProductIdx: row.querySelector("input[name=receiptProductIdx]")?.value,
-	                lotNumber: row.querySelector("input[name=scannedLotNumber]").value,
-	                quantity: row.querySelector(".quantity").value,
-	                manufactureDate: row.querySelector("input[name=manufactureDate]").value,
-	                expirationDate: row.querySelector("input[name=expirationDate]").value,
-	                locationIdx: locationIdx,
-	                locationName: locationName
-	            });
+				    productIdx: row.dataset.productIdx,
+				    receiptProductIdx: row.querySelector("input[name=receiptProductIdx]")?.value, 
+				    lotNumber: row.querySelector("input[name=scannedLotNumber]").value,
+				    quantity: row.querySelector(".quantity").value,
+				    manufactureDate: row.querySelector("input[name=manufactureDate]").value,
+				    expirationDate: row.querySelector("input[name=expirationDate]").value,
+				    locationIdx: locationIdx,
+				    locationName: locationName
+				});
 	        }
 	    });
 	

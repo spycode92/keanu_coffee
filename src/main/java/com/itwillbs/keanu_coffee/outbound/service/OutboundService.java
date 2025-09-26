@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
 import com.itwillbs.keanu_coffee.common.aop.annotation.WorkingLog;
 import com.itwillbs.keanu_coffee.common.aop.targetEnum.WorkingLogTarget;
+import com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundInspectionDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundInspectionItemDTO;
 import com.itwillbs.keanu_coffee.outbound.dto.OutboundManagementDTO;
@@ -106,6 +107,18 @@ public class OutboundService {
 	public List<OutboundInspectionItemDTO> getOutboundInspectionItems(Integer outboundOrderIdx) {
 	    return outboundMapper.selectOutboundInspectionItems(outboundOrderIdx);
 	}
-    
+
+	@Transactional
+    public void updateOutboundLocation(Long obwaitIdx, Integer outboundLocationIdx) {
+        outboundMapper.updateOutboundLocation(obwaitIdx, outboundLocationIdx);
+    }
+
+	public List<InboundManagementDTO> selectInboundListFilter(Map<String,Object> searchParams) {
+	    return outboundMapper.selectInboundListFilter(searchParams);
+	}
+
+	public int selectInboundCountFilter(Map<String,Object> searchParams) {
+	    return outboundMapper.selectInboundCountFilter(searchParams);
+	}    
     
 }

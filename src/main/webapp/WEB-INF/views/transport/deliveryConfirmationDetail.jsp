@@ -2,11 +2,13 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>수주확인서</title>
+<sec:csrfMetaTags/>
 <link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <link href="${pageContext.request.contextPath}/resources/css/transport/deliveryConfirmationDetail.css" rel="stylesheet">

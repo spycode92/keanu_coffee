@@ -155,18 +155,23 @@
 
     <!-- 출고 품목 리스트 조회 -->
     <select id="selectOutboundProductDetail" resultType="com.itwillbs.keanu_coffee.outbound.dto.OutboundProductDetailDTO">
-	    SELECT p.product_idx
-	         , p.product_name
-	         , p.product_volume
-	         , foi.quantity
+	    SELECT p.product_idx          AS productIdx
+	         , p.product_name         AS productName
+	         , p.product_volume       AS productVolume
+	         , rp.lot_number          AS lotNumber   
+	         , foi.quantity           AS quantity
 	    FROM OUTBOUND_ORDER_ITEM foi
 	    JOIN PRODUCT p
 	      ON foi.product_idx = p.product_idx
 	    JOIN OUTBOUND_ORDER oo
 	      ON foi.outbound_order_idx = oo.outbound_order_idx
+	    JOIN RECEIPT_PRODUCT rp
+	      ON foi.receipt_product_idx = rp.receipt_product_idx  
 	    WHERE foi.outbound_order_idx = #{outboundOrderIdx}
 	    ORDER BY p.product_name ASC
 	</select>
+
+
 	
 	<!-- inspection 출고 기본정보 조회 -->
 	<select id="selectOutboundDetailByIdx" 
@@ -240,5 +245,113 @@
 		  AND oo.outbound_order_idx = #{outboundOrderIdx}
 		  AND oo.status = '출고준비'
 	</update>
+	
+	<!-- 출고 위치 업데이트 -->
+	<update id="updateOutboundLocation">
+	    UPDATE OUTBOUND_WAITING
+	    SET outbound_location = #{outboundLocationIdx},
+	        updated_at = NOW()
+	    WHERE obwait_idx = #{obwaitIdx}
+	</update>
+	
+	<!--  필터링된 출고 리스트 조회 -->
+	<select id="selectOutboundListFilter" parameterType="map" resultType="com.itwillbs.keanu_coffee.outbound.dto.OutboundManagementDTO">
+	    SELECT 
+	         oo.outbound_order_idx       AS outboundOrderIdx
+	        ,ow.obwait_idx               AS obwaitIdx
+	        ,ow.obwait_number            AS obwaitNumber
+	        ,DATE_FORMAT(ow.dispatch_date, '%Y-%m-%d') AS dispatchDateStr
+	        ,f.franchise_name            AS franchiseName
+	        ,ow.outbound_status          AS outboundStatus
+	        ,ow.number_of_items          AS numberOfItems
+	        ,ow.quantity                 AS quantity
+	        ,ow.manager                  AS manager
+	        ,ow.note                     AS note
+	    FROM OUTBOUND_WAITING ow
+	    JOIN OUTBOUND_ORDER oo ON ow.outbound_order_idx = oo.outbound_order_idx
+	    JOIN FRANCHISE f       ON oo.franchise_idx      = f.franchise_idx
+	    WHERE 1=1
+	
+	    <!-- 간단 검색 -->
+	    <if test="simpleKeyword != null and simpleKeyword != ''">
+	        AND (oo.outbound_order_number LIKE CONCAT('%', #{simpleKeyword}, '%')
+	         OR ow.obwait_number LIKE CONCAT('%', #{simpleKeyword}, '%'))
+	    </if>
+	
+	    <!-- 상태 -->
+	    <if test="status != null and status != ''">
+	        AND ow.outbound_status = #{status}
+	    </if>
+	
+	    <!-- 출고번호/발주번호 -->
+	    <if test="orderOutboundKeyword != null and orderOutboundKeyword != ''">
+	        AND (oo.outbound_order_number LIKE CONCAT('%', #{orderOutboundKeyword}, '%')
+	         OR ow.obwait_number LIKE CONCAT('%', #{orderOutboundKeyword}, '%'))
+	    </if>
+	
+	    <!-- 프랜차이즈 -->
+	    <if test="franchiseKeyword != null and franchiseKeyword != ''">
+	        AND (f.franchise_name LIKE CONCAT('%', #{franchiseKeyword}, '%')
+	         OR f.franchise_idx LIKE CONCAT('%', #{franchiseKeyword}, '%'))
+	    </if>
+	
+	    <!-- 출고일자 범위 -->
+	    <if test="outStartDate != null and outStartDate != ''">
+	        AND DATE(ow.dispatch_date) &gt;= #{outStartDate}
+	    </if>
+	    <if test="outEndDate != null and outEndDate != ''">
+	        AND DATE(ow.dispatch_date) &lt;= #{outEndDate}
+	    </if>
+	
+	    <!-- 내 담당자 필터 -->
+	    <if test="manager != null and manager != ''">
+	        AND ow.manager = #{manager}
+	    </if>
+	
+	    ORDER BY ow.created_at DESC
+	    LIMIT #{startRow}, #{pageSize}
+	</select>
+	
+	
+	<!-- ✅ 필터링된 출고 총 건수 조회 -->
+	<select id="selectOutboundCountFilter" parameterType="map" resultType="int">
+	    SELECT COUNT(*)
+	    FROM OUTBOUND_WAITING ow
+	    JOIN OUTBOUND_ORDER oo ON ow.outbound_order_idx = oo.outbound_order_idx
+	    JOIN FRANCHISE f       ON oo.franchise_idx      = f.franchise_idx
+	    WHERE 1=1
+	
+	    <if test="simpleKeyword != null and simpleKeyword != ''">
+	        AND (oo.outbound_order_number LIKE CONCAT('%', #{simpleKeyword}, '%')
+	         OR ow.obwait_number LIKE CONCAT('%', #{simpleKeyword}, '%'))
+	    </if>
+	
+	    <if test="status != null and status != ''">
+	        AND ow.outbound_status = #{status}
+	    </if>
+	
+	    <if test="orderOutboundKeyword != null and orderOutboundKeyword != ''">
+	        AND (oo.outbound_order_number LIKE CONCAT('%', #{orderOutboundKeyword}, '%')
+	         OR ow.obwait_number LIKE CONCAT('%', #{orderOutboundKeyword}, '%'))
+	    </if>
+	
+	    <if test="franchiseKeyword != null and franchiseKeyword != ''">
+	        AND (f.franchise_name LIKE CONCAT('%', #{franchiseKeyword}, '%')
+	         OR f.franchise_idx LIKE CONCAT('%', #{franchiseKeyword}, '%'))
+	    </if>
+	
+	    <if test="outStartDate != null and outStartDate != ''">
+	        AND DATE(ow.dispatch_date) &gt;= #{outStartDate}
+	    </if>
+	    <if test="outEndDate != null and outEndDate != ''">
+	        AND DATE(ow.dispatch_date) &lt;= #{outEndDate}
+	    </if>
+	
+	    <if test="manager != null and manager != ''">
+	        AND ow.manager = #{manager}
+	    </if>
+	</select>
+	
+	
 	
 </mapper>
