@@ -295,7 +295,7 @@ public class SystemLogAspect {
 	        	}
 	        }
 	        
-	        //조직관리 - 직책추가
+	        //조직관리 - 직무추가
 	        if ("addRole".equals(methodName)) {
 	        	RoleDTO role = (RoleDTO)args[0];
 	        	slog.setSection("시스템설정");
@@ -303,16 +303,16 @@ public class SystemLogAspect {
 	        	slog.setTargetIdx(role.getRoleIdx());
 	        	if (errorMessage == null) {
 	        		slog.setLogMessage(
-        				slog.getSection() + ">" + slog.getSubSection() + " " + role.getRoleName() + " 직책 추가 완료"
+        				slog.getSection() + ">" + slog.getSubSection() + " " + role.getRoleName() + " 직무 추가 완료"
     				);
 	        	} else {
 	        		slog.setLogMessage(
-        				slog.getSection() + ">" + slog.getSubSection() + " " + role.getRoleName() + " 직책 추가 중 오류 발생: " + errorMessage
+        				slog.getSection() + ">" + slog.getSubSection() + " " + role.getRoleName() + " 직무 추가 중 오류 발생: " + errorMessage
     				);
 	        	}
 	        }
 	        
-	        //조직관리 - 직책삭제
+	        //조직관리 - 직무삭제
 	        if ("deleteRoleByIdx".equals(methodName)) {
 	        	Integer roleIdx = (Integer)args[0];
 	        	String roleName = (String)args[1];
@@ -321,11 +321,11 @@ public class SystemLogAspect {
 	        	slog.setTargetIdx(roleIdx);
 	        	if (errorMessage == null) {
 	        		slog.setLogMessage(
-        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직책 삭제 완료"
+        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직무 삭제 완료"
     				);
 	        	} else {
 	        		slog.setLogMessage(
-        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직책 삭제 중 오류 발생: " + errorMessage
+        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직무 삭제 중 오류 발생: " + errorMessage
     				);
 	        	}
 	        }
@@ -339,19 +339,19 @@ public class SystemLogAspect {
 	        	slog.setTargetIdx(roleIdx);
 	        	if (errorMessage == null) {
 	        		slog.setLogMessage(
-        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직책 이름 수정 완료"
+        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직무 이름 수정 완료"
     				);
 	        	} else {
 	        		slog.setLogMessage(
-	        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직책 이름 수정 중 오류 발생: " + errorMessage
+	        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직무 이름 수정 중 오류 발생: " + errorMessage
     				);
 	        	}
 	        }
 
-	        //조직관리 - 직책에 부여한 권한수정
+	        //조직관리 - 직무에 부여한 권한수정
 	        if ("modifyRoleAutho".equals(methodName)) {
 				Map<String,Object> data = (Map<String,Object>) args[0];
-	        	//직책이름 구하기
+	        	//직무이름 구하기
 	    		Integer roleIdx = (Integer) data.get("roleIdx");
 	        	RoleDTO role = organizationMapper.selectRole(roleIdx);
 	        	String roleName = role.getRoleName();
@@ -396,11 +396,11 @@ public class SystemLogAspect {
 	        	slog.setTargetIdx(roleIdx);
 	        	if (errorMessage == null) {
 	        		slog.setLogMessage(
-        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직책 에\n" + addAuthos + "\n" + removeAuthos 
+        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직무 에\n" + addAuthos + "\n" + removeAuthos 
     				);
 	        	} else {
 	        		slog.setLogMessage(
-        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직책 권한 수정 중 오류 발생: " + errorMessage
+        				slog.getSection() + ">" + slog.getSubSection() + " " + roleName + " 직무 권한 수정 중 오류 발생: " + errorMessage
     				);
 	        	}
 	        }

@@ -17,7 +17,7 @@
 		FROM TEAM
 		WHERE department_idx = #{departmentIdx}
 	</select>
-	<!-- 해당부서 직책목록 가져오기 -->
+	<!-- 해당부서 직무목록 가져오기 -->
 	<select id="getRolesInfoByDepartmentIdx" resultType="RoleDTO">
 		SELECT *
 		FROM ROLE
@@ -33,17 +33,17 @@
 		INSERT INTO TEAM(team_name, department_idx)
 		VALUES(#{teamName}, #{departmentIdx})
 	</insert>
-	<!-- 직책추가하기 -->
+	<!-- 직무추가하기 -->
 	<insert id="insertRole"  parameterType="RoleDTO" useGeneratedKeys="true" keyProperty="roleIdx">
 		INSERT INTO ROLE(role_name, department_idx)
 		VALUES(#{roleName}, #{departmentIdx})
 	</insert>
-	<!-- 직책삭제하기 -->
+	<!-- 직무삭제하기 -->
 	<delete id="deleteRole" parameterType="roleDTO" > 
 		DELETE FROM ROLE
 		where role_idx = #{roleIdx}
 	</delete>
-	<!-- 직책,메뉴,권한 테이블이 가지고있는 직책 삭제 -->
+	<!-- 직무,메뉴,권한 테이블이 가지고있는 직무 삭제 -->
 	<delete id="deleteRoleMenuAuthoByRoleIdx">
 		DELETE FROM ROLE_AUTHO
 		where role_idx = #{roleIdx}
@@ -59,7 +59,7 @@
 		from TEAM
 		where department_idx = #{departmentIdx}
 	</select>
-	<!-- 부서에속한 직책목록 -->
+	<!-- 부서에속한 직무목록 -->
 	<select id="departRoleList" resultType="RoleDTO">
 		SELECT role_idx
 		from ROLE
@@ -82,13 +82,13 @@
 		SET team_name = #{teamName}
 		where team_idx = #{teamIdx}
 	</update>
-	<!-- 직책이름변경 -->
+	<!-- 직무이름변경 -->
 	<update id="updateRole">
 		UPDATE ROLE
 		SET role_name = #{roleName}
 		where role_idx = #{roleIdx}
 	</update>
-	<!-- 부서,팀,직책 정보 가져오기 -->
+	<!-- 부서,팀,직무 정보 가져오기 -->
 	<select id="getOrgData" resultType="Map">
 		SELECT
 		c.common_code_idx
@@ -113,14 +113,14 @@
 		WHERE group_code = "AUTHORITY"
 	</select>
 	
-	<!-- 직책별 권한조회 -->
+	<!-- 직무별 권한조회 -->
 	<select id="selectAuthorityInfo" resultType="map">
 		SELECT autho_idx
 		FROM ROLE_AUTHO
 		WHERE role_idx = #{roleIdx}
 	</select>
 	
-	<!-- 직책별 권한삭제 -->
+	<!-- 직무별 권한삭제 -->
 	<delete id="deleteAuthorities">
 		DELETE FROM ROLE_AUTHO 
     	WHERE role_idx = #{roleIdx}
@@ -130,7 +130,7 @@
     </foreach>
 	</delete>
 	
-	<!-- 직책별 권한 추가 -->
+	<!-- 직무별 권한 추가 -->
 	<insert id="insertAuthorities">
 		INSERT IGNORE 
 			INTO ROLE_AUTHO (
@@ -150,7 +150,7 @@
 			common_code_idx = #{authoIdx} 
 	</update>
 	
-	<!-- 권한을 가진 직책수 확인 -->
+	<!-- 권한을 가진 직무수 확인 -->
 	<select id="countRoleAutho" parameterType="int" resultType="int">
 		SELECT count(*)
 		FROM ROLE_AUTHO
@@ -188,7 +188,7 @@
 		WHERE team_idx = #{teamIdx}
 	</select>
 	
-	<!-- 직책조회 -->
+	<!-- 직무조회 -->
 	<select id="selectRole" resultType="RoleDTO">
 		SELECT role_idx, role_name
 		FROM ROLE

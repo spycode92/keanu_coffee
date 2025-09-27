@@ -72,7 +72,7 @@ function groupDataByKey(flatData, groupKey,groupIdx, ...valueKeys) {
     return result;
 }
 
-//부서,팀,직책정보 함수
+//부서,팀,직무정보 함수
 function loadOrgData() {
     ajaxGet('/admin/employeeManagement/getOrgData')
 		.then(data => {
@@ -107,7 +107,7 @@ function populateDepartments() {
 		deptSel.appendChild(opt);
 	});
 }
-// 5) 부서 선택 시 팀·직책 동시 채우기
+// 5) 부서 선택 시 팀·직무 동시 채우기
 function onDeptChange() {
 	const dept = document.querySelector('select[name="departmentIdx"]').value;
 	const teamSel = document.querySelector('select[name="teamIdx"]');
@@ -273,7 +273,7 @@ function populateModifyDepartments() {
 	});
 }
 
-// 수정 부서 선택 시 팀·직책 동시 채우기
+// 수정 부서 선택 시 팀·직무 동시 채우기
 function onModifyDeptChange() {
 	const form = document.getElementById('modifyEmployeeForm');
 	const dept = form.querySelector('select[name="departmentIdx"]').value;
@@ -324,10 +324,10 @@ document.addEventListener("DOMContentLoaded", function() {
     	form.reset();
 
 		ModalManager.openModal(modal);
-		//부서,팀,직책 정보 함수
+		//부서,팀,직무 정보 함수
 		loadOrgData();
     });
-	// 부서 선택시 부서내의 팀, 직책 불러오기함수 호출
+	// 부서 선택시 부서내의 팀, 직무 불러오기함수 호출
 	document.querySelector('select[name="departmentIdx"]').addEventListener('change', onDeptChange);
 
 	 // 상세정보 모달 열기
@@ -352,25 +352,39 @@ document.addEventListener("DOMContentLoaded", function() {
 	
 	const form = document.getElementById('modifyEmployeeForm');
 	form.querySelector('select[name="departmentIdx"]').addEventListener('change', onModifyDeptChange);
-	//수정모달 핸드폰 번호입력제약사항
+	//수정모달 핸드폰 번호입력제약사항 - 010 고정
 	form.querySelector('input[name="empPhone"]').addEventListener('input', function(e) {
 	    let input = e.target.value;
 	    
 	    // 숫자 외 모든 문자 제거
 	    input = input.replace(/\D/g, '');
-	
-	    // 13자리 초과 입력 차단
+	    
+	    // 010으로 시작하지 않으면 010을 추가
+	    if (!input.startsWith('010')) {
+	        // 사용자가 10이나 1만 입력한 경우도 010으로 변경
+	        if (input.startsWith('10')) {
+	            input = '0' + input;
+	        } else if (input.startsWith('1')) {
+	            input = '01' + input;
+	        } else if (input.length > 0) {
+	            input = '010' + input;
+	        } else {
+	            input = '010';
+	        }
+	    }
+	    
+	    // 11자리 초과 입력 차단 (010 + 8자리)
 	    if (input.length > 11) {
 	        input = input.substring(0, 11);
 	    }
-	
-	    // 하이픈 자동 삽입 (예: 010-1234-5678 형태)
+	    
+	    // 하이픈 자동 삽입 (010-1234-5678 형태)
 	    if (input.length > 3 && input.length <= 7) {
 	        input = input.substring(0, 3) + '-' + input.substring(3);
 	    } else if (input.length > 7) {
 	        input = input.substring(0, 3) + '-' + input.substring(3, 7) + '-' + input.substring(7);
 	    }
-	
+	    
 	    e.target.value = input;
 	});
 	
@@ -406,31 +420,57 @@ document.addEventListener("DOMContentLoaded", function() {
 			});
 	});
 	
-	//직원추가모달 핸드폰번호 검사
-	$('#addEmpPhone').on('input', '', function() {
-	    let value = $(this).val().replace(/[^0-9]/g, '');
+	$('#addEmpPhone').on('input', function() {
+	    let input = $(this).val();
 	    
-	    if (value.length > 11) {
-	        value = value.slice(0, 11);
+	    // 010- 부분이 삭제되었으면 다시 복원
+	    if (!input.startsWith('010-')) {
+	        // 숫자만 추출하여 010 부분 제거
+	        let numbers = input.replace(/[^0-9]/g, '');
+	        if (numbers.startsWith('010')) {
+	            numbers = numbers.substring(3);
+	        }
+	        input = '010-' + numbers;
 	    }
 	    
-	    let formatted = '';
-	    if (value.length <= 3) {
-	        formatted = value;
-	    } else if (value.length <= 7) {
-	        formatted = value.slice(0, 3) + '-' + value.slice(3);
-	    } else {
-	        formatted = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7);
+	    // 010- 이후 숫자만 추출
+	    let phoneNumber = input.substring(4).replace(/[^0-9]/g, '');
+	    
+	    // 8자리 초과 입력 차단
+	    if (phoneNumber.length > 8) {
+	        phoneNumber = phoneNumber.slice(0, 8);
+	    }
+	    
+	    // 최종 포맷팅
+	    let formatted = '010-';
+	    if (phoneNumber.length > 0) {
+	        if (phoneNumber.length <= 4) {
+	            formatted += phoneNumber;
+	        } else {
+	            formatted += phoneNumber.slice(0, 4) + '-' + phoneNumber.slice(4);
+	        }
 	    }
 	    
 	    $(this).val(formatted);
 	    
-	    // 추가: 유효성 검사
-	    if (formatted.length === 13) { // 010-1234-5678 완성
+	    // 유효성 검사 (010-1234-5678 완성시)
+	    if (formatted.length === 13) {
 	        $(this).removeClass('is-invalid').addClass('is-valid');
 	    } else {
 	        $(this).removeClass('is-valid');
+	        if (formatted.length > 4) {
+	            $(this).addClass('is-invalid');
+	        }
 	    }
+	});
+	
+	// 초기값 및 포커스 처리
+	$('#addEmpPhone').on('focus', function() {
+	    if ($(this).val() === '') {
+	        $(this).val('010-');
+	    }
+	    // 커서를 010- 뒤로 이동
+	    setTimeout(() => this.setSelectionRange(4, 4), 0);
 	});
 	
 	//수정모달 정보저장하기

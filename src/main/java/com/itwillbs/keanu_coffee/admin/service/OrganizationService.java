@@ -49,7 +49,7 @@ public class OrganizationService {
 		return organizationMapper.getTeamsInfoByDepartmentIdx(departmentIdx);
 	}
 	
-	//해당 부서의 직책목록 받아오기
+	//해당 부서의 직무목록 받아오기
 	@Transactional(readOnly = true)
 	public List<RoleDTO> getRolesByDepartmentIdx(int departmentIdx) {
 		return organizationMapper.getRolesInfoByDepartmentIdx(departmentIdx);
@@ -69,7 +69,7 @@ public class OrganizationService {
 		return teamdto;
 	}
 	
-	//직책추가
+	//직무추가
 	@SystemLog(target = SystemLogTarget.ROLE)
 	public RoleDTO addRole(RoleDTO roleDTO) {
 		organizationMapper.insertRole(roleDTO);
@@ -80,7 +80,7 @@ public class OrganizationService {
 	@Transactional
 	@SystemLog(target = SystemLogTarget.COMMON_CODE)
 	public boolean removeDepartmentByIdx(Integer departmentIdx, String departmentName) {
-		// 해당 부서의 팀,직책 모두 NULL처리
+		// 해당 부서의 팀,직무 모두 NULL처리
 		employeeManagementMapper.updateDeptTeamRoleToNull(departmentIdx);
 		
 		//해당 부서에 속해있는 팀목록, 팀수
@@ -91,7 +91,7 @@ public class OrganizationService {
 			deleteTeamByIdx((Integer)teamDTO.getTeamIdx(), (String)teamDTO.getTeamName());
 		}
 		
-		//해당 부서에 속해있는 직책 목록
+		//해당 부서에 속해있는 직무 목록
 		List<RoleDTO> RoleDTOList 
 			= organizationMapper.departRoleList(departmentIdx);
 		
@@ -117,17 +117,17 @@ public class OrganizationService {
 		return deletedTeam == 1;
 	}
 	
-	// 직책삭제
+	// 직무삭제
 	@Transactional
 	@SystemLog(target = SystemLogTarget.ROLE)
 	public boolean deleteRoleByIdx(Integer roleIdx, String roleName) {
-		// 중간테이블 게시판,권한,직책 테이블의 내용삭제
+		// 중간테이블 게시판,권한,직무 테이블의 내용삭제
 		organizationMapper.deleteRoleMenuAuthoByRoleIdx(roleIdx);
 		
 		// 직원정보 테이블의 roleIdx를 Null 값 또는 기본값 처리
 		employeeManagementMapper.updateRoleToNull(roleIdx);
 		
-		// 직책삭제
+		// 직무삭제
 		int affectedRows = organizationMapper.deleteRole(roleIdx);
 		
 		return affectedRows == 1;
@@ -151,7 +151,7 @@ public class OrganizationService {
 		return  affectedRows == 1;
 	}
 	
-	// 직책이름 수정
+	// 직무이름 수정
 	@SystemLog(target = SystemLogTarget.ROLE)
 	public boolean modifyRoleName(int idx, String roleName) {
 		int affectedRows = organizationMapper.updateRole(idx, roleName);
@@ -166,14 +166,14 @@ public class OrganizationService {
 		return organizationMapper.selectAuthorityList();
 	}
 	
-	//직책별 권한정보 가져오기
+	//직무별 권한정보 가져오기
 	@Transactional(readOnly = true)
 	public List<Map<String, Object>> getAuthrityInfo(Integer roleIdx) {
 		
 		return organizationMapper.selectAuthorityInfo(roleIdx);
 	}
 	
-	//직책별 권한 업데이트
+	//직무별 권한 업데이트
 	@Transactional
 	@SystemLog(target = SystemLogTarget.ROLE_AUTHO )
 	public void modifyRoleAutho(Map<String, Object> data) throws Exception {
@@ -215,7 +215,7 @@ public class OrganizationService {
 		int existRoleAuthoCount = organizationMapper.countRoleAutho(authoIdx);
 		
 		if(existRoleAuthoCount == 0) {
-			//삭제할 권한이 직책에 부여되지 않았을 경우 삭제
+			//삭제할 권한이 직무에 부여되지 않았을 경우 삭제
 			organizationMapper.deleteAutho(authoIdx);
 		}
 		
@@ -241,7 +241,7 @@ public class OrganizationService {
 		
 		return organizationMapper.selectTeam(teamIdx);
 	}
-	//직책 정보가져오기
+	//직무 정보가져오기
 	public RoleDTO selectRole(Integer roleIdx) {
 		
 		return organizationMapper.selectRole(roleIdx);

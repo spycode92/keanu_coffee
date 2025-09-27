@@ -36,7 +36,7 @@
                 </div>
                 <!-- 이름 -->
                 <div class="field">
-                    <label for="top_roleName">직책</label>
+                    <label for="top_roleName">직무</label>
                     <input class="form-control" type="text" id="top_roleName" name="roleName" value="" disabled>
                 </div>
 				

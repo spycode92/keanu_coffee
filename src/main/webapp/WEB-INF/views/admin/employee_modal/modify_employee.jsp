@@ -67,7 +67,7 @@
                     </div>
                 </div>
 
-                <!-- 부서/팀/직책 -->
+                <!-- 부서/팀/직무 -->
                 <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">
                     <div class="field">
                         <label class="form-label">부서</label>
@@ -80,7 +80,7 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label class="form-label">직책</label>
+                        <label class="form-label">직무</label>
                         <select name="roleIdx" class="form-control">
                         </select>
                     </div>

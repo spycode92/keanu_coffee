@@ -31,7 +31,7 @@
 		<result property="description" column="description" />
 	</resultMap>
 	
-	<!-- 직책(ROLE) 테이블 ResultMap -->
+	<!-- 직무(ROLE) 테이블 ResultMap -->
 	<resultMap id="roleResultMap" type="roleDTO">
 		<id property="roleIdx" column="role_idx" />
 		<result property="roleName" column="role_name" />
@@ -203,7 +203,7 @@
 		)
 	</insert>
 	
-	<!-- 직책 비우기 -->
+	<!-- 직무 비우기 -->
 	<update id="updateRoleToNull">
 		UPDATE EMPLOYEE_INFO
 		SET role_idx = NULL
@@ -217,7 +217,7 @@
 		WHERE team_idx = #{teamIdx}
 	</update>
 	
-	<!-- 부서, 팀, 직책 비우기 -->
+	<!-- 부서, 팀, 직무 비우기 -->
 	<update id="updateDeptTeamRoleToNull">
 		UPDATE EMPLOYEE_INFO
 		SET team_idx = NULL,
@@ -259,7 +259,7 @@
 				e.emp_no = #{empNo} 
 	</select>
 	
-	<!-- 직책을가진 직원구하기 -->
+	<!-- 직무을가진 직원구하기 -->
 	<select id="selectEmpInfoByRole" resultType="EmployeeInfoDTO">
 		select emp_idx
 		FROM EMPLOYEE_INFO e

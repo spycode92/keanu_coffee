@@ -30,7 +30,7 @@ public class AlarmService {
 		return updateCount > 0;
 	}
 	
-	//직책별 알림 입력
+	//직무별 알림 입력
 	public void insertAlarmByRole(AlarmDTO alarmDTO) {
 		List<EmployeeInfoDTO> employeeList = employeeManagementMapper.selectEmpInfoByRole(alarmDTO.getRoleName());
 		

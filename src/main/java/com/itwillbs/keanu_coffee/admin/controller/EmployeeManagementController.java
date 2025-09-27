@@ -112,11 +112,11 @@ public class EmployeeManagementController {
 		}
 	}
 
-	// 직원추가 모달창 부서,팀,직책 정보 불러오기
+	// 직원추가 모달창 부서,팀,직무 정보 불러오기
 	@GetMapping("/getOrgData")
 	@ResponseBody
 	public List<Map<String, Object>> getOrgData() {
-		// 부서별 팀.직책 데이터 구성
+		// 부서별 팀.직무 데이터 구성
 		List<Map<String, Object>> orgDataList = employeeManagementService.getOrgData();
 		return orgDataList;
 	}
