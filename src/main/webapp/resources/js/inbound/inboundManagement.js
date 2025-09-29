@@ -262,8 +262,8 @@ function renderTable(list) {
 		const orderNumber = order.orderNumber ? encodeURIComponent(order.orderNumber) : "";
 		const ibwaitIdx = order.ibwaitIdx != null ? encodeURIComponent(order.ibwaitIdx) : "";
 
-		row.setAttribute("data-url", `/inbound/inboundDetail?orderNumber=${orderNumber}&ibwaitIdx=${ibwaitIdx}`);
-
+		row.setAttribute("data-url", `${contextPath}/inbound/inboundDetail?orderNumber=${orderNumber}&ibwaitIdx=${ibwaitIdx}`);
+		
 		row.innerHTML = `
 			<td><input type="checkbox" name="selectedOrder" value="${order.ibwaitIdx}"></td>
 			<td>${order.orderNumber ?? "-"}</td>
