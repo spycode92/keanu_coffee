@@ -102,3 +102,9 @@
 .btn-sm {
 	font-size: 1em;
 }
+
+#btnMyListFilter.active {
+    background-color: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}

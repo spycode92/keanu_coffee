@@ -52,7 +52,7 @@
 		
 		// 이벤트 연결
 		document.querySelectorAll("input.quantity, input.unitPrice").forEach(input => {
-		    input.addEventListener("input", () => {
+		    input.addEventListener("input", () => {<fmt:formatDate value="${dto.arrivalDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 		        const index = input.getAttribute("data-index");
 		        recalculate(index);
 		    });
@@ -101,11 +101,15 @@
 					<div class="kv-label">입고번호</div>
 					<div class="kv-value">
 					    <c:out value="${inboundDetailData.ibwaitNumber}" default="-" />
+					    
 					</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고일자</div>
-					<div class="kv-value"><c:out value="${inboundDetailData.arrivalDate}" default="-"/></div>
+					<div class="kv-value">
+<%-- 						<c:out value="${fn:substringBefore(inboundDetailData.arrivalDate, 'T')}" default="-" /> --%>
+						<c:out value="${inboundDetailData.arrivalDateFormatted}" default="-" />
+					</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">발주번호</div>
@@ -167,33 +171,30 @@
 		<div class="card mb-3">
 			<div class="timeline-container">
 			    <c:set var="steps" value="${fn:split('운송중,대기,검수중,검수완료,재고등록완료', ',')}" />
-			
-			    <ul class="timeline">
-			        <c:forEach var="step" items="${steps}" varStatus="st">
-					    <c:set var="found" value="false" />
-					    <c:set var="time" value="" />
-					    <c:forEach var="h" items="${historyList}">
-					        <c:if test="${h.status == step}">
-					            <c:set var="found" value="true" />
-					            <c:set var="time" value="${h.changedAt}" />
-					        </c:if>
-					    </c:forEach>
-					    <li class="timeline-step ${found ? 'done' : 'pending'}">
-					        <div class="circle">${st.index + 1}</div>
-					        <div class="label">${step}</div>
-					        <div class="time">
-					            <c:choose>
-					                <c:when test="${not empty time}">
-					                    ${time}
-					                </c:when>
-					                <c:otherwise>
-					                    -
-					                </c:otherwise>
-					            </c:choose>
-					        </div>
-					    </li>
-					</c:forEach>
-			    </ul>
+				<ul class="timeline">
+				    <c:forEach var="step" items="${steps}" varStatus="st">
+				        <c:set var="matchedTime" value="" />
+				        <!-- historyList에서 해당 step의 시간 가져오기 -->
+				        <c:forEach var="h" items="${historyList}">
+				            <c:if test="${h.status == step}">
+				                <c:set var="matchedTime" value="${h.changedAtStr}" />
+				            </c:if>
+				        </c:forEach>
+				
+				        <li class="timeline-step ${not empty matchedTime ? 'done' : 'pending'}">
+				            <div class="circle">${st.index + 1}</div>
+				            <div class="label">${step}</div>
+				            <div class="time">
+				                <c:choose>
+				                    <c:when test="${not empty matchedTime}">
+				                        ${matchedTime}
+				                    </c:when>
+				                    <c:otherwise>-</c:otherwise>
+				                </c:choose>
+				            </div>
+				        </li>
+				    </c:forEach>
+				</ul>
 			</div>
 		</div>
 			

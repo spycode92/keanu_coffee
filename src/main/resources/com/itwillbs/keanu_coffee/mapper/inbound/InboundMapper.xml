@@ -86,6 +86,9 @@
 			<if test="inEndDate != null">
 				AND DATE(iw.arrival_date) <![CDATA[ <= ]]> #{inEndDate}
 			</if>
+			<if test="managerKeyword != null and managerKeyword != ''">
+			    AND iw.manager LIKE CONCAT('%', #{managerKeyword}, '%')
+			</if>
 		</where>
 		ORDER BY iw.ibwait_idx DESC
 		<if test="startRow != null and listLimit != null">
@@ -335,20 +338,20 @@
 	
 	<!-- 상태 이력 조회 (로그 + 날짜) -->
 	<select id="selectInboundStatusHistory" parameterType="int" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundStatusHistoryDTO">
-		SELECT '운송중' AS status, DATE_FORMAT(po.order_date, '%Y-%m-%d %H:%i:%s') AS changedAt
+		SELECT '운송중' AS status, po.order_date AS changedAt
 		FROM PURCHASE_ORDER po
 		JOIN INBOUND_WAITING iw ON po.order_idx = iw.order_idx
 		WHERE iw.ibwait_idx = #{ibwaitIdx}
 		
 		UNION ALL
 		
-		SELECT '대기' AS status, DATE_FORMAT(iw.arrival_date, '%Y-%m-%d %H:%i:%s') AS changedAt
+		SELECT '대기' AS status, iw.arrival_date AS changedAt
 		FROM INBOUND_WAITING iw
 		WHERE iw.ibwait_idx = #{ibwaitIdx}
 		
 		UNION ALL
 		
-		SELECT target AS status, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS changedAt
+		SELECT target AS status, created_at AS changedAt
 		FROM SYSTEM_LOG
 		WHERE target_idx = #{ibwaitIdx}
 		  AND section = '입고관리'
@@ -367,5 +370,111 @@
 	    LIMIT 1
 	</select>
 	
+	<!--  필터링된 입고 리스트 조회 -->
+    <select id="selectInboundListFilter" parameterType="map" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundManagementDTO">
+        SELECT 
+             po.order_number              AS orderNumber
+            ,iw.ibwait_number             AS ibwaitNumber
+            ,DATE_FORMAT(iw.arrival_date, '%Y-%m-%d') AS arrivalDateStr
+            ,s.supplier_name              AS supplierName
+            ,iw.inbound_status            AS inboundStatus
+            ,iw.number_of_items           AS numberOfItems
+            ,iw.quantity                  AS quantity
+            ,iw.manager                   AS manager
+            ,iw.note                      AS note
+            ,iw.ibwait_idx                AS ibwaitIdx
+        FROM INBOUND_WAITING iw
+        JOIN PURCHASE_ORDER po   ON iw.order_idx = po.order_idx
+        JOIN SUPPLIER s          ON po.supplier_idx = s.supplier_idx
+        WHERE 1=1
+
+        <!-- 간단 검색 -->
+        <if test="simpleKeyword != null and simpleKeyword != ''">
+            AND (po.order_number LIKE CONCAT('%', #{simpleKeyword}, '%')
+             OR iw.ibwait_number LIKE CONCAT('%', #{simpleKeyword}, '%'))
+        </if>
+
+        <!-- 상태 -->
+        <if test="status != null and status != ''">
+            AND iw.inbound_status = #{status}
+        </if>
+
+        <!-- 발주번호/입고번호 -->
+        <if test="orderInboundKeyword != null and orderInboundKeyword != ''">
+            AND (po.order_number LIKE CONCAT('%', #{orderInboundKeyword}, '%')
+             OR iw.ibwait_number LIKE CONCAT('%', #{orderInboundKeyword}, '%'))
+        </if>
+
+        <!-- 공급업체 -->
+        <if test="vendorKeyword != null and vendorKeyword != ''">
+            AND (s.supplier_name LIKE CONCAT('%', #{vendorKeyword}, '%')
+             OR s.supplier_idx LIKE CONCAT('%', #{vendorKeyword}, '%'))
+        </if>
+
+        <!-- 입고일자 범위 -->
+        <if test="inStartDate != null and inStartDate != ''">
+            AND DATE(iw.arrival_date) &gt;= #{inStartDate}
+        </if>
+        <if test="inEndDate != null and inEndDate != ''">
+            AND DATE(iw.arrival_date) &lt;= #{inEndDate}
+        </if>
+
+        <!-- 내 담당자 필터 -->
+        <if test="manager != null and manager != ''">
+            AND iw.manager = #{manager}
+        </if>
+	
+		<!-- 담당자 이름 Like 검색 -->
+		<if test="managerKeyword != null and managerKeyword != ''">
+		    AND iw.manager LIKE CONCAT('%', #{managerKeyword}, '%')
+		</if>
+		
+        ORDER BY iw.created_at DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+
+    <!-- ✅ 필터링된 총 건수 조회 -->
+    <select id="selectInboundCountFilter" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM INBOUND_WAITING iw
+        JOIN PURCHASE_ORDER po   ON iw.order_idx = po.order_idx
+        JOIN SUPPLIER s          ON po.supplier_idx = s.supplier_idx
+        WHERE 1=1
+
+        <if test="simpleKeyword != null and simpleKeyword != ''">
+            AND (po.order_number LIKE CONCAT('%', #{simpleKeyword}, '%')
+             OR iw.ibwait_number LIKE CONCAT('%', #{simpleKeyword}, '%'))
+        </if>
+
+        <if test="status != null and status != ''">
+            AND iw.inbound_status = #{status}
+        </if>
+
+        <if test="orderInboundKeyword != null and orderInboundKeyword != ''">
+            AND (po.order_number LIKE CONCAT('%', #{orderInboundKeyword}, '%')
+             OR iw.ibwait_number LIKE CONCAT('%', #{orderInboundKeyword}, '%'))
+        </if>
+
+        <if test="vendorKeyword != null and vendorKeyword != ''">
+            AND (s.supplier_name LIKE CONCAT('%', #{vendorKeyword}, '%')
+             OR s.supplier_idx LIKE CONCAT('%', #{vendorKeyword}, '%'))
+        </if>
+
+        <if test="inStartDate != null and inStartDate != ''">
+            AND DATE(iw.arrival_date) &gt;= #{inStartDate}
+        </if>
+        <if test="inEndDate != null and inEndDate != ''">
+            AND DATE(iw.arrival_date) &lt;= #{inEndDate}
+        </if>
+
+        <if test="manager != null and manager != ''">
+            AND iw.manager = #{manager}
+        </if>
+        
+        <if test="managerKeyword != null and managerKeyword != ''">
+		    AND iw.manager LIKE CONCAT('%', #{managerKeyword}, '%')
+		</if>
+    </select>
 	
 </mapper>

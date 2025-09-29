@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.usermodel.Row;
@@ -18,6 +19,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,7 +46,9 @@ import com.itwillbs.keanu_coffee.inbound.service.InboundService;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/inbound")
@@ -53,7 +57,7 @@ public class InboundController {
 	private final InboundService inboundService;
 	private final ExcelExportService excelExportService;
 	private final InboundMapper inboundMapper;
-	private static final Logger log = LoggerFactory.getLogger(InboundController.class);
+//	private static final Logger log = LoggerFactory.getLogger(InboundController.class);
 	
 	// ====================================================================================================================================
 	// 대시보드
@@ -65,59 +69,70 @@ public class InboundController {
 	// ====================================================================================================================================
 	// 입고조회
 	@GetMapping("/management")
-	public String showInboundManagement(
+	public Object showInboundManagement(
 	        @RequestParam(required = false) String simpleKeyword,
 	        @RequestParam(required = false) String status,
 	        @RequestParam(required = false) String orderInboundKeyword,
 	        @RequestParam(required = false) String vendorKeyword,
 	        @RequestParam(required = false) String inStartDate,
 	        @RequestParam(required = false) String inEndDate,
+	        @RequestParam(required = false) String managerKeyword,
 	        @RequestParam(defaultValue = "1") int pageNum,
-	        Model model) {
+	        Model model,
+	        HttpServletRequest request) {
 
-	    // --- 날짜 변환 (빈 문자열이면 null 처리) ---
+	    // --- 날짜 변환 ---
 	    LocalDate start = null;
 	    LocalDate end = null;
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	    if (inStartDate != null && !inStartDate.isBlank()) start = LocalDate.parse(inStartDate, formatter);
+	    if (inEndDate   != null && !inEndDate.isBlank())   end   = LocalDate.parse(inEndDate, formatter);
 
-	    if (inStartDate != null && !inStartDate.isBlank()) {
-	        start = LocalDate.parse(inStartDate, formatter);
-	    }
-	    if (inEndDate != null && !inEndDate.isBlank()) {
-	        end = LocalDate.parse(inEndDate, formatter);
-	    }
-
-	    // --- 검색 파라미터 맵 ---
+	    // --- 검색 파라미터 ---
 	    Map<String, Object> searchParams = new HashMap<>();
-	    searchParams.put("simpleKeyword", simpleKeyword != null && !simpleKeyword.isBlank() ? simpleKeyword.trim() : null);
-	    searchParams.put("status", status != null && !status.isBlank() ? status.trim() : null);
-	    searchParams.put("orderInboundKeyword", orderInboundKeyword != null && !orderInboundKeyword.isBlank() ? orderInboundKeyword.trim() : null);
-	    searchParams.put("vendorKeyword", vendorKeyword != null && !vendorKeyword.isBlank() ? vendorKeyword.trim() : null);
+	    searchParams.put("simpleKeyword", simpleKeyword);
+	    searchParams.put("status", status);
+	    searchParams.put("orderInboundKeyword", orderInboundKeyword);
+	    searchParams.put("vendorKeyword", vendorKeyword);
 	    searchParams.put("inStartDate", start);
 	    searchParams.put("inEndDate", end);
+	    searchParams.put("managerKeyword", managerKeyword);
+	    
+	    log.info(">>>>>>>>>>>>>>>> managerKeyword : " + managerKeyword);
 
-	    // --- 전체 개수 조회 ---
+	    // --- 전체 개수/페이징/리스트 ---
 	    int totalCount = inboundService.getInboundCount(searchParams);
-
-	    // --- 페이징 처리 ---
-	    int listLimit = 10; // 한 페이지당 표시할 목록 수
+	    int listLimit = 10;
 	    int startRow = (pageNum - 1) * listLimit;
 
 	    PageInfoDTO pageInfo = new PageInfoDTO();
 	    pageInfo.setPageNum(pageNum);
 	    pageInfo.setMaxPage((int) Math.ceil(totalCount / (double) listLimit));
 
-	    // --- 리스트 조회 ---
 	    List<InboundManagementDTO> orderDetailList = inboundService.getInboundList(searchParams, startRow, listLimit);
 
-	    // --- Model에 데이터 저장 ---
+	    // --- Ajax 여부 판단: X-Requested-With 또는 Accept 헤더에 application/json 포함 ---
+	    String xrw = request.getHeader("X-Requested-With");
+	    String accept = request.getHeader("Accept");
+	    boolean isAjax = "XMLHttpRequest".equalsIgnoreCase(xrw) || (accept != null && accept.contains("application/json"));
+
+	    if (isAjax) {
+	        Map<String, Object> payload = Map.of(
+	            "list", orderDetailList,
+	            "totalCount", totalCount,
+	            "pageInfo", pageInfo
+	        );
+	        return ResponseEntity.ok(payload); // ★ JSON 보장
+	    }
+
+	    // --- JSP 렌더링 ---
 	    model.addAttribute("pageInfo", pageInfo);
 	    model.addAttribute("orderList", orderDetailList);
 	    model.addAttribute("totalCount", totalCount);
 	    model.addAttribute("searchParams", searchParams);
-
 	    return "/inbound/inboundManagement";
 	}
+
 
 	// ====================================================================================================================================
 	// 입고상세
@@ -129,7 +144,8 @@ public class InboundController {
 		// 1) 기본정보 보드 조회
 	    InboundDetailDTO inboundDetailData = inboundService.getInboundDetailData(ibwaitIdx);
 	    model.addAttribute("inboundDetailData", inboundDetailData);
-		
+//	    log.info("inboundDetailData : " + inboundDetailData);
+	    
 	    // 2) 상품 상세 정보 조회
 	    List<InboundProductDetailDTO> ibProductDetail = inboundService.getInboundProductDetail(orderNumber);
 	    model.addAttribute("ibProductDetail", ibProductDetail);
@@ -137,6 +153,8 @@ public class InboundController {
 	    // 3) 로그 관련
 	    List<InboundStatusHistoryDTO> historyList = inboundMapper.selectInboundStatusHistory(ibwaitIdx);
 	    model.addAttribute("historyList", historyList);
+	    
+	    
 	    
 		return "/inbound/inboundDetail";
 	}
@@ -260,7 +278,61 @@ public class InboundController {
         workbook.write(response.getOutputStream());
         workbook.close();
     }
+	
+	// 필터된 정보 조회
+    @GetMapping("/management/data")
+    @ResponseBody
+    public Map<String, Object> getInboundData(
+            @RequestParam Map<String, String> params,
+            Authentication auth
+    ) {
+        EmployeeDetail emp = (EmployeeDetail) auth.getPrincipal();
 
+        // --- 검색 조건 정리 ---
+        Map<String, Object> searchParams = new HashMap<>(params);
+
+        // 내 담당건만 보기
+        if ("Y".equals(params.get("myOnly"))) {
+            searchParams.put("manager", emp.getEmpName());
+        }
+        
+        if (params.containsKey("managerKeyword") && params.get("managerKeyword") != null && !params.get("managerKeyword").isBlank()) {
+            searchParams.put("managerKeyword", params.get("managerKeyword").trim());
+        }
+
+        // --- 페이징 처리 ---
+        int pageSize = 10; // 한 페이지에 보여줄 건수
+        int pageNum = Integer.parseInt(params.getOrDefault("pageNum", "1"));
+        int startRow = (pageNum - 1) * pageSize;
+        searchParams.put("pageSize", pageSize);
+        searchParams.put("startRow", startRow);
+
+        // --- 조회 ---
+        List<InboundManagementDTO> list = inboundService.selectInboundListFilter(searchParams);
+        int totalCount = inboundService.selectInboundCountFilter(searchParams);
+
+        // --- 결과 반환 ---
+        return Map.of(
+                "list", list,
+                "totalCount", totalCount,
+                "pageInfo", makePageInfo(totalCount, pageNum, pageSize)
+        );
+    }
+
+   
+	//페이지 정보 생성 유틸
+    private Map<String, Object> makePageInfo(int totalCount, int pageNum, int pageSize) {
+        int maxPage = (int) Math.ceil((double) totalCount / pageSize);
+
+        return Map.of(
+                "pageNum", pageNum,
+                "pageSize", pageSize,
+                "maxPage", maxPage,
+                "totalCount", totalCount,
+                "startRow", (pageNum - 1) * pageSize
+        );
+    }
+	
 	
 	// ====================================================================================================================================
 	// 입고등록

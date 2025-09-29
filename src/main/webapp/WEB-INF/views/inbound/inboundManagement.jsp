@@ -58,6 +58,12 @@
 		            <input type="date" class="form-control search-input" name="inEndDate" id="inEndDate"
 		                   value="${param.inEndDate}" />
 		        </div>
+		        <div class="col-md-3 position-relative">
+			        <label class="form-label">담당자</label>
+			        <input type="text" class="form-control search-input" name="managerKeyword" id="managerKeyword"
+			               placeholder="담당자 이름 검색" value="${param.managerKeyword}" />
+			        <button type="button" class="btn btn-clear-input" onclick="clearInput('managerKeyword')">×</button>
+			    </div>
 		    </div>
 		    
 		    <!-- 1줄: 상태 · 발주번호/입고번호 · 공급업체 -->
@@ -115,6 +121,7 @@
 		        </div>
 		        <div class="d-flex gap-2">
 					<a href="${pageContext.request.contextPath}/inbound/qrTest" class="btn btn-secondary btn-sm">QR 테스트</a>
+					<button id="btnMyListFilter" class="btn btn-outline-primary btn-sm" data-active="false">담당</button>
 		        	<sec:authorize access="hasAuthority('INBOUND_WRITE')">
 			        	<div class="page-actions">
 						   	<button id="btnScanQR" class="btn btn-primary btn-sm">QR 스캔</button>
@@ -191,74 +198,12 @@
 				</table>
 			</div>
 			
-			<!-- 페이징 -->
-			<div class="d-flex justify-content-between align-items-center p-3">
-				<div class="text-muted">페이지 ${pageInfo.pageNum} / ${pageInfo.maxPage}</div>
-				<div class="d-flex gap-2">
-					<c:if test="${pageInfo.pageNum > 1}">
-						<a href="?pageNum=1&keyword=${param.keyword}&status=${param.status}" class="btn btn-secondary btn-sm">« 처음</a>
-						<a href="?pageNum=${pageInfo.pageNum - 1}&keyword=${param.keyword}&status=${param.status}" class="btn btn-secondary btn-sm">‹ 이전</a>
-					</c:if>
-			
-					<%-- 버튼 최대 갯수 --%>
-					<c:set var="maxButtons" value="5" />
-					<c:set var="half" value="${(maxButtons - 1) / 2}" />
-			
-					<%-- 기본 start/end 계산 (현재페이지를 가운데 정렬) --%>
-					<c:set var="start" value="${pageInfo.pageNum - half}" />
-					<c:set var="end" value="${start + maxButtons - 1}" />
-			
-					<%-- start 보정 (1보다 작을 때) --%>
-					<c:if test="${start < 1}">
-					    <c:set var="start" value="1" />
-					    <c:set var="end" value="${maxButtons}" />
-					</c:if>
-			
-					<%-- end 보정 (maxPage 넘어갈 때) --%>
-					<c:if test="${end > pageInfo.maxPage}">
-					    <c:set var="end" value="${pageInfo.maxPage}" />
-					    <c:set var="start" value="${pageInfo.maxPage - (maxButtons - 1)}" />
-					</c:if>
-			
-					<%-- start가 음수가 되지 않도록 안전장치 --%>
-					<c:if test="${start < 1}">
-					    <c:set var="start" value="1" />
-					</c:if>
-			
-					<%-- 페이지 버튼 출력 --%>
-					<c:forEach var="i" begin="${start}" end="${end}">
-						<c:if test="${i >= 1 && i <= pageInfo.maxPage}">
-							<c:choose>
-								<%-- 현재 페이지: 모달 열기 버튼 --%>
-								<c:when test="${i == pageInfo.pageNum}">
-									<button type="button"
-									        class="btn btn-primary btn-sm"
-									        onclick="ModalManager.openModalById('pageJumpModal')">
-									    ${i}
-									</button>
-								</c:when>
-								<%-- 다른 페이지: 이동 링크 --%>
-								<c:otherwise>
-									<c:url var="pageUrl" value="/inbound/management">
-									    <c:param name="simpleKeyword" value="${param.simpleKeyword}" />
-									    <c:param name="status" value="${param.status}" />
-									    <c:param name="orderInboundKeyword" value="${param.orderInboundKeyword}" />
-									    <c:param name="vendorKeyword" value="${param.vendorKeyword}" />
-									    <c:param name="inStartDate" value="${param.inStartDate}" />
-									    <c:param name="inEndDate" value="${param.inEndDate}" />
-									    <c:param name="pageNum" value="${i}" />
-									</c:url>
-									<a href="${pageUrl}" class="btn btn-secondary btn-sm">${i}</a>
-								</c:otherwise>
-							</c:choose>
-						</c:if>
-					</c:forEach>
-			
-					<c:if test="${pageInfo.pageNum < pageInfo.maxPage}">
-						<a href="?pageNum=${pageInfo.pageNum + 1}&keyword=${param.keyword}&status=${param.status}" class="btn btn-secondary btn-sm">다음 ›</a>
-						<a href="?pageNum=${pageInfo.maxPage}&keyword=${param.keyword}&status=${param.status}" class="btn btn-secondary btn-sm">끝 »</a>
-					</c:if>
-				</div>
+			<!-- 페이징 (Ajax 전용) -->
+			<div id="pagingArea" class="d-flex justify-content-between align-items-center p-3">
+			    <div class="text-muted">페이지 <span id="pageNum">1</span> / <span id="maxPage">1</span></div>
+			    <div class="d-flex gap-2" id="pagingButtons">
+			        <!-- JS에서 버튼 렌더링 -->
+			    </div>
 			</div>
 		</div>
 
@@ -297,56 +242,11 @@
 	<script> const contextPath = "${pageContext.request.contextPath}";</script>
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/inboundManagement.js"></script>
 	
-	<script>
-		document.getElementById('toggleDetailSearchBtn').addEventListener('click', function() {
-		    const detailForm = document.getElementById('detailSearchForm');
-		    const simpleForm = document.getElementById('simpleSearchForm');
 	
-		    if (detailForm.style.display === 'none') {
-		        // 상세검색 열기
-		        detailForm.style.display = 'block';
-		        simpleForm.style.display = 'none';
-		        this.textContent = '상세검색 닫기';
-		    } else {
-		        // 상세검색 닫기
-		        detailForm.style.display = 'none';
-		        simpleForm.style.display = 'block';
-		        this.textContent = '상세검색';
-		    }
-		});
-		
-		document.getElementById('backToSimpleBtn').addEventListener('click', function() {
-		    document.getElementById('detailSearchForm').style.display = 'none';
-		    document.getElementById('simpleSearchForm').style.display = 'block';
-		    document.getElementById('toggleDetailSearchBtn').textContent = '상세검색';
-		});
-		
-		document.addEventListener("click", function(e) {
-		    const row = e.target.closest("tr.clickable-row");
-		    if (!row) return;
-
-		    const url = row.getAttribute("data-url");
-		    if (!url) return;
-
-		    // SweetAlert 확인창
-		    Swal.fire({
-		        title: "상세 페이지로 이동하시겠습니까?",
-		        text: "현재 페이지에서 벗어나게 됩니다.",
-		        icon: "question",
-		        showCancelButton: true,
-		        confirmButtonText: "예",
-		        cancelButtonText: "아니오"
-		    }).then((result) => {
-		        if (result.isConfirmed) {
-		            window.location.href = url;
-		        }
-		    });
-		});
-	</script>
 	<sec:authorize access="isAuthenticated()">
 		<script>
 			window.currentUserName = "<sec:authentication property='principal.empName' htmlEscape='false'/>";
 		</script>
-</sec:authorize>
+	</sec:authorize>
 </body>
 </html>

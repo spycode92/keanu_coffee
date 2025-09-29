@@ -56,7 +56,14 @@ public class InboundService {
 
 	// Detail 보드 데이터 조회
 	public InboundDetailDTO getInboundDetailData(int ibwaitIdx) {
-		return inboundMapper.selectInboundDetailData(ibwaitIdx);
+		InboundDetailDTO inboundDetailData = inboundMapper.selectInboundDetailData(ibwaitIdx);
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		inboundDetailData.setArrivalDateFormatted(
+			inboundDetailData.getArrivalDate().format(formatter)
+		);
+		
+		return inboundDetailData;
 	}
 
 	// Detail 상품정보 리스트 조회
@@ -136,7 +143,13 @@ public class InboundService {
 	}
 
 	
-	
+	public List<InboundManagementDTO> selectInboundListFilter(Map<String,Object> searchParams) {
+	    return inboundMapper.selectInboundListFilter(searchParams);
+	}
+
+	public int selectInboundCountFilter(Map<String,Object> searchParams) {
+	    return inboundMapper.selectInboundCountFilter(searchParams);
+	}
 
 
 }

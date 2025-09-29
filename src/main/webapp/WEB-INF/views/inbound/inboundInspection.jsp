@@ -54,7 +54,10 @@
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고일자</div>
-					<div class="kv-value"><c:out value="${inboundDetailData.arrivalDate}" default="-"/></div>
+					<div class="kv-value">
+<%-- 						<c:out value="${fn:substringBefore(inboundDetailData.arrivalDate, 'T')}" default="-" /> --%>
+						    <c:out value="${inboundDetailData.arrivalDateFormatted}" default="-" />
+					</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">발주번호</div>

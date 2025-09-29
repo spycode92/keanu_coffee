@@ -64,6 +64,7 @@ public interface InboundMapper {
 						            @Param("productIdx") Integer productIdx,
 						            @Param("lotNumber") String lotNumber);
 	
-
+	List<InboundManagementDTO> selectInboundListFilter(Map<String,Object> searchParams);
+    int selectInboundCountFilter(Map<String,Object> searchParams);
 	
 }
