@@ -24,4 +24,7 @@ public class InboundDetailDTO {
     private String note;                	// 비고
     private Integer locationIdx; 
     private String locationName;
+    private String orderIdx;
+    private LocalDateTime expectedArrivalDate;
+    private String manager;
 }

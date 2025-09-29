@@ -3,24 +3,99 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.demoData.mapper.DemoDataMapper">
-
-	<select id="getEmployeeData" resultType="EmployeeInfoDTO">
-		SELECT *
-		FROM EMPLOYEE_INFO
-	</select>
-
-
-	<select id="getEmployeeDataByRole" resultType="EmployeeInfoDTO">
-		SELECT *
-		FROM EMPLOYEE_INFO
-		WHERE role_idx = #{roleIdx}
-	</select>
+	<!-- 발주주문 생성 -->
+	<insert id="insertPurchaseOrder" parameterType="PurchaseOrderDTO" useGeneratedKeys="true" keyProperty="orderIdx">
+	    INSERT INTO PURCHASE_ORDER (
+	    	order_idx,
+	        order_number,
+	        order_date,
+	        status,
+	        expected_arrival_date)
+	    VALUES (
+	    	#{orderIdx},
+	        #{orderNumber},
+	        #{orderDate},
+	        #{status},
+	        #{expectedArrivalDate} )
+	</insert>
+	<!-- 발주아이템생성 -->
+	<insert id="insertPurchaseOrderItem" parameterType="PurchaseOrderItemDTO" useGeneratedKeys="true" keyProperty="orderItemIdx">
+	    INSERT INTO PURCHASE_ORDER_ITEM (
+	        order_idx,
+	        product_idx,
+	        quantity,
+	        unit_price,
+	        total_price,
+	        lot_number
+	    ) VALUES (
+	        #{orderIdx},
+	        #{productIdx},
+	        #{quantity},
+	        #{unitPrice},
+	        #{totalPrice},
+	        #{lotNumber}
+	    )
+	</insert>
+	<!-- 입고대기 정보주입 -->
+	<insert id="insertInboundWaiting" parameterType="com.itwillbs.keanu_coffee.inbound.dto.InboundDetailDTO" useGeneratedKeys="true" keyProperty="ibwaitIdx">
+	    INSERT INTO INBOUND_WAITING (
+	        ibwait_number,
+	        order_idx,
+	        expected_arrival_date,
+	        arrival_date,
+	        quantity,
+	        number_of_items,
+	        inbound_classification,
+	        manager,
+	        inbound_location,
+	        note,
+	        inbound_status
+	    ) VALUES (
+	        #{ibwaitNumber},
+	        #{orderIdx},
+	        #{expectedArrivalDate},
+	        #{arrivalDate},
+	        #{quantity},
+	        #{numberOfItems},
+	        #{inboundClassification},
+	        #{manager},
+	        #{inboundLocation},
+	        #{note},
+	        #{inboundStatus}
+	    )
+	</insert>
 	
-	<select id="getSupplyContract" resultType="SupplyContractDTO">
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 발주주문번호체크 -->
+	<select id="findMaxSequenceByDate" resultType="Integer">
+		SELECT MAX(CAST(SUBSTRING_INDEX(order_number, '-', -1) AS UNSIGNED)) 
+		FROM PURCHASE_ORDER 
+		WHERE order_number LIKE CONCAT('PO-', DATE_FORMAT(#{date}, '%Y%m%d'), '%')
+	</select>
+	<!-- 공급계약리스트 -->
+	<select id="selectContractList" resultType="SupplyContractDTO">
 		SELECT *
 		FROM SUPPLIER_PRODUCT_CONTRACT
 	</select>
-	
+	<!-- 로트번호 시퀀스 -->
+	<select id="findMaxLotSequence" resultType="Integer">
+		SELECT COALESCE(MAX(CAST(SUBSTRING(lot_number, 8, 3) AS UNSIGNED)), 0)
+		FROM PURCHASE_ORDER_ITEM
+		WHERE order_idx = #{orderIdx} AND lot_number LIKE CONCAT('LOT-', DATE_FORMAT(#{date}, '%Y%m%d'), '%')
+	</select>
+	<!-- 입고대기번호 시퀀스구하기 -->
+	<select id="findMaxIbwaitSequence" resultType="Integer">
+		SELECT COALESCE(MAX(CAST(SUBSTRING(ibwait_number, 10, 3) AS UNSIGNED)), 0)
+	    FROM INBOUND_WAITING
+	    WHERE ibwait_number LIKE CONCAT('IB', DATE_FORMAT(#{date}, '%Y%m%d'), '%');
+	</select>
 	
 
 </mapper>

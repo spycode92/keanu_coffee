@@ -10,13 +10,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-//@NoArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 public class PurchaseOrderDTO implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-    private Integer orderIdx;                     // order_idx (PK)
+    private String orderIdx;                     // order_idx (PK)
     private String  orderNumber;                  // order_number
     private Integer supplierIdx;                  // supplier_idx (FK)
     private Integer empIdx;                       // emp_idx (FK)
