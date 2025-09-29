@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.usermodel.Row;
@@ -18,6 +19,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -67,59 +69,70 @@ public class InboundController {
 	// ====================================================================================================================================
 	// 입고조회
 	@GetMapping("/management")
-	public String showInboundManagement(
+	public Object showInboundManagement(
 	        @RequestParam(required = false) String simpleKeyword,
 	        @RequestParam(required = false) String status,
 	        @RequestParam(required = false) String orderInboundKeyword,
 	        @RequestParam(required = false) String vendorKeyword,
 	        @RequestParam(required = false) String inStartDate,
 	        @RequestParam(required = false) String inEndDate,
+	        @RequestParam(required = false) String managerKeyword,
 	        @RequestParam(defaultValue = "1") int pageNum,
-	        Model model) {
+	        Model model,
+	        HttpServletRequest request) {
 
-	    // --- 날짜 변환 (빈 문자열이면 null 처리) ---
+	    // --- 날짜 변환 ---
 	    LocalDate start = null;
 	    LocalDate end = null;
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	    if (inStartDate != null && !inStartDate.isBlank()) start = LocalDate.parse(inStartDate, formatter);
+	    if (inEndDate   != null && !inEndDate.isBlank())   end   = LocalDate.parse(inEndDate, formatter);
 
-	    if (inStartDate != null && !inStartDate.isBlank()) {
-	        start = LocalDate.parse(inStartDate, formatter);
-	    }
-	    if (inEndDate != null && !inEndDate.isBlank()) {
-	        end = LocalDate.parse(inEndDate, formatter);
-	    }
-
-	    // --- 검색 파라미터 맵 ---
+	    // --- 검색 파라미터 ---
 	    Map<String, Object> searchParams = new HashMap<>();
-	    searchParams.put("simpleKeyword", simpleKeyword != null && !simpleKeyword.isBlank() ? simpleKeyword.trim() : null);
-	    searchParams.put("status", status != null && !status.isBlank() ? status.trim() : null);
-	    searchParams.put("orderInboundKeyword", orderInboundKeyword != null && !orderInboundKeyword.isBlank() ? orderInboundKeyword.trim() : null);
-	    searchParams.put("vendorKeyword", vendorKeyword != null && !vendorKeyword.isBlank() ? vendorKeyword.trim() : null);
+	    searchParams.put("simpleKeyword", simpleKeyword);
+	    searchParams.put("status", status);
+	    searchParams.put("orderInboundKeyword", orderInboundKeyword);
+	    searchParams.put("vendorKeyword", vendorKeyword);
 	    searchParams.put("inStartDate", start);
 	    searchParams.put("inEndDate", end);
+	    searchParams.put("managerKeyword", managerKeyword);
+	    
+	    log.info(">>>>>>>>>>>>>>>> managerKeyword : " + managerKeyword);
 
-	    // --- 전체 개수 조회 ---
+	    // --- 전체 개수/페이징/리스트 ---
 	    int totalCount = inboundService.getInboundCount(searchParams);
-
-	    // --- 페이징 처리 ---
-	    int listLimit = 10; // 한 페이지당 표시할 목록 수
+	    int listLimit = 10;
 	    int startRow = (pageNum - 1) * listLimit;
 
 	    PageInfoDTO pageInfo = new PageInfoDTO();
 	    pageInfo.setPageNum(pageNum);
 	    pageInfo.setMaxPage((int) Math.ceil(totalCount / (double) listLimit));
 
-	    // --- 리스트 조회 ---
 	    List<InboundManagementDTO> orderDetailList = inboundService.getInboundList(searchParams, startRow, listLimit);
 
-	    // --- Model에 데이터 저장 ---
+	    // --- Ajax 여부 판단: X-Requested-With 또는 Accept 헤더에 application/json 포함 ---
+	    String xrw = request.getHeader("X-Requested-With");
+	    String accept = request.getHeader("Accept");
+	    boolean isAjax = "XMLHttpRequest".equalsIgnoreCase(xrw) || (accept != null && accept.contains("application/json"));
+
+	    if (isAjax) {
+	        Map<String, Object> payload = Map.of(
+	            "list", orderDetailList,
+	            "totalCount", totalCount,
+	            "pageInfo", pageInfo
+	        );
+	        return ResponseEntity.ok(payload); // ★ JSON 보장
+	    }
+
+	    // --- JSP 렌더링 ---
 	    model.addAttribute("pageInfo", pageInfo);
 	    model.addAttribute("orderList", orderDetailList);
 	    model.addAttribute("totalCount", totalCount);
 	    model.addAttribute("searchParams", searchParams);
-
 	    return "/inbound/inboundManagement";
 	}
+
 
 	// ====================================================================================================================================
 	// 입고상세
@@ -281,6 +294,10 @@ public class InboundController {
         // 내 담당건만 보기
         if ("Y".equals(params.get("myOnly"))) {
             searchParams.put("manager", emp.getEmpName());
+        }
+        
+        if (params.containsKey("managerKeyword") && params.get("managerKeyword") != null && !params.get("managerKeyword").isBlank()) {
+            searchParams.put("managerKeyword", params.get("managerKeyword").trim());
         }
 
         // --- 페이징 처리 ---

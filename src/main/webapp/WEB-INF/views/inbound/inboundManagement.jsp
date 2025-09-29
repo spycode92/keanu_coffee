@@ -58,6 +58,12 @@
 		            <input type="date" class="form-control search-input" name="inEndDate" id="inEndDate"
 		                   value="${param.inEndDate}" />
 		        </div>
+		        <div class="col-md-3 position-relative">
+			        <label class="form-label">담당자</label>
+			        <input type="text" class="form-control search-input" name="managerKeyword" id="managerKeyword"
+			               placeholder="담당자 이름 검색" value="${param.managerKeyword}" />
+			        <button type="button" class="btn btn-clear-input" onclick="clearInput('managerKeyword')">×</button>
+			    </div>
 		    </div>
 		    
 		    <!-- 1줄: 상태 · 발주번호/입고번호 · 공급업체 -->
@@ -236,56 +242,11 @@
 	<script> const contextPath = "${pageContext.request.contextPath}";</script>
 	<script src="${pageContext.request.contextPath}/resources/js/inbound/inboundManagement.js"></script>
 	
-	<script>
-		document.getElementById('toggleDetailSearchBtn').addEventListener('click', function() {
-		    const detailForm = document.getElementById('detailSearchForm');
-		    const simpleForm = document.getElementById('simpleSearchForm');
 	
-		    if (detailForm.style.display === 'none') {
-		        // 상세검색 열기
-		        detailForm.style.display = 'block';
-		        simpleForm.style.display = 'none';
-		        this.textContent = '상세검색 닫기';
-		    } else {
-		        // 상세검색 닫기
-		        detailForm.style.display = 'none';
-		        simpleForm.style.display = 'block';
-		        this.textContent = '상세검색';
-		    }
-		});
-		
-		document.getElementById('backToSimpleBtn').addEventListener('click', function() {
-		    document.getElementById('detailSearchForm').style.display = 'none';
-		    document.getElementById('simpleSearchForm').style.display = 'block';
-		    document.getElementById('toggleDetailSearchBtn').textContent = '상세검색';
-		});
-		
-		document.addEventListener("click", function(e) {
-		    const row = e.target.closest("tr.clickable-row");
-		    if (!row) return;
-
-		    const url = row.getAttribute("data-url");
-		    if (!url) return;
-
-		    // SweetAlert 확인창
-		    Swal.fire({
-		        title: "상세 페이지로 이동하시겠습니까?",
-		        text: "현재 페이지에서 벗어나게 됩니다.",
-		        icon: "question",
-		        showCancelButton: true,
-		        confirmButtonText: "예",
-		        cancelButtonText: "아니오"
-		    }).then((result) => {
-		        if (result.isConfirmed) {
-		            window.location.href = url;
-		        }
-		    });
-		});
-	</script>
 	<sec:authorize access="isAuthenticated()">
 		<script>
 			window.currentUserName = "<sec:authentication property='principal.empName' htmlEscape='false'/>";
 		</script>
-</sec:authorize>
+	</sec:authorize>
 </body>
 </html>

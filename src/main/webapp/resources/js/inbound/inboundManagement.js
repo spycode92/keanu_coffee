@@ -1,26 +1,37 @@
 /**
- * inboundManagement.js - 입고관리 전용 스크립트
- * 기존 기능 + 행 전체 클릭 이동 기능 + Ajax 페이징
+ * inboundManagement.js (최종 수정 버전)
+ * - 상세검색 토글 / 새로고침 / 행 클릭 이동 / Ajax 페이징
+ * - safeNavigate 수정 (about:blank 방지)
+ * - fetchPage → /management/data 전용으로 고정
  */
 
-// ===== 유틸: 입력창 clear =====
 function clearInput(id) {
 	const el = document.getElementById(id);
-	if (el) {
-		el.value = "";
-		el.focus();
-	}
+	if (el) { el.value = ""; el.focus(); }
 }
 
-// ===== 선택 건수 표시 =====
 function updateSelectedCount() {
 	const count = document.querySelectorAll('input[name="selectedOrder"]:checked').length;
 	const el = document.getElementById("selectedCount");
 	if (el) el.textContent = count;
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+function paramsToObj(params) {
+	if (params instanceof URLSearchParams) return Object.fromEntries(params.entries());
+	return params || {};
+}
 
+/* ✅ safeNavigate: contextPath 기반 절대경로 이동 */
+function safeNavigate(rawUrl) {
+	if (!rawUrl) return;
+	if (rawUrl.startsWith("http")) {
+		window.location.href = rawUrl;
+	} else {
+		window.location.href = `${contextPath}${rawUrl}`;
+	}
+}
+
+document.addEventListener("DOMContentLoaded", function () {
 	// --- 인쇄 ---
 	const printBtn = document.getElementById("btnPrint");
 	if (printBtn) {
@@ -30,19 +41,80 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 
-	// --- 전체선택 체크박스 ---
+	// --- 상세검색 토글 ---
+	const toggleDetailBtn = document.getElementById("toggleDetailSearchBtn");
+	const backToSimpleBtn = document.getElementById("backToSimpleBtn");
+	const detailForm = document.getElementById("detailSearchForm");
+	const simpleForm = document.getElementById("simpleSearchForm");
+
+	if (toggleDetailBtn) {
+		toggleDetailBtn.addEventListener("click", function () {
+			if (!detailForm || !simpleForm) return;
+			if (detailForm.style.display === "none" || detailForm.style.display === "") {
+				detailForm.style.display = "block";
+				simpleForm.style.display = "none";
+				this.textContent = "상세검색 닫기";
+			} else {
+				detailForm.style.display = "none";
+				simpleForm.style.display = "block";
+				this.textContent = "상세검색";
+			}
+		});
+	}
+
+	if (backToSimpleBtn) {
+		backToSimpleBtn.addEventListener("click", function () {
+			if (detailForm) detailForm.style.display = "none";
+			if (simpleForm) simpleForm.style.display = "block";
+			if (toggleDetailBtn) toggleDetailBtn.textContent = "상세검색";
+		});
+	}
+
+	// --- 새로고침 ---
+	const reloadBtn = document.getElementById("btnReload");
+	if (reloadBtn) {
+		reloadBtn.addEventListener("click", function (e) {
+			e.preventDefault();
+
+			const simpleKeyword = document.getElementById("simpleItemKeyword");
+			if (simpleKeyword) simpleKeyword.value = "";
+			if (detailForm) {
+				detailForm.reset();
+				["status","orderInboundKeyword","vendorKeyword","inStartDate","inEndDate"].forEach(id=>{
+					const el = document.getElementById(id);
+					if (el) el.value = "";
+				});
+			}
+			const btnMyListFilter = document.getElementById("btnMyListFilter");
+			if (btnMyListFilter) {
+				btnMyListFilter.dataset.active = "false";
+				btnMyListFilter.classList.remove("active");
+			}
+
+			const params = new URLSearchParams();
+			params.set("pageNum", "1");
+
+			fetchPage(params)
+				.then(data => {
+					renderTable(data.list);
+					renderPaging(data.pageInfo, params);
+					const totalEl = document.querySelector(".card-title span strong");
+					if (totalEl) totalEl.textContent = data.totalCount;
+					Swal.fire({ icon:"success", title:"초기화 완료", text:"검색조건과 담당 필터가 초기화되었습니다 ✅" });
+				})
+				.catch(err => console.error("reload ajax error:", err));
+		});
+	}
+
+	// --- 전체선택 ---
 	const selectAll = document.querySelector(".select-all");
 	if (selectAll) {
 		selectAll.addEventListener("change", function (e) {
 			const checked = e.target.checked;
-			document.querySelectorAll('tbody input[name="selectedOrder"]').forEach(cb => {
-				cb.checked = checked;
-			});
+			document.querySelectorAll('tbody input[name="selectedOrder"]').forEach(cb => cb.checked = checked);
 			updateSelectedCount();
 		});
 	}
-
-	// --- 개별 체크박스 클릭 시 전체선택 상태 갱신 ---
 	document.addEventListener("change", function (e) {
 		if (e.target.matches('input[name="selectedOrder"]')) {
 			const boxes = document.querySelectorAll('tbody input[name="selectedOrder"]');
@@ -52,25 +124,19 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	});
 
-	// --- 간단 검색 ---
-	const simpleForm = document.getElementById("simpleSearchForm");
+	// --- 간단 검색 유효성 ---
 	if (simpleForm) {
 		simpleForm.addEventListener("submit", function (e) {
-			const keyword = document.getElementById("simpleItemKeyword").value.trim();
+			const keywordEl = document.getElementById("simpleItemKeyword");
+			const keyword = keywordEl ? keywordEl.value.trim() : "";
 			if (!keyword) {
 				e.preventDefault();
-				Swal.fire({
-					icon: "warning",
-					title: "입력 필요",
-					text: "발주번호 또는 입고번호를 입력하세요.",
-					confirmButtonText: "확인"
-				});
+				Swal.fire({ icon:"warning", title:"입력 필요", text:"발주번호 또는 입고번호를 입력하세요." });
 			}
 		});
 	}
 
-	// --- 상세 검색 ---
-	const detailForm = document.getElementById("detailSearchForm");
+	// --- 상세 검색 유효성 ---
 	if (detailForm) {
 		detailForm.addEventListener("submit", function (e) {
 			const status = document.getElementById("status").value;
@@ -78,37 +144,18 @@ document.addEventListener("DOMContentLoaded", function () {
 			const vendorKeyword = document.getElementById("vendorKeyword").value.trim();
 			const inStartDate = document.getElementById("inStartDate").value;
 			const inEndDate = document.getElementById("inEndDate").value;
+			const managerKeyword = document.getElementById("managerKeyword").value.trim();
 
-			if (!status && !orderInboundKeyword && !vendorKeyword && !inStartDate && !inEndDate) {
+			if (!status && !orderInboundKeyword && !vendorKeyword && !inStartDate && !inEndDate && !managerKeyword) {
 				e.preventDefault();
-				Swal.fire({
-					icon: "warning",
-					title: "검색 조건 없음",
-					text: "최소 한 가지 조건을 입력하세요.",
-					confirmButtonText: "확인"
-				});
+				Swal.fire({ icon:"warning", title:"검색 조건 없음", text:"최소 한 가지 조건을 입력하세요." });
 			}
 		});
 	}
-
-	// --- 초기화 버튼 ---
-	const btnReset = document.querySelector(".btn-reset");
-	if (btnReset) {
-		btnReset.addEventListener("click", function () {
-			document.getElementById("status").value = "";
-			clearInput("orderInboundKeyword");
-			clearInput("vendorKeyword");
-			document.getElementById("inStartDate").value = "";
-			document.getElementById("inEndDate").value = "";
-
-			if (selectAll) selectAll.checked = false;
-			document.querySelectorAll('tbody input[name="selectedOrder"]').forEach(cb => cb.checked = false);
-
-			updateSelectedCount();
-		});
-	}
-
-	// --- F5 새로고침 막기 ---
+	
+	
+	
+	// --- F5 방지 → 초기화 여부 질의 ---
 	document.addEventListener("keydown", function (e) {
 		if (e.key === "F5" || e.keyCode === 116) {
 			e.preventDefault();
@@ -127,136 +174,192 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	});
 
-	// --- 내 담당건만 보기 필터 ---
+	// --- 담당건만 보기 토글 ---
 	const btnMyListFilter = document.getElementById("btnMyListFilter");
 	if (btnMyListFilter) {
-	    btnMyListFilter.addEventListener("click", function () {
-	        const active = this.dataset.active === "true";
-	        const newActive = !active;
-	        this.dataset.active = newActive;
-	        this.classList.toggle("active", newActive);
+		btnMyListFilter.addEventListener("click", function () {
+			const active = this.dataset.active === "true";
+			const newActive = !active;
+			this.dataset.active = newActive;
+			this.classList.toggle("active", newActive);
 
-	        const params = new URLSearchParams(window.location.search);
-	        if (newActive) {
-	            params.set("myOnly", "Y");
-	        } else {
-	            params.delete("myOnly");
-	        }
+			const params = new URLSearchParams(window.location.search);
+			if (newActive) params.set("myOnly", "Y"); else params.delete("myOnly");
+			params.set("pageNum", "1");
 
-	        // 무조건 첫 페이지부터 시작
-	        params.set("pageNum", "1");
-
-	        fetchData(params);
-	    });
+			fetchPage(params)
+				.then(data => {
+					renderTable(data.list);
+					renderPaging(data.pageInfo, params);
+					const totalEl = document.querySelector(".card-title span strong");
+					if (totalEl) totalEl.textContent = data.totalCount;
+				})
+				.catch(err => console.error("myOnly ajax error:", err));
+		});
 	}
 
+	// --- 행 클릭 시 상세 이동 ---
+	document.addEventListener("click", function(e) {
+		const row = e.target.closest("tr.clickable-row");
+		if (!row) return;
+		if (e.target.closest("input[type=checkbox], button, a")) return;
+
+		const url = row.getAttribute("data-url");
+		if (!url) return;
+
+		Swal.fire({
+			title: "입고 상세 페이지로 이동",
+			text: "선택한 입고건 상세 페이지로 이동하시겠습니까?",
+			icon: "question",
+			showCancelButton: true,
+			confirmButtonText: "이동",
+			cancelButtonText: "취소"
+		}).then(result => {
+			if (result.isConfirmed) {
+				safeNavigate(url);
+			}
+		});
+	});
+
+	// --- 초기 로드 ---
 	const initialParams = new URLSearchParams(window.location.search);
-	if (!initialParams.has("pageNum")) {
-	    initialParams.set("pageNum", "1");
-	}
-	fetchData(initialParams);
+	if (!initialParams.has("pageNum")) initialParams.set("pageNum", "1");
 
+	fetchPage(initialParams)
+		.then(data => {
+			renderTable(data.list);
+			renderPaging(data.pageInfo, initialParams);
+			const totalEl = document.querySelector(".card-title span strong");
+			if (totalEl) totalEl.textContent = data.totalCount;
+		})
+		.catch(err => console.error("initial ajax error:", err));
 });
 
 // ================================
-// Ajax 데이터 요청 함수
+// Ajax XHR with common.js
 // ================================
-function fetchData(params) {
-    fetch(`${contextPath}/inbound/management/data?${params.toString()}`)
-        .then(res => res.json())
-        .then(data => {
-            renderTable(data.list);
-            renderPaging(data.pageInfo, params);
-            document.querySelector(".card-title span strong").textContent = data.totalCount;
-        });
+function fetchPage(params) {
+	// ✅ 항상 /management/data 로 호출
+	return ajaxGet(`${contextPath}/inbound/management/data`, paramsToObj(params));
 }
 
 // ================================
 // 테이블 렌더링
 // ================================
 function renderTable(list) {
-    const tbody = document.querySelector("tbody");
-    tbody.innerHTML = "";
+	const tbody = document.querySelector("tbody");
+	tbody.innerHTML = "";
 
-    if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="11" class="text-center">입고 데이터가 존재하지 않습니다.</td></tr>`;
-        return;
-    }
+	if (!list || list.length === 0) {
+		tbody.innerHTML = `<tr><td colspan="11" class="text-center">입고 데이터가 존재하지 않습니다.</td></tr>`;
+		return;
+	}
 
-    list.forEach(order => {
-        const row = document.createElement("tr");
-        row.classList.add("clickable-row");
-        row.innerHTML = `
-            <td><input type="checkbox" name="selectedOrder" value="${order.ibwaitIdx}"></td>
-            <td>${order.orderNumber ?? "-"}</td>
-            <td>${order.ibwaitNumber ?? "-"}</td>
-            <td>${order.arrivalDateStr ?? "-"}</td>
-            <td>${order.supplierName ?? "-"}</td>
-            <td>${order.inboundStatus ?? "-"}</td>
-            <td>${order.numberOfItems ?? "-"}</td>
-            <td>${order.quantity ?? "-"}</td>
-            <td>${order.manager ?? "-"}</td>
-            <td>${order.note ?? "-"}</td>
-        `;
-        tbody.appendChild(row);
-    });
+	list.forEach(order => {
+		const row = document.createElement("tr");
+		row.classList.add("clickable-row");
+
+		const orderNumber = order.orderNumber ? encodeURIComponent(order.orderNumber) : "";
+		const ibwaitIdx = order.ibwaitIdx != null ? encodeURIComponent(order.ibwaitIdx) : "";
+
+		row.setAttribute("data-url", `/inbound/inboundDetail?orderNumber=${orderNumber}&ibwaitIdx=${ibwaitIdx}`);
+
+		row.innerHTML = `
+			<td><input type="checkbox" name="selectedOrder" value="${order.ibwaitIdx}"></td>
+			<td>${order.orderNumber ?? "-"}</td>
+			<td>${order.ibwaitNumber ?? "-"}</td>
+			<td>${order.arrivalDateStr ?? "-"}</td>
+			<td>${order.supplierName ?? "-"}</td>
+			<td>${order.inboundStatus ?? "-"}</td>
+			<td>${order.numberOfItems ?? "-"}</td>
+			<td>${order.quantity ?? "-"}</td>
+			<td>${order.manager ?? "-"}</td>
+			<td>${order.note ?? "-"}</td>
+		`;
+		tbody.appendChild(row);
+	});
 }
 
 // ================================
 // 페이징 렌더링
 // ================================
 function renderPaging(pageInfo, params) {
-    const pageNum = pageInfo.pageNum;
-    const maxPage = pageInfo.maxPage;
-    const pagingButtons = document.getElementById("pagingButtons");
+	const pageNum = pageInfo.pageNum;
+	const maxPage = pageInfo.maxPage;
+	const pagingButtons = document.getElementById("pagingButtons");
 
-    document.getElementById("pageNum").textContent = pageNum;
-    document.getElementById("maxPage").textContent = maxPage;
+	document.getElementById("pageNum").textContent = pageNum;
+	document.getElementById("maxPage").textContent = maxPage;
 
-    pagingButtons.innerHTML = "";
+	pagingButtons.innerHTML = "";
+	
+	console.log(maxPage);
+	
+	if (maxPage <= 1) return;
+	
+	if (pageNum > 1) {
+		pagingButtons.appendChild(createPageButton("« 처음", 1, params));
+		pagingButtons.appendChild(createPageButton("‹ 이전", pageNum - 1, params));
+	}
 
-    // « 처음
-    if (pageNum > 1) {
-        const first = createPageButton("« 처음", 1, params);
-        pagingButtons.appendChild(first);
-        const prev = createPageButton("‹ 이전", pageNum - 1, params);
-        pagingButtons.appendChild(prev);
-    }
+	const maxButtons = 5;
+	let start = pageNum - Math.floor((maxButtons - 1) / 2);
+	let end = start + maxButtons - 1;
 
-    const maxButtons = 5;
-    let start = pageNum - Math.floor((maxButtons - 1) / 2);
-    let end = start + maxButtons - 1;
+	if (start < 1) { start = 1; end = Math.min(maxButtons, maxPage); }
+	if (end > maxPage) { end = maxPage; start = Math.max(1, end - (maxButtons - 1)); }
 
-    if (start < 1) {
-        start = 1;
-        end = Math.min(maxButtons, maxPage);
-    }
-    if (end > maxPage) {
-        end = maxPage;
-        start = Math.max(1, end - (maxButtons - 1));
-    }
+	for (let i = start; i <= end; i++) {
+		pagingButtons.appendChild(createPageButton(i, i, params, i === pageNum));
+	}
 
-    for (let i = start; i <= end; i++) {
-        const btn = createPageButton(i, i, params, i === pageNum);
-        pagingButtons.appendChild(btn);
-    }
-
-    // 다음 › , 끝 »
-    if (pageNum < maxPage) {
-        const next = createPageButton("다음 ›", pageNum + 1, params);
-        pagingButtons.appendChild(next);
-        const last = createPageButton("끝 »", maxPage, params);
-        pagingButtons.appendChild(last);
-    }
+	if (pageNum < maxPage) {
+		pagingButtons.appendChild(createPageButton("다음 ›", pageNum + 1, params));
+		pagingButtons.appendChild(createPageButton("끝 »", maxPage, params));
+	}
 }
 
 function createPageButton(label, page, params, active = false) {
-    const btn = document.createElement("button");
-    btn.textContent = label;
-    btn.className = `btn btn-sm ${active ? "btn-primary" : "btn-secondary"}`;
-    btn.addEventListener("click", function () {
-        params.set("pageNum", page);
-        fetchData(params);
-    });
-    return btn;
+	const btn = document.createElement("button");
+	btn.textContent = label;
+	btn.className = `btn btn-sm ${active ? "btn-primary" : "btn-secondary"}`;
+	btn.addEventListener("click", function () {
+		params.set("pageNum", page);
+		fetchPage(params)
+			.then(data => {
+				renderTable(data.list);
+				renderPaging(data.pageInfo, params);
+				const totalEl = document.querySelector(".card-title span strong");
+				if (totalEl) totalEl.textContent = data.totalCount;
+			})
+			.catch(err => console.error("paging ajax error:", err));
+	});
+	return btn;
 }
+
+// ================================
+// 상세검색 초기화 버튼 (모든 입력값 null 처리 + Swal 알림)
+// ================================
+document.addEventListener("DOMContentLoaded", function () {
+	const resetBtn = document.querySelector("#detailSearchForm .btn-reset");
+	if (resetBtn) {
+		resetBtn.addEventListener("click", function (e) {
+			e.preventDefault(); // 기본 reset 동작 막기
+
+			const inputs = document.querySelectorAll("#detailSearchForm input, #detailSearchForm select");
+			inputs.forEach(el => {
+				if (el.tagName === "SELECT") {
+					el.selectedIndex = 0; // select는 첫 옵션으로
+				} else {
+					el.value = ""; // input은 비우기
+				}
+			});
+
+			Swal.fire({
+				icon: "success",
+				title: "초기화 완료",
+				text: "상세검색 조건이 모두 초기화되었습니다 ✅"
+			});
+		});
+	}
+});

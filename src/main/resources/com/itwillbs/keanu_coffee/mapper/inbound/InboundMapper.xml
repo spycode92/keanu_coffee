@@ -86,6 +86,9 @@
 			<if test="inEndDate != null">
 				AND DATE(iw.arrival_date) <![CDATA[ <= ]]> #{inEndDate}
 			</if>
+			<if test="managerKeyword != null and managerKeyword != ''">
+			    AND iw.manager LIKE CONCAT('%', #{managerKeyword}, '%')
+			</if>
 		</where>
 		ORDER BY iw.ibwait_idx DESC
 		<if test="startRow != null and listLimit != null">
@@ -335,20 +338,20 @@
 	
 	<!-- 상태 이력 조회 (로그 + 날짜) -->
 	<select id="selectInboundStatusHistory" parameterType="int" resultType="com.itwillbs.keanu_coffee.inbound.dto.InboundStatusHistoryDTO">
-		SELECT '운송중' AS status, DATE_FORMAT(po.order_date, '%Y-%m-%d %H:%i:%s') AS changedAt
+		SELECT '운송중' AS status, po.order_date AS changedAt
 		FROM PURCHASE_ORDER po
 		JOIN INBOUND_WAITING iw ON po.order_idx = iw.order_idx
 		WHERE iw.ibwait_idx = #{ibwaitIdx}
 		
 		UNION ALL
 		
-		SELECT '대기' AS status, DATE_FORMAT(iw.arrival_date, '%Y-%m-%d %H:%i:%s') AS changedAt
+		SELECT '대기' AS status, iw.arrival_date AS changedAt
 		FROM INBOUND_WAITING iw
 		WHERE iw.ibwait_idx = #{ibwaitIdx}
 		
 		UNION ALL
 		
-		SELECT target AS status, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS changedAt
+		SELECT target AS status, created_at AS changedAt
 		FROM SYSTEM_LOG
 		WHERE target_idx = #{ibwaitIdx}
 		  AND section = '입고관리'
@@ -420,7 +423,12 @@
         <if test="manager != null and manager != ''">
             AND iw.manager = #{manager}
         </if>
-
+	
+		<!-- 담당자 이름 Like 검색 -->
+		<if test="managerKeyword != null and managerKeyword != ''">
+		    AND iw.manager LIKE CONCAT('%', #{managerKeyword}, '%')
+		</if>
+		
         ORDER BY iw.created_at DESC
         LIMIT #{startRow}, #{pageSize}
     </select>
@@ -463,6 +471,10 @@
         <if test="manager != null and manager != ''">
             AND iw.manager = #{manager}
         </if>
+        
+        <if test="managerKeyword != null and managerKeyword != ''">
+		    AND iw.manager LIKE CONCAT('%', #{managerKeyword}, '%')
+		</if>
     </select>
 	
 </mapper>
