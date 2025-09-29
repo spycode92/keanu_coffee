@@ -86,9 +86,9 @@
 	</select>
 	<!-- 로트번호 시퀀스 -->
 	<select id="findMaxLotSequence" resultType="Integer">
-		SELECT COALESCE(MAX(CAST(SUBSTRING(lot_number, 8, 3) AS UNSIGNED)), 0)
-		FROM PURCHASE_ORDER_ITEM
-		WHERE order_idx = #{orderIdx} AND lot_number LIKE CONCAT('LOT-', DATE_FORMAT(#{date}, '%Y%m%d'), '%')
+	    SELECT COALESCE(MAX(CAST(RIGHT(lot_number, 3) AS UNSIGNED)), 0)
+	    FROM PURCHASE_ORDER_ITEM
+	    WHERE order_idx = #{orderIdx} AND lot_number LIKE CONCAT('LOT-', DATE_FORMAT(#{date}, '%Y%m%d'), '%')
 	</select>
 	<!-- 입고대기번호 시퀀스구하기 -->
 	<select id="findMaxIbwaitSequence" resultType="Integer">

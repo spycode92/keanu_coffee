@@ -81,7 +81,6 @@ public class DemoDataService {
 
 	            demoDataMapper.insertPurchaseOrderItem(item);
 	            purchaseOrderItemSum += item.getQuantity();
-	           	            
 	        }
 	        //입고대기 정보저장
             InboundDetailDTO IBWait = new InboundDetailDTO();
