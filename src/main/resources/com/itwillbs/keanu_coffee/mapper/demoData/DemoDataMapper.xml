@@ -10,12 +10,14 @@
 	        order_number,
 	        order_date,
 	        status,
+	        supplier_idx,
 	        expected_arrival_date)
 	    VALUES (
 	    	#{orderIdx},
 	        #{orderNumber},
 	        #{orderDate},
 	        #{status},
+	        #{supplierIdx},
 	        #{expectedArrivalDate} )
 	</insert>
 	<!-- 발주아이템생성 -->
@@ -92,7 +94,7 @@
 	</select>
 	<!-- 입고대기번호 시퀀스구하기 -->
 	<select id="findMaxIbwaitSequence" resultType="Integer">
-		SELECT COALESCE(MAX(CAST(SUBSTRING(ibwait_number, 10, 3) AS UNSIGNED)), 0)
+	    SELECT COALESCE(MAX(CAST(RIGHT(ibwait_number, 3) AS UNSIGNED)), 0)
 	    FROM INBOUND_WAITING
 	    WHERE ibwait_number LIKE CONCAT('IB', DATE_FORMAT(#{date}, '%Y%m%d'), '%');
 	</select>

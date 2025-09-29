@@ -41,27 +41,27 @@ public class DemoDataService {
 //	    System.out.println(contractList);
 		
 	    for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
-	    	int purchaseOrderItemSum = 0;
-	    	int dailySequence = getNextDailySequence(date);
-	    	String seqStringPO = String.format("%02d", dailySequence);
-	        PurchaseOrderDTO purchaseOrder = new PurchaseOrderDTO();
-	        purchaseOrder.setOrderIdx(date.format(DateTimeFormatter.BASIC_ISO_DATE) + seqStringPO);
-	        purchaseOrder.setOrderDate(date.atStartOfDay());
-	        purchaseOrder.setOrderNumber("PO-" + date.format(DateTimeFormatter.BASIC_ISO_DATE) + "-" + dailySequence );
+	    	List<SupplyContractDTO> randomContracts = pickRandomContracts(contractList, 3);
+	    	//발주아이템 주문 저장
+	    	for (SupplyContractDTO contract : randomContracts) {
+		    	int purchaseOrderItemSum = 0;
+		    	int dailySequence = getNextDailySequence(date);
+		    	String seqStringPO = String.format("%02d", dailySequence);
+		        PurchaseOrderDTO purchaseOrder = new PurchaseOrderDTO();
+		        purchaseOrder.setOrderIdx(date.format(DateTimeFormatter.BASIC_ISO_DATE) + seqStringPO);
+		        purchaseOrder.setOrderDate(date.atStartOfDay());
+		        purchaseOrder.setOrderNumber("PO-" + date.format(DateTimeFormatter.BASIC_ISO_DATE) + "-" + dailySequence );
+		        purchaseOrder.setSupplierIdx(contract.getSupplierIdx());
+		        purchaseOrder.setStatus("요청중");
+		        purchaseOrder.setExpectedArrivalDate(date.plusDays(3));
+	//	        purchaseOrder.setInboundClassification("일반"); // 기본값
+	
+		        // 발주주문 저장
+		        demoDataMapper.insertPurchaseOrder(purchaseOrder);
+		        // 주문번호 저장
+		        String orderIdx = purchaseOrder.getOrderIdx();
 	        
-	        purchaseOrder.setStatus("요청중");
-	        purchaseOrder.setExpectedArrivalDate(date.plusDays(3));
-//	        purchaseOrder.setInboundClassification("일반"); // 기본값
-
-	        // 발주주문 저장
-	        demoDataMapper.insertPurchaseOrder(purchaseOrder);
-	        // 주문번호 저장
-	        String orderIdx = purchaseOrder.getOrderIdx();
-	        
-	        //공급계약 랜덤지정
-	        List<SupplyContractDTO> randomContracts = pickRandomContracts(contractList, 3);
-	        //발주아이템 주문 저장
-	        for (SupplyContractDTO contract : randomContracts) {
+		        //공급계약 랜덤지정
 	            PurchaseOrderItemDTO item = new PurchaseOrderItemDTO();
 	            int maxSeqPOI = demoDataMapper.findMaxLotSequence(orderIdx, date);
 	            int nextSeqPOI = (maxSeqPOI == 0) ? 1 : maxSeqPOI + 1;
@@ -81,26 +81,26 @@ public class DemoDataService {
 
 	            demoDataMapper.insertPurchaseOrderItem(item);
 	            purchaseOrderItemSum += item.getQuantity();
-	        }
-	        //입고대기 정보저장
-            InboundDetailDTO IBWait = new InboundDetailDTO();
-            int maxSeqIBW = demoDataMapper.findMaxIbwaitSequence(date);
-            int nextSeqIBW = (maxSeqIBW == 0) ? 1 : maxSeqIBW + 1;
-            String seqStringIBW = String.format("%03d", nextSeqIBW);
-            String ibwaitNumber = "IB" + date.format(DateTimeFormatter.BASIC_ISO_DATE) + "-" + seqStringIBW;  // 예: IB20250925-01
-            IBWait.setIbwaitNumber(ibwaitNumber);  // 입고대기 고유번호
-            IBWait.setOrderIdx(orderIdx);          // 발주주문 번호
-            IBWait.setExpectedArrivalDate(date.plusDays(3).atStartOfDay());   // 예상 입고일(LocalDate)
-            IBWait.setArrivalDate(date.plusDays(3).atStartOfDay()); // 입고일(LocalDateTime)
-            IBWait.setQuantity(purchaseOrderItemSum);    // 수량
-            IBWait.setNumberOfItems(3);                 // 품목 개수 (필요에 따라 조정)
-            IBWait.setInboundClassification("일반");    // 입고 구분
-            IBWait.setInboundStatus("대기");             // 입고 상태
-            IBWait.setManager(null);                     // 매니저 (null 가능)
-            IBWait.setInboundLocation(null);             // 입고 위치 (null 가능)
-            IBWait.setNote(null);                        // 비고 (필요 시 작성)
-            
-            demoDataMapper.insertInboundWaiting(IBWait);
+		        //입고대기 정보저장
+	            InboundDetailDTO IBWait = new InboundDetailDTO();
+	            int maxSeqIBW = demoDataMapper.findMaxIbwaitSequence(date);
+	            int nextSeqIBW = (maxSeqIBW == 0) ? 1 : maxSeqIBW + 1;
+	            String seqStringIBW = String.format("%03d", nextSeqIBW);
+	            String ibwaitNumber = "IB" + date.format(DateTimeFormatter.BASIC_ISO_DATE) + "-" + seqStringIBW;  // 예: IB20250925-01
+	            IBWait.setIbwaitNumber(ibwaitNumber);  // 입고대기 고유번호
+	            IBWait.setOrderIdx(orderIdx);          // 발주주문 번호
+	            IBWait.setExpectedArrivalDate(date.plusDays(3).atStartOfDay());   // 예상 입고일(LocalDate)
+	            IBWait.setArrivalDate(date.plusDays(3).atStartOfDay()); // 입고일(LocalDateTime)
+	            IBWait.setQuantity(purchaseOrderItemSum);    // 수량
+	            IBWait.setNumberOfItems(3);                 // 품목 개수 (필요에 따라 조정)
+	            IBWait.setInboundClassification("일반");    // 입고 구분
+	            IBWait.setInboundStatus("대기");             // 입고 상태
+	            IBWait.setManager(null);                     // 매니저 (null 가능)
+	            IBWait.setInboundLocation(null);             // 입고 위치 (null 가능)
+	            IBWait.setNote(null);                        // 비고 (필요 시 작성)
+	            
+	            demoDataMapper.insertInboundWaiting(IBWait);
+	    	}
 	    }
 	}
 	
