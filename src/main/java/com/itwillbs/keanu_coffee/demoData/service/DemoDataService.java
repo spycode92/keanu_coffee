@@ -43,7 +43,7 @@ public class DemoDataService {
 	    for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
 	    	int purchaseOrderItemSum = 0;
 	    	int dailySequence = getNextDailySequence(date);
-	    	String seqStringPO = String.format("%03d", dailySequence);
+	    	String seqStringPO = String.format("%02d", dailySequence);
 	        PurchaseOrderDTO purchaseOrder = new PurchaseOrderDTO();
 	        purchaseOrder.setOrderIdx(date.format(DateTimeFormatter.BASIC_ISO_DATE) + seqStringPO);
 	        purchaseOrder.setOrderDate(date.atStartOfDay());
