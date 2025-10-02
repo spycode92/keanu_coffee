@@ -109,7 +109,7 @@
 		    	</div>
 	     	 </td>
 	    </tr>
-	    <sec:authorize access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')">
+	    <sec:authorize access="hasAnyAuthority('INVENTORY_WRITE')">
 		    <tr>
 		      <td colspan="2" style="text-align: center;"><br>
 		        <button class="btn btn-primary" id="btnSubmit" >생성</button>

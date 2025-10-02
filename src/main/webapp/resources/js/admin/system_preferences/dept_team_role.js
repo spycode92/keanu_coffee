@@ -154,7 +154,7 @@ $(function () {
 	    });
 	});
 
-    // 직책 추가
+    // 직무 추가
 	$('#btnAddRole').click(function () {
 	    if (!selectedDeptIdx) {
 	        Swal.fire({
@@ -167,15 +167,15 @@ $(function () {
 	    }
 	
 	    Swal.fire({
-	        title: '새 직책 이름을 입력하세요',
+	        title: '새 직무 이름을 입력하세요',
 	        input: 'text',
-	        inputPlaceholder: '직책명',
+	        inputPlaceholder: '직무명',
 	        showCancelButton: true,
 	        confirmButtonText: '확인',
 	        cancelButtonText: '취소',
 	        inputValidator: (value) => {
 	            if (!value.trim()) {
-	                return '직책명을 입력해주세요.';
+	                return '직무명을 입력해주세요.';
 	            }
 	            // 허용하는 문자: 가-힣, A-Z, a-z, 0-9, _ , -
 	            const validPattern = /^[\uAC00-\uD7A3a-zA-Z0-9_\- ]+$/;
@@ -208,7 +208,7 @@ $(function () {
                     Swal.fire({
                         icon: 'success',
                         title: '성공!',
-                        text: '직책 추가가 완료되었습니다.',
+                        text: '직무 추가가 완료되었습니다.',
                         confirmButtonText: '확인'
                     });
                 })
@@ -216,7 +216,7 @@ $(function () {
                     Swal.fire({
                         icon: 'error',
                         title: '실패',
-                        text: '직책 추가에 실패했습니다.',
+                        text: '직무 추가에 실패했습니다.',
                         confirmButtonText: '확인'
                     });
                 });
@@ -229,7 +229,7 @@ $(function () {
 	    e.stopPropagation();
 		Swal.fire({
 	        title: "정말 이 부서를 삭제하시겠습니까?",
-	        text: "관련 팀, 직책, 직원 정보가 변경됩니다.",
+	        text: "관련 팀, 직무, 직원 정보가 변경됩니다.",
 	        icon: "warning",
 	        showCancelButton: true,
 	        confirmButtonText: "확인",
@@ -296,7 +296,7 @@ $(function () {
                         text: '팀 삭제가 완료되었습니다.',
                         confirmButtonText: '확인'
                     });
-                    // 필요하다면 직책 리스트도 비우기 및 버튼 비활성화 처리
+                    // 필요하다면 직무 리스트도 비우기 및 버튼 비활성화 처리
                     $('#positionList').empty();
                     $('#btnAddPosition').prop('disabled', true);
                 })
@@ -312,14 +312,14 @@ $(function () {
 	    });
 	});
 	
-	// 직책 삭제
+	// 직무 삭제
 	$(document).on('click', '.btn-delete-role', function (e) {
 	    e.stopPropagation();
 	
 	    let $btn = $(this);  // 클릭한 버튼 요소 저장
 	
 	    Swal.fire({
-	        title: '정말 이 직책을 삭제하시겠습니까?',
+	        title: '정말 이 직무를 삭제하시겠습니까?',
 	        icon: 'warning',
 	        showCancelButton: true,
 	        confirmButtonText: '확인',
@@ -336,7 +336,7 @@ $(function () {
                     Swal.fire({
                         icon: 'success',
                         title: '성공!',
-                        text: '직책 삭제가 완료되었습니다.',
+                        text: '직무 삭제가 완료되었습니다.',
                         confirmButtonText: '확인'
                     });
                 })
@@ -344,7 +344,7 @@ $(function () {
                     Swal.fire({
                         icon: 'error',
                         title: '실패',
-                        text: '직책 삭제에 실패했습니다.',
+                        text: '직무 삭제에 실패했습니다.',
                         confirmButtonText: '확인'
                     });
 	            });
@@ -463,7 +463,7 @@ $(function () {
 	    });
 	});
 	
-	// 직책 수정
+	// 직무 수정
 	$(document).on('click', '.btn-edit-role', function(e) {
 	    e.stopPropagation();
 	    let $li = $(this).closest('li');
@@ -471,7 +471,7 @@ $(function () {
 //	    let roleIdx = 10;
 	    let roleIdx = $li.data('roleidx');
 	    Swal.fire({
-	        title: '직책명을 수정하세요',
+	        title: '직무명을 수정하세요',
 	        input: 'text',
 	        inputValue: currentName,
 	        showCancelButton: true,
@@ -479,7 +479,7 @@ $(function () {
 	        cancelButtonText: '취소',
 	        inputValidator: (value) => {
 	            if (!value.trim()) {
-	                return '직책명을 입력해주세요.';
+	                return '직무명을 입력해주세요.';
 	            }
 	            if (value.trim() === currentName) {
 	                return '변경된 이름을 입력해주세요.';
@@ -502,7 +502,7 @@ $(function () {
                     Swal.fire({
                         icon: 'success',
                         title: '성공!',
-                        text: '직책 수정이 완료되었습니다.',
+                        text: '직무 수정이 완료되었습니다.',
                         confirmButtonText: '확인'
                     });
                 })
@@ -510,7 +510,7 @@ $(function () {
                     Swal.fire({
                         icon: 'error',
                         title: '실패',
-                        text: '직책 수정에 실패했습니다.',
+                        text: '직무 수정에 실패했습니다.',
                         confirmButtonText: '확인'
                     });
 	            });
@@ -549,7 +549,7 @@ $(function () {
             } else {
                 $('#teamList').append(`<li class="list-group-item text-muted" >팀이 존재하지 않습니다.</li>`);
             }
-            // 직책(roles) 표시
+            // 직무(roles) 표시
             if (Array.isArray(data.roles) && data.roles.length > 0) {
                 data.roles.forEach(function(role) {
                     $('#roleList').append(
@@ -567,7 +567,7 @@ $(function () {
                     );
                 });
             } else {
-                $('#roleList').append(`<li class="list-group-item text-muted" >직책이 존재하지 않습니다.</li>`);
+                $('#roleList').append(`<li class="list-group-item text-muted" >직무가 존재하지 않습니다.</li>`);
             }
 	    });
 	}
@@ -575,7 +575,7 @@ $(function () {
 	let selectedRoleIdx = null;
 	let originalAuthorities = new Set(); // 초기 권한 상태
 	let currentAuthorities = new Set();  // 현재 권한 상태
-    // 직책 선택시 이벤트
+    // 직무 선택시 이벤트
     $(document).on('click', '.role-item', function () {
 		//권한목록 보이기
 		checkBox.show();
@@ -588,7 +588,7 @@ $(function () {
 		$('#btnSaveAutho').prop('disabled', true);
     });
 
-	//직책이가진권한불러오기
+	//직무이가진권한불러오기
 	function loadRolesAutho(roleIdx) {
 	    if(!roleIdx) return
 		ajaxGet('/admin/systemPreference/dept/getAutho',{ roleIdx: roleIdx } )
@@ -597,7 +597,7 @@ $(function () {
 				document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
                 	cb.checked = false;
 				});
-	            // 직책이 가진 권한 체크박스 표시
+	            // 직무이 가진 권한 체크박스 표시
 	            if (Array.isArray(data) && data.length > 0) {
 					document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
 					    cb.checked = false;
@@ -619,7 +619,7 @@ $(function () {
 	        });
 	}
 	
-	// 직책별 권한 상태 저장
+	// 직무별 권한 상태 저장
 	function saveOriginalState() {
 	    originalAuthorities.clear();
 	    currentAuthorities.clear();
@@ -649,7 +649,7 @@ $(function () {
         return true;
     }
 
-	// 직책 상태 변경사항 분석
+	// 직무 상태 변경사항 분석
     function getChangeDetails() {
         const addedAuthorities = [...currentAuthorities].filter(x => !originalAuthorities.has(x));
         const removedAuthorities = [...originalAuthorities].filter(x => !currentAuthorities.has(x));
@@ -684,7 +684,7 @@ $(function () {
 	
 	
 	
-	//직책의 권한리스트 변경이벤트
+	//직무의 권한리스트 변경이벤트
 	$('#authoList').on('change','input[type="checkbox"]',function(){
 		const checkbox = $(this);
         const value = checkbox.val();
@@ -697,7 +697,7 @@ $(function () {
 	});
 	
 	
-	//직책의 권한 변경 후 저장버튼
+	//직무의 권한 변경 후 저장버튼
 	$('#btnSaveAutho').on('click','',function(){
 		const changes = getChangeDetails();
 		
@@ -750,7 +750,7 @@ $(function () {
 		const authoIdx = $(this).data('authoidx');
 		const authoName = $(this).data('authoname');
 		Swal.fire({
-	        title: '직책명을 수정하세요',
+	        title: '직무명을 수정하세요',
 	        input: 'text',
 	        inputValue: authoName,
 	        showCancelButton: true,

@@ -44,7 +44,7 @@ public class EmployeeManagementService {
 		return employeeManagementMapper.countEmployee(searchType, searchKeyword );
 	}
 
-	// 직원추가모달 부서,팀,직책 정보 불러오기
+	// 직원추가모달 부서,팀,직무 정보 불러오기
 	@Transactional(readOnly = true)
 	public List<Map<String, Object>> getOrgData() {
 		return organizationMapper.getOrgData();
@@ -128,7 +128,7 @@ public class EmployeeManagementService {
 		return updateCount;
 	}
 	
-	//직책별 직원정보 구하기
+	//직무별 직원정보 구하기
 	public List<EmployeeInfoDTO> selectEmpInfoByRole(String roleName){
 		List<EmployeeInfoDTO> employeeList = employeeManagementMapper.selectEmpInfoByRole(roleName);
 		

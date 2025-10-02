@@ -19,7 +19,7 @@
             <p><strong>성별:</strong> <span id="empGenderDetail"></span></p>
             <p><strong>부서:</strong> <span id="empDeptDetail"></span></p>
             <p><strong>팀:</strong> <span id="empteamDetail"></span></p>
-            <p><strong>직급:</strong> <span id="empRoleDetail"></span></p>
+            <p><strong>직무:</strong> <span id="empRoleDetail"></span></p>
             <p><strong>번호:</strong> <span id="empPhoneDetail"></span></p>
             <p><strong>이메일:</strong> <span id="empEmailDetail"></span></p>
             <p><strong>입사일:</strong> <span id="empHireDateDetail"></span></p>

@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        options: {
 	            responsive: true,
 				aspectRatio: 4,
-				radius: 70,
+				radius: 130,
 				cutout: '20%',
 	            plugins: {
 	                legend: {
@@ -759,7 +759,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	        options: {
 	            responsive: true,
 	            aspectRatio: 4,
-	            radius: 70,
+	            radius: 130,
 	            cutout: '20%',
 	            plugins: {
 //	                title: {

@@ -53,13 +53,13 @@ public class OrganizationController {
 	}
 
 	// 조직관리
-	// 부서 선택시 팀, 직책 목록 보여주기
+	// 부서 선택시 팀, 직무 목록 보여주기
 	@GetMapping("/getTeamsAndRoles")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> getTeamsAndRoles(DepartmentDTO departmentDTO) {
 		Integer departmentIdx = departmentDTO.getDepartmentIdx();
 
-		// 부서고유번호를 이용하여 팀, 직책 정보 불러오기
+		// 부서고유번호를 이용하여 팀, 직무 정보 불러오기
 		List<TeamDTO> teamList = organizationService.getTeamsByDepartmentIdx(departmentIdx); // departmentIdx
 		List<RoleDTO> roleList = organizationService.getRolesByDepartmentIdx(departmentIdx); // departmentIdx
 
@@ -91,7 +91,7 @@ public class OrganizationController {
 		return ResponseEntity.ok(saved);
 	}
 
-	// 직책추가
+	// 직무추가
 	@PostMapping("/addRole")
 	@ResponseBody
 	public ResponseEntity<RoleDTO> addRole(@RequestBody RoleDTO roleDTO) {
@@ -142,7 +142,7 @@ public class OrganizationController {
 		}
 	}
 
-	// 직책삭제
+	// 직무삭제
 	@PostMapping("/removeRole")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> deleteRole(@RequestBody Map<String, Integer> data) {
@@ -154,11 +154,11 @@ public class OrganizationController {
 
 		if (deleted) {
 			result.put("success", true);
-			result.put("message", "직책이 성공적으로 삭제되었습니다.");
+			result.put("message", "직무가 성공적으로 삭제되었습니다.");
 			return ResponseEntity.ok(result);
 		} else {
 			result.put("success", false);
-			result.put("message", "직책 삭제에 실패했습니다.");
+			result.put("message", "직무 삭제에 실패했습니다.");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
 		}
 	}
@@ -199,7 +199,7 @@ public class OrganizationController {
 		}
 	}
 
-	// 직책이름수정
+	// 직무이름수정
 	@PostMapping("/modifyRole")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> modifyRole(@RequestBody RoleDTO roleDTO) {
@@ -207,17 +207,17 @@ public class OrganizationController {
 		Map<String, Object> result = new HashMap<>();
 		if (isUpdated) {
 			result.put("success", true);
-			result.put("message", "직책이름 수정에 성공하였습니다.");
+			result.put("message", "직무이름 수정에 성공하였습니다.");
 			result.put("data", roleDTO);
 			return ResponseEntity.ok(result);
 		} else {
 			result.put("success", false);
-			result.put("message", "직책이름 수정에 실패했습니다.");
+			result.put("message", "직무이름 수정에 실패했습니다.");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
 		}
 	}
 
-	// 직책에부여된 권한정보가져오기
+	// 직무에부여된 권한정보가져오기
 	@GetMapping("/getAutho")
 	public ResponseEntity<List<Map<String, Object>>> getRolesAutho(@RequestParam Integer roleIdx) {
 		List<Map<String, Object>> authority = organizationService.getAuthrityInfo(roleIdx);
@@ -225,7 +225,7 @@ public class OrganizationController {
 		return ResponseEntity.ok(authority);
 	}
 
-	// 직책에 변경된 권한 정보 저장하기
+	// 직무에 변경된 권한 정보 저장하기
 	@PostMapping("/saveRoleAutho")
 	@ResponseBody
 	public ResponseEntity<Map<String, String>> modifyRoleAutho(@RequestBody Map<String, Object> data) {
@@ -254,12 +254,12 @@ public class OrganizationController {
 		Boolean modifyResult = organizationService.modifyAuthoName(data);
 		if (modifyResult) {
 			result.put("result", "success");
-			result.put("msg", "직책이름 변경 완료");
+			result.put("msg", "직무이름 변경 완료");
 
 			return ResponseEntity.ok(result);
 		}
 		result.put("result", "fail");
-		result.put("msg", "직책이름 변경 실패");
+		result.put("msg", "직무이름 변경 실패");
 
 		return ResponseEntity.ok(result);
 	}
@@ -281,7 +281,7 @@ public class OrganizationController {
 			result.put("msg", "권한이 삭제되었습니다.");
 		} else {
 			result.put("result", "fail");
-			result.put("msg", "권한이 부여된 직책이 있습니다.");
+			result.put("msg", "권한이 부여된 직무가 있습니다.");
 		}
 		
 		return ResponseEntity.ok(result);

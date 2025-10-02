@@ -491,23 +491,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
  	// 휴대폰 번호 실시간 포맷팅 (수정된 버전)
-    phoneInput.addEventListener('input', function(e) {
-        if (phoneInput.readOnly) return;
-        
-        let value = e.target.value.replace(/[^0-9]/g, '');
-        
-        if (value.length > 11) {
-            value = value.slice(0, 11);
-        }
-        
-        // 실시간 하이픈 추가
-        if (value.length <= 3) {
-            e.target.value = value;
-        } else if (value.length <= 7) {
-            e.target.value = value.slice(0, 3) + '-' + value.slice(3);
-        } else {
-            e.target.value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7);
-        }
+    phoneInput.addEventListener('input', function() {
+		let input = $(this).val();
+	    
+	    // 010- 부분이 삭제되었으면 다시 복원
+	    if (!input.startsWith('010-')) {
+	        // 숫자만 추출하여 010 부분 제거
+	        let numbers = input.replace(/[^0-9]/g, '');
+	        if (numbers.startsWith('010')) {
+	            numbers = numbers.substring(3);
+	        }
+	        input = '010-' + numbers;
+	    }
+	    
+	    // 010- 이후 숫자만 추출
+	    let phoneNumber = input.substring(4).replace(/[^0-9]/g, '');
+	    
+	    // 8자리 초과 입력 차단
+	    if (phoneNumber.length > 8) {
+	        phoneNumber = phoneNumber.slice(0, 8);
+	    }
+	    
+	    // 최종 포맷팅
+	    let formatted = '010-';
+	    if (phoneNumber.length > 0) {
+	        if (phoneNumber.length <= 4) {
+	            formatted += phoneNumber;
+	        } else {
+	            formatted += phoneNumber.slice(0, 4) + '-' + phoneNumber.slice(4);
+	        }
+	    }
+	    
+	    $(this).val(formatted);
+	    
+	    // 유효성 검사 (010-1234-5678 완성시)
+	    if (formatted.length === 13) {
+	        $(this).removeClass('is-invalid').addClass('is-valid');
+	    } else {
+	        $(this).removeClass('is-valid');
+	        if (formatted.length > 4) {
+	            $(this).addClass('is-invalid');
+	        }
+	    }
     });
  	
     // 휴대폰 번호 키 입력 제한 (숫자와 백스페이스, 델리트만 허용)

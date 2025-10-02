@@ -29,13 +29,13 @@ public interface EmployeeManagementMapper {
 	//회원 추가
 	int insertEmployeeInfo(EmployeeInfoDTO employee);
 	
-	// 회원직책 NULL로 변경
+	// 회원직무 NULL로 변경
 	void updateRoleToNull(Integer integer);
 	
 	// 팀 NULL로 바꾸기
 	void updateTeamToNull(Integer teamIdx);
 	
-	// 부서, 팀, 직책 널로바꾸기
+	// 부서, 팀, 직무 널로바꾸기
 	void updateDeptTeamRoleToNull(Integer departmentIdx);
 	
 	// 회원 정보 업데이트하기
@@ -44,7 +44,7 @@ public interface EmployeeManagementMapper {
 	// 시큐리티정보조회
 	Optional<EmployeeDetail> selectEmployeeDetailByEmpNo(String empNo);
 	
-	//직원정보 구하기 직책이름으로
+	//직원정보 구하기 직무이름으로
 	List<EmployeeInfoDTO> selectEmpInfoByRole(String roleName);
 	
 	//직원별 개인 인벤토리 생성

@@ -102,7 +102,7 @@
 							</c:choose>
 						</th>
 						<th data-key="r.role_name" onclick="allineTable(this)">
-						직급
+							직무
 							<c:choose>
 								<c:when test="${param.orderKey eq 'r.role_name'}">
 									<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>

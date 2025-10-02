@@ -62,11 +62,11 @@ public class TotalDashBoardService {
 		for(TotalDashBoardDTO D : dash) {
 			long productVolume = D.getProductVolume();
 			switch((int)productVolume) {
-				case 3 : D.setProductVolume(17850);
+				case 3 : D.setProductVolume(34 * 25 * 21);
 				break;
-				case 4 : D.setProductVolume(35588);
+				case 4 : D.setProductVolume(41 * 31 * 28);
 				break;
-				case 5 : D.setProductVolume(60384);
+				case 5 : D.setProductVolume(48 * 37 * 34);
 				break;
 			}
 		}

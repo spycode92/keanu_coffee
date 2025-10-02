@@ -21,7 +21,7 @@ public interface OrganizationMapper {
 	//해당부서 팀목록 받아오기
 	List<TeamDTO> getTeamsInfoByDepartmentIdx(int departmentIdx);
 	
-	//해당부서의 직책목록 받아오기
+	//해당부서의 직무목록 받아오기
 	List<RoleDTO> getRolesInfoByDepartmentIdx(int departmentIdx);
 	
 	// 부서추가
@@ -30,13 +30,13 @@ public interface OrganizationMapper {
 	// 팀추가
 	void insertTeam(TeamDTO teamdto);
 	
-	// 직책추가
+	// 직무추가
 	void insertRole(RoleDTO roleDTO);
 	
-	// 직책삭제
+	// 직무삭제
 	Integer deleteRole(Integer roleIdx);
 	
-	// 직책,메뉴,권한 테이블이 가지고있는 직책 삭제
+	// 직무,메뉴,권한 테이블이 가지고있는 직무 삭제
 	void deleteRoleMenuAuthoByRoleIdx(Integer roleIdx);
 	
 	// 팀 삭제
@@ -45,7 +45,7 @@ public interface OrganizationMapper {
 	//부서에 속한 팀목록
 	List<TeamDTO> departTeamList(Integer departmentIdx);
 	
-	//부서에 속한 직책목록
+	//부서에 속한 직무목록
 	List<RoleDTO> departRoleList(Integer departmentIdx);
 	
 	//부서삭제
@@ -54,23 +54,23 @@ public interface OrganizationMapper {
 	Integer updateDepartment(@Param("departmentIdx") int departmentIdx, @Param("departmentName") String departmentName);
 	//팀이름 변경
 	Integer updateTeam(@Param("teamIdx")int teamIdx, @Param("teamName")String teamName);
-	//직책이름 변경
+	//직무이름 변경
 	Integer updateRole(@Param("roleIdx")int roleIdx, @Param("roleName")String roleName);
 	
-	//직책 팀, 부서 정보 조회
+	//직무 팀, 부서 정보 조회
 	List<Map<String, Object>> getOrgData();
 	
 	//권한목록조회 
 	List<CommonCodeDTO> selectAuthorityList();
-	//직책별 권한정보조회
+	//직무별 권한정보조회
 	List<Map<String, Object>> selectAuthorityInfo(Integer roleIdx);
-	//직책별 권한정보 삭제
+	//직무별 권한정보 삭제
 	void deleteAuthorities(@Param("roleIdx") Integer roleIdx, @Param("removedAuthorities")List<Integer> removedAuthorities);
-	// 직책별 권한정보 추가
+	// 직무별 권한정보 추가
 	void insertAuthorities(@Param("roleIdx")Integer roleIdx, @Param("addedAuthorities")List<Integer> addedAuthorities);
 	//권한이름수정
 	int updateAuthoName(@Param("authoIdx")Integer authoIdx, @Param("authoName")String authoName);
-	//권한을 가진 직책수 확인
+	//권한을 가진 직무수 확인
 	int countRoleAutho(Integer authoIdx);
 	// 권한 삭제
 	void deleteAutho(Integer authoIdx);
@@ -80,7 +80,7 @@ public interface OrganizationMapper {
 	CommonCodeDTO selectDept(Integer departmentIdx);
 	//팀 이름 조회
 	TeamDTO selectTeam(Integer teamIdx);
-	// 직책이름 조회
+	// 직무이름 조회
 	RoleDTO selectRole(Integer roleIdx);
 	// 권한조회(권한idx로)
 	List<CommonCodeDTO> selectAuthoByAuthoIdx(List<Integer> addAuthoritiesIdx);

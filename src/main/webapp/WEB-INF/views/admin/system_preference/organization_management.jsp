@@ -75,14 +75,14 @@
                         <!-- 선택된 부서의 팀 목록 -->
                     </ul>
                 </div>
-                <!-- 직책 리스트 -->
+                <!-- 직무 리스트 -->
                 <div class="card h-100">
                     <div class="card-header">
-                        <span>직책 리스트</span>
+                        <span>직무 리스트</span>
                         <button type="button" id="btnAddRole" class="btn btn-sm btn-primary" disabled>+</button>
                     </div>
                     <ul id="roleList" class="list-group">
-                        <!-- 선택된 팀의 직책 목록 -->
+                        <!-- 선택된 팀의 직무 목록 -->
                     </ul>
                 </div>
                 <!-- 권한 리스트 -->
@@ -95,7 +95,7 @@
                         <button type="button" id="btnSaveAutho" class="btn btn-sm btn-primary" disabled >저장</button>
                     </div>
                     <ul id="authoList" class="list-group">
-                        <!-- 선택된 직책의 권한 목록 -->
+                        <!-- 선택된 직무의 권한 목록 -->
                         <c:forEach var="autho" items="${authorityList }">
 	                        <li class="list-group-item d-flex justify-content-between align-items-center autho-item" data-authoidx="${autho.commonCodeIdx}">
 	                        	<input type="checkbox" value="${autho.commonCodeIdx }" name="commonCodeName">
