@@ -1,10 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- 상품 추가 모달 -->
 <div id="productAddModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="productAddModalLabel" tabindex="-1">
-    <div class="modal-card lg">
+    <div class="modal-card sm">
         <form id="productAddForm" enctype="multipart/form-data">
+        	<sec:csrfInput/>
             <div class="modal-head">
                 <h5 id="productAddModalLabel">상품 추가</h5>
                 <button type="button"
@@ -20,10 +22,7 @@
                     <input type="text" id="productName" name="productName" class="form-control" required>
                 </div>
                 <div class="field" style="display:flex; align-items:center; gap:0.5rem;">
-                    <label class="form-label" style="min-width:100px;">상위 카테고리</label>
-                    <select id="upperCategorySelect_" name="parentCategoryIdx" class="form-control" required>
-                        <option value="">선택하세요</option>
-                    </select>
+                    <label class="form-label" >카테고리</label>
                     <button type="button"
                             id="btnAddCategory"
                             class="btn btn-secondary btn-sm"
@@ -37,33 +36,22 @@
                         수정/삭제
                     </button>
                 </div>
-                <div class="field">
-                    <label class="form-label">소분류 카테고리</label>
-                    <select id="lowerCategorySelect_" name="categoryIdx" class="form-control" disabled required>
-                        <option value="">상위 카테고리 먼저 선택</option>
+                <div>
+                    <select name="categoryIdx" id="addProductCategory" class="form-control categories" required>
+                        <option value="">선택하세요</option>
                     </select>
                 </div>
                 <div class="field">
                     <label class="form-label">무게 (kg)</label>
                     <input type="number" id="productWeight" name="productWeight" class="form-control" step="0.01" min="0">
                 </div>
-                <div class="field" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
-                    <div>
-                        <label class="form-label">가로 (cm)</label>
-                        <input type="number" id="productWidth" name="productWidth" class="form-control" step="0.01" min="0">
-                    </div>
-                    <div>
-                        <label class="form-label">세로 (cm)</label>
-                        <input type="number" id="productLength" name="productLength" class="form-control" step="0.01" min="0">
-                    </div>
-                    <div>
-                        <label class="form-label">높이 (cm)</label>
-                        <input type="number" id="productHeight" name="productHeight" class="form-control" step="0.01" min="0">
-                    </div>
-                </div>
                 <div class="field">
-                    <label class="form-label">부피 (cm³)</label>
-                    <input type="text" id="productVolume" name="productVolume" class="form-control" readonly>
+                    <label class="form-label">박스 호수</label>
+                    <select name="productVolume" class="form-control" required>
+                    	<option value="3">3호</option>
+                    	<option value="4">4호</option>
+                    	<option value="5">5호</option>
+                    </select>
                 </div>
                 <div class="field">
                     <label class="form-label">원산지</label>
@@ -84,7 +72,7 @@
             </div>
             <div class="modal-foot">
                 <button type="button"
-                        class="btn btn-secondary"
+                        class="btn btn-cancel"
                         onclick="ModalManager.closeModal(document.getElementById('productAddModal'))">
                     취소
                 </button>
@@ -110,18 +98,12 @@
             <div class="modal-body">
                 <div class="field">
                     <label class="form-label">카테고리명</label>
-                    <input type="text" id="newCategoryName" name="category_name" class="form-control" required>
-                </div>
-                <div class="field">
-                    <label class="form-label">부모 카테고리</label>
-                    <select id="parentCategorySelect" name="parent_category_idx" class="form-control">
-                        <option value="">없음 (최상위)</option>
-                    </select>
+                    <input type="text" id="newCategoryName" name="commonCodeName" class="form-control" required>
                 </div>
             </div>
             <div class="modal-foot">
                 <button type="button"
-                        class="btn btn-secondary"
+                        class="btn btn-cancel"
                         onclick="ModalManager.closeModal(document.getElementById('addCategoryModal'))">
                     취소
                 </button>
@@ -133,7 +115,7 @@
 
 <!-- 카테고리 관리 모달 -->
 <div id="categoryManageModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="categoryManageModalLabel" tabindex="-1">
-    <div class="modal-card md">
+    <div class="modal-card sm" >
         <div class="modal-head">
             <h5 id="categoryManageModalLabel">카테고리 관리</h5>
             <button type="button"
@@ -144,7 +126,8 @@
             </button>
         </div>
         <div class="modal-body" style="max-height:400px; overflow-y:auto;">
-            <ul id="categoryListInModal" style="list-style:none; padding:0; margin:0;"></ul>
+        	<table id="categoryListInModal">
+        	</table>
         </div>
         <div class="modal-foot">
             <button type="button"

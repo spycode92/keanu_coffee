@@ -6,7 +6,7 @@
 	<meta charset="UTF-8" />
 	<title>입고확정</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet" />
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
@@ -58,13 +58,13 @@
 					<tbody>
 						<tr>
 							<td><input type="checkbox" class="row-check" /></td>
-							<td>IN-20250811-001</td>
-							<td>2025-08-11</td>
-							<td>에이스상사</td>
-							<td class="right">540</td>
-							<td><input class="form-control assign-loc" type="text" value="A-01-03" /></td>
-							<td><span class="badge badge-pending">검수완료</span></td>
-							<td>부분입고</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td class="right">-</td>
+							<td><input class="form-control assign-loc" type="text" value="A-01-03" />-</td>
+							<td><span class="badge badge-pending"></span></td>
+							<td>-</td>
 						</tr>
 						<tr>
 							<td><input type="checkbox" class="row-check" /></td>

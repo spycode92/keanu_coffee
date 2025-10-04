@@ -5,95 +5,160 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>재고현황 대시보드</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<title>재고대시보드</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+
+<!-- Chart.js & 플러그인 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+<!-- D3.js -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
 <style>
-	/* !!! 추가: 대시보드 폭 고정용 래퍼 */
-	.dash-wrap {
-		padding: 20px;
+	.card-title {
+	    font-size: 1.3rem;
+	    font-weight: bold;
+	    margin-bottom: 5px;
 	}
 	
-	.dash-inner {
-		max-width: 1200px;   /* 필요시 1280~1360px로 조정 */
-		margin: 0 auto;
-		width: 100%;
-	}
-	
-	.dashboard-container {
-	    display: grid;
-	    grid-template-columns: repeat(3, minmax(0, 1fr)); /* !!! 변경: minmax로 폭 안정화 */
-	    gap: 20px;
-	    /* margin: 20px; → !!! 변경: 바깥 여백은 dash-wrap에 위임 */
-	}
-	
-	/* !!! 추가: 제목 바 전체 폭 차지 */
-	.page-bar {
-	    grid-column: 1 / -1;
-	    display: flex;
-	    align-items: center;
-	    justify-content: space-between;
-	    margin: 0 0 6px 0;
-	}
-	
-	.page-bar h2 {
-	    margin: 0;
-	}
-	
-	.card {
-	    border: 1px solid #ccc;
-	    border-radius: 10px;
-	    padding: 20px;
-	    box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-	    background: rgba(255,255,255,0.18); /* !!! 추가: 가이드 톤 반투명 */
-	    backdrop-filter: blur(2px);          /* !!! 추가: 유리 느낌 */
-	}
-	
-	.card h3 {
-		margin-bottom: 10px;
-	}
-	
-	table {
-		width: 100%;
-		border-collapse: collapse;
-		margin-top: 10px;
-	}
-	
-	th, td {
-		border: 1px solid #ddd;
-		padding: 8px;
-		text-align: center;
-	}
-	
-	th {
-		background-color: #f8f8f8;
-	}
-	
-	canvas {
-		max-width: 100%;
+	.chart-card hr {
+	    border: none;
+	    border-bottom: 2px solid #666;
+	    margin-bottom: 15px;
 	}
 
-	.refresh-btn {
-	    border: none; background: none; cursor: pointer;
-	    font-size: 20px; color: #4e73df; padding: 4px;
-	    transition: transform 0.2s ease;
+	/* 📌 기본 (라이트 모드) */
+	.chart-card {
+	    flex: 1 1 300px;
+	    min-width: 280px;
+	    width: 100%;
+	    background-color: #ffffff;   /* 라이트 모드 → 흰색 */
+	    border: 1px solid var(--border);
+	    border-radius: var(--radius);
+	    padding: 1rem;
+	    color: var(--card-foreground);
+	    box-sizing: border-box;
 	}
-	.refresh-btn:hover { 
-		transform: rotate(90deg);
+
+	/* 📌 다크 모드 */
+	.dark .chart-card {
+	    background-color: #000000;   /* 다크 모드 → 검정 */
 	}
-	
-	/* !!! 추가: KPI 카드 높이 통일 */
-	.kpi { min-height: 220px; }
-	
-	/* !!! 추가: 반응형 그리드 */
-	@media (max-width: 1024px) {
-		.dashboard-container { grid-template-columns: repeat(2, minmax(0,1fr)); }
+
+	.chart-wrapper {
+	    width: 100%;
+	    max-width: 40%;
+	    height: 400px;
+	    position: relative;
 	}
-	
-	@media (max-width: 640px) {
-		.dashboard-container { grid-template-columns: 1fr; }
+	.chart-wrapper canvas {
+	    width: 100% !important;
+	    height: 100% !important;
+	    position: absolute;
+	    top: 0;
+	    left: 0;
+	}
+
+	@media (max-width: 768px) {
+	    .dashboard-charts { flex-direction: column; }
+	    .chart-card { max-width: 100%; min-width: auto; }
+	    #heatmap-container { flex-direction: column; }
+	}
+
+	/* 📌 히트맵 기본 */
+	#pallet_heatmap, #picking_heatmap {
+	    width: 100%;
+	    overflow-x: auto;
+	    overflow-y: hidden;
+	    white-space: nowrap;
+	    padding: 10px;
+	    background: #ffffff;    /* 라이트 모드 → 흰색 */
+	    border-radius: 6px;
+	    box-sizing: border-box;
+	}
+
+	/* 📌 다크 모드 히트맵 */
+	.dark #pallet_heatmap,
+	.dark #picking_heatmap {
+	    background-color: #0F172A;   /* 다크 모드 → 진한 회색 */
+	}
+
+	.heatmap-scroll {
+	    width: 100%;
+	    overflow-x: auto;
+	    overflow-y: hidden;
+	    white-space: nowrap;
+	    padding: 10px;
+	    background: #fff;
+	    border-radius: 6px;
+	    box-sizing: border-box;
+	}
+
+	/* 📌 Pallet Zone / Picking Zone 제목 스타일 */
+	.heatmap-title {
+	    font-size: 20px;
+	    font-weight: bold;
+	    margin: 8px 0;
+	    color: #333;  /* 라이트 모드 글자색 */
+	}	
+
+	/* 📌 다크 모드 제목 */
+	.dark .card-title, 
+	.dark .heatmap-title {
+	    color: #ffffff !important; /* 다크모드 → 흰색 */
+	}
+
+	.card-title, .heatmap-title {
+	    color: #111 !important; /* 라이트모드 → 검정 */
+	    font-size: 1.5rem !important;
+	    font-weight: bold !important;
+	}
+
+	/* 📌 KPI 카드 */
+	.kpi-card {
+	    flex: 1;
+	    text-align: center;
+	    padding: 20px;
+	    background: #ffffff;   /* 라이트 모드 → 흰색 */
+	    border: 1px solid #ddd;
+	    border-radius: 8px;
+	}
+	/* 📌 다크 모드 KPI 카드 */
+	.dark .kpi-card {
+	    background: #0F172A;   /* 다크 모드 → 남색톤 */
+	    border: 1px solid #444;
+	}
+
+	/* 📌 KPI 값 */
+	.kpi-value {
+	    font-size: 2.5rem !important;
+	    font-weight: bold !important;
+	    color: #000000; /* 라이트 모드 → 검정 */
+	}
+
+	/* 📌 다크 모드 KPI 값 */
+	.dark .kpi-value {
+	    color: #ffffff !important; /* 다크모드 → 흰색 */
+	}
+
+	/* 📌 Pallet Zone, Picking Zone 구분 박스 */
+	.zone-box {
+	    border: 1px solid #000;   /* 라이트 모드 테두리 → 검정 */
+	    border-radius: 8px;
+	    padding: 12px;
+	    margin-bottom: 20px;
+	    background: #fff;         /* 라이트 모드 안쪽 배경 → 흰색 */
+	}
+
+	.dark .zone-box {
+	    border: 2px solid #444;   /* 다크 모드 테두리 */
+	    background: #0F172A;      /* 다크 모드 배경 */
 	}
 </style>
 </head>
@@ -102,93 +167,81 @@
 	<!-- 상단/사이드 레이아웃 -->
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 	
-	<!-- !!! 추가: 폭 고정 래퍼 -->
-	<main class="dash-wrap">
-	<div class="dash-inner">
-	
-		<!-- 제목: 그래프/대시보드 바로 위 -->
-		<div class="dashboard-container">
-			<!-- [추가] 대시보드 상단 제목 바 (그래프/카드 '위') -->
-			<div class="page-bar">
-				<h2>재고현황 대시보드</h2>
-				<button id="refreshBtn" class="refresh-btn" title="새로고침">&#x21bb;</button>
+	<!-- 메인 내용 -->
+    <section class="content">
+        <div class="card">
+        	<h1 align="center">재고 대시보드</h1>
+        
+        	<!-- KPI 카드 -->
+        	<div class="chart-card">
+	        	<h3 class="card-title" align="center">현재 재고</h3>
+				<hr>
+				<div class="dashboard-kpi" style="display: flex; justify-content: center; margin-bottom: 20px;">
+				    <div class="kpi-card">
+				        <div id="kpi-value" class="kpi-value">--</div>
+				        <div id="kpi-change" class="kpi-change" style="font-size:0.9rem; margin-top:8px;">--</div>
+				    </div>
+				</div>
 			</div>
-	
-		    <!-- 총 재고 수량 -->
-		    <div class="card">
-		        <h3>총 재고 수량</h3>
-		        <p style="font-size: 28px; font-weight: bold;">3,150개</p>
-		    </div>
-	
-		    <!-- 입고/출고 현황 -->
-		    <div class="card">
-		        <h3>입고/출고 현황</h3>
-		        <p>오늘 입고: <strong>15건</strong></p>
-		        <p>오늘 출고: <strong>10건</strong></p>
-		    </div>
-	
-		    <!-- 로케이션 용적률 (같은 줄) -->
-		    <div class="card" style="height: 200px;">
-		        <h3>로케이션 용적률</h3>
-		        <canvas id="locationChart" style="width:100%; height:120px;"></canvas>
-		    </div>
-	
-		    <!-- 상품별 재고 현황 (아래 가로 전체) -->
-		    <div class="card" style="grid-column: 1 / -1;">
-		        <h3>상품별 재고 현황</h3>
-		        <canvas id="stockChart" style="width: 100%; height: 260px;"></canvas> <!-- [변경] 조금 더 키움 -->
-		    </div>
-		</div>
-	</div>
-	</main>
-	
-	<script>
-	    // 상품별 재고 차트
-	    const stockCtx = document.getElementById('stockChart').getContext('2d');
-	    new Chart(stockCtx, {
-	        type: 'bar',
-	        data: {
-	            labels: ['컵 3호', '컵 4호', '컵 5호', '설탕 시럽', '헤이즐넛 시럽', '빨대(큰거)', '빨대(작은거)', '원두(다크)', '원두(디카페인)', '냅킨'],
-	            datasets: [{
-	                label: '재고 수량',
-	                data: [500, 400, 300, 250, 230, 180, 170, 200, 150, 270],
-	                backgroundColor: '#4e73df',
-	                hoverBackgroundColor: 'rgba(200, 0, 200, 1)' // ← 마우스 오버 시 색상
-	            }]
-	        },
-	        options: {
-	            responsive: true,
-	            plugins: { legend: { display: false }, title: { display: false } },
-	            scales: { y: { beginAtZero: true } }
-	        }
-	    });
+	        
+	        <br>
+	        
+            <div class="dashboard-charts">
+                <!-- 📌 재고현황 -->
+				<div class="chart-card">
+				    <h3 class="card-title" align="center">카테고리별 재고 현황</h3>
+				    <hr> <!-- 제목 밑에 선 -->
+				
+				    <div style="display: flex; gap: 20px;">
+				        <div class="chart-wrapper">
+				            <canvas id="inventory_chart"></canvas>
+				        </div>
+				        <div class="chart-wrapper">
+				            <canvas id="inventory_detail_chart"></canvas>
+				        </div>
+				    </div>
+				</div>
 
-	    // 로케이션 용적률 차트
-	    const locationCtx = document.getElementById('locationChart').getContext('2d');
-	    new Chart(locationCtx, {
-	        type: 'bar',
-	        data: {
-	            labels: ['A-1', 'A-2', 'B-1', 'B-2', 'C-1'],
-	            datasets: [{
-	                label: '용적률 (%)',
-	                data: [90, 70, 100, 60, 50],
-	                backgroundColor: 'rgba(28, 200, 138, 1)',
-	                hoverBackgroundColor: 'rgba(200, 0, 200, 1)'
-	            }]
-	        },
-	        options: {
-	            responsive: true,
-	            plugins: { legend: { display: false } },
-	            scales: { y: { beginAtZero: true, max: 100 } }
-	        }
-	    });
+                <br>
 
-	    // 새로고침 버튼 동작
-	    $('#refreshBtn').on('click', function(){
-	        // TODO: 데이터 갱신 로직
-	        alert('대시보드 데이터를 새로 불러옵니다.');
-	    	console.log("새로고침됨");
-	    });
-	</script>
+                <!-- 로케이션 용적률 -->
+                <div class="chart-card">
+                    <h3 class="card-title" id="location_title" align="center">로케이션 이용률</h3>
+                    <hr>
+                    
+                    <!-- Pallet Zone -->
+					<div class="zone-box">
+					    <h4 class="heatmap-title" align="center">Pallet Zone</h4>
+					    <div id="pallet_heatmap" class="heatmap-scroll"></div>
+					</div>
+					
+					<!-- Picking Zone -->
+					<div class="zone-box">
+					    <h4 class="heatmap-title" align="center">Picking Zone</h4>
+					    <div id="picking_heatmap" class="heatmap-scroll"></div>
+					</div>
+				    
+				     <!-- 범례 -->
+                    <div id="heatmap-legend" style="display: flex; align-items: center; gap: 8px; margin-top: 16px; padding-left: 4px; font-size: 12px; color: #333;">
+                        <span>Empty</span>
+                        <div style="width: 20px; height: 20px; background: #2196F3;"></div>
+                        <div style="width: 20px; height: 20px; background: #4CAF50;"></div>
+                        <div style="width: 20px; height: 20px; background: #CDDC39;"></div>
+                        <div style="width: 20px; height: 20px; background: #FFEB3B;"></div>
+                        <div style="width: 20px; height: 20px; background: #FF9800;"></div>
+                        <div style="width: 20px; height: 20px; background: #F44336;"></div>
+                        <div style="width: 20px; height: 20px; background: #6A1B9A;"></div>
+                        <span>Full</span>
+                    </div>
+                    
+                    <!-- ?히트맵 툴팁 -->
+                    <div id="tooltip" style="position: absolute; background: rgba(0,0,0,0.8); color: white; padding: 8px; border-radius: 4px; font-size: 14px; display: none; pointer-events: none;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 별도 JS 파일 -->
+    <script src="${pageContext.request.contextPath}/resources/js/inventory/inventoryDashboard.js"></script>
 </body>
 </html>

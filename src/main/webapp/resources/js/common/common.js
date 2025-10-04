@@ -1,7 +1,8 @@
 /**
  * 물류관리 ERP 시스템 공통 JavaScript
  */
-console.log('common.js 로드됨');
+
+//console.log('common.js 로드됨');
 // 다크모드 관리
 const DarkModeManager = {
     isDarkMode: localStorage.getItem('darkMode') === 'true' || 
@@ -89,7 +90,6 @@ const ProfileManager = {
 	        console.warn('Profile elements not found in DOM at init');
 	        return;
     	}
-		 console.log('ProfileManager: 요소 모두 찾음, 이벤트 바인딩 시도');
         this.bindEvents();
     },
     bindEvents: function() {
@@ -118,6 +118,8 @@ const ProfileManager = {
         this.popover.setAttribute('aria-hidden', 'true');
     }
 };
+
+
 
 const ModalManager = {
 	init: function() {
@@ -200,7 +202,8 @@ function ajaxGet(url, params = {}) {
     method: 'GET',
     data: params,
     dataType: 'json',
-    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+//    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+    contentType: 'application/json; charset=UTF-8', 
     beforeSend(xhr) {
       if (token && header) xhr.setRequestHeader(header, token);
     }
@@ -218,13 +221,46 @@ function ajaxPost(url, data = {}) {
   return $.ajax({
     url,
     method: 'POST',
-    data,
+    data: JSON.stringify(data),
     dataType: 'json',
-    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+//    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+    contentType: 'application/json; charset=UTF-8', 
     beforeSend(xhr) {
       if (token && header) xhr.setRequestHeader(header, token);
     }
   }).promise();
+}
+
+//파일전송용 ajax함수
+// ajaxPostWithFile('/admin/sys', '#formId').then().catch()
+function ajaxPostWithFile(url, formId, additionalFiles = null) {
+	const { token, header } = getCsrf();
+  
+	// 지정된 폼으로 FormData 생성
+	const form = document.querySelector(formId);
+	const formData = new FormData(form);  // ⭐ 여기서 폼 지정!
+
+	// 추가 파일이 있으면 추가
+	if (additionalFiles) {
+		if (additionalFiles instanceof FileList) {
+			for (let i = 0; i < additionalFiles.length; i++) {
+				formData.append("files", additionalFiles[i]);
+			}
+		} else {
+			formData.append("file", additionalFiles);
+		}
+	}
+ 
+	return $.ajax({
+		url,
+		method: 'POST',
+		data: formData,
+		contentType: false,
+		processData: false,
+		  	beforeSend(xhr) {
+		    	if (token && header) xhr.setRequestHeader(header, token);
+			}
+	}).promise();
 }
 
 // 알림 메시지 관리
@@ -320,27 +356,36 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('[data-action="logout"]').forEach(function(btn) {
         btn.addEventListener('click', function() {
             if (confirm('정말 로그아웃하시겠습니까?')) {
-                // 실제 로그아웃 요청 전송
-                window.location.href = '/logout';
+				document.querySelector('#logoutForm').submit();
             }
         });
     });
 
 	// 정보변경 버튼 클릭 처리
 	document.querySelectorAll('[data-modal-target]').forEach(btn => {
-	    btn.addEventListener('click', () => {
-	        const modalId = btn.getAttribute('data-modal-target');
-	        ModalManager.openModalById(modalId);
-			loadCurrentUserInfo();
+	    btn.addEventListener('click', async () => {
+			try { 
+		        const modalId = btn.getAttribute('data-modal-target');
+		        ModalManager.openModalById(modalId);
+				
+				$('#changeInfoForm')[0].reset();
+				$('#passwordStrengthMsg').empty();
+				$('#passwordMatchMsg').empty();
+				
+				await loadCurrentUserInfo();
+	            captureOriginalData();
+	            switchMode(false);
+			} catch (error) { 
+            	console.error('정보 불러오기 또는 초기화 중 오류:', error);
+        	}
 	    });
 	});
 	
 	// 정보변경 버튼 클릭시 최신 정보 불러오기 
 	function loadCurrentUserInfo() {
 	    return ajaxGet('/admin/employeeManagement/getOneEmployeeInfo')
-	        .then(function(data) {
+        	.then(function(data) {
 	            if (data) {
-//					console.log(data)
 	                updateUserInfoModal(data);
 	                return data;
 	            } else {
@@ -356,31 +401,289 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	// 모달 필드 업데이트 함수 (실제 데이터 구조에 맞춤)
 	function updateUserInfoModal(data) {
-	    const modal = document.getElementById('change-info-modal');
 	    if (!modal || !data) return;
-	
-	    // 프로필 이미지 업데이트
-	    const profileImg = modal.querySelector('#topProfilePreview');
-	    if (profileImg) {
-	        if (data.fileIdx || data.file_idx) {
-	            // file_idx가 있으면 해당 파일로 이미지 설정
-	            const fileId = data.fileIdx || data.file_idx;
-	            profileImg.src = `/file/thumbnail/${fileId}?width=80&height=80`;
-	        } else {
-	            // file_idx가 없으면 기본 이미지
-	            profileImg.src = '/resources/images/default_profile_photo.png';
-	        }
-	    }
-	
-	    // input 필드들 업데이트
-	    const empIdInput = modal.querySelector('#empId');
-	    const phoneInput = modal.querySelector('#empPhone');
-	    const emailInput = modal.querySelector('#empEmail');
-	    
-	    if (empIdInput && data.empId) empIdInput.value = data.empId;
+		    	    
+	    if (empNoInput && data.empNo) empNoInput.value = data.empNo;
+	    if (empNameInput && data.empName) empNameInput.value = data.empName;
+	    if (empDepartmentInput && data.commonCode) empDepartmentInput.value = data.commonCode.commonCodeName;
+	    if (empTeamInput && data.team) empTeamInput.value = data.team.teamName;
+	    if (empRoleInput && data.role) empRoleInput.value = data.role.roleName;
+
 	    if (phoneInput && data.empPhone) phoneInput.value = data.empPhone;
 	    if (emailInput && data.empEmail) emailInput.value = data.empEmail || ''; // null인 경우 빈 문자열
-		    
+	    if (hireDateInput && data.hireDate) {
+			const date = new Date(data.hireDate);
+		    // 날짜가 유효하면 로케일 포맷으로 표시
+		    hireDateInput.value = isNaN(date.getTime()) ? '' : date.toLocaleDateString();		
+		}
 	    console.log('모달 정보 업데이트 완료:', data);
 	}
+	
+	const modal = document.getElementById('change-info-modal');
+	const updateBtn     = modal.querySelector('.btn-update');
+	const editOnlyEls   = modal.querySelectorAll('.edit-only');
+    const viewOnlyEls   = modal.querySelectorAll('.view-only');
+    const cancelBtn     = modal.querySelector('button[data-modal-close].btn-cancel');
+
+    const form          = modal.querySelector('#changeInfoForm');
+ 	// 비밀번호 강도 메시지 div
+    const passwordStrengthMsg = modal.querySelector('#passwordStrengthMsg');
+    const passwordMatchMsg = modal.querySelector('#passwordMatchMsg');
+	// input 필드들 업데이트
+    const empNoInput = modal.querySelector('#top_empNo');
+	const empNameInput = modal.querySelector('#top_empName')
+	const empDepartmentInput = modal.querySelector('#top_departmentName')
+    const empTeamInput = modal.querySelector('#top_teamName');
+    const empRoleInput = modal.querySelector('#top_roleName');
+    const phoneInput = modal.querySelector('#top_empPhone');
+    const emailInput = modal.querySelector('#top_empEmail');
+    const hireDateInput = modal.querySelector('#top_hireDate');
+    const pwd1          = modal.querySelector('#empPassword1');
+    const pwd2          = modal.querySelector('#empPassword2');
+
+	let originalData = {};
+	
+	function captureOriginalData() {
+        originalData = {
+            empNo: empNoInput.value,
+            empName: empNameInput.value,
+            empDepartment: empDepartmentInput.value,
+            empTeam: empTeamInput.value,
+            empRole: empRoleInput.value,
+            empPhone: phoneInput.value,
+            empEmail: emailInput.value
+        };
+    }
+
+    function restoreOriginalData() {
+    	empNoInput.value = originalData.empNo;
+    	empNameInput.value = originalData.empName;
+    	empDepartmentInput.value = originalData.empDepartment;
+    	empTeamInput.value = originalData.empTeam;
+    	empRoleInput.value = originalData.empRole;
+        phoneInput.value = originalData.empPhone;
+        emailInput.value = originalData.empEmail;
+        
+        pwd1.value = '';
+        pwd2.value = '';
+    }
+
+    function switchMode(editing) {
+        // readonly 상태 변경
+        phoneInput.readOnly = !editing;
+        emailInput.readOnly = !editing;
+        
+        // 편집 전용 요소들 표시/숨김
+        editOnlyEls.forEach(el => el.style.display = editing ? '' : 'none');
+        viewOnlyEls.forEach(el => el.style.display = editing ? 'none' : '');
+        
+        updateBtn.textContent = editing ? '취소' : '수정';
+        
+        // readonly 스타일 변경 
+        const readonlyInputs = [ phoneInput, emailInput];
+        readonlyInputs.forEach(input => {
+            if (editing) {
+                input.style.cursor = 'text';
+            } else {
+                input.style.cursor = 'default';
+            }
+        });
+    }
+    
+ 	// 휴대폰 번호 실시간 포맷팅 (수정된 버전)
+    phoneInput.addEventListener('input', function() {
+		let input = $(this).val();
+	    
+	    // 010- 부분이 삭제되었으면 다시 복원
+	    if (!input.startsWith('010-')) {
+	        // 숫자만 추출하여 010 부분 제거
+	        let numbers = input.replace(/[^0-9]/g, '');
+	        if (numbers.startsWith('010')) {
+	            numbers = numbers.substring(3);
+	        }
+	        input = '010-' + numbers;
+	    }
+	    
+	    // 010- 이후 숫자만 추출
+	    let phoneNumber = input.substring(4).replace(/[^0-9]/g, '');
+	    
+	    // 8자리 초과 입력 차단
+	    if (phoneNumber.length > 8) {
+	        phoneNumber = phoneNumber.slice(0, 8);
+	    }
+	    
+	    // 최종 포맷팅
+	    let formatted = '010-';
+	    if (phoneNumber.length > 0) {
+	        if (phoneNumber.length <= 4) {
+	            formatted += phoneNumber;
+	        } else {
+	            formatted += phoneNumber.slice(0, 4) + '-' + phoneNumber.slice(4);
+	        }
+	    }
+	    
+	    $(this).val(formatted);
+	    
+	    // 유효성 검사 (010-1234-5678 완성시)
+	    if (formatted.length === 13) {
+	        $(this).removeClass('is-invalid').addClass('is-valid');
+	    } else {
+	        $(this).removeClass('is-valid');
+	        if (formatted.length > 4) {
+	            $(this).addClass('is-invalid');
+	        }
+	    }
+    });
+ 	
+    // 휴대폰 번호 키 입력 제한 (숫자와 백스페이스, 델리트만 허용)
+    phoneInput.addEventListener('keydown', function(e) {
+        if (phoneInput.readOnly) return;
+        
+        // 숫자, 백스페이스, 델리트, 탭, 화살표 키만 허용
+        const allowedKeys = [
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            'Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'
+        ];
+        
+        if (!allowedKeys.includes(e.key)) {
+            e.preventDefault();
+        }
+    });
+    
+ 	// 비밀번호 강도 실시간 검사
+    pwd1.addEventListener('input', function() {
+        const password = pwd1.value;
+        
+        if (password.length === 0) {
+            passwordStrengthMsg.innerHTML = '';
+            return;
+        }
+        
+        // 조건 체크
+        let count = 0;
+        if (password.length >= 8) count++;
+        if (/[a-z]/.test(password)) count++;
+        if (/[A-Z]/.test(password)) count++;
+        if (/[0-9]/.test(password)) count++;
+        if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) count++;
+        
+        let message = '';
+        if (count < 2) {
+            message = '<div style="color: #dc3545; font-size: 0.9rem;">비밀번호 조건: 8자 이상, 대문자, 소문자, 숫자, 특수문자 중 3가지 이상</div>';
+        } else if (count === 2) {
+            message = '<div style="color: #dc3545; font-weight: bold; font-size: 0.9rem;">위험</div>';
+        } else if (count === 3) {
+            message = '<div style="color: #ffc107; font-weight: bold; font-size: 0.9rem;">보통</div>';
+        } else if (count >= 4) {
+            message = '<div style="color: #28a745; font-weight: bold; font-size: 0.9rem;">안전</div>';
+        }
+        
+        passwordStrengthMsg.innerHTML = message;
+        checkPasswordMatch(); // 비밀번호 확인도 함께 체크
+    });
+
+    // 비밀번호 확인 실시간 검사
+    pwd2.addEventListener('input', checkPasswordMatch);
+
+    function checkPasswordMatch() {
+        const password1 = pwd1.value;
+        const password2 = pwd2.value;
+        
+        if (password2.length === 0) {
+            passwordMatchMsg.innerHTML = '';
+            return;
+        }
+        
+        if (password1 === password2) {
+            passwordMatchMsg.innerHTML = '<div style="color: #28a745; font-size: 0.9rem;">✓ 비밀번호가 일치합니다</div>';
+        } else {
+            passwordMatchMsg.innerHTML = '<div style="color: #dc3545; font-size: 0.9rem;">✗ 비밀번호가 일치하지 않습니다</div>';
+        }
+    }
+
+    // 폼 제출 전 유효성 검사
+    form.addEventListener('submit', function(e) {
+        if (!validateForm()) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    function validateForm() {
+        // 휴대폰 번호 검사
+        const phone = phoneInput.value.trim();
+        if (!phone) {
+            alert('휴대폰 번호를 입력해주세요.');
+            phoneInput.focus();
+            return false;
+        }
+        
+        // 010-XXXX-XXXX 형식 검사
+        if (!/^010-\d{4}-\d{4}$/.test(phone)) {
+            alert('휴대폰 번호는 010-XXXX-XXXX 형식으로 입력해주세요.');
+            phoneInput.focus();
+            return false;
+        }
+
+        // 이메일 검사 (선택사항)
+        const email = emailInput.value.trim();
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            alert('올바른 이메일 형식을 입력해주세요.');
+            emailInput.focus();
+            return false;
+        }
+
+        // 비밀번호 검사 (입력한 경우만)
+        if (pwd1.value || pwd2.value) {
+            if (pwd1.value !== pwd2.value) {
+                alert('비밀번호가 일치하지 않습니다.');
+                pwd1.focus();
+                return false;
+            }
+            
+            if (pwd1.value.length < 8) {
+                alert('비밀번호는 8자 이상 입력해주세요.');
+                pwd1.focus();
+                return false;
+            }
+            
+            // 복잡성 검사: 대소문자, 숫자, 특수문자 중 3종류 이상
+            let complexityCount = 0;
+            if (/[a-z]/.test(pwd1.value)) complexityCount++; // 소문자
+            if (/[A-Z]/.test(pwd1.value)) complexityCount++; // 대문자
+            if (/[0-9]/.test(pwd1.value)) complexityCount++; // 숫자
+            if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd1.value)) complexityCount++; // 특수문자
+            
+            if (complexityCount < 3) {
+                alert('비밀번호는 대문자, 소문자, 숫자, 특수문자 중 3종류 이상 포함해야 합니다.');
+                pwd1.focus();
+                return false;
+            }
+        }
+
+        return true;
+    }
+ 
+    // 수정/취소 토글
+    updateBtn.addEventListener('click', function() {
+        const editing = updateBtn.textContent === '수정';
+        if (editing) {
+            switchMode(true);
+			$('#passwordStrengthMsg').empty();
+			$('#passwordMatchMsg').empty();
+        } else {
+			restoreOriginalData();
+            switchMode(false);
+        }
+    });
+
+    // 취소 버튼 클릭
+    cancelBtn.addEventListener('click', function() {
+        restoreOriginalData();
+        switchMode(false);
+    });
+
+    // 초기 상태 설정
+    switchMode(false);
+
 });

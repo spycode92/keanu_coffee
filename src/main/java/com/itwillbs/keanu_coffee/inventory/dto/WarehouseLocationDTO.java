@@ -1,0 +1,56 @@
+package com.itwillbs.keanu_coffee.inventory.dto;
+
+import java.sql.Timestamp;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+//location_idx INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+//location_name VARCHAR(50),
+//rack CHAR(2),
+//bay INT(11),
+//level_position CHAR(2),
+//location_type INT(11),
+//width int(10),
+//depth int(10),
+//height int(10),
+//volume int(10) GENERATED ALWAYS AS (width * depth * height) STORED,
+//created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+public class WarehouseLocationDTO {
+	public WarehouseLocationDTO(String locationName, char rack, int bay, String levelPosition, int width,
+			int height, int depth, int locationType) {
+			this.locationName = locationName;
+			this.rack = rack;
+			this.bay = bay;
+			this.levelPosition = levelPosition;
+			this.width = width;
+			this.height = height;
+			this.depth = depth;
+			this.height = height;
+			this.locationType = locationType;
+		}
+	
+	private int locationIdx;
+	private String locationName;
+	private char rack;
+	private int bay;
+	private String levelPosition;
+	private int locationType;
+	private int width;
+	private int depth;
+	private int height;
+	private int volume;
+	private Timestamp createdAt;
+	private Timestamp updatedAt;
+	
+	
+	
+}

@@ -1,11 +1,21 @@
 const DUPLICATE_CHECK_URL = "/transport/vehicle/dupCheck";
-const MODIFY_VEHICLE_URL = "/transport/vehicle/detail";
-const DELETE_VEHICLE_URL = "/transport/vehicle/delete";
+const VEHICLE_DETAIL_URL = "/transport/vehicle/detail";
+const MODIFY_VEHICLE_STATUS_URL = "/transport/vehicle/status";
 const ASSIGN_DRIVER_URL = "/transport/assignDriver";
+
+let modalMode = "create";
 
 // 모달 열기
 function openCreateModal() {
 	$("#createForm")[0].reset();
+	
+	if (modalMode === "create") {
+		$('#createTitle').text('신규 차량 등록');
+		$('#saveCreate').text('등록');
+	} else {
+		$('#createTitle').text('차량 정보 수정');
+		$('#saveCreate').text('수정');
+	}
 	$("#createModal").attr("aria-hidden", "false").addClass("open");
 }
 
@@ -60,27 +70,29 @@ function isValidPlate(plateText) {
 
 // 차량번호 중복 검사 요청
 function checkDuplicatePlate(normalizedPlate) {
-	return $.getJSON(DUPLICATE_CHECK_URL, {vehicleNumber : normalizedPlate});
+	let idx = $('#vehicleIdx').val();
+	
+	idx = parseInt(idx);
+	
+	return $.getJSON(DUPLICATE_CHECK_URL, {vehicleNumber : normalizedPlate, vehicleIdx: idx || ""});
 }
 
-// 차량 등록 폼
-function submitCreateForm(e) {
-	e.preventDefault();
-	
+// 차량 입력내용 검증
+function validateVehicleForm() {
 	const vehicleNumber = $("#c_no").val().trim();
 	const vehicleType = $("#c_type").val().trim();
 	const vehicleCapacity = $('input[name="capacity"]:checked').val();
 	const vehicleYear = $("#c_year").val().trim();
-	
+	const idx = $('#vehicleIdx').val();
 	const today = new Date();
 	const year = today.getFullYear();
 	
-	if (!vehicleNumber || !vehicleType || !vehicleCapacity) {
+		if (!vehicleNumber || !vehicleType || !vehicleCapacity) {
 		Swal.fire({
 			icon: "error",
 			text: "차량번호/차종유형/적재량은 필수 입력입니다."
 		});
-		return;
+		return false;
 	}
 	
 	if (!isValidPlate(vehicleNumber)) {
@@ -90,17 +102,30 @@ function submitCreateForm(e) {
 			text: "예) 123가4567 / 12가3456 / 서울 123가 4567"
 		});
 		$("#c_no").focus().select();
-		return;
+		return false;
 	}
-	
-	if (vehicleYear > year) {
+		
+	if (vehicleYear < 1900 || vehicleYear > year) {
 		Swal.fire({
 			icon: "error",
 			text: "차량 연식을 올바르게 입력해주세요."
 		});
 		$("#c_year").focus().select();
+		return false;
+	}
+	
+	return true;
+}
+
+// 차량 등록 폼
+function submitCreateForm(e) {
+	e.preventDefault();
+	
+	if (!validateVehicleForm()) {
 		return;
 	}
+	
+	const vehicleNumber = $("#c_no").val().trim();
 	
 	const normalized = normalizePlate(vehicleNumber);
 	
@@ -117,7 +142,12 @@ function submitCreateForm(e) {
 			// 서버로 정규화된 값으로 보냄
 			$("#c_no").val(normalized);
 			
+			if (modalMode === "edit") {
+			    $("#createForm").attr("action", "/transport/vehicle/update");
+			} 
+			
 			$("#createForm")[0].submit();
+			
 		})
 		.fail(() => {
 			Swal.fire({
@@ -136,34 +166,91 @@ function openEditModal(vehicleIdx) {
   $('#e_no, #e_driver').val('');
   $('#e_status').val('대기');
 
-  $.getJSON(MODIFY_VEHICLE_URL, { idx: vehicleIdx })
+  $.getJSON(VEHICLE_DETAIL_URL, { idx: vehicleIdx })
     .done(function(v) {
 	  $("#idx").val(v.vehicleIdx);
 	  
       // 상세 정보 입력
-      $('#vehicleNumber').val(v.vehicleNumber);
-      $('#vehicleType').val(v.vehicleType);
-      $('#capacity').val(String(v.capacity)); 
-      $('#year').val(v.manufactureYear || '');
-      $('#model').val(v.manufacturerModel || '');
-      $('#driverName').val(v.driverName || '');
-      $('#manufacturerModel').val(v.manufacturerModel);
-      $('#manufactureYear').val(v.manufactureYear);
+      $("#vehicleNumber").val(v.vehicleNumber);
+      $("#vehicleType").val(v.vehicleType);
+	  $("#status").val(v.status);
+      $("#capacity").val(String(v.capacity)); 
+      $("#driverName").val(v.driverName || '');
+      $("#manufacturerModel").val(v.manufacturerModel);
+      $("#manufactureYear").val(v.manufactureYear);
 
 	  v.capacity === 1000 ? $('#capacity').val("1.0t") : $('#capacity').val("1.5t");
 
-	  const status = v.status;
-	  $('status').val(status);
+      const isModify = (v.status === '운행중' || v.status === '대기');	  
+	  $('#saveEdit').prop('disabled', isModify);
+	  $('#status').prop('disabled', isModify);
 
-	  // 운행중 또는 사용불가인 경우 기사등록 버튼 비활성화
-      const isModify = (v.status === '운행중' || v.status === '사용불가');
-      $('#btnAssignDriver').prop('disabled', isModify);
-	  $('#vehicleType').prop('disabled', isModify);
+	  const isEditModify = (v.status === '운행중' || v.status === '사용불가' || v.driverName != null);	  
+	  $('#editBtn').prop('disabled', isEditModify);
+	
+
+		
+	 $("#editModal").data('vehicleIdx', v.vehicleIdx);
+
     })
     .fail(function(status) {
-      $modal.removeClass('open').attr('aria-hidden','true');
       Swal.fire({icon:'error', text:'차량 정보를 불러오지 못했습니다.'});
+	  closeEditModal();
     });
+}
+
+// 저장 버튼 클릭
+function saveEdit() {
+	const modal = $("#editModal");
+	const idx = Number(modal.data("vehicleIdx"));
+	const status = $("#status");
+	const oldStatus = status.data("prev");
+	const newStatus = status.val();
+	
+	if (!idx) {
+		Swal.fire({icon:'error', text:'잘못된 차량입니다.'}); return; 
+	}
+	
+	// 상태 변경이 없을 경우 모달창 닫기
+	if (newStatus === oldStatus) {
+		closeEditModal();
+    	return;
+	}
+	
+	// 사용불가 확인
+	const confirmStatus = (newStatus === "사용불가") 
+		? Swal.fire({
+			icon:'warning',
+        	title:'사용불가 처리',
+        	text:'이 차량을 사용불가로 변경하시겠습니까?',
+			showCancelButton:true,
+	        confirmButtonText:'변경',
+	        cancelButtonText:'취소'
+		}).then(r => r.isConfirmed)
+		: Promise.resolve(true);
+		
+	$('#saveEdit').prop('disabled', true);
+	
+	confirmStatus.then(ok => {
+		if (!ok) {
+			$('#saveEdit').prop('disabled', false); return; 
+		}
+		
+		requestBulkUpdateStatus([idx], newStatus)
+			.done(() => {
+				closeEditModal();
+				Swal.fire({ icon:'success', text:'상태가 변경되었습니다.' });
+				reloadVehicleContent();
+			})
+			.fail(xhr => {
+				const msg = (xhr.responseJSON && xhr.responseJSON.message) || '변경에 실패했습니다. 잠시 후 다시 시도해주세요.';
+				Swal.fire({
+					icon:'error', 
+					text: msg
+				});
+			});
+	});
+	
 }
 
 // 체크박스 전체 선택
@@ -182,13 +269,20 @@ function collectSelectedVehicleIdx() {
     	.filter(function (id) { return id != null; });
 }
 
-// 서버 삭제 요청
-function requestBulkDelete(idxArray) {
+// 서버 상태변경 요청
+function requestBulkUpdateStatus(idxArray, status) {
+	const { token, header } = getCsrf();
 	return $.ajax({
-     url: DELETE_VEHICLE_URL,
-     method: 'DELETE',
+     url: MODIFY_VEHICLE_STATUS_URL,
+     method: 'POST',
      contentType: 'application/json',
-     data: JSON.stringify(idxArray)
+     beforeSend(xhr) {
+     	if (token && header) xhr.setRequestHeader(header, token);
+     },
+     data: JSON.stringify({
+		idx : idxArray,
+		status
+   	  })
    });	
 }
 
@@ -208,6 +302,17 @@ function onClickBulkDelete() {
     	return;
   	}
 
+	const rows = $('#vehicleTable tbody input[type="checkbox"]:checked').closest('tr');
+	const hasLocked = rows.toArray().some((tr) => {
+		const status = $(tr).data("status");
+		return status === "대기" || status === "운행중";
+	});
+	
+	if (hasLocked) {
+		Swal.fire({ icon:'error', text:'대기 중이거나 운행 중인 차량은 삭제할 수 없습니다.' });
+    	return;
+	}
+
   	Swal.fire({
     	icon: 'warning',
     	title: '선택 삭제',
@@ -220,7 +325,7 @@ function onClickBulkDelete() {
 
     	$('#bulkDelete').prop('disabled', true);
 
-    	requestBulkDelete(idx)
+    	requestBulkUpdateStatus(idx, '사용불가')
       	.done(function () {
         	reloadVehicleContent();
         	Swal.fire({ icon: 'success', text: '삭제되었습니다.' });
@@ -235,70 +340,34 @@ function onClickBulkDelete() {
   	});
 }
 
-// 기사 배정 버튼 클릭
-function onClickAssignDriver() {
-	$('#assignDriverModal').attr('aria-hidden','false').addClass('open');
+// 차량 수정
+function editVehicleInfo() {
+	modalMode = "edit";
+	const vehicleIdx = $("#editModal").data("vehicleIdx");
 	
-	$.getJSON(ASSIGN_DRIVER_URL)
-	    .done(function(drivers) {
-		
-		renderDriverTable(drivers);
-
-    })
-    .fail(function() {
-      $modal.removeClass('open').attr('aria-hidden','true');
-      Swal.fire({icon:'error', text:'기사 정보를 불러오지 못했습니다.'});
+	closeEditModal();
+	
+	$.getJSON(VEHICLE_DETAIL_URL, { idx: vehicleIdx })
+    .done(fillVehicleForm)
+    .fail(function(status) {
+      Swal.fire({icon:'error', text:'차량 정보를 불러오지 못했습니다.'});
+	  closeEditModal();
     });
+
+	openCreateModal();
 }
 
-function renderDriverTable(drivers) {
-	const tbody = $("#driverTableBody");
-	
-	tbody.empty();
-	
-	if (!drivers.length) {
-	    tbody.append('<tr><td colspan="4" class="text-center text-muted">배정할 기사가 없습니다.</td></tr>');
-	    return;
-  	}
-	
-	// 문자열로 렌더링
-  	const rowsHtml = drivers.map( function(driver) {
-	    return `
-	      <tr data-driver-id="${driver.idx}">
-	        <td><input type="radio" name="driverId" value="${driver.idx}"></td>
-	        <td>${driver.empNo}</td>
-	        <td>${driver.empName}</td>
-	        <td>${driver.empPhone}</td>
-	      </tr>
-	    `
-	}).join('');
-
-	tbody.html(rowsHtml);
+// 입력 폼
+function fillVehicleForm(v) {
+	$("#vehicleIdx").val(v.vehicleIdx || '');
+  	$("#c_no").val(v.vehicleNumber || '');
+  	$("#c_type").val(v.vehicleType || '');
+  	(v.capacity === 1000 ? $('#cap-1') : $('#cap-15')).prop('checked', true);
+  	$("#c_year").val(v.manufactureYear || '');
+  	$("#c_model").val(v.manufacturerModel || '');
+  	$("#c_driver").val(v.driverName || '');
 }
 
-$('#driverTableBody').on('click', 'tr', function(e) {
-  if (!$(e.target).is('input[type="radio"]')) {
-    $(this).find('input[type="radio"]').prop('checked', true);
-  }
-});
-	
-// 배정 버튼 클릭
-function assignDriver() {
-	const checked = $('input[name="driverId"]:checked');
-	
-	if (checked.length === 0) {
-	    Swal.fire({ icon:'info', text:'배정할 기사를 선택하세요.' });
-	    return;
-  	}
-
-	const selectedId = $('tr').data('driver-id');
-	const driverData = selectedId.dataset.test;
-	const selectedName = checked.closest('tr').find('td').eq(2).text().trim();
-	
-  // 상세 모달에 반영
-  $('#driverName').val(selectedName);
-  $('#driverIdx').val(selectedId);  
-}
 
 // 이벤트 바인딩
 $(document).ready(function () {
@@ -307,7 +376,7 @@ $(document).ready(function () {
     $("#cancelEdit").on("click", closeEditModal);
     $("#saveCreate").on("click", submitCreateForm);
 	$('#bulkDelete').on('click', onClickBulkDelete);
-	$('#btnAssignDriver').on('click', onClickAssignDriver);
+	$('#saveEdit').on('click', saveEdit);
+	$('#editBtn').on('click', editVehicleInfo);
 });
-
 

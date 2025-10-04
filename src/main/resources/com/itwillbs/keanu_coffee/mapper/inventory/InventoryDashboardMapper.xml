@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.inventory.mapper.InventoryDashboardMapper">
+	
+	<!-- 현재 재고 KPI (총 재고 - (전날 출고 + 전날 출고폐기)) -->
+	<!-- 오늘 총 재고 -->
+	<select id="selectTotalStock" resultType="int">
+	    SELECT COALESCE(SUM(quantity), 0)
+	    FROM INVENTORY
+	</select>
+	
+	<!-- 전날 출고 수량 -->
+	<select id="selectYesterdayOutbound" resultType="int">
+	    SELECT COALESCE(SUM(oi.quantity), 0)
+	    FROM OUTBOUND_ORDER_ITEM oi
+	    JOIN OUTBOUND_ORDER o 
+	      ON oi.outbound_order_idx = o.outbound_order_idx
+	    WHERE DATE(o.created_at) = CURDATE() - INTERVAL 1 DAY
+	</select>
+	
+	<!-- 전날 출고 폐기 수량 -->
+	<select id="selectYesterdayOutboundDisposal" resultType="int">
+	    SELECT COALESCE(SUM(d.disposal_amount), 0)
+	    FROM DISPOSAL d
+	    WHERE d.section = 'OUTBOUND'
+	      AND DATE(d.created_at) = CURDATE() - INTERVAL 1 DAY
+	</select>
+	<!-- =========================================================== -->
+	
+	<!-- 카테고리별/상품별 재고 현황 (출고/폐기 반영) -->
+    <select id="selectInventoryDashData" resultType="TotalDashBoardDTO">
+        SELECT
+            c.common_code_name AS categoryName,
+            p.product_name     AS productName,
+            SUM(
+                i.quantity
+                - IFNULL((
+                    SELECT SUM(oi.quantity)
+                    FROM OUTBOUND_ORDER_ITEM oi
+                    JOIN OUTBOUND_ORDER o 
+                      ON oi.outbound_order_idx = o.outbound_order_idx
+                    WHERE oi.receipt_product_idx = i.receipt_product_idx
+                      AND DATE(o.created_at) = CURDATE() - INTERVAL 1 DAY
+                ), 0)
+                - IFNULL((
+                    SELECT SUM(d.disposal_amount)
+                    FROM DISPOSAL d
+                    WHERE d.receipt_product_idx = i.receipt_product_idx
+                      AND d.section = 'OUTBOUND'
+                      AND DATE(d.created_at) = CURDATE() - INTERVAL 1 DAY
+                ), 0)
+            ) AS inventoryQTY
+        FROM INVENTORY i
+        LEFT JOIN PRODUCT p 
+            ON i.product_idx = p.product_idx
+        LEFT JOIN COMMON_CODE c 
+            ON p.category_idx = c.common_code_idx
+        GROUP BY c.common_code_name, p.product_name
+        ORDER BY inventoryQTY
+    </select>
+
+    <!-- 로케이션 이용률 (출고/폐기 반영) -->
+    <select id="selectLocationDashData" resultType="TotalDashBoardDTO">
+        SELECT 
+            l.location_idx,
+            l.rack,
+            l.bay,
+            l.level_position AS levelPosition,
+            l.location_type  AS locationType,
+            l.volume         AS locationVolume,
+            SUM(
+                i.quantity
+                - IFNULL((
+                    SELECT SUM(oi.quantity)
+                    FROM OUTBOUND_ORDER_ITEM oi
+                    JOIN OUTBOUND_ORDER o 
+                      ON oi.outbound_order_idx = o.outbound_order_idx
+                    WHERE oi.receipt_product_idx = i.receipt_product_idx
+                      AND DATE(o.created_at) = CURDATE() - INTERVAL 1 DAY
+                ), 0)
+                - IFNULL((
+                    SELECT SUM(d.disposal_amount)
+                    FROM DISPOSAL d
+                    WHERE d.receipt_product_idx = i.receipt_product_idx
+                      AND d.section = 'OUTBOUND'
+                      AND DATE(d.created_at) = CURDATE() - INTERVAL 1 DAY
+                ), 0)
+            ) AS inventoryQTY,
+            p.product_name,
+            p.product_volume AS productVolume
+        FROM WAREHOUSE_LOCATION l
+        LEFT JOIN INVENTORY i 
+            ON l.location_idx = i.location_idx
+        LEFT JOIN PRODUCT p 
+            ON p.product_idx = i.product_idx
+        GROUP BY l.location_idx, l.rack, l.bay, l.level_position, l.location_type, l.volume, p.product_name, p.product_volume
+    </select>
+
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+

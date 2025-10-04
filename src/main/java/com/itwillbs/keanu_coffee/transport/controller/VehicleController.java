@@ -35,7 +35,7 @@ public class VehicleController {
 	
 	// 차량 등록
 	@PostMapping("/addVehicle")
-	public String addVehicleForm(@ModelAttribute VehicleDTO vehicleDTO, RedirectAttributes rttr ,Model model) {
+	public String addVehicleForm(@ModelAttribute VehicleDTO vehicleDTO ,Model model) {
 		String normalized  = normalizePlate(vehicleDTO.getVehicleNumber());
 		if (normalized == null) {
 			model.addAttribute("msg", "차량번호 형식이 올바르지 않습니다.");
@@ -44,6 +44,12 @@ public class VehicleController {
 		}
 		
 		vehicleDTO.setVehicleNumber(normalized);
+		
+		if (vehicleDTO.getCapacity() == 1000) {
+			vehicleDTO.setVolume(3000);
+		} else {
+			vehicleDTO.setVolume(4500);
+		}
 		
 		boolean success = vehicleService.addVehicle(vehicleDTO);
 		
@@ -72,25 +78,105 @@ public class VehicleController {
 		return ResponseEntity.ok(vehicleDTO);
 	}
 	
-	// 차량 삭제
-	@DeleteMapping("/vehicle/delete")
+	// 차량 정보 수정
+	@PostMapping("/vehicle/update")
+	public String editVehicle(@ModelAttribute VehicleDTO vehicleDTO ,Model model) {
+		String normalized  = normalizePlate(vehicleDTO.getVehicleNumber());
+		if (normalized == null) {
+			model.addAttribute("msg", "차량번호 형식이 올바르지 않습니다.");
+			model.addAttribute("targetURL", "/transport/vehicle");
+			return "commons/fail";
+		}
+		
+		vehicleDTO.setVehicleNumber(normalized);
+		
+		boolean success = vehicleService.modifyVehicle(vehicleDTO);
+		
+		if (success) {
+			model.addAttribute("msg", "차량 정보를 수정했습니다.");
+			model.addAttribute("targetURL", "/transport/vehicle");
+		} else {
+			model.addAttribute("msg", "정보 수정에 실패했습니다. 다시 시도해주세요.");
+			return "commons/fail";
+		}
+		
+		return "commons/result_process";
+	}
+	
+	// 차량 상태 사용불가로 변경
+	@PostMapping("/vehicle/status")
 	@ResponseBody
-	public ResponseEntity<?> deleteVehicles(@RequestBody List<Integer> idx) {
-		if (idx == null || idx.isEmpty()) {
+	public ResponseEntity<?> deleteVehicles(@RequestBody Map<String, Object> body) {
+		
+		@SuppressWarnings("unchecked")
+		List<Integer> idx = (List<Integer>) body.get("idx");
+		
+		String status = (String) body.get("status");
+		
+		if (idx == null || idx.isEmpty() || status == null) {
 			return ResponseEntity.badRequest().build();
 		}
 		
-		int deleted = vehicleService.deleteByIdx(idx);
+		int deleted = vehicleService.modifyStatus(idx, status);
 		
 		return ResponseEntity.ok(Map.of("deleted", deleted));
+	}
+	
+	// 배정 가능한 차량 리스트
+	@GetMapping("/vehicle/available")
+	@ResponseBody
+	public ResponseEntity<List<VehicleDTO>> availableVehicleList(@RequestParam String status) {
+		List<VehicleDTO> vehicles = vehicleService.getAvailableList(status);
+		
+		if (vehicles == null) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		return ResponseEntity.ok(vehicles);
+	}
+	
+	// 기사 배정
+	@PostMapping("/vehicle/edit")
+	public ResponseEntity<VehicleDTO> modifyVehicleDriver(@RequestBody Map<String, String> body) {
+		String vehicleIdxStr = (String) body.get("vehicleIdx");
+		String empIdxStr = (String) body.get("empIdx");
+		String isAssign =  (String) body.get("isAssign");
+		
+		Integer vehicleIdx = vehicleIdxStr != null ? Integer.parseInt(vehicleIdxStr) : null;
+		Integer empIdx = empIdxStr != null ? Integer.parseInt(empIdxStr) : null;
+		
+		if (vehicleIdx == null || empIdx == null) {
+			return ResponseEntity.badRequest().build();
+		}
+		
+		int updateCount = vehicleService.modifyDrvier(vehicleIdx, empIdx, isAssign);
+		
+		if (updateCount < 0) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		VehicleDTO vehicle = vehicleService.findByIdx(vehicleIdx);
+		
+		return ResponseEntity.ok(vehicle);
 	}
 	
 	// 차량번호 중복 체크
 	@GetMapping("/vehicle/dupCheck")
 	@ResponseBody
-	public Map<String, Boolean> checkDuplicate(@RequestParam String vehicleNumber) {
+	public Map<String, Boolean> checkDuplicate(@RequestParam String vehicleNumber, @RequestParam(required = false) Integer vehicleIdx) {
 		String normalized  = normalizePlate(vehicleNumber);
-		boolean isduplicate = (normalized != null) && vehicleService.isVehicleNumberDuplicate(normalized);
+		
+		boolean isduplicate = false;
+		
+		if (normalized != null) {
+			// 수정 시 차량 번호가 존재하고, 차량 번호는 수정하지 않을 경우 중복 검사
+			if (vehicleIdx != null) {
+				isduplicate = vehicleService.isVehicleNumberDuplicateExceptSelf(normalized, vehicleIdx);
+			} else {
+				// 차량 번호가 없을 경우 중복 검사
+				isduplicate = vehicleService.isVehicleNumberDuplicate(normalized);
+			}
+		}
 		
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		
@@ -114,5 +200,7 @@ public class VehicleController {
 		
 		return match.group(1) + match.group(2) + match.group(3);
 	}
+
+	
 
 }

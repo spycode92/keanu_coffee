@@ -9,10 +9,13 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
+import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplyContractDTO;
 import com.itwillbs.keanu_coffee.admin.mapper.EmployeeManagementMapper;
 import com.itwillbs.keanu_coffee.admin.mapper.SupplyContractMapper;
+import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
 import com.itwillbs.keanu_coffee.common.dto.FileDTO;
 import com.itwillbs.keanu_coffee.common.mapper.FileMapper;
 import com.itwillbs.keanu_coffee.common.utils.FileUtils;
@@ -28,31 +31,46 @@ public class SupplyContractService {
 	private final FileMapper fileMapper;
 	
 	//공급계약리스트
-	public List<SupplierProductContractDTO> getsupplyContractInfo() {
-		return supplyContractMapper.selectSupplyContractsInfo();
+	@Transactional(readOnly = true)
+	public List<SupplyContractDTO> getsupplyContractInfo(
+			int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod, String filterStatus) {
+		return supplyContractMapper.selectSupplyContractsInfo(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod, filterStatus);
+	}
+	
+	// 계약목록 수
+	@Transactional(readOnly = true)
+	public int getContractListCount(String searchType, String searchKeyword, String filterStatus) {
+		return supplyContractMapper.countContractList(searchType, searchKeyword, filterStatus);
 	}
 	
 	//계약등록
-	public boolean addContract(SupplierProductContractDTO supplyContract) {
+	@SystemLog(target = SystemLogTarget.SUPPLIER_PRODUCT_CONTRACT )
+	public boolean addContract(SupplyContractDTO supplyContract) {
 		int insertCount = supplyContractMapper.insertContract(supplyContract);
 		return insertCount > 0;
 	}
+	
 	//계약상세
-	public SupplierProductContractDTO getContractDetail(SupplierProductContractDTO supplyContract) {
+	@Transactional(readOnly = true)
+	public SupplyContractDTO getContractDetail(SupplyContractDTO supplyContract) {
 		
 		return supplyContractMapper.selectContractDetail(supplyContract);
 	}
+	
 	//계약수정
-	public SupplierProductContractDTO updateContractDetail(SupplierProductContractDTO contract) {
+	@SystemLog(target = SystemLogTarget.SUPPLIER_PRODUCT_CONTRACT)
+	public SupplyContractDTO updateContractDetail(SupplyContractDTO contract) {
 		int updateCount = supplyContractMapper.updateContractDetail(contract);
 		
 		return contract;
 	}
+	
 	//계약삭제
-	public boolean deleteContractDetail(SupplierProductContractDTO contract) {
+	public boolean deleteContractDetail(SupplyContractDTO contract) {
 		int updateCount = supplyContractMapper.deleteContractDetail(contract);
 		return updateCount > 0;
 	}
+
 
 	
 	

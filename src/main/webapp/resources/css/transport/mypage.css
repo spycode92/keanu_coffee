@@ -1,0 +1,585 @@
+:root { 
+	--bg: #f6f8ff; 
+	--fg: #111827; 
+	--muted: #6b7280; 
+	--card: #fff; 
+	--border: #e5e7eb; 
+	--primary: #5660fe;
+}
+
+.dark {
+    --background: #0b1220;
+    --foreground: #e5eaf3;
+    --card: #0f172a;
+    --card-foreground: #e5eaf3;
+    --popover: #0f172a;
+    --popover-foreground: #e5eaf3;
+    --primary: #1e314f;
+    --primary-foreground: #0b1220;
+    --secondary: #111827;
+    --secondary-foreground: #e5eaf3;
+    --muted: #1e314f;
+    --muted-foreground: #9aa7b7;
+    --accent: #0f1a2b;
+    --accent-foreground: #e5eaf3;
+    --destructive: #b91c1c;
+    --destructive-foreground: #ffecec;
+    --border: #182235;
+    --input: #141c2a;
+    --input-background: #141c2a;
+  	--switch-background: #334155;
+    --ring: oklch(0.439 0 0);
+    
+    /* 차트 다크 톤(선택) */
+	--chart-1: #5b7cff;
+	--chart-2: #38bdf8;
+	--chart-3: #2dd4bf;
+	--chart-4: #fbbf24;
+	--chart-5: #f87171;
+}
+
+* {
+	box-sizing: border-box
+}
+
+body {
+	margin: 0;
+	background: var(- -bg);
+	color: var(- -fg);
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+		Arial, sans-serif;
+}
+
+.container {
+	max-width: 720px;
+	margin: 16px auto 64px;
+	padding: 0 12px;
+}
+
+h1 {
+	margin: 0 0 10px;
+	font-size: 1.25rem;
+}
+
+h2 {
+	margin: 0 0 8px;
+	font-size: 1.05rem;
+}
+
+h3 {
+	font-size: 1rem;
+}
+
+.card {
+	background: var(- -card);
+	border: 1px solid var(- -border);
+	border-radius: 12px;
+	padding: 12px;
+}
+
+.muted {
+	color: var(- -muted)
+}
+
+.btn.ghost {
+	background: #fff;
+	color: #111;
+	display: none;
+}
+
+.btn:disabled {
+	opacity: .55;
+	cursor: not-allowed;
+}
+
+/* 프로필 */
+.kv {
+	display: grid;
+	grid-template-columns: 88px 1fr;
+	gap: 8px 10px;
+	font-size: .95rem;
+}
+
+/* 목록(모바일 카드형) */
+table {
+	width: 100%;
+	border-collapse: collapse
+}
+
+th, td {
+	padding: 10px 12px;
+	border-bottom: 1px solid var(--border);
+	text-align: left;
+	font-size: .9rem;
+}
+
+table th {
+    background-color: var(--muted);
+    font-weight: var(--font-weight-medium);
+}
+
+.btn-mobile {
+  display: none;
+}
+
+@media (max-width: 600px) {
+	/* 목록 테이블 */
+	.responsive-table thead {
+		display: none;
+	}
+	.responsive-table tbody tr {
+		display: block;
+		background: #fff;
+		border: 1px solid var(--border);
+		border-radius: 12px;
+		margin-bottom: 10px;
+		overflow: hidden;
+		box-shadow: 0 2px 8px rgba(15, 23, 42, .05);
+	}
+	.responsive-table td {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		border: 0;
+		border-bottom: 1px dashed #eef2ff;
+	}
+	.responsive-table td:last-child {
+		border-bottom: 0;
+	}
+	.responsive-table td:nth-child(1)::before { content: "배차일"; font-weight: 600; color: #64748b; }
+	.responsive-table td:nth-child(2)::before { content: "배차시간"; font-weight: 600; color: #64748b; }
+	.responsive-table td:nth-child(3)::before { content: "구역"; font-weight: 600; color: #64748b; }
+	.responsive-table td:nth-child(4)::before { content: "총적재량"; font-weight: 600; color: #64748b; }
+	.responsive-table td:nth-child(5)::before { content: "작업"; font-weight: 600; color: #64748b; }
+	
+	 .detail-table thead {
+    display: none; /* 헤더 숨김 */
+  }
+  
+  .btn-pc {
+    display: none;
+  }
+  .btn-mobile {
+    display: block;
+    text-align: right;
+  }
+  
+ table, thead, tbody, tr, th, td {
+    display: block;
+    width: 100%;
+  }
+
+  thead {
+    display: none; /* 모바일에서는 헤더 감춤 */
+  }
+
+  tr {
+    border: 1px solid #eee;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  td {
+    border: none;
+    padding: 6px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #333;
+    flex-basis: 40%;
+    text-align: left;
+  }
+
+  /* 지점명은 카드 상단에 크게 */
+  td[rowspan] {
+    display: block;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 8px 10px;
+    border-bottom: 1px solid #ddd;
+    background: #f9f9f9;
+  }
+
+  /* 납품완료 버튼은 카드 하단 고정 */
+  .btn-cell {
+    display: block;
+    text-align: center;
+    margin-top: 0.75rem;
+  }
+  .btn-cell .btn {
+    width: 100%;
+  }
+  
+   #files {
+    display: block;         /* 반품 있을 때 보이도록 */
+    margin-top: 10px;
+    width: 100%;            /* 화면 꽉 차게 */
+    font-size: 0.9rem;
+  }
+
+}
+
+/* 상태 칩 (예약/운송중/완료) */
+.chip {
+	display: inline-block;
+	padding: 4px 10px;
+	border-radius: 999px;
+	font-size: .82rem;
+	font-weight: 700;
+}
+
+.chip.book {
+	background: #e7eaff;
+	color: #3730a3
+}
+
+.chip.run {
+	background: #e6f1ff;
+	color: #1e40af
+}
+
+.chip.done {
+	background: #eafbea;
+	color: #166534
+}
+
+#pickedSummary {
+	font-size: 0.9rem;
+}
+
+/* 모달 (하단 시트) */
+.modal {
+	position: fixed;
+	inset: 0;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, .45);
+	z-index: 1000;
+}
+
+/* 주문서(그룹 테이블) */
+.group {
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	margin-bottom: 12px;
+	overflow: hidden;
+}
+
+.group-head {
+	background: #f8faff;
+	padding: 10px 12px;
+	font-weight: 700;
+}
+
+.group table {
+	width: 100%;
+	border-collapse: collapse
+}
+
+.group th, .group td {
+	border-bottom: 1px solid #eef2ff;
+	padding: 10px 12px
+}
+
+.group tr:last-child td {
+	border-bottom: 0
+}
+
+/* 선택 요약 바 - 리스트 버전 */
+.picked-bar {
+	position: sticky;
+	bottom: 0;
+	background: #0f172a;
+	color: #fff;
+	padding: 10px 12px;
+	gap: 12px;
+}
+
+.picked-summary {
+	max-height: 120px;
+	overflow: auto;
+}
+
+.picked-summary .area {
+	font-weight: 700;
+	margin: 0 0 4px;
+}
+
+.picked-summary ul {
+	margin: 0 0 8px;
+	padding-left: 18px;
+}
+
+.picked-summary li {
+	line-height: 1.5;
+}
+
+/* 배송 현황 타임라인 */
+.timeline {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+	font-size: 0.9rem;
+}
+
+.delivered-qty {
+	width: 60px;              /* 숫자 입력 칸 크기 */
+	padding: 4px 6px;         /* 안쪽 여백 */
+	font-size: 0.85rem;       /* 글자 크기 */
+	text-align: center;       /* 숫자 가운데 정렬 */
+	border: 1px solid #d1d5db;/* 연한 회색 테두리 (#d1d5db = Tailwind gray-300) */
+	border-radius: 6px;       /* 모서리 둥글게 */
+	background-color: #f9fafb;/* 밝은 배경 */
+	outline: none;            /* 포커스 시 기본 파란 테두리 제거 */
+	transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* 포커스 시 효과 */
+.delivered-qty:focus {
+	border-color: #3b82f6;    /* 파란색 테두리 */
+	box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* disabled 상태 */
+.delivered-qty:disabled {
+	background-color: #f3f4f6; /* 비활성화일 때 약간 진한 회색 */
+	color: #9ca3af;            /* 글씨도 연하게 */
+	cursor: not-allowed;       /* 클릭 불가 표시 */
+}
+
+/* 파일 다운로드 */
+.download-area {
+	margin-top: 15px;
+	padding: 10px;
+	background-color: #f7f7f7;
+	border: 1px dashed #aaa;
+	border-radius: 4px;
+	font-size: 0.9rem;
+}
+
+.download-area input[type="button"] {
+	background: #007bff;
+	border: none;
+	color: #fff;
+	padding: 6px 12px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.download-area input[type="button"]:hover {
+	background: #0056b3;
+}
+
+#alarm-wrapper {
+	position: relative;
+	display: inline-block;
+}
+
+#alarm-image {
+	width: 25px;
+	height: 25px;
+	vertical-align: bottom;
+}
+
+/* 알람 아이콘 뱃지 */
+#alarm-badge {
+	position: absolute;
+	/* 우측 하단 고정 */
+	bottom: 0;
+	right: 0;
+	width: 8px;
+	height: 8px;
+	background-color: red;
+	border-radius: 50%; /* 원형 */
+	display: none; /* 처음 로딩 시 숨김 */
+}
+
+#noti:hover {
+    transform: translateY(-2px);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+#noti:active {
+    transform: translateY(0);
+    transition: background-color 0.1s ease, transform 0.1s ease;
+}
+
+/* 					notification button */
+#notification-box {
+	display: none;
+	position: absolute;
+	width: 300px;
+	border-radius: 20px;
+	box-shadow: 0 3.2px 16.2px rgba(0, 0, 0, 0.3);
+	margin-top: 200px;
+	right: 20px;
+	background-color: #fff;
+	padding: 20px;
+}
+
+#notification-box > ul > li:nth-child(odd) {
+	background-color: #d9d9d9;
+}
+
+#notification-box > h3 {
+	padding: 5px;
+	border-bottom: #333 solid 2px;
+}
+
+#notification-box > ul > span {
+	float: right;
+	margin-left: auto;
+}
+#notification-box > ul > li {
+	margin-top: 5px;
+}
+#small-menu {
+	display:none;
+}
+
+/* notification */
+#notification-box {
+    position: absolute;
+    top: 100%; 
+/* 	    right: 240px;   */
+    margin-top: 0.5em; 
+    width: 420px;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 100;
+    padding-top: 0;
+}
+
+#notification-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+#notification-list li {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+}
+
+#notification-list li:hover {
+    background: #f9f9f9;
+}
+
+#notification-list li .dot {
+    font-size: 14px;
+}
+
+#notification-header {
+	display: flex; 
+	justify-content: space-between; 
+	align-items: center;
+	border-bottom: 1px solid #ddd;
+	position: sticky;
+	top: 0;
+	background: white;
+	width: 370px;
+	z-index: 999;
+}
+
+#notification-header a {
+	color: black;
+}
+
+.no-notification {
+    padding: 10px;
+    color: #888;
+    text-align: center;
+}
+
+#notification-box #notification-list li {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+    background-color: white;
+    white-space: nowrap;       
+  	overflow: hidden;          /* 넘치는 텍스트 감춤 */
+  	text-overflow: ellipsis; 
+}
+
+#notification-list li:hover {
+    background: #f9f9f9;
+}
+
+#notification-box h3 {
+    position: sticky;
+    top: -20px;
+    background: white;
+	padding: 10px;
+    margin: 0;
+    font-size: 1.2em;
+    z-index: 10;
+}
+
+.read-status {
+    font-size: 12px;
+    color: #888;
+    margin-left: 10px;
+}
+.no-notification {
+    text-align: center;
+    color: #999;
+    padding: 10px;
+}
+
+.circle {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+.circle.read {
+    background-color: #ccc; 
+}
+.circle.unread {
+    background-color: red;
+}
+
+#notification-header  div {
+	display: flex;
+	gap: 20px;
+	cursor: pointer;
+	color: black;
+}
+
+
+.noti-message {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+#files {
+	display: none;
+	margin-top: 0.5em;
+}

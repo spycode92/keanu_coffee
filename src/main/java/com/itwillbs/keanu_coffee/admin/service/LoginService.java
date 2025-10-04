@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class LoginService {
 	private final BCryptPasswordEncoder passwordEncoder;
 	@Autowired
 	HttpSession session;
+	
 	public boolean checkPassword(EmployeeInfoDTO employee) {
 		
 		// 입력받은 id, 비밀번호
@@ -29,17 +31,18 @@ public class LoginService {
 		String inputPw = employee.getEmpPassword();
 		
 		// 입력받은 id로 조회한 정보
-		employee = employeeManagementMapper.selectEmployeeInfoById(empNo);
+		employee = employeeManagementMapper.selectEmployeeInfoByEmpNo(empNo);
 		
 		//조회된 정보가 있을때
 		if(employee != null ) {
 			// 재직중일때
 			if(employee.getEmpStatus().equals("재직")){
 
-				// 비밀번호 확인
+				// 비밀번호가 일치할 때
 				if(passwordEncoder.matches(inputPw, employee.getEmpPassword())) {
-				
-					session.setAttribute(empNo, "empNo");
+					session.setAttribute("empIdx", employee.getEmpIdx()); // 사원고유번호 저장
+					session.setAttribute("empNo", employee.getEmpNo()); // 사번정보저장
+					session.setAttribute("empName", employee.getEmpName()); // 사원이름 저장
 					return true;
 				}
 				

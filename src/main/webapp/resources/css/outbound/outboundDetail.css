@@ -1,0 +1,208 @@
+.outbound-detail {
+  font-variant-numeric: tabular-nums;
+  font-size: 1rem; /* 기본 글자 크기 확대 */
+}
+
+/* 카드 기본 */
+.outbound-detail .card { 
+  padding: 1.25rem; 
+  border-radius: var(--radius-lg, .75rem); /* 모서리 조금 더 둥글게 */
+}
+.outbound-detail .card-header { 
+  margin-bottom: 1rem; 
+  padding-bottom: .75rem; 
+}
+.outbound-detail .card-title { 
+  margin: 0; 
+  font-size: 1.2rem; /* 제목 크게 */
+  font-weight: 600;
+}
+
+/* 상단 버튼 그룹 */
+.outbound-detail .page-actions { 
+  display: flex; 
+  gap: .75rem; 
+  align-items: center; 
+}
+.outbound-detail .page-actions .btn {
+  font-size: .95rem; 
+  padding: .55rem .9rem; /* 버튼 조금 키우기 */
+}
+
+/* === 기본정보 영역 === */
+.outbound-detail .kv-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(180px, 1fr)); /* 한 칸 최소 넓이 늘림 */
+  gap: .75rem 1.25rem;
+  align-items: start;
+}
+.outbound-detail .kv-item { min-width: 0; }
+.outbound-detail .kv-label {
+  font-size: 1rem; /* 라벨 키움 */
+  font-weight: 500;
+  color: var(--muted-foreground);
+  margin-bottom: .35rem;
+}
+.outbound-detail .kv-value {
+  padding: .6rem .8rem; /* 박스 크기 키움 */
+  background: var(--input-background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  line-height: 1.4;
+  min-height: 2.5rem; /* 높이 확보 */
+  display: flex;
+  align-items: center;
+}
+
+/* 타임라인 */
+.outbound-detail .timeline {
+  display: flex;
+  gap: 1.5rem; /* 단계 간격 늘림 */
+  align-items: center;
+  padding: .75rem 0;
+}
+.outbound-detail .timeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .35rem;
+  text-align: center;
+  min-width: 110px; /* 박스 넓힘 */
+}
+.outbound-detail .timeline-dot {
+  width: 22px; height: 22px; /* 점 크게 */
+  border-radius: 50%;
+  background: var(--muted);
+  border: 3px solid var(--border);
+}
+.outbound-detail .timeline-step.active .timeline-dot {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+/* 테이블 */
+.outbound-detail #itemsTable { table-layout: fixed; width: 100%; }
+.outbound-detail .table th,
+.outbound-detail .table td { 
+  padding: .75rem .85rem; /* 셀 크기 키움 */
+  vertical-align: middle; 
+  font-size: .95rem;
+}
+.outbound-detail .table thead th {
+  background: var(--accent);
+  color: var(--foreground);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  font-size: 1rem;
+}
+
+/* 첫 번째 'No' 열 고정폭 & 센터 정렬 */
+.outbound-detail #itemsTable th:first-child,
+.outbound-detail #itemsTable td:first-child {
+  width: 5ch;
+  text-align: center;
+  padding-left: .4rem;
+  padding-right: .4rem;
+  white-space: nowrap;
+}
+
+/* 상품명은 좌측 정렬, 길면 말줄임 */
+.outbound-detail #itemsTable td:nth-child(3) {
+  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+/* 수량은 우측 정렬 */
+.outbound-detail #itemsTable td:last-child { 
+  text-align: right; 
+}
+
+/* 첨부 */
+.outbound-detail .attachments { 
+  display: flex; 
+  flex-direction: column; 
+  gap: .6rem; 
+}
+.outbound-detail .attachment-item {
+  padding: .75rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: .5rem;
+  font-size: .95rem;
+}
+
+/* 상태 뱃지 */
+.outbound-detail .badge {
+  display: inline-block;
+  padding: .35rem .75rem; /* 크게 */
+  border-radius: 999px;
+  font-size: .9rem;
+  line-height: 1.2;
+  border: 1px solid transparent;
+  font-weight: 500;
+}
+
+/* 테이블 전체 가운데 정렬 */
+.outbound-detail #itemsTable th,
+.outbound-detail #itemsTable td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* 상품명도 가운데 정렬 (기존 좌측 정렬 덮어쓰기) */
+.outbound-detail #itemsTable td:nth-child(3) {
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 반응형 */
+@media (max-width: 980px) {
+  .outbound-detail .kv-grid { grid-template-columns: 1fr 1fr; }
+  .outbound-detail .timeline { flex-wrap: wrap; justify-content: flex-start; }
+}
+
+/* 인쇄 */
+@media print {
+  nav.top-nav, .sidebar, .page-actions { display: none !important; }
+  .content { margin: 0; padding: 0; }
+}
+
+/* 버튼 */
+.outbound-detail .page-actions .btn {
+	font-size: 1rem;     /* 기존 .95rem → 1rem */
+	padding: .65rem 1rem; /* 버튼도 조금 더 크게 */
+}
+
+/* 카드 제목 */
+.outbound-detail .card-title { 
+	font-size: 1.35rem;  /* 기존 1.2rem → 1.35rem */
+}
+
+/* kv-label */
+.outbound-detail .kv-label {
+	font-size: 1.05rem;  /* 기존 1rem → 1.05rem */
+}
+
+/* kv-value */
+.outbound-detail .kv-value {
+	font-size: 1.05rem;  /* 기존 1rem → 1.05rem */
+}
+
+/* 테이블 */
+.outbound-detail .table th,
+.outbound-detail .table td { 
+	font-size: 1rem;     /* 기존 .95rem → 1rem */
+}
+
+/* 뱃지 */
+.outbound-detail .badge {
+	font-size: 1rem;     /* 기존 .9rem → 1rem */
+}
+

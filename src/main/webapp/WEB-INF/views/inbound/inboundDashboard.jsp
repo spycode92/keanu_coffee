@@ -6,7 +6,7 @@
 	<meta charset="UTF-8">
 	<title>입고 관리</title>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -1,10 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- 공급계약 등록 모달 -->
 <div id="contractAddModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="contractAddLabel" tabindex="-1">
     <div class="modal-card md">
         <form id="contractAddForm" class="modal-content">
+        	<sec:csrfInput/>
             <div class="modal-head" >
                 <h5 id="contractAddLabel">공급계약 등록</h5>
                 <button type="button"
@@ -15,23 +17,25 @@
                 </button>
             </div>
             <div class="modal-body" >
-                <div class="field" >
-                    <div style="flex:1; min-width:150px;">
-                        <label class="form-label">공급업체</label>
-                        <select id="supplierSelect" name="supplierIdx" class="form-select" required>
-                            <option value="">선택하세요</option>
-                        </select>
-                    </div>
-                    <div style="flex:1; min-width:150px;">
-                        <label class="form-label">상품</label>
-                        <select id="productSelect" name="productIdx" class="form-select" required>
-                            <option value="">선택하세요</option>
-                        </select>
-                    </div>
-                </div>
+				<div class="field">
+				    <div style="display:flex; gap:2rem; min-width:150px;">
+				        <!-- 공급업체 섹션 -->
+				        <div style="display:flex; flex-direction: column; gap:0.5rem;">
+				            <button class="btn btn-primary searchSupplier">공급업체검색</button>
+				            <select id="addContractSupplierSelect" name="supplierIdx" class="form-select supplierSelectList" required>
+				            </select>
+				        </div>
+				        <!-- 상품 섹션 -->
+				        <div style="display:flex; flex-direction: column; gap:0.5rem;">
+				            <button class="btn btn-primary searchProduct">상품검색</button>
+				            <select id="addContractProductSelect" name="productIdx" class="form-select productSelectList" required>
+				            </select>
+				        </div>
+				    </div>
+				</div>
                 <div class="field mb-3">
-                    <label class="form-label">계약 단가</label>
-                    <input type="number" id="contractPrice" name="contractPrice" class="form-control" min="0" required>
+                    <label class="form-label">계약 단가(원)</label>
+                    <input type="number" id="contractPrice" name="contractPrice" class="form-control" min="0" max="2147483647" required>
                 </div>
                 <div class="field mb-3" style="display:flex; gap:1rem;">
                     <div style="flex:1">
@@ -44,19 +48,20 @@
                     </div>
                 </div>
                 <div class="field mb-3">
-                    <label class="form-label">최소 주문 수량</label>
-                    <input type="number" id="minOrderQuantity" name="minOrderQuantity" class="form-control" min="0">
+                    <label class="form-label">최소 주문 수량(BOX)</label>
+                    <input type="number" id="minOrderQuantity" name="minOrderQuantity" class="form-control" min="0" max="2147483647" required>
                 </div>
                 <div class="field mb-3">
-                    <label class="form-label">최대 주문 수량</label>
-                    <input type="number" id="maxOrderQuantity" name="maxOrderQuantity" class="form-control" min="0">
+                    <label class="form-label">최대 주문 수량(BOX)</label>
+                    <input type="number" id="maxOrderQuantity" name="maxOrderQuantity" class="form-control" min="0" max="2147483647" required>
                 </div>
                 <div class="field mb-3">
                     <label class="form-label">상태</label>
                     <select id="statusSelect" name="status" class="form-select" required>
-                        <option value="1">활성</option>
-                        <option value="2">비활성</option>
-                        <option value="3">대기</option>
+                        <option value="활성">활성</option>
+                        <option value="비활성">비활성</option>
+                        <option value="취소">취소</option>
+                        <option value="삭제">삭제</option>
                     </select>
                 </div>
                 <div class="field mb-3">
@@ -71,7 +76,7 @@
                     등록
                 </button>
                 <button type="button"
-                        class="btn btn-secondary"
+                        class="btn btn-cancel"
                         onclick="ModalManager.closeModal(document.getElementById('contractAddModal'))">
                     취소
                 </button>

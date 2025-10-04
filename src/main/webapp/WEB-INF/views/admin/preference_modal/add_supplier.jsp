@@ -1,9 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <div id="supplierModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="supplierModalLabel" tabindex="-1">
     <div class="modal-card md">
         <form id="supplierForm">
+        	<sec:csrfInput/>
             <div class="modal-head">
                 <h5 id="supplierModalLabel">공급업체 등록</h5>
                 <button type="button"
@@ -27,6 +29,10 @@
                     <input type="text" class="form-control" id="supplierManagerPhone" name="supplierManagerPhone" required>
                 </div>
                 <div class="field">
+                    <label class="form-label">사업자번호</label>
+                    <input type="text" class="form-control" id="businessNumber" name="businessNumber" disabled style="background-color: #dcdcdc; border:1px solid #ccc;">
+                </div>
+                <div class="field">
                     <label class="form-label">우편번호</label>
                     <div style="display: flex; gap: 0.5rem; align-items: center;">
                         <input type="text"
@@ -37,7 +43,7 @@
                                readonly
                                style="flex: 1; max-width: 150px;">
                         <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-primary"
                                 id="btnSearchAddress">
                             우편번호 검색
                         </button>
@@ -62,7 +68,7 @@
             </div>
             <div class="modal-foot">
                 <button type="button"
-                        class="btn btn-secondary"
+                        class="btn btn-cancel"
                         onclick="ModalManager.closeModal(document.getElementById('supplierModal'))">
                     취소
                 </button>

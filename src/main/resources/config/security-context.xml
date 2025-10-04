@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-5.8.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<beans:bean id="customAccessDeniedHandler" class="com.itwillbs.keanu_coffee.common.security.CustomAccessDeniedHandler" />
+	<beans:bean id="CustomAuthenticationSuccessHandler" class="com.itwillbs.keanu_coffee.common.security.CustomAuthenticationSuccessHandler" />
+	<!-- 패스워드 인코더로 사용될 BCryptPasswordEncoder 클래스 등록 -->
+	<beans:bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	<!-- 리소스, 파비콘, 개발자도구 검사제외 -->
+	<http pattern="/resources/**" security="none" /> 
+	<http pattern="/.well-known/**" security="none" /> 
+	<http pattern="/favicon.ico" security="none" /> 
+	<!-- 
+		=====================================================================================================
+		spEL                                    설명
+		=====================================================================================================
+		hasRole(‘ROLE_USER’)					ROLE_USER 권한을 가진 유저만 접근 가능
+		hasAnyRole(‘ROLE_USER’, ‘ROLE_ADMIN’)	ROLE_USER 또는 ROLE_ADMIN 권한을 가진 유저만 접근 가능
+		permitAll								모두 접근 가능
+		denyAll									모두 접근 불가
+		isAnonymous()							인증하지 않은 유저만 접근 가능
+		isRememberMe()							자동로그인 기능을 사용한 유저만 접근 가능
+		isAuthenticated()						인증한 유저만 접근 가능
+		isFullyAuthenticated()					인증을 하고, 자동 로그인 기능을 사용하지 않은 유저만 접근 가능
+		 -->
+	<http auto-config="true">
+		<!-- X-frame 옵션 같은 도메인 내 iframe 접근이 허용 -->
+	    <headers>
+	        <frame-options policy="SAMEORIGIN" />
+	    </headers>
+	
+		<intercept-url pattern="/" access="permitAll" />
+		<intercept-url pattern="/main" access="isAuthenticated()" />
+<!-- 		<intercept-url pattern="/admin/**" access="hasAnyAuthority('ADMIN_MASTER', 'ADMIN_SYSTEM')" /> -->
+		<intercept-url pattern="/admin/**" access="isAuthenticated()" />
+		<intercept-url pattern="/inbound/**" access="hasAnyAuthority('INBOUND_READ', 'INBOUND_WRITE')" />
+		<intercept-url pattern="/outbound/**" access="hasAnyAuthority('OUTBOUND_READ', 'OUTBOUND_WRITE')" />
+		<intercept-url pattern="/inventory/**" access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')" />
+		<intercept-url pattern="/inventoryAction/**" access="hasAnyAuthority('INVENTORY_READ', 'INVENTORY_WRITE')" />
+		<intercept-url pattern="/transport/**" access="hasAnyAuthority('TRANSPORT_READ', 'TRANSPORT_WRITE')" />
+		<intercept-url pattern="/trigger" access="permitAll" />
+    	<intercept-url pattern="/**" access="isAuthenticated()" />
+		
+		
+		<intercept-url pattern="/alarm/**" access="isAuthenticated()" />
+		<intercept-url pattern="/ws-noti/**" access="isAuthenticated()" />	
+		<intercept-url pattern="/chat/**" access="isAuthenticated()" />	
+		<!-- 접근제한 처리 -->
+		<access-denied-handler ref="customAccessDeniedHandler"/>
+		<!-- 로그인설정 -->
+		<form-login
+			login-page="/"
+			login-processing-url="/loginForSecurity"
+			username-parameter="empNo"
+			password-parameter="empPassword"
+			authentication-success-handler-ref="CustomAuthenticationSuccessHandler"
+		/>
+		
+		<logout logout-url="/logoutForSecurity"
+			logout-success-url="/"
+			invalidate-session="true" 
+        	delete-cookies="JSESSIONID"/>
+		
+	</http>
+
+	<authentication-manager>
+	    <authentication-provider user-service-ref="customUserDetailsService">
+      		<password-encoder ref="passwordEncoder"/>
+    	</authentication-provider>
+	</authentication-manager>
+
+</beans:beans>

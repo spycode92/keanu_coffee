@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.FranchiseMapper">
+	<!-- resultMap 정의 -->
+	<resultMap id="AdministrativeResultMap" type="AdministrativeRegionDTO">
+		<id property="bcode" column="bcode"/>
+		<result property="sido" column="sido"/>
+		<result property="sigungu" column="sigungu"/>
+		<result property="dong" column="dong"/>
+	</resultMap>
+	<!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
+
+	<!-- 지점 수 조회 -->
+	<select id="countFranchise" resultType="int">
+		SELECT count(*)
+		FROM FRANCHISE
+		<where>
+			<if test="searchType != ''">
+				status = #{searchType} 
+			</if>
+			<if test="searchKeyword != '' ">
+				AND 
+					franchise_name LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</where>
+		
+	</select>
+	
+	<!-- 지점목록조회 -->
+	<select id="selectFranchiseList" resultType="FranchiseDTO">
+		SELECT * 
+		FROM FRANCHISE
+		<where>
+			<if test="searchType != ''">
+				status = #{searchType} 
+			</if>
+			<if test="searchKeyword != '' ">
+				AND 
+					franchise_name LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</where>
+			<if test="orderKey != ''">
+				ORDER BY ${orderKey} ${orderMethod}			
+			</if>
+		LIMIT
+			#{startRow}
+			, #{listLimit}
+	</select>
+	
+	<!-- 지점정보입력 -->
+	<insert id="insertFranchiseInfo" keyProperty="franchiseIdx" useGeneratedKeys="true">
+		INSERT INTO FRANCHISE(
+			franchise_name
+			, franchise_manager_name
+			, franchise_phone
+			, franchise_zipcode
+			, franchise_address1
+			, franchise_address2
+			, bcode
+		)
+		VALUES(
+			#{franchiseName}
+			, #{franchiseManagerName}
+			, #{franchisePhone}
+			, #{franchiseZipcode}
+			, #{franchiseAddress1}
+			, #{franchiseAddress2}
+			, #{administrativeRegion.bcode}
+		)
+	</insert>
+	
+	<!-- 행정구역정보입력 -->
+	<insert id="insertAdministrativeRegionInfo" >
+		INSERT INTO ADMINISTRATIVE_REGION
+		SELECT 
+			#{administrativeRegion.bcode}
+			, #{administrativeRegion.sido}
+			, #{administrativeRegion.sigungu}
+			, #{administrativeRegion.dong}
+		FROM DUAL
+		WHERE NOT EXISTS (
+			SELECT 1 FROM ADMINISTRATIVE_REGION
+			WHERE bcode = #{administrativeRegion.bcode}
+		)
+	</insert>
+	
+	<!-- 지점상세정보 조회 -->
+	<resultMap id="franchiseAndAdministrativeResultMap" type="FranchiseDTO">
+		<id property="franchiseIdx" column="franchise_idx"/>
+		<result property="franchiseName" column="franchise_name"/>
+		<result property="franchiseZipcode" column="franchise_zipcode"/>
+		<result property="franchiseAddress1" column="franchise_address1"/>
+		<result property="franchiseAddress2" column="franchise_address2"/>
+		<result property="franchisePhone" column="franchise_phone"/>
+		<result property="franchiseManagerName" column="franchise_manager_name"/>
+		<result property="status" column="status"/>
+		<association property="administrativeRegion" resultMap="AdministrativeResultMap"/>
+	</resultMap>
+	<select id="selectFranchiseDetail" resultMap="franchiseAndAdministrativeResultMap">
+		SELECT
+			f.franchise_idx
+			, f.franchise_name
+			, f.franchise_zipcode
+			, f.franchise_address1
+			, f.franchise_address2
+			, f.franchise_phone
+			, f.franchise_manager_name
+			, f.status
+			, a.bcode
+			, a.sido
+			, a.sigungu
+			, a.dong
+		FROM
+			FRANCHISE f
+		LEFT JOIN ADMINISTRATIVE_REGION a
+			ON f.bcode = a.bcode
+		WHERE f.franchise_idx = #{franchiseIdx}
+	</select>
+	
+	<!-- 행정정보삭제 -->
+	<delete id="deleteAdministratveRegionInfo">
+		DELETE FROM ADMINISTRATIVE_REGION
+		WHERE bcode = #{bcode}
+			AND NOT EXISTS(
+				SELECT 1
+				FROM FRANCHISE
+				WHERE bcode = #{bcode}
+			)
+	</delete>
+	
+	<update id="updateFranchiseInfo" >
+	UPDATE FRANCHISE SET
+		franchise_name = #{franchiseName}
+		, franchise_manager_name = #{franchiseManagerName}
+		, franchise_phone = #{franchisePhone}
+		, franchise_zipcode = #{franchiseZipcode}
+		, franchise_address1 = #{franchiseAddress1}
+		, franchise_address2 = #{franchiseAddress2}
+		, bcode =  #{administrativeRegion.bcode}
+		, status = #{status}
+	WHERE franchise_idx = #{franchiseIdx}
+	</update>
+	
+	<!-- 등록된 구역이 있는지 확인 -->
+	<select id="countFranchiseByRegion" resultType="int">
+    	SELECT 
+			COUNT(*)
+		FROM
+			FRANCHISE
+		WHERE
+			region_idx = #{regionIdx}
+	</select>
+	
+	<!-- bcode로 지점 찾기 -->
+	<select id="selectBecode" resultType="FranchiseDTO">
+		SELECT *
+		FROM
+			FRANCHISE
+		WHERE
+			bcode = #{bcode}
+	</select>
+	
+	<!-- 구역 정보 추가 -->
+	<update id="updateRegionIdx">
+		UPDATE
+			FRANCHISE
+		SET
+			region_idx = #{regionIdx}
+		WHERE
+			franchise_idx = #{franchiseIdx}
+	</update>
+	
+	<!-- 행정구역 정보 조회 -->
+	<select id="selectAdministartiveRegionInfo" resultType="AdministrativeRegionDTO">
+		SELECT *
+		FROM ADMINISTRATIVE_REGION
+		WHERE bcode = #{administrativeRegion.bcode}
+	</select>
+	
+	<!-- 행정구역과 맵핑된 구역정보 가져오기 -->
+	<select id="selectMappingInfoWithAdministrativeRegionIdx" resultType="MappingDTO">
+		SELECT *
+		FROM REGION_ADMINISTRATIVE_MAP
+		WHERE bcode = #{bcode}
+	</select>
+	
+	
+	<!-- 비코드에 엮인 프렌차이즈 지점수 확인 -->
+	<select id="selectCountBcode" resultType="int">
+		SELECT COUNT(*)
+		FROM FRANCHISE
+		where bcode = #{bocde}
+	</select>
+	
+	<!-- 맵핑테이블 삭제 -->
+	<delete id="deleteMapping" >
+		DELETE FROM REGION_ADMINISTRATIVE_MAP
+		WHERE bcode = #{bcode}
+	</delete>
+	
+	<delete id="deleteRoute">
+		DELETE FROM ROUTE
+		WHERE franchise_idx = #{franchiseIdx}
+	</delete>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

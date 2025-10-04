@@ -1,128 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>운송관리대시보드</title>
-<!-- 기본 양식 -->
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<title>차량관리</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link
-	href="${pageContext.request.contextPath}/resources/css/transport/common.css"
-	rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resources/css/transport/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
+<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/common/sortUtils.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/transport/vehicle.js" defer></script>
 <style type="text/css">
-.container {
-	max-width: 1264px;
-	margin: 0 auto;
-	padding: 0 16px;
-}
-
 header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 
-.content {
-	height: 630px;
-}
-
-/* 4) 버튼 */
-.btn{
-	height: 36px;
-  	padding: 0 14px;
-  	border: 1px solid var(--border);
-  	border-radius: var(--radius);
-  	background: var(--background);
-  	color: var(--foreground);
-  	font-weight: 600;
-  	transition: background .12s, border-color .12s, box-shadow .12s, color .12s;
-}
-.btn:hover{ background: #f8fafc; border-color: #cbd5e1; }
-.btn:focus-visible{ outline: 2px solid var(--ring); outline-offset: 2px; }
-
-.btn-primary{
-  	background: var(--primary);
-  	color: var(--primary-foreground);
-  	border-color: transparent;
-}
-.btn-primary:hover{ filter: brightness(0.95); }
-
-.btn-secondary{
-  	background: var(--secondary);
-  	color: var(--secondary-foreground);
-}
-
-/* 검색/필터 바 */
-.filters {
-	width: 70em;
-    background: #f8fafc;     
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px;
-    display: grid;
-    grid-template-columns: 180px 1fr max-content;
-    gap: 10px;
-    align-items: center; /* 세로 중앙 */
-}
-/* 고정폭 제거 → 그리드가 폭을 관리하도록 */
-.filters .field{ display:flex; gap:6px; margin-right: 1.5em;}
-.filters select{ width:100%; height:38px; }
-.filters .search{ display:flex; }
-.filters input{ width:100%; height:38px; }
-
-.filters input, .filters select{
-  padding:0 10px; border:1px solid var(--border); border-radius:10px; background:#fff;
-}
-
-/* 버튼은 오른쪽 끝 */
-.filters .actions{
-	display:flex; 
-	width: 100%;
-	justify-content:center; 
-	align-items:center;
-}
-.filters .actions .btn{ 
-	height:38px; 
-	width: 10em;
-	display: flex;
-	justify-content: center;
-}
-
-/* 반응형: 좁아지면 세로 스택 */
-@media (max-width: 900px){
-  .filters{ grid-template-columns: 1fr; }
-  .filters .actions{ justify-content: stretch; }
-  .filters .actions .btn{ width:100%; }
-}
-
-.badge {
-	display: inline-block;
-	padding: 2px 8px;
-	border-radius: 999px;
-	font-size: .8rem;
-	font-weight: 700
-}
-
 .badge.unassigned {
-  background: #fef3c7; /* amber-100 */
-  color: #92400e;      /* amber-900 */
-}
-
-.badge.wait { /* 대기 */
 	background: #e5e7eb;
-	color: #111827
-}
-
-.badge.run { /* 운행중 */
-	background: #dbeafe;
-	color: #1e40af
-}
-
-.badge.left { /* 퇴사 */
-	background: #fee2e2;
-	color: #991b1b
+	color: #111827;
 }
 
 /* 모달 */
@@ -266,65 +166,6 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 	}
 }
 
-/* 빈 결과 박스 */
-.empty-result{
-	margin:16px 0;
-  	padding:20px 16px;
-  	display:flex; align-items:center; justify-content:center; gap:10px;
-  	background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px;
-  	color:#64748b; font-size:.95rem;
-}
-
-/* 페이징(.pager: 앞서 만든 공용 클래스가 있다면 그대로 사용) */
-.pager{
-  	display:flex;
-  	align-items:center;
-  	justify-content:center;
-  	margin-top:24px; /* 기존 30px에서 약간 컴팩트 */
-}
-.pager > div{
-  	display:flex;
-  	align-items:center;
-  	flex-wrap:wrap;
-  	gap:8px;
-}
-.pager > div a,
-.pager > div input[type="button"],
-.pager > div strong{
-	display:inline-flex;
-  	align-items:center;
-  	justify-content:center;
-  	min-width:36px;
-  	height:36px;
-  	padding:0 12px;
-  	border:1px solid #cbd5e1;
-  	border-radius:8px;
-  	background:#fff;
-  	color:#0f172a;
-  	text-decoration:none;
-  	font-size:.95rem;
-  	line-height:1;
-  	transition:background .12s ease, border-color .12s ease, color .12s ease, box-shadow .12s ease;
-}
-.pager > div a:hover,
-.pager > div input[type="button"]:not([disabled]):hover{ background:#f8fafc; border-color:#94a3b8; }
-.pager > div input[disabled]{ opacity:.45; pointer-events:none; cursor:not-allowed; }
-.pager > div strong{
-  background:#2563eb; border-color:#2563eb; color:#fff; cursor:default;
-}
-
-/* 반응형 */
-@media (max-width: 900px){
-  .filters{ grid-template-columns: 1fr; }
-  .filters .actions .btn{ width:100%; }
-}
-@media (max-width: 640px){
-  .pager > div a,
-  .pager > div input[type="button"],
-  .pager > div strong{
-    min-width:32px; height:32px; padding:0 10px; font-size:.9rem;
-  }
-}
 
 /* 고정기사 필드: 입력 + 버튼 가로 정렬 */
 .form .field:has(#btnAssignDriver){
@@ -381,124 +222,152 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
-	<section class="container">
+	<section class="content">
 		<header>
-	        <h1>차량 관리</h1>
+	        <h3>차량 관리</h3>
 	        <div style="display:flex; gap:8px">
-	            <button class="btn secondary" id="openCreate">+ 차량 등록</button>
-	            <button class="btn danger" id="bulkDelete">선택 삭제</button>
+	        	<sec:authorize access="isAuthenticated()">
+	        		<sec:authorize access="hasAnyAuthority('TRANSPORT_WRITE')">
+			            <button class="btn btn-primary" id="openCreate">+ 차량 등록</button>
+			            <button class="btn btn-cancel" id="bulkDelete">선택 삭제</button>
+	        		</sec:authorize>
+	        	</sec:authorize>
 	        </div>
         </header>
-		<div class="content">
-			<!-- 검색/필터 -->
+		<%-- 검색/필터 --%>
+		<div class="filterWrapper">
 	        <form class="filters" aria-label="검색 및 필터">
 	            <div class="field">
-	                <select id="filterStatus" name="filter">
-	                    <option value="전체">전체</option>
-	                    <option value="미배정">미배정</option>
-	                    <option value="대기">대기</option>
-	                    <option value="운행중">운행중</option>
-	                    <option value="사용불가">사용불가</option>
+	                <select id="filterStatus" name="searchType">
+	                    <option <c:if test="${param.searchType eq '전체' }">selected</c:if>>전체</option>
+	                    <option <c:if test="${param.searchType eq '미배정' }">selected</c:if>>미배정</option>
+	                    <option <c:if test="${param.searchType eq '대기' }">selected</c:if>>대기</option>
+	                    <option <c:if test="${param.searchType eq '운행중' }">selected</c:if>>운행중</option>
+	                    <option <c:if test="${param.searchType eq '사용불가' }">selected</c:if>>사용불가</option>
 	                </select>
 	            </div>
 	            <div class="search">
 	                <input id="filterText" type="text" name="searchKeyword" placeholder="차량번호 검색" />
 	            </div>
 	            <div class="actions">
-	                <button class="btn" id="btnSearch">검색</button>
+	                <button class="btn btn-primary" id="btnSearch">검색</button>
 	            </div>
 	        </form>
-			<div>
-				<h3>차량목록</h3>
-				<c:choose>
-					<c:when test="${empty vehicleList}">
-						<div class="empty-result">검색된 차량이 없습니다.</div>
-					</c:when>
-					<c:otherwise>
-						<table class="table" id="vehicleTable">
-							<thead>
-								<tr>
-									<th><input type="checkbox" id="checkAll" /></th>
-									<th>차량번호</th>
-									<th>차종유형</th>
-									<th>적재량</th>
-									<th>제조사/모델명</th>
-									<th>연식</th>
-									<th>고정기사명</th>
-									<th>상태</th>
+		</div>
+        <%-- 차량 목록 --%>
+		<div class="card">
+			<c:choose>
+				<c:when test="${empty vehicleList}">
+					<div class="empty-result">검색된 차량이 없습니다.</div>
+				</c:when>
+				<c:otherwise>
+					<table class="table" id="vehicleTable">
+						<thead>
+							<tr>
+								<th><input type="checkbox" id="checkAll" /></th>
+								<th data-key="v.vehicle_number" onclick="allineTable(this)">
+	                        		차량번호
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'v.vehicle_number'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
+								<th data-key="v.vehicle_type" onclick="allineTable(this)">
+	                        		차종유형
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'v.vehicle_type'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
+								<th data-key="v.capacity" onclick="allineTable(this)">
+	                        		적재량
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'v.capacity'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
+								<th>제조사/모델명</th>
+								<th data-key="v.manufacture_year" onclick="allineTable(this)">
+	                        		연식
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'v.manufacture_year'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
+								<th>고정기사명</th>
+								<th>상태</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach var="vehicle" items="${vehicleList}">
+								<tr class="rowLink" data-vehicle-id="${vehicle.vehicleIdx}" data-status="${vehicle.status}">
+									<td><input type="checkbox" class="rowCheck"/></td>
+									<td>${vehicle.vehicleNumber}</td>
+									<td>${vehicle.vehicleType}</td>
+									<td>
+										<c:choose>
+											<c:when test="${vehicle.capacity == 1000 }">
+												1.0t
+											</c:when>
+											<c:otherwise>
+												1.5t
+											</c:otherwise>
+										</c:choose>
+									</td>
+									<td>${vehicle.manufacturerModel}</td>
+									<td>${vehicle.manufactureYear}</td>
+									<td>
+										<c:if test="${vehicle.driverName != null}">${vehicle.driverName}</c:if>
+									</td>
+									<td>
+										<c:choose>
+											<c:when test="${vehicle.status eq '미배정'}">
+												<span class="badge unassigned">${vehicle.status}</span>
+											</c:when>
+											<c:when test="${vehicle.status eq '대기'}">
+												<span class="badge badge-waiting">${vehicle.status}</span>
+											</c:when>
+											<c:when test="${vehicle.status eq '운행중'}">
+												<span class="badge badge-normal">${vehicle.status}</span>
+											</c:when>
+											<c:otherwise>
+												<span class="badge badge-urgent">${vehicle.status}</span>
+											</c:otherwise>
+										</c:choose>
+									</td>
 								</tr>
-							</thead>
-							<tbody>
-								<c:forEach var="vehicle" items="${vehicleList}">
-									<tr class="rowLink" data-vehicle-id="${vehicle.vehicleIdx}">
-										<td><input type="checkbox" class="rowCheck"/></td>
-										<td>${vehicle.vehicleNumber}</td>
-										<td>${vehicle.vehicleType}</td>
-										<td>
-											<c:choose>
-												<c:when test="${vehicle.capacity == 1000 }">
-													1.0t
-												</c:when>
-												<c:otherwise>
-													1.5t
-												</c:otherwise>
-											</c:choose>
-										</td>
-										<td>${vehicle.manufacturerModel}</td>
-										<td>${vehicle.manufactureYear}</td>
-										<td>
-											<c:if test="${vehicle.driverName != null}">${vehicle.driverName}</c:if>
-										</td>
-										<td>
-											<c:choose>
-												<c:when test="${vehicle.status eq '미배정'}">
-													<span class="badge unassigned">${vehicle.status}</span>
-												</c:when>
-												<c:when test="${vehicle.status eq '대기'}">
-													<span class="badge wait">${vehicle.status}</span>
-												</c:when>
-												<c:when test="${vehicle.status eq '운행중'}">
-													<span class="badge run">${vehicle.status}</span>
-												</c:when>
-												<c:otherwise>
-													<span class="badge left">${vehicle.status}</span>
-												</c:otherwise>
-											</c:choose>
-										
-										</td>
-									</tr>
-								</c:forEach>
-							</tbody>
-						</table>
-					</c:otherwise>
-				</c:choose>
-			</div>
+							</c:forEach>
+						</tbody>
+					</table>
+				</c:otherwise>
+			</c:choose>
 		</div>
-		<div class="pager">
-			<div>
-				<c:if test="${not empty pageInfo.maxPage or pageInfo.maxPage > 0}">
-					<input type="button" value="이전" 
-						onclick="location.href='/transport/vehicle?pageNum=${pageInfo.pageNum - 1}&filter=${param.filter}&searchKeyword=${param.searchKeyword}'" 
-						<c:if test="${pageInfo.pageNum eq 1}">disabled</c:if>>
-					<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
-						<c:choose>
-							<c:when test="${i eq pageInfo.pageNum}">
-								<strong>${i}</strong>
-							</c:when>
-							<c:otherwise>
-								<a href="/transport/vehicle?pageNum=${i}&filter=${param.filter}&searchKeyword=${param.searchKeyword}">${i}</a>
-							</c:otherwise>
-						</c:choose>
-					</c:forEach>
-					<input type="button" value="다음" 
-						onclick="location.href='/transport/vehicle?pageNum=${pageInfo.pageNum + 1}&filter=${param.filter}&searchKeyword=${param.searchKeyword}'" 
-					<c:if test="${pageInfo.pageNum eq pageInfo.maxPage}">disabled</c:if>>
-				</c:if>
-			</div>
-		</div>
-		<!-- 등록 모달 -->
+		<jsp:include page="/WEB-INF/views/inc/pagination.jsp">
+			<jsp:param value="/transport/vehicle" name="pageUrl"/>
+		</jsp:include>
+		<%-- 등록 모달 --%>
 		<jsp:include page="/WEB-INF/views/transport/modal/add_vehicle.jsp"></jsp:include>
-		<!-- 상세 모달 -->
+		<%-- 상세 모달 --%>
 		<jsp:include page="/WEB-INF/views/transport/modal/detail_vehicle.jsp"></jsp:include>
 	</section>
 </body>

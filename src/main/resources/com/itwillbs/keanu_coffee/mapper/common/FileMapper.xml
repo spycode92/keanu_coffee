@@ -37,14 +37,14 @@
 			, sub_dir = #{file.subDir}
 			, file_size = #{file.fileSize}
 			, content_type = #{file.contentType}
-		where idx = #{idx}
+		where file_idx = #{idx}
 			
 	</update>
 	
 	<select id="getFileWithFileIdx" resultType="FileDTO">
 		SELECT *
 		FROM FILE
-		where idx = #{fileIdx}
+		where file_idx = #{fileIdx}
 	</select>
 	
 	<select id="getFileWithTargetTable" resultType="FileDTO">
@@ -57,7 +57,7 @@
 	<delete id="deleteFile">
 		DELETE 
 		FROM FILE
-		WHERE idx = #{idx};
+		WHERE file_idx = #{idx};
 	</delete>
 
 

@@ -1,0 +1,205 @@
+/* ======================================== */
+/* 입고 검수 페이지 전용 CSS (inboundInspection.css) */
+/* ======================================== */
+
+.inbound-detail {
+	font-variant-numeric: tabular-nums;
+}
+
+/* 카드 스타일 */
+.inbound-detail .card { 
+	padding: 1rem; 
+}
+.inbound-detail .card-header { 
+	margin-bottom: .75rem; 
+	padding-bottom: .5rem; 
+}
+.inbound-detail .card-title { 
+	margin: 0; 
+}
+
+/* 읽기전용 느낌: label / value 그리드 */
+.inbound-detail .kv-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(160px, 1fr));
+	gap: .5rem 1rem;
+	align-items: center;
+}
+.inbound-detail .kv-item { 
+	min-width: 0; 
+}
+.inbound-detail .kv-label { 
+	font-size: .9rem; 
+	color: var(--muted-foreground); 
+	margin-bottom: .25rem; 
+}
+.inbound-detail .kv-value { 
+	padding: .45rem .6rem; 
+	background: var(--input-background); 
+	border: 1px solid var(--border); 
+	border-radius: var(--radius); 
+}
+
+/* 상단 버튼 그룹 */
+.inbound-detail .page-actions { 
+	display:flex; 
+	gap:.5rem; 
+	align-items:center; 
+}
+
+/* 타임라인 */
+.inbound-detail .timeline {
+	display:flex;
+	gap:1rem;
+	align-items:center;
+	padding: .5rem 0;
+}
+.inbound-detail .timeline-step {
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	gap:.25rem;
+	text-align:center;
+	min-width:90px;
+}
+.inbound-detail .timeline-dot {
+	width:18px;
+	height:18px;
+	border-radius:50%;
+	background:var(--muted);
+	border:2px solid var(--border);
+}
+.inbound-detail .timeline-step.active .timeline-dot { 
+	background:var(--primary); 
+	border-color:var(--primary); 
+}
+
+/* items table */
+.inbound-detail #itemsTable { 
+	table-layout: fixed; 
+	width:100%; 
+}
+.inbound-detail .table th, 
+.inbound-detail .table td { 
+	padding: .55rem .6rem; 
+	vertical-align: middle; 
+}
+.inbound-detail .table thead th { 
+	background: var(--accent); 
+	color: var(--foreground); 
+	position: sticky; 
+	top:0; 
+	z-index:1; 
+}
+.inbound-detail .table .right { 
+	text-align:right; 
+}
+
+/* No 열 고정폭 */
+.inbound-detail #itemsTable th:first-child,
+.inbound-detail #itemsTable td:first-child {
+	width: 4ch;              /* '00' + 여유 */
+	text-align: center;      
+	padding-left: .25rem;    
+	padding-right: .25rem;   
+	white-space: nowrap;     
+}
+
+/* 모든 셀 기본 중앙정렬 */
+.inbound-detail #itemsTable th,
+.inbound-detail #itemsTable td {
+	text-align: center;
+}
+
+/* ============================== */
+/* 테이블 input 스타일 (LOT/수량/단가) */
+/* ============================== */
+.inbound-detail #itemsTable input[type="text"],
+.inbound-detail #itemsTable input[type="number"] {
+	background-color: var(--input-background);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	padding: 0.35rem 0.45rem;
+	font-size: 0.9rem;
+	color: var(--foreground);
+	width: 85%;
+	box-sizing: border-box;
+	transition: border-color 0.2s, box-shadow 0.2s;
+	text-align: center;
+}
+.inbound-detail #itemsTable input[type="text"]:focus,
+.inbound-detail #itemsTable input[type="number"]:focus {
+	border-color: var(--primary);
+	box-shadow: 0 0 0 2px rgba(31, 77, 198, 0.2);
+	outline: none;
+}
+
+
+/* focus 시 강조 */
+.inbound-detail #itemsTable input[type="text"]:focus,
+.inbound-detail #itemsTable input[type="number"]:focus {
+	border-color: var(--primary);
+	box-shadow: 0 0 0 2px rgba(31, 77, 198, 0.2);
+	outline: none;
+}
+
+/* read-only/disabled */
+.inbound-detail #itemsTable input[readonly],
+.inbound-detail #itemsTable input:disabled {
+	background-color: var(--muted);
+	color: var(--muted-foreground);
+	cursor: not-allowed;
+}
+
+/* 검수 완료 버튼 */
+.inbound-detail #itemsTable .inspection input[type="button"] {
+	background-color: var(--secondary);
+	color: var(--secondary-foreground);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	padding: 0.35rem 0.75rem;
+	cursor: pointer;
+	transition: background-color 0.2s, opacity 0.2s;
+}
+.inbound-detail #itemsTable .inspection input[type="button"]:hover {
+	background-color: var(--accent);
+	opacity: 0.95;
+}
+
+/* attachments */
+.inbound-detail .attachments { 
+	display:flex; 
+	flex-direction:column; 
+	gap:.4rem; 
+}
+.inbound-detail .attachment-item { 
+	padding:.5rem; 
+	background:var(--card); 
+	border:1px solid var(--border); 
+	border-radius:.375rem; 
+}
+
+/* responsive */
+@media (max-width: 980px) {
+	.inbound-detail .kv-grid { 
+		grid-template-columns: 1fr 1fr; 
+	}
+	.inbound-detail .timeline { 
+		flex-wrap:wrap; 
+		justify-content:flex-start; 
+	}
+}
+
+.btn,
+.btn-sm {
+	font-size: 1.0em;   /* 기존보다 1.5배 */
+}
+
+.btn-confirmed {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #16a34a;
+    cursor: default;
+}
+
+

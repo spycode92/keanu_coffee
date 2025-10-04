@@ -3,33 +3,52 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.SupplyCompanyMapper">
-
+	<!-- ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ -->
 	<!-- 공급업체리스트 -->
-	<select id="selectSuppliersInfo" resultType="SupplierProductContractDTO">
+	<select id="selectSuppliersInfo" resultType="SupplierDTO">
 		SELECT 
-		    s.idx,
+		    s.supplier_idx,
 		    s.supplier_name,
 		    s.supplier_manager,
 		    s.supplier_manager_phone,
 		    s.supplier_zipcode,
 		    s.supplier_address1,
 		    s.supplier_address2,
-		    -- 계약이 존재하면 1, 아니면 0
-		    CASE WHEN COUNT(spc.idx) > 0 THEN 1 ELSE 0 END AS hasContract
+		    s.status
 		FROM 
 		    SUPPLIER s
-		LEFT JOIN 
-		    SUPPLIER_PRODUCT_CONTRACT spc
-		    ON s.idx = spc.supplier_idx
-		    AND spc.status = '활성'
-		GROUP BY 
-		    s.idx
-		ORDER BY 
-		    s.idx;
+		<where>
+			<if test="searchType != '' and searchType != null">
+				status = #{searchType} 
+			</if>
+			<if test="searchKeyword != '' and searchKeyword != null">
+				AND supplier_name LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</where>
+		<if test="orderKey != '' and orderkey != null">
+			ORDER BY ${orderKey} ${orderMethod}			
+		</if>
+		LIMIT
+			#{startRow}
+			, #{listLimit}
+	</select>
+	
+	<!-- 공급업체 목록 수 -->
+	<select id="getSupplierCount" resultType="int">
+		SELECT COUNT(*)
+		FROM SUPPLIER
+		<where>
+			<if test="searchType != '' and searchType != null">
+				status = #{searchType} 
+			</if>
+			<if test="searchKeyword != '' and searchKeyword != null">
+				AND supplier_name LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</where>
 	</select>
 	
 	<!-- 공급업체등록 -->
-	<insert id="insertSupplier" parameterType="SupplierProductContractDTO" useGeneratedKeys="true" keyProperty="idx">
+	<insert id="insertSupplier" parameterType="SupplierDTO" useGeneratedKeys="true" keyProperty="supplierIdx">
 		INSERT INTO SUPPLIER
 			(supplier_name
 			, supplier_manager
@@ -45,30 +64,12 @@
 			, #{supplierAddress1}
 			, #{supplierAddress2})
 	</insert>
-	<!-- 공급업체필터링 -->
-	<select id="selectSupplierByStatus" resultType="SupplierProductContractDTO">
-		SELECT * FROM SUPPLIER
-    	WHERE status = #{dbStatus}
-	</select>
-	<!-- 공급업체의 활성화된 계약 갯수 -->
-	<select id="countActiveContractsBySupplier" resultType="int" parameterType="long">
-		SELECT COUNT(*)
-		FROM SUPPLIER_PRODUCT_CONTRACT
-		WHERE supplier_idx = #{supplierIdx}
-		AND status = '활성'
-	</select>
-	
-	<!-- 공급업체 삭제 -->
-	<delete id="deleteSupplierByIdx" parameterType="long">
-		DELETE FROM SUPPLIER
-		WHERE idx = #{supplierIdx}
-	</delete>
-	
+
 	<!-- 공급업체상세정보 -->
-	<select id="selectSupplierInfo" resultType="SupplierProductContractDTO">
+	<select id="selectSupplierInfo" resultType="SupplierDTO">
 		SELECT *
 		FROM SUPPLIER
-		WHERE idx = #{idx}
+		WHERE supplier_idx = #{idx}
 	</select>
 	
 	<!-- 공급업체정보수정 -->
@@ -81,7 +82,27 @@
 			, supplier_zipcode = #{supplierZipcode}
 			, supplier_address1 = #{supplierAddress1}
 		    , supplier_address2 = #{supplierAddress2}
-		WHERE idx = #{idx}
+		    , status = #{status}
+		WHERE supplier_idx = #{supplierIdx}
+	</update>
+	
+	<!-- 공급업체 목록 조회 -->
+	<select id="selectAllSupplier" resultType="SupplierDTO">
+		SELECT
+			supplier_idx
+			, supplier_name
+			FROM SUPPLIER
+			WHERE status = '활성'
+			ORDER BY supplier_name
+	</select>
+	
+	<!-- 공급업체 삭제  -->
+	<update id="deleteSupplierByIdx">
+		UPDATE SUPPLIER
+		SET
+			status = "삭제"
+		WHERE
+			supplier_idx = #{supplierIdx}
 	</update>
 	
 </mapper>

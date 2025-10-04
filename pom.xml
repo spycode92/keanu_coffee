@@ -16,6 +16,10 @@
 	    <org.springframework-version>5.3.39</org.springframework-version>
 	    <org.aspectj-version>1.6.10</org.aspectj-version>
 	    <log4j2-version>2.25.0</log4j2-version>
+	    <!-- 스프링 시큐리티 버전 -->
+		<spring-security-version>5.8.16</spring-security-version>
+		<!-- AOP사용을위해 버전설정 -->
+		<org.aspectj-version>1.9.24</org.aspectj-version>
 	</properties>
 	
 	<repositories>
@@ -39,8 +43,6 @@
 	        <artifactId>easy-captcha</artifactId>
 	        <version>1.6.2</version>
 	    </dependency>
-	
-	    <!-- 카카오결제 필요 라이브러리 / Spring-core/libs는 별도 필요없음 -->
 	   
 		<!-- Spring MVC 웹 컨트롤러, 요청/응답 처리 및 뷰 관리에 필요 -->
 	    <dependency>
@@ -88,20 +90,43 @@
 	    <dependency>
 	        <groupId>com.fasterxml.jackson.core</groupId>
 	        <artifactId>jackson-databind</artifactId>
-	        <version>2.13.2</version>
+	        <version>2.13.5</version>
 	    </dependency>
 	    
 	    <dependency>
 	        <groupId>com.fasterxml.jackson.core</groupId>
 	        <artifactId>jackson-core</artifactId>
-	        <version>2.13.2</version>
+	        <version>2.13.5</version>
 	    </dependency>
 	    
 	    <dependency>
 	        <groupId>com.fasterxml.jackson.core</groupId>
 	        <artifactId>jackson-annotations</artifactId>
-	        <version>2.13.2</version>
+	        <version>2.13.5</version>
 	    </dependency>
+	    
+	    <!-- Java 8 의 java.time.LocalXXX 클래스들에 대한 Jackson 의 JSON 라이브러리 변환을 지원하는 라이브러리 -->
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.datatype</groupId>
+		    <artifactId>jackson-datatype-jsr310</artifactId>
+		    <version>2.13.5</version>
+		</dependency>
+	    
+	    <!-- Gson 추가 -->
+   		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <version>20250517</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <version>2.13.1</version>
+		</dependency>
 	
 		<!-- 썸네일레이터 라이브러리 -->
 	    <dependency>
@@ -270,7 +295,7 @@
 	        <scope>test</scope>
 	    </dependency>
 	    
-<!-- 	    qr code scanner maker -->
+		<!-- 	    qr code scanner maker -->
 		<!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
 		<dependency>
 		    <groupId>com.google.zxing</groupId>
@@ -283,6 +308,84 @@
 		    <artifactId>javase</artifactId>
 		    <version>3.5.3</version>
 		</dependency>
+		
+		<!-- 스프링시큐리티라이브러리 -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-web</artifactId>
+		    <version>${spring-security-version}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-config</artifactId>
+		    <version>${spring-security-version}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-taglibs -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-taglibs</artifactId>
+		    <version>${spring-security-version}</version>
+		</dependency>
+		
+		<!-- AOP 사용에 필요한 라이브러리 -->
+		<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${org.aspectj-version}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+		<dependency>
+		    <groupId>org.aspectj</groupId>
+		    <artifactId>aspectjweaver</artifactId>
+		    <version>${org.aspectj-version}</version>
+		    <scope>runtime</scope>
+		</dependency>	
+		
+		<!-- 		using this to make a product order pdf from data -->
+		<!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
+<!-- 		<dependency> -->
+<!-- 			    <groupId>com.itextpdf</groupId> -->
+<!-- 			    <artifactId>itextpdf</artifactId> -->
+<!-- 			    <version>5.5.13.4</version> -->
+<!-- 			</dependency> -->
+		<!-- https://mvnrepository.com/artifact/com.itextpdf/itext-core -->
+		<dependency>
+		    <groupId>com.itextpdf</groupId>
+		    <artifactId>itext-core</artifactId>
+		    <version>9.2.0</version>
+		    <type>pom</type>
+		</dependency>
+		
+		<!-- 14. 웹소켓 라이브러리 -->
+		<!-- 1) Spring Websocket 라이브러리 -->
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-websocket -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-websocket</artifactId>
+		    <version>${org.springframework-version}</version>
+		</dependency>
+		
+		<!-- 2) STOMP 활용하여 메세지 처리를 위한 Spring Messaging 라이브러리 -->
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-messaging -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-messaging</artifactId>
+		    <version>${org.springframework-version}</version>
+		</dependency>
+		
+		<!-- 엑셀다운로드 라이브러리 -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml</artifactId>
+		    <version>5.2.5</version>
+		</dependency>
+		
 	</dependencies>
 	
 	
@@ -323,7 +426,7 @@
 	            </configuration>
 	        </plugin>
 	    </plugins>
-	    <finalName>/</finalName>
+<!-- 	    <finalName>/</finalName> -->
 	</build>
 </project>
 	

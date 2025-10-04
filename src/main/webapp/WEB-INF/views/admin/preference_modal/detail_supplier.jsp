@@ -1,9 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <div id="supplierDetailModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="supplierDetailModalLabel" tabindex="-1">
     <div class="modal-card md">
         <form id="supplierDetailForm">
+        	<sec:csrfInput/>
             <div class="modal-head">
                 <h5 id="supplierDetailModalLabel">공급업체 상세정보</h5>
                 <button type="button"
@@ -29,6 +31,16 @@
                     <input type="text" class="form-control" id="detailSupplierManagerPhone" name="supplierManagerPhone" readonly>
                 </div>
                 <div class="field">
+                    <label class="form-label">사업자번호</label>
+                    <input type="text" class="form-control" id="businessNumber" name="businessNumber" disabled style="background-color: #dcdcdc; border:1px solid #ccc;">
+                </div>
+<!--                 <div class="field"> -->
+<!--                     <label class="form-label">이메일</label> -->
+<!--                     <input type="text" class="form-control" id="detailSupplierManageremail1" name="supplierManagerPhone" readonly> -->
+<!--                     @ -->
+<!--                     <select></select> -->
+<!--                 </div> -->
+                <div class="field">
                     <label class="form-label">우편번호</label>
                     <div style="display: flex; gap: 0.5rem; align-items: center;">
                         <input type="text"
@@ -38,7 +50,7 @@
                                readonly
                                style="flex: 1; max-width: 150px;">
                         <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-primary"
                                 id="btnDetailSearchAddress"
                                 disabled>
                             우편번호 검색
@@ -59,17 +71,29 @@
                            name="supplierAddress2"
                            readonly>
                 </div>
+                <div class="field">
+                	<label class="form-label">상태</label>
+                	<select id="detailSupplierStatus" name="status" class="form-control" disabled>
+                    	<option value="활성">활성</option>
+                    	<option value="비활성">비활성</option>
+                    </select>
+                </div>
             </div>
             <div class="modal-foot">
+                <button type="button" 
+                        class="btn btn-primary btn-delete"
+                        >
+                    삭제
+                </button>
                 <button type="button"
-                        class="btn btn-secondary btn-cancel-edit"
+                        class="btn btn-secondary btn-cancel"
                         style="display:none;"
                         onclick="setReadonlyMode();">
                     취소
                 </button>
                 <button type="button"
                         class="btn btn-primary btn-edit"
-                        onclick="setEditMode();">
+                        >
                     수정
                 </button>
                 <button type="submit"

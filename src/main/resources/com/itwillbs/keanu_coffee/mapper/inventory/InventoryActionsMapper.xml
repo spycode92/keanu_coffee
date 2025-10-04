@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.inventory.mapper.InventoryActionsMapper">
+	
+	<insert id="insertWarehouse" >
+			INSERT INTO 
+				WAREHOUSE_LOCATION (location_name, rack, bay, level_position, width, depth, height, location_type)
+			VALUES (
+				#{locationName},
+	            #{rack},
+	            #{bay},
+	            #{levelPosition},
+	            #{width},
+	            #{depth},
+	            #{height},
+	            #{locationType}
+			)	
+	</insert>
+	
+	
+	<insert id="insertOrder" >
+        INSERT INTO OUTBOUND_ORDER (
+            outbound_order_idx,
+            franchise_idx,
+            status,
+            requested_date,
+            expect_outbound_date
+        ) VALUES (
+            #{outboundOrderIdx},
+            #{franchiseIdx},
+            #{status},
+            #{requestedDate},
+            #{expectOutboundDate}
+        )
+    </insert>
+    
+    <select id="selectLastCurrentLocation" resultType="String">
+    	Select
+    		location_name
+    	FROM
+    		WAREHOUSE_LOCATION
+    	WHERE 
+    		width is not null
+    	ORDER BY location_idx desc
+    	LIMIT 1
+    		
+    </select>
+    
+    <select id="selectQuantity" resultType="com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO">
+    	SELECT
+    		 *
+    	from
+    		INVENTORY
+    	where 
+    		inventory_idx = #{inventoryId} 
+    
+    </select>
+    <delete id="deleteRowInInventory">
+    	DELETE FROM
+    		INVENTORY
+    	WHERE
+    		inventory_idx = #{inventoryId}
+    </delete>
+    <update id="updateQuantitydecrease">
+    	UPDATE 
+    		INVENTORY
+		SET 
+			quantity = #{qty}
+		WHERE 
+			inventory_idx = #{inventoryId}
+    	
+    </update>
+    
+    <update id="updateLocationOfInventory">
+	    UPDATE 
+    		INVENTORY
+		SET 
+			quantity = #{qtyMoving},
+			location_idx = #{employeeId},
+			location_name = #{employeeId}
+		WHERE 
+			inventory_idx = #{inventoryId}
+    
+    </update>
+    <update id="updateLocationOfInventory2">
+	    UPDATE 
+    		INVENTORY
+		SET 
+			quantity = #{qtyMoving},
+			location_idx = #{locationIdxOfDestinationName},
+			location_name = #{destinationName}
+		WHERE 
+			inventory_idx = #{inventoryId}
+    
+    </update>
+    
+<!--     inventory_idx -->
+<!-- receipt_product_idx -->
+<!-- location_idx -->
+<!-- location_name -->
+<!-- product_idx -->
+<!-- quantity -->
+<!-- lot_number -->
+<!-- manufacture_date -->
+<!-- expiration_date -->
+<!-- created_at -->
+<!-- updated_at -->
+	<insert id="insertLocationOfInventory">
+		INSERT INTO INVENTORY (
+			receipt_product_idx,
+			location_idx,
+			location_name,
+			product_idx,
+			quantity,
+			lot_number,
+			manufacture_date,
+			expiration_date
+		)
+		VALUES (
+			#{inventoryDTO.receiptProductIdx},
+			#{employeeId},
+			#{employeeId},
+			#{inventoryDTO.productIdx},
+			#{qtyMoving},
+			#{inventoryDTO.lotNumber},
+			#{inventoryDTO.manufactureDate},
+			#{inventoryDTO.expirationDate}
+		)
+	</insert>
+	<insert id="insertLocationOfInventory2">
+		INSERT INTO INVENTORY (
+			receipt_product_idx,
+			location_idx,
+			location_name,
+			product_idx,
+			quantity,
+			lot_number,
+			manufacture_date,
+			expiration_date
+		)
+		VALUES (
+			#{inventoryDTO.receiptProductIdx},
+			#{locationIdxOfDestinationName},
+			#{destinationName},
+			#{inventoryDTO.productIdx},
+			#{qtyMoving},
+			#{inventoryDTO.lotNumber},
+			#{inventoryDTO.manufactureDate},
+			#{inventoryDTO.expirationDate}
+		)
+	</insert>
+	<select id="selectlocationIdxOfDestinationName" resultType="com.itwillbs.keanu_coffee.inventory.dto.InventoryDTO">
+		SELECT
+			*
+		FROM
+			INVENTORY
+		WHERE
+			location_name = #{destinationName}
+	
+	</select>
+	<select id="selectReceiptProduct" resultType="com.itwillbs.keanu_coffee.inventory.dto.ReceiptProductDTO2">
+		SELECT
+			*
+		FROM
+			RECEIPT_PRODUCT
+		WHERE
+			receipt_product_idx = #{receiptID}
+	</select>
+<!-- 	@Param("receiptProductIdx") int receiptProductIdx, -->
+<!-- 			@Param("locationIdxOfDestinationName") int locationIdxOfDestinationName,  -->
+<!-- 			@Param("destinationName") String destinationName, -->
+<!-- 			@Param("productIdx") int productIdx,  -->
+<!-- 			@Param("qtyMoving") int qtyMoving,  -->
+<!-- 			@Param("lotNumber") String lotNumber,  -->
+<!-- 			@Param("manufactureDate") Date manufactureDate,  -->
+<!-- 			@Param("expirationDate") Date expirationDate); -->
+
+	<insert id="insertLocationOfInventory3">
+		INSERT INTO INVENTORY (
+			receipt_product_idx,
+			location_idx,
+			location_name,
+			product_idx,
+			quantity,
+			lot_number,
+			manufacture_date,
+			expiration_date
+		)
+		VALUES (
+			#{receiptProductIdx},
+			#{locationIdxOfDestinationName},
+			#{destinationName},
+			#{productIdx},
+			#{qtyMoving},
+			#{lotNumber},
+			#{manufactureDate},
+			#{expirationDate}
+		)	
+	
+	</insert>
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

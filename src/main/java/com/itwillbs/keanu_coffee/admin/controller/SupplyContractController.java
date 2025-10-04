@@ -22,11 +22,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.itwillbs.keanu_coffee.admin.dto.DepartTeamRoleDTO;
-import com.itwillbs.keanu_coffee.admin.dto.SupplierProductContractDTO;
+import com.itwillbs.keanu_coffee.admin.dto.DepartmentDTO;
+import com.itwillbs.keanu_coffee.admin.dto.EmployeeInfoDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplierDTO;
+import com.itwillbs.keanu_coffee.admin.dto.SupplyContractDTO;
 import com.itwillbs.keanu_coffee.admin.service.EmployeeManagementService;
 import com.itwillbs.keanu_coffee.admin.service.OrganizationService;
 import com.itwillbs.keanu_coffee.admin.service.SupplyContractService;
+import com.itwillbs.keanu_coffee.common.aop.annotation.SystemLog;
+import com.itwillbs.keanu_coffee.common.aop.targetEnum.SystemLogTarget;
+import com.itwillbs.keanu_coffee.common.dto.PageInfoDTO;
+import com.itwillbs.keanu_coffee.common.utils.PageUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,77 +41,98 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/systemPreference/supplyContract")
 public class SupplyContractController {
 	private final SupplyContractService supplyContractService;
-	
-    // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-    // 공급계약
-    @GetMapping("/getContractList")
-    @ResponseBody
-    public List<SupplierProductContractDTO> getContractList() {
-		//공급계약 리스트 가져오기
-		List<SupplierProductContractDTO> supplyContractList = supplyContractService.getsupplyContractInfo();
 
-    	return supplyContractList;
-    }
-    
-    //공급계약등록
-    @PostMapping("/addContract")
-    @ResponseBody
-    public SupplierProductContractDTO addContract(SupplierProductContractDTO supplyContract) {
-    	
-    	boolean result = supplyContractService.addContract(supplyContract);
-    	
-    	return supplyContract;
-    }
-	
-    // 공급계약상세정보
-    @GetMapping("/getContractDetail")
-    @ResponseBody
-    public SupplierProductContractDTO getContractDetail(SupplierProductContractDTO supplyContract) {
-    	SupplierProductContractDTO contractDetail = supplyContractService.getContractDetail(supplyContract);
-    	return contractDetail;
-    }
-    
-    //공급계약수정
-    @PostMapping("/updateContractDetail")
-    @ResponseBody
-    public SupplierProductContractDTO updateContractDetail(@RequestBody SupplierProductContractDTO contract) {
-    	SupplierProductContractDTO saved = supplyContractService.updateContractDetail(contract);
-    	
-    	return contract;
-    }
-    
-    //공급계약삭제
-    @PostMapping("/deleteContractDetail")
-    @ResponseBody
-    public ResponseEntity<Map<String,String>> deleteContractDetail(@RequestBody SupplierProductContractDTO contract) {
-    	boolean result = supplyContractService.deleteContractDetail(contract);
-    	Map<String,String> response = new HashMap<>();
-        if (result) {
-            response.put("status", "success");
-            return ResponseEntity.ok(response);
-        } else {
-            response.put("status", "fail");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-    
-    }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	// 공급계약목록
 	@GetMapping("")
-	public String systemPreference(Model model) {
-		
-		
+	public String systemPreference(Model model, @RequestParam(defaultValue = "1") int pageNum,
+			@RequestParam(defaultValue = "") String searchType, @RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue = "") String orderKey, @RequestParam(defaultValue = "") String orderMethod,
+			@RequestParam(defaultValue = "") String filterStatus) {
+		model.addAttribute("pageNum", pageNum);
+		model.addAttribute("searchType", searchType);
+		model.addAttribute("searchKeyword", searchKeyword);
+		model.addAttribute("orderKey", orderKey);
+		model.addAttribute("orderMethod", orderMethod);
+		model.addAttribute("filterStatus", filterStatus);
+		int listLimit = 10;
+		int contractListCount = supplyContractService.getContractListCount(searchType, searchKeyword, filterStatus);
+
+		if (contractListCount > 0) {
+			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, contractListCount, pageNum, 3);
+
+			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
+				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
+				model.addAttribute("targetURL", "/admin/systemPreference/supplyContract");
+				return "commons/result_process";
+			}
+
+			model.addAttribute("pageInfo", pageInfoDTO);
+
+			List<SupplyContractDTO> supplyContractList = supplyContractService.getsupplyContractInfo(
+					pageInfoDTO.getStartRow(), listLimit, searchType, searchKeyword, orderKey, orderMethod,
+					filterStatus);
+			model.addAttribute("supplyCotractList", supplyContractList);
+		}
+
 		return "/admin/system_preference/supply_contract_management";
 	}
+
+//    @GetMapping("/getContractList")
+//    @ResponseBody
+//    public List<SupplyContractDTO> getContractList() {
+//		//공급계약 리스트 가져오기
+//		List<SupplyContractDTO> supplyContractList = supplyContractService.getsupplyContractInfo();
+//
+//    	return supplyContractList;
+//    }
+
+	// 공급계약등록
+	@PostMapping("/addContract")
+	@ResponseBody
+	public SupplyContractDTO addContract(SupplyContractDTO supplyContract) {
+
+		boolean result = supplyContractService.addContract(supplyContract);
+
+		return supplyContract;
+	}
+
+	// 공급계약상세정보
+	@GetMapping("/getContractDetail")
+	@ResponseBody
+	public SupplyContractDTO getContractDetail(SupplyContractDTO supplyContract) {
+		SupplyContractDTO contractDetail = supplyContractService.getContractDetail(supplyContract);
+		return contractDetail;
+	}
+
+	// 공급계약수정
+	@PostMapping("/updateContractDetail")
+	@ResponseBody
+	public SupplyContractDTO updateContractDetail(@RequestBody SupplyContractDTO contract) {
+		SupplyContractDTO saved = supplyContractService.updateContractDetail(contract);
+
+		return contract;
+	}
+
+	// 공급계약삭제
+	@PostMapping("/deleteContractDetail")
+	@ResponseBody
+	@SystemLog(target = SystemLogTarget.SUPPLIER_PRODUCT_CONTRACT)
+	public ResponseEntity<Map<String, String>> deleteContractDetail(@RequestBody SupplyContractDTO contract) {
+		boolean result = supplyContractService.deleteContractDetail(contract);
+		Map<String, String> response = new HashMap<>();
+		if (result) {
+			response.put("title", "성공");
+			response.put("msg", "공급계약 삭제 완료");
+			response.put("result", "success");
+			return ResponseEntity.ok(response);
+		} else {
+			response.put("title", "실패");
+			response.put("msg", "공급계약 삭제 실패");
+			response.put("result", "error");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		}
+
+	}
+
 }

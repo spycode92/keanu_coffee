@@ -6,13 +6,16 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 	<script type="text/javascript">
-		// 서버로부터 전달받은 "msg" 속성값을 자바스크립트 alert() 함수를 통해 출력(오류메세지 출력)
-		alert("${msg}");
-		// 이전페이지로 돌아가기
-		history.back();
+		Swal.fire({
+		    text: "${msg}",
+		    confirmButtonText: "확인"
+		}).then(() => {
+			history.back();
+		});
 	</script>
 </body>
 </html>

@@ -1,0 +1,102 @@
+/* 검색/필터 카드 – 상단 KPI와 간격 조금만 줄이기 */
+.d-flex.mb-2 {
+	margin-bottom: .5rem;
+}
+
+/* 하단 KPI와 '검색결과' 바 사이 간격 */
+.inbound-kpi-row {
+	margin-bottom: .75rem;
+}
+
+/* =========================
+   검색/필터 레이아웃 보정
+   ========================= */
+.inbound-filters .row {
+	display: flex;
+	flex-wrap: wrap;
+	margin-left: -0.5rem;
+	margin-right: -0.5rem;
+}
+.inbound-filters .col-md-3 {
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+	box-sizing: border-box;
+}
+
+/* 카드 내부 넘침 방지 */
+.inbound-filters {
+	overflow: visible;
+}
+.inbound-filters .form-control,
+.inbound-filters .search-select {
+	box-sizing: border-box;
+	width: 100%;
+	font-size: 1rem;
+	padding: 0.6rem 0.75rem;
+}
+
+/* 달력 아이콘 위치 보정 */
+.inbound-filters input[type="date"]::-webkit-calendar-picker-indicator {
+	margin-right: 2px;
+}
+
+/* 간단 검색바 */
+.inbound-simple-search {
+	display: flex;
+	gap: 0.5rem;
+}
+.inbound-simple-search input {
+	flex: 1;
+	font-size: 1rem;
+}
+
+/* 입력칸 오른쪽 X버튼 스타일 */
+.btn-clear-input {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	border: none;
+	background: transparent;
+	font-size: 18px;
+	color: #999;
+	cursor: pointer;
+	padding: 0;
+	line-height: 1;
+	z-index: 2;
+}
+.btn-clear-input:hover {
+	color: #333;
+}
+
+/* 테이블 정렬 */
+.table th,
+.table td {
+	text-align: center;
+	vertical-align: middle;
+}
+
+.link-order-number {
+	color: inherit;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.btn,
+.btn-sm {
+	font-size: 1.0em;   /* 기존보다 1.5배 */
+}
+
+.table tr.clickable-row { cursor: pointer; }
+.table tr.clickable-row:focus { outline: 2px solid var(--primary); outline-offset: -2px; }
+
+/* 공통 CSS (common.css 끝에 추가) */
+.clickable-row {
+    cursor: pointer; /* 마우스 오버 시 손가락 모양 */
+}
+
+#btnMyListFilter.active {
+    background-color: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}

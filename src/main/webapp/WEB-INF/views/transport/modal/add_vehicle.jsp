@@ -1,17 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
-
-		<!-- 등록 모달 -->
+		<%-- 등록 모달 --%>
 		<div class="modal" id="createModal" aria-hidden="true">
-			<div class="modal-card" role="dialog" aria-modal="true"
+			<div class="modal-card modal-form.lg" role="dialog" aria-modal="true"
 				aria-labelledby="createTitle">
 				<div class="modal-head">
 					<strong id="createTitle">신규 차량 등록</strong>
 				</div>
 				<div class="modal-body">
 					<form class="form" id="createForm" action="/transport/addVehicle" method="post">
+						<sec:csrfInput/>
+						<input type="hidden" name="vehicleIdx" id="vehicleIdx"/>
 						<div class="row">
 							<div class="field">
 								<label>차량번호*</label> 
@@ -25,8 +27,8 @@
 						<div class="row">
 							<div class="field">
 								<label>적재량*</label>
-							  	<div class="seg-radio" role="radiogroup" aria-label="적재량">
-							    	<input id="cap-1"  type="radio" name="capacity" value="1000" required>
+							  	<div class="seg-radio" role="radiogroup" aria-label="적재량" required>
+							    	<input id="cap-1"  type="radio" name="capacity" value="1000">
 							    	<label for="cap-1">1t</label>
 							
 							    	<input id="cap-15" type="radio" name="capacity" value="1500">
@@ -51,8 +53,8 @@
 					</form>
 				</div>
 				<div class="modal-foot">
-					<button class="btn secondary" id="cancelCreate">취소</button>
-					<button class="btn" id="saveCreate">등록</button>
+					<button class="btn btn-cancel" id="cancelCreate">취소</button>
+					<button class="btn btn-confirm" id="saveCreate">등록</button>
 				</div>
 			</div>
 		</div>

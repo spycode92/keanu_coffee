@@ -1,57 +1,71 @@
 :root {
-    --font-size: 14px;
-    --background: rgb(156, 177, 250);
-    --foreground: oklch(0.145 0 0);
-    --card: rgb(175 199 237);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: rgb(86, 95, 254);
-    --primary-foreground: oklch(1 0 0);
-    --secondary: oklch(0.95 0.0058 264.53);
-    --secondary-foreground: #030213;
-    --muted: rgb(99, 134, 253);
-    --muted-foreground: rgb(0, 0, 0);
-    --accent: #e9ebef;
-    --accent-foreground: #030213;
-    --destructive: #d4183d;
+    --font-size: 20px;
+    --background: #f6f7fb;
+    --foreground: #0f172a;
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    --primary: #1f4dc6; 
+    --primary-foreground: #ffffff;
+    --secondary: #f1f5f9;  
+    --secondary-foreground: #0f172a;
+    --muted: #f1f5f9;
+    --muted-foreground: #475569;
+    --accent: #eef2f6;
+    --accent-foreground: #0f172a;
+    --destructive: #dc2626;
     --destructive-foreground: #ffffff;
-    --border: rgb(18, 36, 103);
-    --input: transparent;
-    --input-background: rgb(182, 209, 252);
-    --switch-background: rgb(128, 128, 128);
+    --border: #e2e8f0;
+    --input: #ffffff;
+    --input-background: #ffffff;
+    --switch-background: #cbd5e1;
     --font-weight-medium: 500;
     --font-weight-normal: 400;
     --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.646 0.222 41.116);
-    --chart-2: oklch(0.6 0.118 184.704);
-    --chart-3: oklch(0.398 0.07 227.392);
-    --chart-4: oklch(0.828 0.189 84.429);
-    --chart-5: oklch(0.769 0.188 70.08);
+    --chart-1: #1f4dc6;
+    --chart-2: #0ea5e9;
+    --chart-3: #14b8a6;
+    --chart-4: #f59e0b;
+    --chart-5: #ef4444;
     --radius: 0.625rem;
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.145 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.145 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.78 0.07 254.08 / 0.88);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: rgb(192, 192, 192);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.396 0.141 25.723);
-    --destructive-foreground: oklch(0.637 0.237 25.331);
-    --border: oklch(0.269 0 0);
-    --input: oklch(0.269 0 0);
+    --background: #0b1220;
+    --foreground: #e5eaf3;
+    --card: #0f172a;
+    --card-foreground: #e5eaf3;
+    --popover: #0f172a;
+    --popover-foreground: #e5eaf3;
+    --primary: #1e314f;
+    --primary-foreground: #0b1220;
+    --secondary: #111827;
+    --secondary-foreground: #e5eaf3;
+    --muted: #1e314f;
+    --muted-foreground: #9aa7b7;
+    --accent: #0f1a2b;
+    --accent-foreground: #e5eaf3;
+    --destructive: #b91c1c;
+    --destructive-foreground: #ffecec;
+    --border: #182235;
+    --input: #141c2a;
+    --input-background: #141c2a;
+  	--switch-background: #334155;
     --ring: oklch(0.439 0 0);
+    
+    /* 차트 다크 톤(선택) */
+	--chart-1: #5b7cff;
+	--chart-2: #38bdf8;
+	--chart-3: #2dd4bf;
+	--chart-4: #fbbf24;
+	--chart-5: #f87171;
 }
+
+a {
+	text-decoration: none;
+	color: white;
+} 
 
 body {
     background-color: var(--background);
@@ -128,7 +142,7 @@ body {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 0.5rem;
-    width: 99%;
+    width: 97%;
     color: var(--foreground);
 }
 
@@ -154,6 +168,12 @@ body {
 }
 
 .nav-item:hover {
+    background-color: var(--accent);
+    text-decoration: none;
+    color: var(--foreground);
+}
+
+.nav-item.active {
     background-color: var(--accent);
     text-decoration: none;
     color: var(--foreground);
@@ -192,7 +212,7 @@ body {
 
 /* Table */
 .table {
-    width: 99%;
+    width: 100%;
     border-collapse: collapse;
 }
 
@@ -212,7 +232,7 @@ body {
 .badge {
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
-    font-size: 0.75rem;
+    font-size: 0.89rem;
     font-weight: var(--font-weight-medium);
 }
 
@@ -390,11 +410,11 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 99%;
-    height: 99%;
+    width: 100%;
+    height: 100%;
     background-color: var(--background);
     z-index: 50;
-    transform: translateX(-99%);
+    transform: translateX(-100%);
     transition: transform 0.3s;
 }
 
@@ -492,18 +512,18 @@ body {
 .dashboard-layout {
   display: flex;
   min-height: 90vh;
-  width: 99%;
+  width: 100%;
 }
 
 .sidebar {
   width: 200px;
   background: var(--secondary, #ececf0);
-  transition: width 0.3s, transform 0.3s;
   overflow: hidden;
-  min-height: 99vh;
+  min-height: 100vh;
   box-shadow: 2px 0 8px rgba(0,0,0,0.03);
   position: relative;
   z-index: 20;
+  padding: 0.7em;
 }
 
 .sidebar ul {
@@ -613,7 +633,18 @@ body {
   margin-left: 8px;    /* 약간만 들여쓰기 */
   padding: 0;
   list-style: none;
-  
+  display: none;
+}
+
+.submenu.open {
+  display: block;
+}
+
+.submenuetc {
+	margin-top: 0;  /* 위쪽 최소 간격 */
+  	margin-left: 8px;    /* 약간만 들여쓰기 */
+  	padding: 0;
+  	list-style: none;
 }
 
 
@@ -626,6 +657,19 @@ body {
 }
 
 .submenu a.active {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: var(--font-weight-medium);
+}
+/* 하위 메뉴 항목 */
+.submenuetc li {
+  padding: 0 0 0 0px; /* 들여쓰기 + 세로 간격 최소화 */
+  font-size: 0.85em; /* 상위보다 작은 글씨 */
+  color: var(--muted-foreground, #555);
+  transition: background 0.15s;
+}
+
+.submenuetc a.active {
   background-color: var(--primary);
   color: var(--primary-foreground);
   font-weight: var(--font-weight-medium);
@@ -721,7 +765,7 @@ body {
   background: #fff;
   border: 1px solid var(--border);
   border-radius: 12px;
-  overflow: hidden;
+  overflow: auto;
   color: #000;
 }
 
@@ -735,7 +779,9 @@ body {
 }
 
 .modal-body {
-  padding: 14px 16px;
+	padding: 14px 16px;
+	max-height: 600px;
+	overflow: auto;
 }
 
 .modal-foot {
@@ -747,9 +793,9 @@ body {
 }
 
 /* 모달 사이즈 옵션 */
-.modal-card.sm { width: 400px; }
-.modal-card.md { width: 600px; }
-.modal-card.lg { width: 860px; }
+.modal-card.sm { width: 500px; }
+.modal-card.md { width: 700px; }
+.modal-card.lg { width: 960px; }
 
 /* =======================
    Modal Form
@@ -971,13 +1017,100 @@ body {
     background-color: var(--muted);
 }
 
+/* 검색/필터 바 */
+	.filters {
+		width: 100%;
+	    border: 1px solid var(--border);
+	    border-radius: 12px;
+	    padding: 12px;
+	    display: grid;
+	    grid-template-columns: 180px 1fr max-content;
+	    gap: 10px;
+	    align-items: center; /* 세로 중앙 */
+	}
+	/* 고정폭 제거 → 그리드가 폭을 관리하도록 */
+	.filters .field{ display:flex; gap:6px; margin-right: 1.5em;}
+	.filters select{ width:100%; height:38px; }
+	.filters .search{ display:flex; }
+	.filters input{ width:100%; height:38px; }
+	
+	.filters input, .filters select{
+	  padding:0 10px; border:1px solid var(--border); border-radius:10px; background:#fff;
+	}
+	
+	/* 버튼은 오른쪽 끝 */
+	.filters .actions{
+		display:flex; 
+		width: 100%;
+		justify-content:center; 
+		align-items:center;
+	}
+	.filters .actions .btn{ 
+		height:38px; 
+		width: 10em;
+		display: flex;
+		justify-content: center;
+	}
+	
+	/* 반응형: 좁아지면 세로 스택 */
+	@media (max-width: 900px){
+	  .filters{ grid-template-columns: 1fr; }
+	  .filters .actions{ justify-content: stretch; }
+	  .filters .actions .btn{ width:100%; }
+	}
+	
+/* 페이징(.pager: 앞서 만든 공용 클래스가 있다면 그대로 사용) */
+.pager{
+  	display:flex;
+  	align-items:center;
+  	justify-content:center;
+  	margin-top:24px; /* 기존 30px에서 약간 컴팩트 */
+}
+.pager > div{
+  	display:flex;
+  	align-items:center;
+  	flex-wrap:wrap;
+  	gap:8px;
+}
+.pager > div a,
+.pager > div input[type="button"],
+.pager > div strong{
+	display:inline-flex;
+  	align-items:center;
+  	justify-content:center;
+  	min-width:36px;
+  	height:36px;
+  	padding:0 12px;
+  	border:1px solid #cbd5e1;
+  	border-radius:8px;
+  	background:#fff;
+  	color:#0f172a;
+  	text-decoration:none;
+  	font-size:.95rem;
+  	line-height:1;
+  	transition:background .12s ease, border-color .12s ease, color .12s ease, box-shadow .12s ease;
+}
+.pager > div a:hover,
+.pager > div input[type="button"]:not([disabled]):hover{ background:#f8fafc; border-color:#94a3b8; }
+.pager > div input[disabled]{ opacity:.45; pointer-events:none; cursor:not-allowed; }
+.pager > div strong{
+  background:#2563eb; border-color:#2563eb; color:#fff; cursor:default;
+}
 
 
+/* 반응형 */
+@media (max-width: 900px){
+  .filters{ grid-template-columns: 1fr; }
+  .filters .actions .btn{ width:100%; }
+}
 
-
-
-
-
+@media (max-width: 640px){
+  .pager > div a,
+  .pager > div input[type="button"],
+  .pager > div strong{
+    min-width:32px; height:32px; padding:0 10px; font-size:.9rem;
+	}
+}
 
 /* 반응형 */
 @media (max-width: 800px) {
@@ -1058,3 +1191,24 @@ body.modal-open {
     overflow-y: scroll;       /* 스크롤 강제 */
   }
 }
+
+	/* 스크롤바 전체 */
+.assignListWrapper::-webkit-scrollbar {
+  width: 8px; /* 스크롤바 너비 */
+}
+
+.assignListWrapper::-webkit-scrollbar-thumb {
+  background: #d3d3d3; /* 연한 회색 (lightgray) */
+  border-radius: 10px;
+}
+
+.assignListWrapper::-webkit-scrollbar-track {
+  background: #f9f9f9; /* 트랙은 더 연한 색 */
+  border-radius: 10px;
+}
+
+.removeDriverBtn {
+	cursor: pointer;
+}
+
+

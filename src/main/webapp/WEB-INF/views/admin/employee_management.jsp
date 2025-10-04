@@ -1,101 +1,206 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자페이지 - 직원관리</title>
-
+<title>직원관리</title>
 <!-- 기본 양식 -->
+<sec:csrfMetaTags/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="${pageContext.request.contextPath}/resources/js/admin/employee_management.js"></script>
+<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
+
 </head>
+
 <body>
 <jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include> 
 <jsp:include page="/WEB-INF/views/admin/employee_modal/add_employee.jsp"></jsp:include> 
 <jsp:include page="/WEB-INF/views/admin/employee_modal/detail_employee.jsp"></jsp:include> 
+<jsp:include page="/WEB-INF/views/admin/employee_modal/modify_employee.jsp"></jsp:include> 
 <section class="content">
-	<h4>직원 관리</h4>
-	<div style="display: flex; align-items: center; gap: 8px; width: 35%">
-		<div style="display: flex; align-items: center; gap: 8px; width: 35%;">
- 			<form action="/admin/employeeManagement" style="display: flex; align-items: center; gap: 8px; width: 100%;">
- 				<select name="searchType">
-					<option <c:if test="${searchType eq '이름' }">selected</c:if>> 이름</option>
-					<option <c:if test="${searchType eq '사번' }">selected</c:if>>사번</option>
-					<option <c:if test="${searchType eq '아이디' }">selected</c:if>>아이디</option>
-				</select>
-				<input class="form-control" placeholder="텍스트 입력" name="searchKeyword" style="width:200px;">
-				<input type="submit" value="검색" class="btn btn-sm btn-primary">
+	<div class="container">
+		<div class="d-flex justify-content-between align-items-center mb-3">
+			<h3 class="mb-0">직원 관리</h3>
+			<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary" data-target="#addEmployeeModal">
+		</div>
+		<div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
+			<form class="filters" aria-label="검색 및 필터">
+				<div class="field">
+					<select id="filterStatus" name="searchType">
+						<option <c:if test="${searchType eq '이름' }">selected</c:if>> 이름</option>
+						<option <c:if test="${searchType eq '사번' }">selected</c:if>>사번</option>
+					</select>
+				</div>
+				<div class="search">
+					<input class="filterText" placeholder="텍스트 입력" name="searchKeyword" >
+				</div>
+				<div class="actions">
+					<button class="btn btn-primary" value="검색" id="btnSearch">검색</button>
+				</div>
 			</form>
 		</div>
-	</div>
-    <div class="table-responsive mt-3" >
 		
-		<table class="table table-striped table-bordered" >
-			<tr>
-				<th data-key="emp_name" onclick="allineTable(this)">이름↕</th>
-				<th >성별</th>
-				<th data-key="emp_no" onclick="allineTable(this)">사번↕</th>
-				<th>아이디</th>
-				<th data-key="department_name" onclick="allineTable(this)">부서명↕</th>
-				<th data-key="role_name" onclick="allineTable(this)">직급↕</th>
-				<th>번호</th>
-				<th>이메일</th>
-				<th>입사일↕</th>
-			</tr>
-			<c:forEach var="employee" items="${employeeList }">
-				<tr class="employee-row" data-emp-idx="${employee.empIdx}">
-					<td>${employee.empName }</td>
-					<td>${employee.empGender }</td>
-					<td>${employee.empNo }</td>
-					<td>${employee.empId }</td>
-					<td>${employee.departmentName }</td>
-					<td>${employee.roleName }</td>
-					<td>${employee.empPhone }</td>
-					<td>${employee.empEmail }</td>
-					<td>${employee.hireDate }</td>
-				</tr>
-			</c:forEach>
+		<div class="card">
+	    	<div class="table-responsive mt-3" >
 			
-			<tr>
-				<td colspan="9" style="text-align: center; ">
-					<c:if test="${not empty pageInfo.maxPage or pageInfo.maxPage > 0}">
-						<input type="button" value="이전" 
-							onclick="location.href='/admin/employeeManagement?pageNum=${pageInfo.pageNum - 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}'" 
-							<c:if test="${pageInfo.pageNum eq 1}">disabled</c:if>>
-						
-						<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
+				<table class="table table-striped table-bordered" >
+					<tr>
+						<c:if test="${param.orderKey eq e.emp_name }"></c:if>
+						<th data-key="e.emp_name" onclick="allineTable(this)">
+							이름
 							<c:choose>
-								<c:when test="${i eq pageInfo.pageNum}">
-									<strong>${i}</strong>
+								<c:when test="${param.orderKey eq 'e.emp_name'}">
+									<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+									<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
 								</c:when>
-								<c:otherwise>
-									<a href="/admin/employeeManagement?pageNum=${i}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}">${i}</a>
-								</c:otherwise>
+								 <c:otherwise>
+									↕
+								 </c:otherwise>
 							</c:choose>
-						</c:forEach>
-						
-						<input type="button" value="다음" 
-							onclick="location.href='/admin/employeeManagement?pageNum=${pageInfo.pageNum + 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}'" 
-						<c:if test="${pageInfo.pageNum eq pageInfo.maxPage}">disabled</c:if>>
-					</c:if>
-				
-					<div style="text-align: right;">
-						<input type="button" value="직원추가" id="addEmployee" class="btn btn-primary" data-target="#addEmployeeModal">
+						</th>
+						<th >성별</th>
+						<th data-key="e.emp_no" onclick="allineTable(this)">
+							사번
+							<c:choose>
+								<c:when test="${param.orderKey eq 'e.emp_no'}">
+									<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+									<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+								</c:when>
+								 <c:otherwise>
+									↕
+								 </c:otherwise>
+							</c:choose>
+						</th>
+						<th data-key="c.common_code_name" onclick="allineTable(this)">
+							부서
+							<c:choose>
+								<c:when test="${param.orderKey eq 'c.common_code_name'}">
+									<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+									<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+								</c:when>
+								 <c:otherwise>
+									↕
+								 </c:otherwise>
+							</c:choose>
+						</th>
+						<th data-key="t.team_name" onclick="allineTable(this)">
+							팀명
+							<c:choose>
+								<c:when test="${param.orderKey eq 't.team_name'}">
+									<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+									<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+								</c:when>
+								 <c:otherwise>
+									↕
+								 </c:otherwise>
+							</c:choose>
+						</th>
+						<th data-key="r.role_name" onclick="allineTable(this)">
+							직무
+							<c:choose>
+								<c:when test="${param.orderKey eq 'r.role_name'}">
+									<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+									<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+								</c:when>
+								 <c:otherwise>
+									↕
+								 </c:otherwise>
+							</c:choose>
+						</th>
+	<!-- 					<th>번호</th> -->
+	<!-- 					<th>이메일</th> -->
+						<th data-key="e.hire_date" onclick="allineTable(this)">
+							입사일
+							<c:choose>
+								<c:when test="${param.orderKey eq 'e.hire_date'}">
+									<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+									<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+								</c:when>
+								 <c:otherwise>
+									↕
+								 </c:otherwise>
+							</c:choose>
+						</th>
+						<th data-key="e.emp_status" onclick="allineTable(this)">
+						상태
+							<c:choose>
+								<c:when test="${param.orderKey eq 'e.emp_status'}">
+									<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+									<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+								</c:when>
+								 <c:otherwise>
+									↕
+								 </c:otherwise>
+							</c:choose>
+						</th>
+					</tr>
+					<c:forEach var="employee" items="${employeeList }">
+						<tr class="employee-row" data-emp-idx="${employee.empIdx}">
+							<td>${employee.empName }</td>
+							<td>${employee.empGender }</td>
+							<td>${employee.empNo }</td>
+							<td>
+								${empty employee.commonCode.commonCodeName ?
+									 '미배정' : employee.commonCode.commonCodeName }
+							</td>
+							<td>
+								${empty employee.team.teamName ?
+									'미배정' : employee.team.teamName }
+							</td>
+							<td>
+								${empty employee.role.roleName ?
+									'미배정' : employee.role.roleName }
+							</td>
+	<%-- 						<td>${employee.empPhone }</td> --%>
+	<%-- 						<td>${employee.empEmail }</td> --%>
+							<td>${employee.hireDate }</td>
+							<td>
+								<span class="badge
+					                  ${employee.empStatus eq '재직'   ? 'badge-confirmed' :
+					                    employee.empStatus eq '휴직' ? 'badge-warning'   :
+					                                                'badge-urgent'}">
+					                  ${employee.empStatus}
+								</span>
+							</td>
+						</tr>
+					</c:forEach>
+					</table>
+				</div>
+				</div>
+ 				<div class="pager">
+					<div>
+						<c:if test="${not empty pageInfo.maxPage or pageInfo.maxPage > 0}">
+							<input type="button" value="이전" 
+								onclick="location.href='/admin/employeeManagement?pageNum=${pageInfo.pageNum - 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod=${param.orderMethod}'" 
+								<c:if test="${pageInfo.pageNum eq 1}">disabled</c:if>>
+							
+							<c:forEach var="i" begin="${pageInfo.startPage}" end="${pageInfo.endPage}">
+								<c:choose>
+									<c:when test="${i eq pageInfo.pageNum}">
+										<strong>${i}</strong>
+									</c:when>
+									<c:otherwise>
+										<a href="/admin/employeeManagement?pageNum=${i}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod=${param.orderMethod}">${i}</a>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+							
+							<input type="button" value="다음" 
+								onclick="location.href='/admin/employeeManagement?pageNum=${pageInfo.pageNum + 1}&filter=${param.filter}&searchType=${param.searchType }&searchKeyword=${param.searchKeyword}&orderKey=${param.orderKey}&orderMethod=${param.orderMethod}'" 
+							<c:if test="${pageInfo.pageNum eq pageInfo.maxPage}">disabled</c:if>>
+						</c:if>
 					</div>
-				</td>
-			</tr>
-			
-					
-		</table>
-	</div>
-
-</section>
+				</div>
+			</div>
+	</section>
 	
-	</div>
+</div>
 
 </body>
 </html>

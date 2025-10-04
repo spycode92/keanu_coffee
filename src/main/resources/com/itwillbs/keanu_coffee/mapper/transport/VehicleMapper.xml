@@ -70,6 +70,9 @@
 		<if test="searchKeyword != null and searchKeyword != ''">
 		AND vehicle_number LIKE CONCAT('%', #{searchKeyword}, '%')			
 		</if>
+		<if test="orderKey != ''">
+			ORDER BY ${orderKey} ${orderMethod}			
+		</if>
 		LIMIT
 			#{startRow}     
 			, #{listLimit} 
@@ -89,6 +92,7 @@
 			, null
 			, current_timestamp
 			, null
+			, #{volume}
 		)
 	</insert>
 	
@@ -108,12 +112,84 @@
 		LEFT OUTER JOIN
 			EMPLOYEE_INFO e
 		ON 
-			v.driver_idx = e.idx
+			v.emp_idx = e.emp_idx
 		WHERE 
-			v.idx = #{idx}
+			v.vehicle_idx = #{idx}
 	</select>
 	
-	<!-- 차량번호 중복검사 -->
+	<!--  차량 상태 사용불가로 상태 변경 -->
+	<update id="updateStatus">
+		UPDATE 
+			VEHICLE
+		SET
+			status = #{status}
+		WHERE
+			vehicle_idx 
+		IN
+		<foreach collection="idx" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+	
+	<!-- 배정 가능한 차량 목록 -->
+	<select id="selectAvailableList" resultType="com.itwillbs.keanu_coffee.transport.dto.VehicleDTO">
+		SELECT
+			vehicle_idx
+			, vehicle_number
+			, vehicle_type
+			, capacity
+		FROM
+			VEHICLE
+		WHERE
+			status = #{status}
+		AND
+			emp_idx is null
+	</select>
+	
+	<!-- 기사 배정 -->
+	<update id="updateDriver">
+		UPDATE
+			VEHICLE
+		SET
+			<choose>
+				<when test="isAssign == 'false'">
+					emp_idx = #{empIdx}
+					, status = '대기'
+				</when>
+				<otherwise>
+					emp_idx = null
+					, status = '미배정'
+				</otherwise>
+			</choose>
+		where
+			vehicle_idx = #{vehicleIdx}
+	</update>
+	
+	<!-- 차량 정보 수정 -->
+	<update id="updateVehicle">
+		UPDATE
+			VEHICLE
+		SET
+			vehicle_number = #{vehicleNumber}
+			, vehicle_type = #{vehicleType}
+			, capacity = #{capacity}
+			, manufacture_year = #{manufactureYear}
+			, manufacturer_model = #{manufacturerModel}
+		WHERE
+			vehicle_idx = #{vehicleIdx}
+	</update>
+	
+	<!-- 차량 상태 업데이트 -->
+	<update id="updateVehicleStatus">
+		UPDATE
+			VEHICLE
+		SET
+			status = #{status}
+		WHERE
+			vehicle_idx = #{vehicleIdx}
+	</update>
+	
+	<!-- 차량번호 중복검사 (등록 시) -->
 	<select id="countByVehicleNumber" resultType="int">
 		SELECT 
 			COUNT(*)
@@ -123,16 +199,31 @@
 			vehicle_number = #{vehicleNumber}
 	</select>
 	
-	<!--  차량 삭제 -->
-	<delete id="deleteByIdx">
-		DELETE
-		FROM
+	<!-- 차량번호 중복검사 (수정 시) -->
+	<select id="countByVehicleNumberExceptSelf" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM 
 			VEHICLE
 		WHERE
-			vehicle_idx 
+			vehicle_number = #{vehicleNumber}
+		AND 
+			vehicle_idx != #{vehicleIdx}
+	</select>
+	
+	<!-- 기사 idx 가져오기 -->
+	<select id="selectEmpIds" resultType="int">
+		SELECT
+			emp_idx
+		FROM	
+			VEHICLE
+		WHERE 
+			vehicle_idx
 		IN
-		<foreach collection="list" item="id" open="(" separator="," close=")">
-			#{id}
-		</foreach>
-	</delete>
+			<foreach collection="list" item="vehicleIdx" open="(" separator="," close=")">
+				#{vehicleIdx}
+			</foreach>
+	</select>
 </mapper>
+
+

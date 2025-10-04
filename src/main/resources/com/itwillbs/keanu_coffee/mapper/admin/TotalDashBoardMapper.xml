@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.admin.mapper.TotalDashBoardMapper">
+	
+	<!-- 일별 입고 정보조회 -->
+	<select id="selectInboundDashDataByDay" resultType="TotalDashBoardDTO">
+		SELECT
+		    DATE_FORMAT(iw.arrival_date, '%m-%d') AS arrivalDate,
+		    p.product_name AS productName,
+		    c.common_code_name AS categoryName,
+		    SUM(poi.quantity) AS IBWQuantity,
+		    COALESCE(SUM(rp.quantity), 0) AS RIQuantity,
+		    COALESCE(SUM(d.disposal_amount), 0) AS disposalQuantity
+		FROM PURCHASE_ORDER_ITEM poi 
+		LEFT JOIN INBOUND_WAITING iw ON iw.order_idx = poi.order_idx
+		LEFT JOIN PRODUCT p ON p.product_idx = poi.product_idx
+		LEFT JOIN COMMON_CODE c ON p.category_idx = c.common_code_idx
+		LEFT JOIN RECEIPT_PRODUCT rp ON iw.ibwait_idx = rp.ibwait_idx 
+		            AND rp.product_idx = poi.product_idx
+		LEFT JOIN DISPOSAL d ON d.receipt_product_idx = rp.receipt_product_idx
+			AND DATE(d.created_at) = DATE(iw.arrival_date)
+	  		AND d.section = 'INBOUND'
+		WHERE DATE(iw.arrival_date) BETWEEN #{startDate} AND #{endDate}
+		GROUP BY DATE_FORMAT(iw.arrival_date, '%m-%d'), p.product_name, c.common_code_name
+		ORDER BY DATE_FORMAT(iw.arrival_date, '%m-%d');
+	</select>
+	<!-- 주별 입고 정보조회 -->
+	<select id="selectInboundDashDataByWeek">
+		SELECT
+		    CONCAT(
+		        MONTH(iw.arrival_date), '월 ',
+		        FLOOR((DAY(iw.arrival_date) - 1) / 7) + 1, '주차'
+		    ) AS arrivalMonthWeek,
+		    p.product_name AS productName,
+		    c.common_code_name AS categoryName,
+		    SUM(poi.quantity) AS IBWQuantity,
+		    COALESCE(SUM(rp.quantity), 0) AS RIQuantity,
+		    COALESCE(SUM(d.disposal_amount), 0) AS disposalQuantity
+		FROM PURCHASE_ORDER_ITEM poi 
+		LEFT JOIN INBOUND_WAITING iw ON iw.order_idx = poi.order_idx
+		LEFT JOIN PRODUCT p ON p.product_idx = poi.product_idx
+		LEFT JOIN COMMON_CODE c ON p.category_idx = c.common_code_idx
+		LEFT JOIN RECEIPT_PRODUCT rp ON iw.ibwait_idx = rp.ibwait_idx 
+		            AND rp.product_idx = poi.product_idx
+		LEFT JOIN DISPOSAL d ON d.receipt_product_idx = rp.receipt_product_idx
+			AND DATE(d.created_at) = DATE(iw.arrival_date)
+	  		AND d.section = 'INBOUND'
+		WHERE DATE(iw.arrival_date) BETWEEN #{startDate} AND #{endDate}
+		GROUP BY arrivalMonthWeek, p.product_name, c.common_code_name
+		ORDER BY MIN(iw.arrival_date);
+	</select>
+	<!-- 월별 입고 정보조회 -->
+	<select id="selectInboundDashDataByMonth">
+		SELECT
+		    CONCAT(DATE_FORMAT(iw.arrival_date, '%m'),'월') AS arrivalMonth,
+		    p.product_name AS productName,
+		    c.common_code_name AS categoryName,
+		    SUM(poi.quantity) AS IBWQuantity,
+		    COALESCE(SUM(rp.quantity), 0) AS RIQuantity,
+		    COALESCE(SUM(d.disposal_amount), 0) AS disposalQuantity
+		FROM PURCHASE_ORDER_ITEM poi 
+		LEFT JOIN INBOUND_WAITING iw ON iw.order_idx = poi.order_idx
+		LEFT JOIN PRODUCT p ON p.product_idx = poi.product_idx
+		LEFT JOIN COMMON_CODE c ON p.category_idx = c.common_code_idx
+		LEFT JOIN RECEIPT_PRODUCT rp ON iw.ibwait_idx = rp.ibwait_idx 
+		            AND rp.product_idx = poi.product_idx
+		LEFT JOIN DISPOSAL d ON d.receipt_product_idx = rp.receipt_product_idx
+			AND DATE(d.created_at) = DATE(iw.arrival_date)
+	  		AND d.section = 'INBOUND'
+		WHERE DATE(iw.arrival_date) BETWEEN #{startDate} AND #{endDate}
+		GROUP BY arrivalMonth, p.product_name, c.common_code_name
+		ORDER BY arrivalMonth;
+	</select>
+	
+	<!-- 일별 출고/운송 정보조회 -->
+	<select id="selectOutboundDashDataByDay" resultType="TotalDashBoardDTO">
+		SELECT 
+			DATE_FORMAT(dc.created_at, '%m-%d') as transportDate
+		    , p.product_name as productName
+		    , c.common_code_name as categoryName
+		    , COALESCE(SUM(dci.ordered_qty), 0) as OBOQuantity
+		    , COALESCE(SUM(dci.ordered_qty - dci.delivered_qty), 0) as DIQuantity
+		    , COALESCE(SUM(d.disposal_amount), 0) as disposalQuantity
+		from DELIVERY_CONFIRMATION dc
+		LEFT JOIN DISPATCH_STOPDELIVERY_CONFIRMATION_ITEM dci
+		ON dc.delivery_confirmation_idx = dci.confirmation_idx
+		LEFT JOIN PRODUCT p
+		ON p.product_idx = dci.product_idx
+		LEFT JOIN COMMON_CODE c
+		ON p.category_idx = c.common_code_idx
+		LEFT JOIN OUTBOUND_ORDER_ITEM oi
+		ON oi.outbound_order_idx = dc.outbound_order_idx
+		AND oi.product_idx = dci.product_idx
+		LEFT JOIN DISPOSAL d 
+		ON DATE(d.created_at) = DATE(dc.created_at)
+		AND d.section = 'TRANSPORT' 
+		AND d.receipt_product_idx = oi.receipt_product_idx
+		WHERE DATE(dc.created_at) BETWEEN #{startDate} AND #{endDate}
+		GROUP BY DATE_FORMAT(dc.created_at, '%m-%d'), p.product_name, c.common_code_name
+		ORDER BY DATE_FORMAT(dc.created_at, '%m-%d');
+	</select>
+	
+	<!-- 주간별 출고/운송 정보조회 -->
+	<select id="selectOutboundDashDataByWeek" resultType="TotalDashBoardDTO">
+	    SELECT
+	        CONCAT(
+	            MONTH(dc.created_at), '월 ',
+	            FLOOR((DAY(dc.created_at) - 1) / 7) + 1, '주차'
+	        ) AS transportWeek,
+	        p.product_name AS productName,
+	        c.common_code_name AS categoryName,
+	        COALESCE(SUM(dci.ordered_qty), 0) AS OBOQuantity,
+	        COALESCE(SUM(dci.ordered_qty - dci.delivered_qty), 0) AS DIQuantity,
+	        COALESCE(SUM(d.disposal_amount), 0) AS disposalQuantity
+	    FROM DELIVERY_CONFIRMATION dc
+	    LEFT JOIN DISPATCH_STOPDELIVERY_CONFIRMATION_ITEM dci ON dc.delivery_confirmation_idx = dci.confirmation_idx
+	    LEFT JOIN PRODUCT p ON p.product_idx = dci.product_idx
+	    LEFT JOIN COMMON_CODE c ON p.category_idx = c.common_code_idx
+	    LEFT JOIN OUTBOUND_ORDER_ITEM oi ON oi.outbound_order_idx = dc.outbound_order_idx AND oi.product_idx = dci.product_idx
+	    LEFT JOIN DISPOSAL d ON DATE(d.created_at) = DATE(dc.created_at) AND d.section = 'TRANSPORT' AND d.receipt_product_idx = oi.receipt_product_idx
+	    WHERE DATE(dc.created_at) BETWEEN #{startDate} AND #{endDate}
+	    GROUP BY transportWeek, p.product_name, c.common_code_name
+	    ORDER BY MIN(dc.created_at);
+	</select>
+	
+	<!-- 월별 출고/운송 정보조회 -->
+	<select id="selectOutboundDashDataByMonth" resultType="TotalDashBoardDTO">
+	    SELECT
+	        CONCAT(DATE_FORMAT(dc.created_at, '%m'), '월') AS transportMonth,
+	        p.product_name AS productName,
+	        c.common_code_name AS categoryName,
+	        COALESCE(SUM(dci.ordered_qty), 0) AS OBOQuantity,
+	        COALESCE(SUM(dci.ordered_qty - dci.delivered_qty), 0) AS DIQuantity,
+	        COALESCE(SUM(d.disposal_amount), 0) AS disposalQuantity
+	    FROM DELIVERY_CONFIRMATION dc
+	    LEFT JOIN DISPATCH_STOPDELIVERY_CONFIRMATION_ITEM dci ON dc.delivery_confirmation_idx = dci.confirmation_idx
+	    LEFT JOIN PRODUCT p ON p.product_idx = dci.product_idx
+	    LEFT JOIN COMMON_CODE c ON p.category_idx = c.common_code_idx
+	    LEFT JOIN OUTBOUND_ORDER_ITEM oi ON oi.outbound_order_idx = dc.outbound_order_idx AND oi.product_idx = dci.product_idx
+	    LEFT JOIN DISPOSAL d ON DATE(d.created_at) = DATE(dc.created_at) AND d.section = 'TRANSPORT' AND d.receipt_product_idx = oi.receipt_product_idx
+	    WHERE DATE(dc.created_at) BETWEEN #{startDate} AND #{endDate}
+	    GROUP BY transportMonth, p.product_name, c.common_code_name
+	    ORDER BY transportMonth;
+	</select>
+	
+	<!-- 일별 폐기량 조회 -->
+	<select id="selectDisposalDashDataByDay" resultType="TotalDashBoardDTO">
+		SELECT
+		 d.section as section
+		 , COALESCE(SUM(d.disposal_amount), 0) as disposalQuantity
+		 , DATE_FORMAT(d.created_at, '%m-%d') as disposalDate
+		 , p.product_name as productName
+		FROM DISPOSAL d 
+		LEFT JOIN RECEIPT_PRODUCT rp ON d.receipt_product_idx = rp.receipt_product_idx
+		LEFT JOIN PRODUCT p ON p.product_idx = rp.product_idx
+		WHERE DATE(d.created_at) BETWEEN #{startDate} AND #{endDate}
+		GROUP BY d.section, p.product_name, d.created_at
+		ORDER BY d.created_at
+	</select>
+	
+	<!-- 주별 폐기량 조회 -->
+	<select id="selectDisposalDashDataByWeek" resultType="TotalDashBoardDTO">
+	    SELECT
+	    	CONCAT(
+	            MONTH(d.created_at), '월 ',
+	            FLOOR((DAY(d.created_at) - 1) / 7) + 1, '주차'
+	        ) AS disposalWeek,
+	        d.section AS section,
+	        COALESCE(SUM(d.disposal_amount), 0) AS disposalQuantity,
+	        p.product_name AS productName
+	    FROM DISPOSAL d
+	    LEFT JOIN RECEIPT_PRODUCT rp ON d.receipt_product_idx = rp.receipt_product_idx
+	    LEFT JOIN PRODUCT p ON p.product_idx = rp.product_idx
+	    WHERE DATE(d.created_at) BETWEEN #{startDate} AND #{endDate}
+	    GROUP BY d.section, p.product_name, disposalWeek
+	    ORDER BY disposalWeek
+	</select>
+	
+	<!-- 월별 폐기량 조회 -->
+	<select id="selectDisposalDashDataByMonth" resultType="TotalDashBoardDTO">
+	    SELECT
+	    	CONCAT(DATE_FORMAT(d.created_at, '%m'), '월') AS disposalMonth,
+	        d.section AS section,
+	        COALESCE(SUM(d.disposal_amount), 0) AS disposalQuantity,
+	        p.product_name AS productName
+	    FROM DISPOSAL d
+	    LEFT JOIN RECEIPT_PRODUCT rp ON d.receipt_product_idx = rp.receipt_product_idx
+	    LEFT JOIN PRODUCT p ON p.product_idx = rp.product_idx
+	    WHERE DATE(d.created_at) BETWEEN #{startDate} AND #{endDate}
+	    GROUP BY d.section, p.product_name, disposalMonth
+	    ORDER BY disposalMonth
+	</select>
+	
+	<!-- 재고정보조회 -->
+	<select id="selectInventory" resultType="TotalDashBoardDTO">
+		SELECT
+			c.common_code_name as categoryName
+			, p.product_name as productName
+			, i.quantity as inventoryQTY
+		FROM INVENTORY i
+		LEFT JOIN PRODUCT p
+		ON i.product_idx = p.product_idx
+		LEFT JOIN COMMON_CODE c
+		ON p.category_idx = c.common_code_idx
+		ORDER BY inventoryQTY
+	</select>
+	
+	<!-- 창고사용율조회 -->
+	<select id="selectLocation" resultType="TotalDashBoardDTO">
+		SELECT l.location_idx
+			, l.rack
+			, l.bay
+			, l.level_position
+			, location_type
+			, l.volume as locationVolume
+			, sum(i.quantity) as inventoryQTY
+			, p.product_name
+			, p.product_volume
+		FROM WAREHOUSE_LOCATION l
+		LEFT JOIN INVENTORY i
+		ON l.location_idx = i.location_idx
+		LEFT JOIN PRODUCT p
+		ON p.product_idx = i.product_idx
+		group by l.location_idx,l.rack
+			, l.bay
+			, l.level_position
+			, l.location_type
+			, locationVolume
+			, product_name
+			, product_volume
+	</select>
+	
+	
+	
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.keanu_coffee.transport.mapper.RouteMapper">
+	<!-- 최대 delivery_sequence 조회 -->
+	<select id="findMaxSequence" resultType="int">
+		SELECT
+			COALESCE(MAX(delivery_sequence), 0)
+		FROM
+			ROUTE
+		WHERE
+			region_idx = #{regionIdx}
+	</select>
+	
+	<!-- 배송 순서 등록 -->
+	<insert id="insertRoute">
+		INSERT INTO ROUTE(region_idx, delivery_sequence, franchise_idx)
+		VALUES (
+			#{regionIdx}
+			, #{deliverySequence}
+			, #{franchiseIdx}
+		)
+	</insert>
+	
+	<!-- 배송 경로에서 지점 삭제 -->
+	<delete id="deleteByRegionAndFranchise">
+		DELETE FROM ROUTE
+		WHERE
+			region_idx = #{regionIdx}
+		AND 
+			franchise_idx = #{franchiseIdx}
+	</delete>
+	
+	<!-- 구역별 지점 배송 순서 -->
+	<select id="selectFranchiseRoute" resultType="RegionFranchiseRouteDTO">
+		SELECT 
+			f.franchise_name, c.common_code_name, r.delivery_sequence, f.franchise_idx
+		FROM
+			FRANCHISE f
+		JOIN
+			COMMON_CODE c
+		ON 
+			c.common_code_idx = f.region_idx
+		LEFT OUTER JOIN
+			ROUTE r
+		ON
+			f.franchise_idx = r.franchise_idx
+		ORDER BY
+			c.common_code_name , delivery_sequence			
+	</select>
+	
+	<!-- 배송 순서 변경 -->
+	<update id="updateSequence">
+		UPDATE
+			ROUTE
+		SET
+			delivery_sequence = #{deliverySequence}
+		WHERE
+			region_idx = #{regionIdx}
+		AND
+			franchise_idx = #{franchiseIdx}
+	</update>
+
+	
+	<!-- 경로 조회 -->
+	<select id="selectFranchise" resultType="RouteDTO">
+		SELECT *
+		FROM
+			ROUTE
+		WHERE
+			franchise_idx = #{franchiseIdx}
+	</select>
+
+	<!-- 맵핑테이블 삭제 -->
+	<delete id="deleteMapping" >
+		DELETE FROM REGION_ADMINISTRATIVE_MAP
+		WHERE bcode = #{bcode}
+		
+	</delete>
+
+</mapper>

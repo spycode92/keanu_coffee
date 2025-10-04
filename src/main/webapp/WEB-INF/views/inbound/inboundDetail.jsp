@@ -1,261 +1,299 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 	<meta charset="UTF-8" />
 	<title>입고 상세</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-
+	<link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet" />
-	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
-
-	<style>
-		/* ===== inbound detail page 전용 오버라이드 (공통 CSS 유지) ===== */
-		.inbound-detail {
-			font-variant-numeric: tabular-nums;
+	<link href="${pageContext.request.contextPath}/resources/css/inbound/inboundDetailAndInspection.css" rel="stylesheet" />
+	<link href="${pageContext.request.contextPath}/resources/css/inbound/inboundDetail.css" rel="stylesheet" />
+	
+	
+	<!-- ============================================ 가격 계산 ============================================ -->
+	<script>
+		function formatCurrency(value) {
+		    return "₩ " + Number(value).toLocaleString();       
 		}
-
-		.inbound-detail .card { padding: 1rem; }
-		.inbound-detail .card-header { margin-bottom: .75rem; padding-bottom: .5rem; }
-		.inbound-detail .card-title { margin: 0; }
-
-		/* 읽기전용 느낌: label / value 그리드 */
-		.inbound-detail .kv-grid {
-			display: grid;
-			grid-template-columns: repeat(4, minmax(160px, 1fr));
-			gap: .5rem 1rem;
-			align-items: center;
+		
+		function recalculate(index) {
+		    const qtyInput = document.querySelector(`input.quantity[data-index='${index}']`);
+		    const priceInput = document.querySelector(`input.unitPrice[data-index='${index}']`);
+		
+		    const quantity = parseFloat(qtyInput.value) || 0;
+		    const unitPrice = parseFloat(priceInput.value) || 0;
+		
+		    const amount = quantity * unitPrice;
+		    const tax = amount * 0.1;
+		    const total = amount + tax;
+		
+		    document.querySelector(`.amount[data-index='${index}']`).textContent = formatCurrency(amount);
+		    document.querySelector(`.tax[data-index='${index}']`).textContent = formatCurrency(tax);
+		    document.querySelector(`.totalPrice[data-index='${index}']`).textContent = formatCurrency(total);
+		
+		    updateGrandTotal(); // 전체 합계도 갱신
 		}
-		.inbound-detail .kv-item { min-width: 0; }
-		.inbound-detail .kv-label { font-size: .9rem; color: var(--muted-foreground); margin-bottom: .25rem; }
-		.inbound-detail .kv-value { padding: .45rem .6rem; background: var(--input-background); border: 1px solid var(--border); border-radius: var(--radius); }
-
-		/* 상단 버튼 그룹 */
-		.inbound-detail .page-actions { display:flex; gap:.5rem; align-items:center; }
-
-		/* timeline */
-		.inbound-detail .timeline {
-			display:flex;
-			gap:1rem;
-			align-items:center;
-			padding: .5rem 0;
+		
+		function updateGrandTotal() {
+		    let total = 0;
+		    document.querySelectorAll(".totalPrice").forEach(cell => {
+		        const text = cell.textContent.replace(/[^\d]/g, "");
+		        total += parseInt(text) || 0;
+		    });
+		    document.getElementById("grandTotalCell").textContent = formatCurrency(total);
 		}
-		.inbound-detail .timeline-step {
-			display:flex;
-			flex-direction:column;
-			align-items:center;
-			gap:.25rem;
-			text-align:center;
-			min-width:90px;
-		}
-		.inbound-detail .timeline-dot {
-			width:18px;
-			height:18px;
-			border-radius:50%;
-			background:var(--muted);
-			border:2px solid var(--border);
-		}
-		.inbound-detail .timeline-step.active .timeline-dot { background:var(--primary); border-color:var(--primary); }
-
-		/* items table */
-		.inbound-detail #itemsTable { table-layout: fixed; width:100%; }
-		.inbound-detail .table th, .inbound-detail .table td { padding: .55rem .6rem; vertical-align: middle; }
-		.inbound-detail .table thead th { background: var(--accent); color: var(--foreground); position: sticky; top:0; z-index:1; }
-		.inbound-detail .table .right { text-align:right; }
-
-		/* attachments */
-		.inbound-detail .attachments { display:flex; flex-direction:column; gap:.4rem; }
-		.inbound-detail .attachment-item { padding:.5rem; background:var(--card); border:1px solid var(--border); border-radius:.375rem; }
-
-		/* responsive */
-		@media (max-width: 980px) {
-			.inbound-detail .kv-grid { grid-template-columns: 1fr 1fr; }
-			.inbound-detail .timeline { flex-wrap:wrap; justify-content:flex-start; }
-		}
-	</style>
+		
+		// 이벤트 연결
+		document.querySelectorAll("input.quantity, input.unitPrice").forEach(input => {
+		    input.addEventListener("input", () => {<fmt:formatDate value="${dto.arrivalDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+		        const index = input.getAttribute("data-index");
+		        recalculate(index);
+		    });
+		});
+	</script>
+	<!-- ============================================ 가격 계산 ============================================ -->
+	
 </head>
-<body>
+ 
+<body data-context="${pageContext.request.contextPath}">
 	<jsp:include page="/WEB-INF/views/inc/top.jsp"></jsp:include>
 
-	<section class="content inbound-detail">
+	<section class="content inbound-detail" data-app-root="1">
 		<!-- 헤더 / 액션 -->
 		<div class="d-flex justify-content-between align-items-center mb-3">
 			<div>
 				<h1 class="card-title">입고 상세</h1>
-				<div class="text-muted" style="font-size:0.95rem;">입고번호: <strong>IN-20250811-001</strong></div>
 			</div>
+			
 			<div class="page-actions">
-				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
 				<button id="btnPrint" class="btn btn-secondary btn-sm">인쇄</button>
-				<button id="btnEdit" class="btn btn-primary btn-sm">수정</button>
-				<button id="btnConfirm" class="btn btn-primary btn-sm">입고확정</button>
+				<sec:authorize access="hasAuthority('INBOUND_WRITE')">
+					<button id="btnEdit"
+					        class="btn btn-primary btn-sm"
+					        data-ibwait-idx="${inboundDetailData.ibwaitIdx}"
+					        data-order-number="${inboundDetailData.orderNumber}"
+					        data-status="${inboundDetailData.inboundStatus}"
+					        data-manager="${inboundDetailData.managerName}">
+					    검수
+					</button>
+				</sec:authorize>
+				<button id="btnBack" class="btn btn-secondary btn-sm" title="뒤로가기">← 뒤로</button>
 			</div>
 		</div>
-
+		
 		<!-- 상단 기본정보 카드 -->
 		<div class="card mb-3">
 			<div class="card-header d-flex justify-content-between align-items-center">
 				<div class="card-title">기본 정보</div>
-				<div class="text-muted">상태: <span class="badge badge-pending">대기</span></div>
+				<div class="text-muted">상태: 	<span class="badge badge-pending">
+													<c:out value="${inboundDetailData.inboundStatus}" default="-"/>
+												</span></div>
 			</div>
-
 			<div class="kv-grid">
 				<div class="kv-item">
 					<div class="kv-label">입고번호</div>
-					<div class="kv-value">IN-20250811-001</div>
+					<div class="kv-value">
+					    <c:out value="${inboundDetailData.ibwaitNumber}" default="-" />
+					    
+					</div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고일자</div>
-					<div class="kv-value">2025-08-11</div>
+					<div class="kv-value">
+<%-- 						<c:out value="${fn:substringBefore(inboundDetailData.arrivalDate, 'T')}" default="-" /> --%>
+						<c:out value="${inboundDetailData.arrivalDateFormatted}" default="-" />
+					</div>
 				</div>
 				<div class="kv-item">
-					<div class="kv-label">창고</div>
-					<div class="kv-value">중앙창고</div>
+					<div class="kv-label">발주번호</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.orderNumber}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">입고구분</div>
-					<div class="kv-value">구매입고</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.inboundClassification}" default="-"/></div>
 				</div>
 
 				<div class="kv-item">
 					<div class="kv-label">공급업체</div>
-					<div class="kv-value">에이스상사 (1234567890)</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.supplierName}" default="-"/></div>
 				</div>
+				
 				<div class="kv-item">
 					<div class="kv-label">담당자</div>
-					<div class="kv-value">김담당</div>
+					<div class="kv-value">
+						<span id="fieldManagerName">
+							<c:out value="${inboundDetailData.managerName}" default="-"/>
+						</span>
+					</div>
 				</div>
+				
 				<div class="kv-item">
-					<div class="kv-label">발주번호(PO)</div>
-					<div class="kv-value">PO-20250801-001</div>
+					<div class="kv-label">(PO)</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.orderNumber}" default="-"/></div>
 				</div>
+				
 				<div class="kv-item">
 					<div class="kv-label">입고위치</div>
-					<div class="kv-value">A-01-03</div>
+					<div class="kv-value">
+						<span id="fieldInboundLocation">
+							<c:out value="${inboundDetailData.inboundLocation}" default="-"/>
+						</span>
+					</div>
 				</div>
 
 				<div class="kv-item">
 					<div class="kv-label">총 품목 수</div>
-					<div class="kv-value">4</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.numberOfItems}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">총 수량</div>
-					<div class="kv-value">540</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.quantity}" default="-"/></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">총 금액</div>
-					<div class="kv-value">₩ 1,230,000</div>
+					<div class="kv-value"><fmt:formatNumber value="${inboundDetailData.totalPrice}" pattern="₩ #,##0" /></div>
 				</div>
 				<div class="kv-item">
 					<div class="kv-label">비고</div>
-					<div class="kv-value">부분입고 — 검수대기</div>
+					<div class="kv-value"><c:out value="${inboundDetailData.note}" default="-"/></div>
 				</div>
 			</div>
 		</div>
 
-		<!-- 타임라인 -->
+		<!-- 상태 타임라인 -->
 		<div class="card mb-3">
-			<div class="card-header">
-				<div class="card-title">상태 이력 (타임라인)</div>
-			</div>
-			<div class="timeline p-2">
-				<div class="timeline-step active">
-					<div class="timeline-dot"></div>
-					<div class="muted" style="font-size:.85rem;">등록</div>
-					<div style="font-size:.85rem;">2025-08-11<br/><span class="muted">홍길동</span></div>
-				</div>
-				<div class="timeline-step">
-					<div class="timeline-dot"></div>
-					<div class="muted" style="font-size:.85rem;">검수대기</div>
-					<div style="font-size:.85rem;">(미완료)</div>
-				</div>
-				<div class="timeline-step">
-					<div class="timeline-dot"></div>
-					<div class="muted" style="font-size:.85rem;">확정</div>
-					<div style="font-size:.85rem;">-</div>
-				</div>
+			<div class="timeline-container">
+			    <c:set var="steps" value="${fn:split('운송중,대기,검수중,검수완료,재고등록완료', ',')}" />
+				<ul class="timeline">
+				    <c:forEach var="step" items="${steps}" varStatus="st">
+				        <c:set var="matchedTime" value="" />
+				        <!-- historyList에서 해당 step의 시간 가져오기 -->
+				        <c:forEach var="h" items="${historyList}">
+				            <c:if test="${h.status == step}">
+				                <c:set var="matchedTime" value="${h.changedAtStr}" />
+				            </c:if>
+				        </c:forEach>
+				
+				        <li class="timeline-step ${not empty matchedTime ? 'done' : 'pending'}">
+				            <div class="circle">${st.index + 1}</div>
+				            <div class="label">${step}</div>
+				            <div class="time">
+				                <c:choose>
+				                    <c:when test="${not empty matchedTime}">
+				                        ${matchedTime}
+				                    </c:when>
+				                    <c:otherwise>-</c:otherwise>
+				                </c:choose>
+				            </div>
+				        </li>
+				    </c:forEach>
+				</ul>
 			</div>
 		</div>
-
+			
 		<!-- 품목 목록 -->
 		<div class="card mb-3">
 			<div class="card-header d-flex justify-content-between align-items-center">
 				<div class="card-title">품목 내역</div>
-				<div class="muted">총 4건</div>
+				<div class="muted">-</div>
 			</div>
 
 			<div class="table-responsive">
 				<table id="itemsTable" class="table">
 					<thead>
 						<tr>
-							<th style="width:40px;">No</th>
-							<th>품목명 / 규격</th>
-							<th style="width:80px;">수량</th>
-							<th style="width:100px;">단위</th>
-							<th style="width:120px;">단가</th>
-							<th style="width:140px;" class="right">공급가액</th>
-							<th style="width:120px;" class="right">부가세</th>
-							<th style="width:140px;" class="right">총액</th>
-							<th style="width:120px;">비고</th>
+							<th>No</th>
+							<th colspan="2">품목명 / 규격</th>
+							<th>LOT번호</th>
+							<th>수량</th>
+							<th>단위</th>
+							<th>단가</th>
+							<th>공급가액</th>
+							<th>부가세</th>
+							<th>총액</th>
 						</tr>
 					</thead>
+	<!-- ==============================================================================================================리스트 존========= -->
 					<tbody>
-						<tr>
-							<td>1</td>
-							<td>아라비카 원두 1kg / 로스팅 A</td>
-							<td class="right">200</td>
-							<td>KG</td>
-							<td class="right">₩ 3,000</td>
-							<td class="right">₩ 600,000</td>
-							<td class="right">₩ 60,000</td>
-							<td class="right">₩ 660,000</td>
-							<td>부분입고</td>
-						</tr>
-						<tr>
-							<td>2</td>
-							<td>종이컵 250ml / 1000pcs</td>
-							<td class="right">50</td>
-							<td>BOX</td>
-							<td class="right">₩ 6,000</td>
-							<td class="right">₩ 300,000</td>
-							<td class="right">₩ 30,000</td>
-							<td class="right">₩ 330,000</td>
-							<td>-</td>
-						</tr>
-						<tr>
-							<td>3</td>
-							<td>설탕 5kg / 백</td>
-							<td class="right">100</td>
-							<td>EA</td>
-							<td class="right">₩ 1,500</td>
-							<td class="right">₩ 150,000</td>
-							<td class="right">₩ 15,000</td>
-							<td class="right">₩ 165,000</td>
-							<td>-</td>
-						</tr>
-						<tr>
-							<td>4</td>
-							<td>시럽 1L / 바닐라</td>
-							<td class="right">190</td>
-							<td>EA</td>
-							<td class="right">₩ 5,000</td>
-							<td class="right">₩ 950,000</td>
-							<td class="right">₩ 95,000</td>
-							<td class="right">₩ 1,045,000</td>
-							<td>검수요청</td>
-						</tr>
+					    <c:choose>
+					        <c:when test="${not empty ibProductDetail}">
+					            <c:forEach var="item" items="${ibProductDetail}" varStatus="vs">
+					                <tr>
+					                    <!-- No. -->
+					                    <td>
+					                        <c:out value="${vs.index + 1}" />
+					                    </td>
+					
+					                    <!-- 상품명 -->
+					                    <td colspan="2">
+					                        <c:out value="${item.productName}" />
+					                    </td>
+										
+										<!-- LOT넘버 -->
+					                    <td><c:out value="${item.lotNumber}" /></td>
+										
+					                    <!-- 수량 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.quantity}" pattern="#개,##0" />
+					                    </td>
+					
+					                    <!-- 단위 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.productVolume}" pattern="#호" />
+					                    </td>
+					
+					                    <!-- 단가 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.unitPrice}" pattern="₩ #,##0" />
+					                    </td>
+					
+					                    <!-- 공급가액 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.amount}" pattern="₩ #,##0" />
+					                    </td>
+					
+					                    <!-- 부가세 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.tax}" pattern="₩ #,##0" />
+					                    </td>
+					
+					                    <!-- 총액 -->
+					                    <td>
+					                        <fmt:formatNumber value="${item.totalPrice}" pattern="₩ #,##0" />
+					                    </td>
+					
+					                    
+					                </tr>
+					            </c:forEach>
+					        </c:when>
+					        <c:otherwise>
+					            <tr>
+					                <td colspan="10" class="text-center">입고 품목 정보가 없습니다.</td>
+					            </tr>
+					        </c:otherwise>
+					    </c:choose>
 					</tbody>
+					
+					<c:set var="grandTotal" value="0" />
+					<c:forEach var="item" items="${ibProductDetail}">
+					    <c:set var="grandTotal" value="${grandTotal + item.totalPrice}" />
+					</c:forEach>
+					
 					<tfoot>
-						<tr>
-							<td colspan="5" class="right">합계</td>
-							<td class="right">₩ 2,000,000</td>
-							<td class="right">₩ 200,000</td>
-							<td class="right">₩ 2,200,000</td>
-							<td></td>
-						</tr>
+					    <tr>
+					        <td colspan="8"></td>
+					        <td>합계</td>
+					        <td><fmt:formatNumber value="${grandTotal}" pattern="₩ #,##0" /></td>
+					    </tr>
 					</tfoot>
+	<!-- ==============================================================================================================리스트 존========= -->
 				</table>
 			</div>
 		</div>
@@ -279,51 +317,34 @@
 					<div class="kv-value" style="min-height:80px;">검수 후 입고확정 필요 — 외관 손상 일부. 공급사에 통보 예정.</div>
 				</div>
 			</div>
-
-			<div>
-				<div class="muted">변경 이력</div>
-				<table class="table" style="margin-top:.5rem;">
-					<thead>
-						<tr>
-							<th style="width:160px;">시간</th>
-							<th style="width:160px;">사용자</th>
-							<th>변경내용</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>2025-08-11 10:12</td>
-							<td>홍길동</td>
-							<td>입고 요청 등록</td>
-						</tr>
-						<tr>
-							<td>2025-08-11 13:40</td>
-							<td>김담당</td>
-							<td>부분입고 체크 — 수량 수정 (300 → 200)</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
 		</div>
 	</section>
-
-	<script>
-		// 뒤로가기 버튼
-		document.getElementById("btnBack").addEventListener("click", function(e){
-			e.preventDefault();
-			history.back();
-		});
-
-		// 간단 UI: 인쇄, 편집(화살표만)
-		document.getElementById("btnPrint").addEventListener("click", function(e){
-			e.preventDefault(); window.print();
-		});
-		document.getElementById("btnEdit").addEventListener("click", function(e){
-			e.preventDefault(); alert("편집 모드로 이동(구현 필요)");
-		});
-		document.getElementById("btnConfirm").addEventListener("click", function(e){
-			e.preventDefault(); alert("입고확정 처리(모의)");
-		});
+	
+	<!-- ============================================================================================================ js 모음 -->
+	<sec:authorize access="isAuthenticated()">
+		<script>
+			// 로그인 사용자
+			window.currentUserNo = "<sec:authentication property='principal.username' htmlEscape='false'/>";
+			window.currentUserName = "<sec:authentication property='principal.empName' htmlEscape='false'/>";
+			
+			// 버튼에 들어간 담당자(manager) 값 읽기
+			document.addEventListener("DOMContentLoaded", () => {
+				const btnEdit = document.getElementById("btnEdit");
+				if (btnEdit) {
+					console.log("✅ 로그인 사용자 사번:", window.currentUserNo);
+					console.log("✅ 로그인 사용자 이름:", window.currentUserName);
+					console.log("✅ 페이지에 표시된 담당자(manager):", btnEdit.dataset.manager);
+				}
+			});
+		</script>
+	</sec:authorize>
+	<script> 
+		const contextPath = "${pageContext.request.contextPath}";
 	</script>
+	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/modal/modify.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/inboundDetail.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/inbound/refresh.js"></script>
 </body>
+<link href="${pageContext.request.contextPath}/resources/css/inbound/modal/detailSmallModal.css" rel="stylesheet" />
 </html>

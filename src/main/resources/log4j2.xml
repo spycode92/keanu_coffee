@@ -11,8 +11,8 @@
 		</Console>
 		
 		<RollingFile name="rollingFile"
-						fileName="./my_log/rolling_log.log"
-						filePattern="./my_log/rolling_log-%d{yyyy-MM-dd}%i.log">
+						fileName="/usr/local/tomcat/my_log/rolling_log.log"
+						filePattern="/usr/local/tomcat/my_log/rolling_log-%d{yyyy-MM-dd}%i.log">
 			<PatternLayout pattern="${layoutPattern}" />
 			
 			<Policies>
@@ -21,13 +21,27 @@
 		</RollingFile>
 		
 		<RollingFile name="rollingFileForSQL"
-						fileName="./my_log/rolling_log_sql.log"
-						filePattern="./my_log/rolling_log_sql-%d{yyyy-MM-dd}%i.log">
+						fileName="/usr/local/tomcat/my_log/rolling_log_sql.log"
+						filePattern="/usr/local/tomcat/my_log/rolling_log_sql-%d{yyyy-MM-dd}%i.log">
 			<PatternLayout pattern="${layoutPattern}" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="10MB" />
 			</Policies>
 		</RollingFile>
+		
+		<!-- 쿼리로그 저장 롤링파일 설정 -->
+	    <RollingFile name="RollingFileForQuery" 
+	    		fileName="/usr/local/tomcat/my_log/query.log"
+                filePattern="/usr/local/tomcat/my_log/archive/query-%d{yyyy-MM-dd}.log.gz">
+	        <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{1}] - %m%n"/>
+	        <Policies>
+	            <!-- 일별 롤링 -->
+	            <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+	            <!-- 용량기반 롤링도 추가 가능 -->
+	            <SizeBasedTriggeringPolicy size="10MB"/>
+	        </Policies>
+	        <DefaultRolloverStrategy max="365" fileIndex="min"/>
+	    </RollingFile>
 		
 
 		
@@ -40,7 +54,7 @@
 			<AppenderRef ref="rollingFile"></AppenderRef>
 		</Root>
 		<!-- Application Loggers -->
-		<Logger name="com.itwillbs.mvc_board" level="INFO" additivity="false">
+		<Logger name="com.itwillbs.keanu_coffee" level="INFO" additivity="false">
 			<AppenderRef ref="console"></AppenderRef>
 			<AppenderRef ref="rollingFile"></AppenderRef>
 		</Logger>
@@ -82,6 +96,21 @@
 			<AppenderRef ref="console"></AppenderRef>
 		</Logger>
 		
+		<!-- 스프링 시큐리티 패키지 관련 로거 추가 -->
+		<Logger name="org.springframework.security" level="DEBUG" additivity="false">
+			<AppenderRef ref="console"></AppenderRef>
+		</Logger>
+		
+		<!-- CustomAccessDeniedHandler가 있는 패키지의 로거 추가 -->
+		<Logger name="com.itwillbs.keanu_coffee.common.security" level="INFO" additivity="false">
+		    <AppenderRef ref="console"></AppenderRef>
+		    <AppenderRef ref="rollingFile"></AppenderRef>
+		</Logger>
+		
+		<Logger name="queryLogger" level="INFO" additivity="false">
+		    <AppenderRef ref="RollingFileForQuery"/> <!-- 쿼리 전용 파일 appender -->
+		    <AppenderRef ref="console"/>           <!-- 콘솔에도 출력할 경우 -->
+		</Logger>
 
 	</Loggers>
 </Configuration>
