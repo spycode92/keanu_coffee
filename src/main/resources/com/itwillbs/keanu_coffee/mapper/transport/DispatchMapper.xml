@@ -58,9 +58,16 @@
 				OR 
 					vehicle_number LIKE CONCAT ('%', #{searchKeyword}, '%'))
 			</if>
-		ORDER BY 
-			dispatch_date DESC
-			, start_slot ASC
+		ORDER BY
+			<choose>
+				<when test="orderKey != ''">
+					${orderKey} ${orderMethod}
+				</when>
+				<otherwise>
+					dispatch_date DESC
+					, start_slot ASC
+				</otherwise>
+			</choose>
 		LIMIT
 			#{startRow}     
 			, #{listLimit} 

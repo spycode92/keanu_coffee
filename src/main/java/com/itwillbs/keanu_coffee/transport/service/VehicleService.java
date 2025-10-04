@@ -23,8 +23,8 @@ public class VehicleService {
 	
 	// 차량 리스트
 	@Transactional(readOnly = true)
-	public List<VehicleDTO> getVehicleList(int startRow, int listLimit, String filter, String searchKeyword) {
-		return vehicleMapper.selectVehicleList(startRow, listLimit, filter, searchKeyword);
+	public List<VehicleDTO> getVehicleList(int startRow, int listLimit, String filter, String searchKeyword, String orderKey, String orderMethod) {
+		return vehicleMapper.selectVehicleList(startRow, listLimit, filter, searchKeyword, orderKey, orderMethod);
 	}
 	
 	// 차량 추가

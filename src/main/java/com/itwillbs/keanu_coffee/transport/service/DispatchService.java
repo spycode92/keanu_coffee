@@ -56,8 +56,9 @@ public class DispatchService {
 	// 배차 리스트
 	@Transactional(readOnly = true)
 	public List<DispatchRegionGroupViewDTO> selectAllDispatch(int startRow, int listLimit, String filter,
-			String searchKeyword) {
-		return dispatchMapper.selectAllDispatch(startRow, listLimit, filter, searchKeyword);
+			String searchKeyword, String orderKey, String orderMethod) {
+		return dispatchMapper.selectAllDispatch(startRow, listLimit, filter, 
+				searchKeyword, orderKey, orderMethod);
 	}
 	
 	// 배차 목록 (현재 날짜 기준)

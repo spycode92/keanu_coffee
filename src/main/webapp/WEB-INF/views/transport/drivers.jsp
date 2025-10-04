@@ -14,6 +14,7 @@
 <link href="${pageContext.request.contextPath}/resources/css/common/common.css" rel="stylesheet">
 <link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/common/sortUtils.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/transport/driver.js"></script>
 <style type="text/css">
 .vehicle-empty {
@@ -90,11 +91,11 @@
 		<div class="filterWrapper">
 	        <form class="filters" aria-label="검색 및 필터">
 	            <div class="field">
-	                <select id="filterStatus" name="filter">
-	                    <option value="전체">전체</option>
-	                    <option value="대기">대기</option>
-	                    <option value="예약">예약</option>
-	                    <option value="운행중">운행중</option>
+	                <select id="filterStatus" name="searchType">
+	                    <option <c:if test="${param.searchType eq '전체' }">selected</c:if> value="전체">전체</option>
+	                    <option <c:if test="${param.searchType eq '대기' }">selected</c:if> value="대기">대기</option>
+	                    <option <c:if test="${param.searchType eq '예약' }">selected</c:if>>예약</option>
+	                    <option <c:if test="${param.searchType eq '운행중' }">selected</c:if> value="운행중">운행중</option>
 	                </select>
 	            </div>
 	            <div class="search">
@@ -115,10 +116,43 @@
 					<table class="table" id="driverTable">
 				    	<thead>
 	                        <tr>
-	                            <th>이름</th>
+	                        	<th data-key="e.emp_name" onclick="allineTable(this)">
+	                        		이름
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'e.emp_name'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
 	                            <th>연락처</th>
-	                            <th>차량번호</th>
-	                            <th>적재량</th>
+	                        	<th data-key="v.vehicle_number" onclick="allineTable(this)">
+	                        		차량번호
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'v.vehicle_number'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
+	                        	<th data-key="v.capacity" onclick="allineTable(this)">
+	                        		적재량
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'v.capacity'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
 	                            <th>운송상태</th>
 	                            <th>상태</th>
 	                        </tr>

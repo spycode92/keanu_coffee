@@ -68,11 +68,14 @@ public class TransportController {
 	@GetMapping("/drivers")
 	public String driverList(
 			@RequestParam(defaultValue = "1") int pageNum, 
-			@RequestParam(defaultValue = "all") String filter,
+			@RequestParam(defaultValue = "all") String searchType,
 			@RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue = "") String orderKey, 
+			@RequestParam(defaultValue = "") String orderMethod,
 			Model model) {
+				
 		int listLimit = 10;
-		int listCount = driverService.getDriverCount(filter, searchKeyword);
+		int listCount = driverService.getDriverCount(searchType, searchKeyword);
 		
 		if (listCount > 0) {
 			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, listCount, pageNum, 10);
@@ -85,9 +88,12 @@ public class TransportController {
 			
 			model.addAttribute("pageInfo", pageInfoDTO);
 			
-			List<DriverVehicleDTO> driverList = driverService.getDriverList(pageInfoDTO.getStartRow(), listLimit, filter, searchKeyword);
+			List<DriverVehicleDTO> driverList = driverService.getDriverList(pageInfoDTO.getStartRow(), listLimit, searchType, 
+					searchKeyword, orderKey, orderMethod);
 			
 			model.addAttribute("driverList", driverList );
+			model.addAttribute("orderKey", orderKey);
+			model.addAttribute("orderMethod", orderMethod);
 		}
 		return "/transport/drivers";
 	}
@@ -96,12 +102,14 @@ public class TransportController {
 	@GetMapping("/vehicle")
 	public String carList(
 			@RequestParam(defaultValue = "1") int pageNum, 
-			@RequestParam(defaultValue = "all") String filter,
+			@RequestParam(defaultValue = "all") String searchType,
 			@RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue = "") String orderKey, 
+			@RequestParam(defaultValue = "") String orderMethod,
 			Model model) {
 		
 		int listLimit = 10;
-		int listCount = vehicleService.getVehicleCount(filter, searchKeyword);
+		int listCount = vehicleService.getVehicleCount(searchType, searchKeyword);
 		
 		if (listCount > 0) {
 			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, listCount, pageNum, 10);
@@ -114,12 +122,15 @@ public class TransportController {
 			
 			model.addAttribute("pageInfo", pageInfoDTO);
 			
-			List<VehicleDTO> vehicleList = vehicleService.getVehicleList(pageInfoDTO.getStartRow(), listLimit, filter, searchKeyword);
+			List<VehicleDTO> vehicleList = vehicleService.getVehicleList(pageInfoDTO.getStartRow(), listLimit, 
+					searchType, searchKeyword, orderKey, orderMethod);
 			
 			// 차량 리스트
-			System.out.println(vehicleList);
+//			System.out.println(vehicleList);
 			
 			model.addAttribute("vehicleList", vehicleList );
+			model.addAttribute("orderKey", orderKey);
+			model.addAttribute("orderMethod", orderMethod);
 		}
 		return "/transport/vehicle";
 	}
@@ -127,15 +138,17 @@ public class TransportController {
 	// 배차 관리 페이지
 	@GetMapping("/dispatches")
 	public String getAllDispatch(@RequestParam(defaultValue = "1") int pageNum, 
-			@RequestParam(defaultValue = "전체") String filter,
+			@RequestParam(defaultValue = "전체") String searchType,
 			@RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue = "") String orderKey, 
+			@RequestParam(defaultValue = "") String orderMethod,
 			Model model) {
 		
 		int listLimit = 10;
-		int listCount = dispatchService.getDispatchCount(filter, searchKeyword);
+		int listCount = dispatchService.getDispatchCount(searchType, searchKeyword);
 		
 		if (listCount > 0) {
-			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, listCount, pageNum, 10);
+			PageInfoDTO pageInfoDTO = PageUtil.paging(listLimit, listCount, pageNum, 5);
 			
 			if (pageNum < 1 || pageNum > pageInfoDTO.getMaxPage()) {
 				model.addAttribute("msg", "해당 페이지는 존재하지 않습니다!");
@@ -145,9 +158,12 @@ public class TransportController {
 			
 			model.addAttribute("pageInfo", pageInfoDTO);
 			
-			List<DispatchRegionGroupViewDTO> dispatchList = dispatchService.selectAllDispatch(pageInfoDTO.getStartRow(), listLimit, filter, searchKeyword);
+			List<DispatchRegionGroupViewDTO> dispatchList = dispatchService.selectAllDispatch(pageInfoDTO.getStartRow(), listLimit, 
+					searchType, searchKeyword, orderKey, orderMethod);
 			
 			model.addAttribute("dispatchList", dispatchList );
+			model.addAttribute("orderKey", orderKey);
+			model.addAttribute("orderMethod", orderMethod);
 		}
 		
 		return "/transport/dispatche";

@@ -26,8 +26,8 @@ public class DriverService {
 	}
 
 	// 페이징된 운전자 리스트
-	public List<DriverVehicleDTO> getDriverList(int startRow, int listLimit, String filter, String searchKeyword) {
-		return driverMapper.selectDriverList(startRow, listLimit, filter, searchKeyword);
+	public List<DriverVehicleDTO> getDriverList(int startRow, int listLimit, String searchType, String searchKeyword, String orderKey, String orderMethod) {
+		return driverMapper.selectDriverList(startRow, listLimit, searchType, searchKeyword, orderKey, orderMethod);
 	}
 
 	// 운전자 상세정보
