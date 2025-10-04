@@ -16,6 +16,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/common/sortUtils.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2b14d97248052db181d2cfc125eaa368&libraries=services"></script>	
 <script src="${pageContext.request.contextPath}/resources/js/transport/dispatch.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/transport/kakao_map.js"></script>
@@ -90,13 +91,13 @@ button:disabled {
         <div class="filterWrapper">
 	        <form class="filters" aria-label="검색 및 필터">
 	            <div class="field">
-	                <select id="filterStatus" name="filter">
-	                    <option value="전체">전체</option>
-	                    <option value="예약">예약</option>
-	                    <option value="적재완료">적재완료</option>
-	                    <option value="운행중">운행중</option>
-	                    <option value="완료">완료</option>
-	                    <option value="취소">취소</option>
+	                <select id="filterStatus" name="searchType">
+	                    <option <c:if test="${param.searchType eq '전체' }">selected</c:if>>전체</option>
+	                    <option <c:if test="${param.searchType eq '예약' }">selected</c:if>>예약</option>
+	                    <option <c:if test="${param.searchType eq '적재완료' }">selected</c:if>>적재완료</option>
+	                    <option <c:if test="${param.searchType eq '운행중' }">selected</c:if>>운행중</option>
+	                    <option <c:if test="${param.searchType eq '완료' }">selected</c:if>>완료</option>
+	                    <option <c:if test="${param.searchType eq '취소' }">selected</c:if>>취소</option>
 	                </select>
 	            </div>
 	            <div class="search">
@@ -117,12 +118,67 @@ button:disabled {
 		            <table class="table" id="dispatchTable">
 		                <thead>
 		                    <tr>
-		                        <th>배차일</th>
-		                        <th>배차시간</th>
-		                        <th>기사명</th>
-		                        <th>차량번호</th>
+		                    	<th data-key="dispatch_date" onclick="allineTable(this)">
+	                        		배차일
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'dispatch_date'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
+		                    	<th data-key="start_slot" onclick="allineTable(this)">
+	                        		배차시간
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'start_slot'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
+		                    	<th data-key="driver_name" onclick="allineTable(this)">
+	                        		기사명
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'driver_name'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
+		                    	<th data-key="vehicle_number" onclick="allineTable(this)">
+	                        		차량번호
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'vehicle_number'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
 		                        <th>차량용량</th>
-		                        <th>구역</th>
+		                    	<th data-key="region_name" onclick="allineTable(this)">
+	                        		구역
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'region_name'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
 		                        <th>상태</th>
 		                    </tr>
 		                </thead>

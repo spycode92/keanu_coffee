@@ -21,7 +21,7 @@ public interface DispatchMapper {
 
 	// 배차 리스트
 	List<DispatchRegionGroupViewDTO> selectAllDispatch(@Param("startRow") int startRow, @Param("listLimit") int listLimit, @Param("filter") String filter,
-			@Param("searchKeyword") String searchKeyword);
+			@Param("searchKeyword") String searchKeyword, @Param("orderKey") String orderKey, @Param("orderMethod") String orderMethod);
 	
 	// 배차 목록 (현재 날짜 기준)
 	List<DispatchRegionGroupViewDTO> selectAllDispatchByToday();

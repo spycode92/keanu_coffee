@@ -15,7 +15,8 @@ public interface VehicleMapper {
 	int selectVehicleCount(@Param("filter") String filter, @Param("searchKeyword") String searchKeyword);
 	
 	// 차량 리스트
-	List<VehicleDTO> selectVehicleList(@Param("startRow") int startRow, @Param("listLimit") int listLimit, @Param("filter") String filter, @Param("searchKeyword") String searchKeyword);
+	List<VehicleDTO> selectVehicleList(@Param("startRow") int startRow, @Param("listLimit") int listLimit, @Param("filter") String filter, @Param("searchKeyword") String searchKeyword, 
+			@Param("orderKey") String orderKey, @Param("orderMethod")String orderMethod);
 	
 	// 차량 추가
 	int insertVehicle(VehicleDTO vehicleDTO);

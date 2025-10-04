@@ -69,10 +69,10 @@
 			r.role_name LIKE CONCAT('%', '기사', '%')
 		AND
 		<choose>
-			<when test="filter != null and filter == '대기'">
+			<when test="searchType != null and searchType == '대기'">
 				v.status = '대기'
 			</when>
-			<when test="filter != null and filter == '운행중'">
+			<when test="searchType != null and searchType == '운행중'">
 				v.status = '운행중'
 			</when>
 			<otherwise>
@@ -84,6 +84,9 @@
 			(e.emp_name LIKE CONCAT('%', #{searchKeyword}, '%')	
 		OR 
 			v.vehicle_number LIKE CONCAT('%', #{searchKeyword}, '%'))
+		</if>
+		<if test="orderKey != ''">
+			ORDER BY ${orderKey} ${orderMethod}			
 		</if>
 		LIMIT
 			#{startRow}     

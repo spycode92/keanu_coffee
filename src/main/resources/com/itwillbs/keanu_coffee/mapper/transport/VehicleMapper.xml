@@ -70,6 +70,9 @@
 		<if test="searchKeyword != null and searchKeyword != ''">
 		AND vehicle_number LIKE CONCAT('%', #{searchKeyword}, '%')			
 		</if>
+		<if test="orderKey != ''">
+			ORDER BY ${orderKey} ${orderMethod}			
+		</if>
 		LIMIT
 			#{startRow}     
 			, #{listLimit} 

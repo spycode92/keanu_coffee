@@ -15,6 +15,7 @@
 <link rel="icon" href="${pageContext.request.contextPath}/resources/images/keanu_favicon.ico">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/common/sortUtils.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/transport/vehicle.js" defer></script>
 <style type="text/css">
 header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
@@ -237,12 +238,12 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 		<div class="filterWrapper">
 	        <form class="filters" aria-label="검색 및 필터">
 	            <div class="field">
-	                <select id="filterStatus" name="filter">
-	                    <option value="전체">전체</option>
-	                    <option value="미배정">미배정</option>
-	                    <option value="대기">대기</option>
-	                    <option value="운행중">운행중</option>
-	                    <option value="사용불가">사용불가</option>
+	                <select id="filterStatus" name="searchType">
+	                    <option <c:if test="${param.searchType eq '전체' }">selected</c:if>>전체</option>
+	                    <option <c:if test="${param.searchType eq '미배정' }">selected</c:if>>미배정</option>
+	                    <option <c:if test="${param.searchType eq '대기' }">selected</c:if>>대기</option>
+	                    <option <c:if test="${param.searchType eq '운행중' }">selected</c:if>>운행중</option>
+	                    <option <c:if test="${param.searchType eq '사용불가' }">selected</c:if>>사용불가</option>
 	                </select>
 	            </div>
 	            <div class="search">
@@ -264,11 +265,55 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 						<thead>
 							<tr>
 								<th><input type="checkbox" id="checkAll" /></th>
-								<th>차량번호</th>
-								<th>차종유형</th>
-								<th>적재량</th>
+								<th data-key="v.vehicle_number" onclick="allineTable(this)">
+	                        		차량번호
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'v.vehicle_number'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
+								<th data-key="v.vehicle_type" onclick="allineTable(this)">
+	                        		차종유형
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'v.vehicle_type'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
+								<th data-key="v.capacity" onclick="allineTable(this)">
+	                        		적재량
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'v.capacity'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
 								<th>제조사/모델명</th>
-								<th>연식</th>
+								<th data-key="v.manufacture_year" onclick="allineTable(this)">
+	                        		연식
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'v.manufacture_year'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                        	</th>
 								<th>고정기사명</th>
 								<th>상태</th>
 							</tr>
