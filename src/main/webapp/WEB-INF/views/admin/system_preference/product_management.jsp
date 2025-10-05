@@ -97,10 +97,54 @@
 			        <table id="productTable" class="table mb-0">
 			            <thead>
 			                <tr>
-			                    <th>상품번호</th>
-			                    <th>카테고리</th>
-			                    <th>상품명</th>
-			                    <th>상태</th>
+			                    <th data-key="product_idx" onclick="allineTable(this)">
+			                    	상품번호
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'product_idx'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+			                    </th>
+			                    <th data-key="category_name" onclick="allineTable(this)">
+			                    	카테고리
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'category_name'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+			                    </th>
+			                    <th data-key="product_name" onclick="allineTable(this)">
+			                    	상품명
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'product_name'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+			                    </th>
+			                    <th data-key="status" onclick="allineTable(this)">
+			                    	상태
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'status'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+			                    </th>
 			                </tr>
 			            </thead>
 			            <tbody>

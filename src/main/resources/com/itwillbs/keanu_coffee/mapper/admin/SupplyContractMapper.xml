@@ -126,7 +126,7 @@
 			AND spc.status = #{filterStatus}
 		</if>
 		</where>
-		<if test="orderKey != ''">
+		<if test="orderKey != '' and orderKey != null">
 			ORDER BY ${orderKey} ${orderMethod}			
 		</if>
 		LIMIT

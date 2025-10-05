@@ -66,7 +66,7 @@
 				AND product_name LIKE CONCAT('%', #{searchKeyword}, '%')
 			</if>
 		</where>
-		<if test="orderKey != '' and orderkey != null">
+		<if test="orderKey != '' and orderKey != null">
 			ORDER BY ${orderKey} ${orderMethod}			
 		</if>
 		LIMIT

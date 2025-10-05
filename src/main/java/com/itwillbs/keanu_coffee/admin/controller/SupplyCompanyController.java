@@ -50,8 +50,8 @@ public class SupplyCompanyController {
 		model.addAttribute("pageNum", pageNum);
 		model.addAttribute("searchType", searchType);
 		model.addAttribute("searchKeyword", searchKeyword);
-		model.addAttribute("sortKey", orderKey);
-		model.addAttribute("sortMethod", orderMethod);
+		model.addAttribute("orderKey", orderKey);
+		model.addAttribute("orderMethod", orderMethod);
 		// 한페이지보여줄수
 		int listLimit = 10;
 		// 조회된 목록수

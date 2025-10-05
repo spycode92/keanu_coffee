@@ -101,12 +101,78 @@
 	                <table id="contractTable" class="table contract-table mb-0">
 	                    <thead>
 	                        <tr>
-	                            <th>공급업체</th>
-	                            <th>상품명</th>
-	                            <th>계약단가</th>
-	                            <th>계약시작</th>
-	                            <th>계약끝</th>
-	                            <th>상태</th>
+	                            <th data-key="supplier_name" onclick="allineTable(this)">
+	                            	공급업체
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'supplier_name'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
+	                            <th data-key="product_name" onclick="allineTable(this)">
+	                            	상품명
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'product_name'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
+	                            <th data-key="contract_price" onclick="allineTable(this)">
+	                            	계약단가
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'contract_price'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
+	                            <th data-key="contract_start" onclick="allineTable(this)">
+	                            	계약시작
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'contract_start'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
+	                            <th data-key="contract_end" onclick="allineTable(this)">
+	                            	계약마감
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'contract_end'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
+	                            <th data-key="status" onclick="allineTable(this)">
+	                            	상태
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'status'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
 	                        </tr>
 	                    </thead>
 	                    <tbody>

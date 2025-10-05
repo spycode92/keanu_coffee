@@ -41,7 +41,7 @@
 					franchise_name LIKE CONCAT('%', #{searchKeyword}, '%')
 			</if>
 		</where>
-			<if test="orderKey != ''">
+			<if test="orderKey != '' and orderKey != null">
 				ORDER BY ${orderKey} ${orderMethod}			
 			</if>
 		LIMIT
