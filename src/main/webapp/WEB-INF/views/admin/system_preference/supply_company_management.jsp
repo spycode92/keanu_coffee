@@ -14,6 +14,7 @@
     <link href="/resources/css/common/common.css" rel="stylesheet" />
     <script src="/resources/js/common/common.js"></script>
     <script src="/resources/js/admin/system_preferences/supplier_manage.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/common/sortUtils.js"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     </head>
 <body>
@@ -51,10 +52,54 @@
 	                <table id="supplierTable" class="table">
 	                    <thead>
 	                        <tr>
-	                            <th>업체 번호</th>
-	                            <th>공급업체</th>
-	                            <th>담당자</th>
-	                            <th>상태</th>
+	                            <th data-key="supplier_idx" onclick="allineTable(this)">
+	                            	업체 번호
+   	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'supplier_idx'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
+	                            <th data-key="supplier_name" onclick="allineTable(this)">
+	                            	공급업체
+	                            	<c:choose>
+										<c:when test="${param.orderKey eq 'supplier_name'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
+	                            <th data-key="supplier_manager" onclick="allineTable(this)">
+	                            	담당자
+	                            	<c:choose>
+										<c:when test="${param.orderKey eq 'supplier_manager'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
+	                            <th data-key="status" onclick="allineTable(this)">
+	                            	상태
+	                            	<c:choose>
+										<c:when test="${param.orderKey eq 'status'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
 	                        </tr>
 	                    </thead>
 	                    <tbody>

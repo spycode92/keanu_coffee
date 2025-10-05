@@ -13,6 +13,8 @@
     <script src="/resources/js/common/common.js"></script>
     <script src="/resources/js/admin/system_preferences/franchise_manage.js"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/common/sortUtils.js"></script>
+    
    	<sec:csrfMetaTags />
 </head>
 <body>
@@ -49,11 +51,66 @@
 	                <table id="franchiseTable" class="table franchise-table mb-0">
 	                    <thead>
 	                        <tr>
-	                            <th>지점번호</th>
-	                            <th>지점명</th>
-	                            <th>지점장</th>
-	                            <th>지점번호</th>
-	                            <th>상태</th>
+	                            <th data-key="franchise_idx" onclick="allineTable(this)">
+	                            	지점번호
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'franchise_idx'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
+	                            <th data-key="franchise_name" onclick="allineTable(this)">
+	                            	지점명
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'franchise_name'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
+	                            <th data-key="franchise_manager_name" onclick="allineTable(this)">
+	                            	지점장
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'franchise_manager_name'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
+	                            <th data-key="franchise_phone" onclick="allineTable(this)">
+	                            	지점번호
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'franchise_phone'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
+	                            <th data-key="status" onclick="allineTable(this)">
+	                            	상태
+	                        		<c:choose>
+										<c:when test="${param.orderKey eq 'status'}">
+											<c:if test="${param.orderMethod eq 'asc' }">▲</c:if>
+											<c:if test="${param.orderMethod eq 'desc' }">▼</c:if>
+										</c:when>
+										 <c:otherwise>
+											↕
+										 </c:otherwise>
+									</c:choose>
+	                            </th>
 	                        </tr>
 	                    </thead>
 	                    <tbody>
