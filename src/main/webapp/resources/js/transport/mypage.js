@@ -265,7 +265,6 @@ $(document).on("click", ".detail-btn", function() {
 				const items = stop.deliveryConfirmations?.[0]?.items || [];
 				if (stop.deliveryConfirmations) {
 					stop.deliveryConfirmations.forEach((dc) => {
-						console.log(stop);
 						dc.items?.forEach((item, index) => {
 							const orderItems = dc.items;
 							detailHtml += `
