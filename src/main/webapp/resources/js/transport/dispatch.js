@@ -7,6 +7,8 @@ const DISPATCH_DETAIL_URL = "/transport/dispatch/detail";
 let assignedDrivers = new Map();
 let totalVolume = 0;
 
+const { token, header } = getCsrf();
+
 // 배차 등록 버튼 클릭 시 배차 요청 리스트
 function openAddDispatchModal() {
 	ModalManager.openModalById('assignModal');
@@ -184,9 +186,6 @@ function addDispatch() {
 		Swal.fire({icon:'error', text:'기사를 추가 배정 후 배차가 가능합니다!'}); 
 		return;
 	}
-	
-	const { token, header } = getCsrf();
-	
 	
 	// 등록 요청
 	$.ajax({

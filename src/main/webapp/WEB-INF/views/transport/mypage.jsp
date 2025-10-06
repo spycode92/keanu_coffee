@@ -20,11 +20,11 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="https://kit.fontawesome.com/a96e186b03.js" crossorigin="anonymous"></script>
 	<script src="${pageContext.request.contextPath}/resources/js/common/common.js"></script>
-	<script src="${pageContext.request.contextPath}/resources/js/transport/mypage.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 	<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=2b14d97248052db181d2cfc125eaa368&libraries=services"></script>	
 	<script src="${pageContext.request.contextPath}/resources/js/transport/kakao_map.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/transport/mypage.js"></script>
 	<script type="text/javascript"> const role = "${pageContext.request.userPrincipal.principal.role.roleName}";</script>
 </head>
 <body>
