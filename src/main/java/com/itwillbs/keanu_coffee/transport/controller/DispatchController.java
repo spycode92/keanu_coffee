@@ -2,6 +2,7 @@ package com.itwillbs.keanu_coffee.transport.controller;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,15 +20,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.itwillbs.keanu_coffee.common.security.EmployeeDetail;
+import com.itwillbs.keanu_coffee.transport.dto.CoordinateDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DeliveryConfirmationDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchAssignmentDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchCompleteRequest;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchDetailDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegionGroupViewDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DispatchRegisterRequestDTO;
+import com.itwillbs.keanu_coffee.transport.dto.DispatchStopDTO;
 import com.itwillbs.keanu_coffee.transport.dto.DriverVehicleDTO;
 import com.itwillbs.keanu_coffee.transport.service.DispatchService;
 import com.itwillbs.keanu_coffee.transport.service.DriverService;
+import com.itwillbs.keanu_coffee.transport.service.KakaoRouteService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 public class DispatchController {
 	private final DispatchService dispatchService;
 	private final DriverService driverService;
+	private final KakaoRouteService kakaoRouteService;
 	
 	// 배차 요청 리스트
 	@GetMapping("/dispatch/list")
@@ -207,5 +212,12 @@ public class DispatchController {
 		model.addAttribute("driverName", driverName);
 		
 		return "/transport/deliveryConfirmationDetail";
+	}
+	
+	// 카카오 다중 경유지 api 호출
+	@PostMapping("/dispatch/kakaoRoute")
+	@ResponseBody
+	public Map<String, Object> getRoute(@RequestBody List<CoordinateDTO> coords) {
+		return kakaoRouteService.getMultiRoute(coords);
 	}
 }
